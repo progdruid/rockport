@@ -9,7 +9,6 @@ public class Player : MonoBehaviour
     public float DecTime;
     [Space]
     public float JumpForce;
-    public float JumpCooldown;
     [Space]
     public float BBound;
     public float FallingTimeThreshold;
@@ -22,7 +21,6 @@ public class Player : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Animator animator;
     private float fallingTime = 0f;
-    private bool staying = false;
     private bool touchesLeft = false;
     private bool touchesRight = false;
 
@@ -67,10 +65,9 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && fallingTime < FallingTimeThreshold) //Jump //Here is an exploit
         {
             rb.velocity += Vector2.up * JumpForce;
-            staying = false;
         }
 
-        spriteRenderer.flipX = rb.velocity.x != 0f ? rb.velocity.x < 0f : spriteRenderer.flipX;
+        spriteRenderer.flipX = horvalue != 0f ? horvalue < 0f : spriteRenderer.flipX;
 
         animator.SetBool("Falling", fallingTime >= FallingTimeThreshold);
         animator.SetBool("Running", rb.velocity.x != 0f && fallingTime < FallingTimeThreshold);
@@ -82,7 +79,6 @@ public class Player : MonoBehaviour
     {
         bool oneTouchesLeft = false;
         bool oneTouchesRight = false;
-        staying = false;
         bool falls = true;
 
         foreach (var contact in contacts)
@@ -92,7 +88,6 @@ public class Player : MonoBehaviour
 
             if (point.y <= -BBound) //Checking bottom
             {
-                staying = true;
                 falls = false;
                 fallingTime = 0f;
             }
