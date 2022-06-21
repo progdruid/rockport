@@ -71,8 +71,6 @@ public class Player : MonoBehaviour
 
         animator.SetBool("Falling", fallingTime >= FallingTimeThreshold);
         animator.SetBool("Running", rb.velocity.x != 0f && fallingTime < FallingTimeThreshold);
-        if (fallingTime >= FallingTimeThreshold)
-            Debug.Log(fallingTime);
     }
 
     public void CheckForCollision (List<ContactPoint2D> contacts)

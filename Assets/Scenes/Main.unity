@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 1262337690}
   m_Layer: 0
   m_Name: GameLoader
-  m_TagString: Untagged
+  m_TagString: GameController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -169,7 +169,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AdditionalCameraPrefab: {fileID: 4164085545923523636, guid: 9de58e231b7d76d48a95e3d716f9a551, type: 3}
   PlayerPrefab: {fileID: 7112237262537267370, guid: b3ccaed0f9643254faa7ed372f92ba37, type: 3}
-  LoadLevelIndex: 1
+  LoadLevelIndex: 0
   Levels:
   - {fileID: 681928675020842471, guid: 9b42e750c336daa49a9dc4c5569c4466, type: 3}
   - {fileID: 3211212110360164932, guid: 559a45ad67ecdf0408134d88fc1e6930, type: 3}
