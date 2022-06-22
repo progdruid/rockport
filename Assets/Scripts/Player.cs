@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    //public fields
     public float MaxSpeed;
     public float AccTime;
     public float DecTime;
@@ -13,17 +14,21 @@ public class Player : MonoBehaviour
     public float BBound;
     public float FallingTimeThreshold;
 
-    private float acc => MaxSpeed / AccTime;
-    private float dec => MaxSpeed / DecTime;
-
+    //classes
     private Rigidbody2D rb;
     private new Collider2D collider;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
+
+    //private fields
     private float fallingTime = 0f;
     private bool touchesLeft = false;
     private bool touchesRight = false;
 
+    private float acc => MaxSpeed / AccTime;
+    private float dec => MaxSpeed / DecTime;
+
+    //reserved list
     private List<ContactPoint2D> contactPoints;
 
     void Start()
@@ -32,6 +37,7 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
         collider = gameObject.GetComponent<Collider2D>();
+
         contactPoints = new List<ContactPoint2D>();
     }
 
@@ -100,5 +106,10 @@ public class Player : MonoBehaviour
 
         touchesLeft = oneTouchesLeft;
         touchesRight = oneTouchesRight;
+    }
+
+    public void PlayDeathAnimation ()
+    {
+        animator.SetBool("Died", true);
     }
 }

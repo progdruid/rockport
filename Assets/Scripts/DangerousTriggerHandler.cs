@@ -4,8 +4,18 @@ using UnityEngine;
 
 public class DangerousTriggerHandler : MonoBehaviour
 {
-    public void OnTriggerEnter2D ()
+    private GameManager gameManager;
+
+    private void Start()
     {
-        Debug.Log("Killed");
+        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+    }
+
+    public void OnTriggerEnter2D (Collider2D col)
+    {
+        if (col.gameObject.tag != "Player")
+            return;
+
+        StartCoroutine( gameManager.KillPlayer());
     }
 }
