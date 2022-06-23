@@ -123,6 +123,68 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &510749001 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4164085545923523636, guid: 9de58e231b7d76d48a95e3d716f9a551, type: 3}
+  m_PrefabInstance: {fileID: 806976022}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &806976022
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4164085545923523636, guid: 9de58e231b7d76d48a95e3d716f9a551, type: 3}
+      propertyPath: m_Name
+      value: TransitionCamera
+      objectReference: {fileID: 0}
+    - target: {fileID: 4164085545923523639, guid: 9de58e231b7d76d48a95e3d716f9a551, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4164085545923523639, guid: 9de58e231b7d76d48a95e3d716f9a551, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4164085545923523639, guid: 9de58e231b7d76d48a95e3d716f9a551, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 4164085545923523639, guid: 9de58e231b7d76d48a95e3d716f9a551, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4164085545923523639, guid: 9de58e231b7d76d48a95e3d716f9a551, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4164085545923523639, guid: 9de58e231b7d76d48a95e3d716f9a551, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4164085545923523639, guid: 9de58e231b7d76d48a95e3d716f9a551, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4164085545923523639, guid: 9de58e231b7d76d48a95e3d716f9a551, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4164085545923523639, guid: 9de58e231b7d76d48a95e3d716f9a551, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4164085545923523639, guid: 9de58e231b7d76d48a95e3d716f9a551, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4164085545923523639, guid: 9de58e231b7d76d48a95e3d716f9a551, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9de58e231b7d76d48a95e3d716f9a551, type: 3}
 --- !u!1 &1262337688
 GameObject:
   m_ObjectHideFlags: 0
@@ -133,6 +195,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1262337689}
   - component: {fileID: 1262337690}
+  - component: {fileID: 1262337691}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: GameController
@@ -167,7 +230,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e4c3295bd0c1344fa659721186332d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AdditionalCameraPrefab: {fileID: 4164085545923523636, guid: 9de58e231b7d76d48a95e3d716f9a551, type: 3}
   PlayerPrefab: {fileID: 7112237262537267370, guid: b3ccaed0f9643254faa7ed372f92ba37, type: 3}
   CorpsePrefab: {fileID: 6388440925167425491, guid: d6a856bee9685274fa5913c94ac9635e, type: 3}
   LoadLevelIndex: 0
@@ -176,3 +238,17 @@ MonoBehaviour:
   - {fileID: 3211212110360164932, guid: 559a45ad67ecdf0408134d88fc1e6930, type: 3}
   corpses: []
   DefaultMaxDeaths: 3
+--- !u!114 &1262337691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1262337688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dd383196eca7bc4d986265b7d6c275a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CameraBetweenTransitions: {fileID: 510749001}
+  TransitionPrefab: {fileID: 3736714135761548518, guid: 4e028d94a2de054499cc7359edc9d5ea, type: 3}

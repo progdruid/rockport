@@ -13,6 +13,8 @@ public class Player : MonoBehaviour
     [Space]
     public float BBound;
     public float FallingTimeThreshold;
+    [Space]
+    public bool active = false;
 
     //classes
     private Rigidbody2D rb;
@@ -46,7 +48,7 @@ public class Player : MonoBehaviour
         collider.GetContacts(contactPoints);
         CheckForCollision(contactPoints);
 
-        float horvalue = Input.GetAxisRaw("Horizontal");
+        float horvalue = active ? Input.GetAxisRaw("Horizontal") : 0;
         bool wallFree = !(touchesLeft && horvalue < 0f) && !(touchesRight && horvalue > 0f);
 
         if (horvalue != 0f && wallFree)  //acceleration
@@ -68,7 +70,7 @@ public class Player : MonoBehaviour
             rb.velocity = new Vector2(newvel, rb.velocity.y);
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && fallingTime < FallingTimeThreshold) //Jump //Here is an exploit
+        if (Input.GetKeyDown(KeyCode.Space) && fallingTime < FallingTimeThreshold && active) //Jump //Here is an exploit
         {
             rb.velocity += Vector2.up * JumpForce;
         }

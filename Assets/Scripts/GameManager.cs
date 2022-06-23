@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject AdditionalCameraPrefab;
     public GameObject PlayerPrefab;
     public GameObject CorpsePrefab;
 
@@ -17,14 +16,14 @@ public class GameManager : MonoBehaviour
     private int currentLevelIndex;
     private GameObject currentLevel;
     private Player player;
-    private GameObject additionalCamera;
+    private TransitionController transitionController;
 
     public int DefaultMaxDeaths;
     private int deaths;
 
     void Start()
     {
-        additionalCamera = Instantiate(AdditionalCameraPrefab);
+        transitionController = GetComponent<TransitionController>();
         LoadLevel(LoadLevelIndex);
         currentLevelIndex = LoadLevelIndex;
     }
@@ -40,13 +39,18 @@ public class GameManager : MonoBehaviour
         else
         {
             Vector2 pos = player.transform.position;
+            player.active = false;
             player.PlayDeathAnimation();
+            StartCoroutine(transitionController.TransiteIn());
+            yield return new WaitUntil(() => transitionController.transitionMade);
             Destroy(player.gameObject);
-            additionalCamera.SetActive(true);
+            
             corpses.Add(Instantiate(CorpsePrefab, pos, Quaternion.identity));
-            yield return new WaitForSeconds(1f);
             player = Instantiate(PlayerPrefab, Vector2.zero, Quaternion.identity).GetComponent<Player>();
-            additionalCamera.SetActive(false);
+            transitionController.AddAttachedCamera(player.transform.GetChild(0).gameObject);
+            StartCoroutine(transitionController.TransiteOut());
+            yield return new WaitUntil(() => transitionController.transitionMade);
+            player.active = true;
         }
     }
 
@@ -63,19 +67,20 @@ public class GameManager : MonoBehaviour
                 Destroy(corpses[i]);
             corpses.Clear();
 
-            Destroy(currentLevel);
+            player.active = false;
+            StartCoroutine(transitionController.TransiteIn());
+            yield return new WaitUntil(() => transitionController.transitionMade);
             Destroy(player.gameObject);
-            additionalCamera.SetActive(true);
+            Destroy(currentLevel);
         }
 
         currentLevel = Instantiate(Levels[index]);
         currentLevelIndex = index;
-        Debug.Log("Before: " + Time.timeScale);
-        yield return new WaitForSeconds(1f);
-        Debug.Log("After");
-        additionalCamera.SetActive(false);
         player = Instantiate(PlayerPrefab, Vector2.zero, Quaternion.identity).GetComponent<Player>();
-        //StopCoroutine(LoadLevelCoroutine(index));
+        transitionController.AddAttachedCamera(player.transform.GetChild(0).gameObject);
+        StartCoroutine(transitionController.TransiteOut());
+        yield return new WaitUntil(() => transitionController.transitionMade);
+        player.active = true;
     }
 
     public void ReloadLevel()
