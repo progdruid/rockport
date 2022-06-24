@@ -16,6 +16,6 @@ public class DangerousTriggerHandler : MonoBehaviour
         if (col.gameObject.tag != "Player")
             return;
 
-        StartCoroutine( gameManager.KillPlayer());
+        gameManager.KillPlayer();
     }
 }

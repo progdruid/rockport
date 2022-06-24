@@ -22,6 +22,8 @@ public class Player : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Animator animator;
 
+    private GameManager gameManager;
+
     //private fields
     private float fallingTime = 0f;
     private bool touchesLeft = false;
@@ -35,6 +37,8 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
@@ -48,19 +52,41 @@ public class Player : MonoBehaviour
         collider.GetContacts(contactPoints);
         CheckForCollision(contactPoints);
 
-        float horvalue = active ? Input.GetAxisRaw("Horizontal") : 0;
-        bool wallFree = !(touchesLeft && horvalue < 0f) && !(touchesRight && horvalue > 0f);
-
-        if (horvalue != 0f && wallFree)  //acceleration
+        if (active)
         {
-            float newvel = rb.velocity.x + acc * Time.deltaTime * horvalue;
+            MoveSide();
+
+            if (Input.GetKeyDown(KeyCode.Space) && fallingTime < FallingTimeThreshold) //Jump //Here is an exploit
+            {
+                rb.velocity += Vector2.up * JumpForce;
+            }
+
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                gameManager.KillPlayer();
+            }
+        }
+        animator.SetBool("Falling", fallingTime >= FallingTimeThreshold);
+        animator.SetBool("Running", rb.velocity.x != 0f && fallingTime < FallingTimeThreshold);
+    }
+
+    private void MoveSide ()
+    {
+        float value = Input.GetAxisRaw("Horizontal");
+        spriteRenderer.flipX = value != 0f ? value < 0f : spriteRenderer.flipX;
+
+        //bool wallFree = !(touchesLeft && value < 0f) && !(touchesRight && value > 0f);
+
+        if (value != 0f /*&& wallFree*/)  //acceleration
+        {
+            float newvel = rb.velocity.x + acc * Time.deltaTime * value;
 
             if (Mathf.Abs(newvel) > MaxSpeed)
                 newvel = MaxSpeed * Mathf.Sign(newvel);
 
             rb.velocity = new Vector2(newvel, rb.velocity.y);
         }
-        else if (horvalue == 0f && rb.velocity.x != 0f) //deceleration
+        else if (value == 0f && rb.velocity.x != 0f) //deceleration
         {
             float sign = Mathf.Sign(rb.velocity.x);
             float newvel = rb.velocity.x - dec * Time.deltaTime * sign;
@@ -69,16 +95,6 @@ public class Player : MonoBehaviour
 
             rb.velocity = new Vector2(newvel, rb.velocity.y);
         }
-
-        if (Input.GetKeyDown(KeyCode.Space) && fallingTime < FallingTimeThreshold && active) //Jump //Here is an exploit
-        {
-            rb.velocity += Vector2.up * JumpForce;
-        }
-
-        spriteRenderer.flipX = horvalue != 0f ? horvalue < 0f : spriteRenderer.flipX;
-
-        animator.SetBool("Falling", fallingTime >= FallingTimeThreshold);
-        animator.SetBool("Running", rb.velocity.x != 0f && fallingTime < FallingTimeThreshold);
     }
 
     public void CheckForCollision (List<ContactPoint2D> contacts)

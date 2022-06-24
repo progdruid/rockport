@@ -28,7 +28,9 @@ public class GameManager : MonoBehaviour
         currentLevelIndex = LoadLevelIndex;
     }
 
-    public IEnumerator KillPlayer()
+    public void KillPlayer () => StartCoroutine(KillPlayerCoroutine());
+
+    private IEnumerator KillPlayerCoroutine()
     {
         deaths++;
         if (deaths > DefaultMaxDeaths)

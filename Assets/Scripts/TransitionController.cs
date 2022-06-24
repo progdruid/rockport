@@ -38,4 +38,9 @@ public class TransitionController : MonoBehaviour
         yield return new WaitUntil(() => animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "None");
         transitionMade = true;
     }
+
+    private void Update()
+    {
+        Debug.Log(animator.GetCurrentAnimatorClipInfo(0)[0].clip.name);
+    }
 }
