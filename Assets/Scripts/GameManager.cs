@@ -12,18 +12,25 @@ public class GameManager : MonoBehaviour
 
     [HideInInspector]
     public List<GameObject> corpses;
+    public event System.Action<List<GameObject>> CorpsesUpdateEvent;
 
     private int currentLevelIndex;
     private GameObject currentLevel;
     private Player player;
     private TransitionController transitionController;
+    private DeathsBarManager deathsbar;
 
     public int DefaultMaxDeaths;
+    public int MaxDeaths { get; private set; }
     private int deaths;
 
     void Start()
     {
+        MaxDeaths = DefaultMaxDeaths;
+        
         transitionController = GetComponent<TransitionController>();
+        deathsbar = GetComponent<DeathsBarManager>();
+
         LoadLevel(LoadLevelIndex);
         currentLevelIndex = LoadLevelIndex;
     }
@@ -33,7 +40,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator KillPlayerCoroutine()
     {
         deaths++;
-        if (deaths > DefaultMaxDeaths)
+        if (deaths > MaxDeaths)
         {
             ReloadLevel();
             deaths = 0;
@@ -41,18 +48,21 @@ public class GameManager : MonoBehaviour
         else
         {
             Vector2 pos = player.transform.position;
-            player.active = false;
             player.PlayDeathAnimation();
+            player.active = false;
+            deathsbar.SetActive(false);
             StartCoroutine(transitionController.TransiteIn());
             yield return new WaitUntil(() => transitionController.transitionMade);
             Destroy(player.gameObject);
             
             corpses.Add(Instantiate(CorpsePrefab, pos, Quaternion.identity));
+            CorpsesUpdateEvent.Invoke(corpses);
             player = Instantiate(PlayerPrefab, Vector2.zero, Quaternion.identity).GetComponent<Player>();
             transitionController.AddAttachedCamera(player.transform.GetChild(0).gameObject);
             StartCoroutine(transitionController.TransiteOut());
             yield return new WaitUntil(() => transitionController.transitionMade);
             player.active = true;
+            deathsbar.SetActive(true);
         }
     }
 
@@ -68,8 +78,10 @@ public class GameManager : MonoBehaviour
             for (int i = 0; i < corpses.Count; i++)
                 Destroy(corpses[i]);
             corpses.Clear();
+            CorpsesUpdateEvent.Invoke(corpses);
 
             player.active = false;
+            deathsbar.SetActive(false);
             StartCoroutine(transitionController.TransiteIn());
             yield return new WaitUntil(() => transitionController.transitionMade);
             Destroy(player.gameObject);
@@ -83,6 +95,8 @@ public class GameManager : MonoBehaviour
         StartCoroutine(transitionController.TransiteOut());
         yield return new WaitUntil(() => transitionController.transitionMade);
         player.active = true;
+        deathsbar.SetActive(true);
+        CorpsesUpdateEvent.Invoke(corpses);
     }
 
     public void ReloadLevel()
