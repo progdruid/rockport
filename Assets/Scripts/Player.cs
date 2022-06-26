@@ -61,9 +61,14 @@ public class Player : MonoBehaviour
                 rb.velocity += Vector2.up * JumpForce;
             }
 
-            if (Input.GetKeyDown(KeyCode.S))
+            if (Input.GetKeyDown(KeyCode.E))
             {
                 gameManager.KillPlayer();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                gameManager.RevokeFirstCorpse();
             }
         }
         animator.SetBool("Falling", fallingTime >= FallingTimeThreshold);
@@ -75,9 +80,9 @@ public class Player : MonoBehaviour
         float value = Input.GetAxisRaw("Horizontal");
         spriteRenderer.flipX = value != 0f ? value < 0f : spriteRenderer.flipX;
 
-        //bool wallFree = !(touchesLeft && value < 0f) && !(touchesRight && value > 0f);
+        bool wallFree = !(touchesLeft && value < 0f) && !(touchesRight && value > 0f);
 
-        if (value != 0f /*&& wallFree*/)  //acceleration
+        if (value != 0f && wallFree)  //acceleration
         {
             float newvel = rb.velocity.x + acc * Time.deltaTime * value;
 
