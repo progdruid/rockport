@@ -15,6 +15,9 @@ public class GameManager : MonoBehaviour
 
     private int currentLevelIndex;
     private GameObject currentLevel;
+    [HideInInspector]
+    public Vector2 respawnPoint;
+
     private Player player;
     private TransitionController transitionController;
     private DeathsBarManager deathsbar;
@@ -38,16 +41,33 @@ public class GameManager : MonoBehaviour
     {
         if (corpses.Count == 0)
             return;
-        StartCoroutine(RevokeFirstCorpseCoroutine());
+        StartCoroutine(RevokeCorpseCoroutine(0));
     }
 
-    private IEnumerator RevokeFirstCorpseCoroutine ()
+    public void RevokeCorpseAt (Vector2 point)
     {
-        var animator = corpses[0].GetComponent<Animator>();
+        if (corpses.Count == 0)
+            return;
+        int i;
+        bool found = false;
+        for (i = 0; i < corpses.Count; i++)
+        {
+            var col = corpses[i].GetComponent<Collider2D>();
+            found = col.OverlapPoint(point);
+            if (found)
+                break;
+        }
+        if (found)
+            StartCoroutine(RevokeCorpseCoroutine(i));
+    }
+
+    private IEnumerator RevokeCorpseCoroutine (int index)
+    {
+        var animator = corpses[index].GetComponent<Animator>();
         animator.SetTrigger("Revoke");
         yield return new WaitUntil(() => animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "End");
-        var corpse = corpses[0];
-        corpses.RemoveAt(0);
+        var corpse = corpses[index];
+        corpses.RemoveAt(index);
         Destroy(corpse);
         CorpsesUpdateEvent.Invoke(corpses);
     }
@@ -72,7 +92,7 @@ public class GameManager : MonoBehaviour
             
             corpses.Add(Instantiate(CorpsePrefab, pos, Quaternion.identity));
             CorpsesUpdateEvent.Invoke(corpses);
-            player = Instantiate(PlayerPrefab, Vector2.zero, Quaternion.identity).GetComponent<Player>();
+            player = Instantiate(PlayerPrefab, respawnPoint, Quaternion.identity).GetComponent<Player>();
             transitionController.AddAttachedCamera(player.transform.GetChild(0).gameObject);
             StartCoroutine(transitionController.TransiteOut());
             yield return new WaitUntil(() => transitionController.transitionMade);
@@ -106,6 +126,7 @@ public class GameManager : MonoBehaviour
 
         currentLevel = Instantiate(Levels[index]);
         currentLevelIndex = index;
+        respawnPoint = Vector2.zero;
         player = Instantiate(PlayerPrefab, Vector2.zero, Quaternion.identity).GetComponent<Player>();
         transitionController.AddAttachedCamera(player.transform.GetChild(0).gameObject);
         StartCoroutine(transitionController.TransiteOut());

@@ -66,7 +66,11 @@ public class Player : MonoBehaviour
                 gameManager.KillPlayer();
             }
 
-            if (Input.GetKeyDown(KeyCode.Q))
+            if (Input.GetKey(KeyCode.Q) && Input.GetMouseButtonDown(0)) //this one will be an easter egg
+            {
+                gameManager.RevokeCorpseAt(transform.GetChild(0).GetComponent<Camera>().ScreenToWorldPoint(Input.mousePosition));
+            }
+            else if (Input.GetKeyUp(KeyCode.Q))
             {
                 gameManager.RevokeFirstCorpse();
             }
