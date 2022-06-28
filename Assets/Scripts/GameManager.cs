@@ -66,9 +66,14 @@ public class GameManager : MonoBehaviour
         var animator = corpses[index].GetComponent<Animator>();
         animator.SetTrigger("Revoke");
         yield return new WaitUntil(() => animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "End");
-        var corpse = corpses[index];
-        corpses.RemoveAt(index);
-        Destroy(corpse);
+
+        if (corpses.Count != 0)
+        {
+            var corpse = corpses[index];
+            corpses.RemoveAt(index);
+            Destroy(corpse);
+        }
+        
         CorpsesUpdateEvent.Invoke(corpses);
     }
 

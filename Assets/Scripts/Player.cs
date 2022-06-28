@@ -86,9 +86,9 @@ public class Player : MonoBehaviour
 
         bool wallFree = !(touchesLeft && value < 0f) && !(touchesRight && value > 0f);
 
-        if (value != 0f && wallFree)  //acceleration
+        if (value != 0f)  //acceleration
         {
-            float newvel = rb.velocity.x + acc * Time.deltaTime * value;
+            float newvel = rb.velocity.x + acc * Time.deltaTime * value * (wallFree ? 1f : 0.5f);
 
             if (Mathf.Abs(newvel) > MaxSpeed)
                 newvel = MaxSpeed * Mathf.Sign(newvel);
