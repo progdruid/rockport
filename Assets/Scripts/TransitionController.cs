@@ -10,8 +10,6 @@ public class TransitionController : MonoBehaviour
     private GameObject attachedCamera;
     private Animator animator;
 
-    public bool transitionMade { get; private set; } = true;
-
     public void AddAttachedCamera (GameObject camera)
     {
         attachedCamera = camera;
@@ -21,21 +19,17 @@ public class TransitionController : MonoBehaviour
 
     public IEnumerator TransiteIn()
     {
-        transitionMade = false;
         animator.SetTrigger("Transition");
         yield return new WaitUntil(() => animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Full");
         attachedCamera.SetActive(false);
         CameraBetweenTransitions.SetActive(true);
-        transitionMade = true;
     }
 
     public IEnumerator TransiteOut()
     {
-        transitionMade = false;
         CameraBetweenTransitions.SetActive(false);
         attachedCamera.SetActive(true);
         animator.SetTrigger("Transition");
         yield return new WaitUntil(() => animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "None");
-        transitionMade = true;
     }
 }

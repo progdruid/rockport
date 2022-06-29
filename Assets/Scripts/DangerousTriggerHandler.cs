@@ -15,6 +15,8 @@ public class DangerousTriggerHandler : MonoBehaviour
     {
         if (col.gameObject.tag != "Player")
             return;
+        if (!col.gameObject.GetComponent<Player>().active)
+            return;
 
         gameManager.KillPlayer();
     }

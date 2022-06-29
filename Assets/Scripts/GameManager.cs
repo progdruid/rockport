@@ -89,21 +89,29 @@ public class GameManager : MonoBehaviour
         {
             Vector2 pos = player.transform.position;
             player.PlayDeathAnimation();
-            player.active = false;
-            deathsbar.SetActive(false);
-            StartCoroutine(transitionController.TransiteIn());
-            yield return new WaitUntil(() => transitionController.transitionMade);
+            yield return TransiteIn();
             Destroy(player.gameObject);
             
             corpses.Add(Instantiate(CorpsePrefab, pos, Quaternion.identity));
             CorpsesUpdateEvent.Invoke(corpses);
             player = Instantiate(PlayerPrefab, respawnPoint, Quaternion.identity).GetComponent<Player>();
             transitionController.AddAttachedCamera(player.transform.GetChild(0).gameObject);
-            StartCoroutine(transitionController.TransiteOut());
-            yield return new WaitUntil(() => transitionController.transitionMade);
-            player.active = true;
-            deathsbar.SetActive(true);
+            yield return TransiteOut();
         }
+    }
+
+    public IEnumerator TransiteIn ()
+    {
+        player.active = false;
+        deathsbar.SetActive(false);
+        yield return transitionController.TransiteIn();
+    }
+
+    public IEnumerator TransiteOut ()
+    {
+        yield return transitionController.TransiteOut();
+        player.active = true;
+        deathsbar.SetActive(true);
     }
 
     public void LoadLevel (int index)
@@ -115,10 +123,7 @@ public class GameManager : MonoBehaviour
     {
         if (currentLevel != null)
         {
-            player.active = false;
-            deathsbar.SetActive(false);
-            StartCoroutine(transitionController.TransiteIn());
-            yield return new WaitUntil(() => transitionController.transitionMade);
+            yield return TransiteIn();
 
             for (int i = 0; i < corpses.Count; i++)
                 Destroy(corpses[i]);
@@ -134,10 +139,7 @@ public class GameManager : MonoBehaviour
         respawnPoint = Vector2.zero;
         player = Instantiate(PlayerPrefab, Vector2.zero, Quaternion.identity).GetComponent<Player>();
         transitionController.AddAttachedCamera(player.transform.GetChild(0).gameObject);
-        StartCoroutine(transitionController.TransiteOut());
-        yield return new WaitUntil(() => transitionController.transitionMade);
-        player.active = true;
-        deathsbar.SetActive(true);
+        yield return TransiteOut();
         CorpsesUpdateEvent.Invoke(corpses);
     }
 

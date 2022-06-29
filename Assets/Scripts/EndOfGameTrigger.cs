@@ -5,11 +5,18 @@ using UnityEngine.SceneManagement;
 
 public class EndOfGameTrigger : MonoBehaviour
 {
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.tag != "Player")
             return;
 
-        SceneManager.LoadScene("End");   
+        StartCoroutine(LoadEndScene());
+    }
+
+    private IEnumerator LoadEndScene ()
+    {
+        GameManager gm = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+        yield return gm.TransiteIn();
+        SceneManager.LoadSceneAsync("End");
     }
 }
