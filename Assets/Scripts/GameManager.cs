@@ -37,6 +37,8 @@ public class GameManager : MonoBehaviour
         currentLevelIndex = LoadLevelIndex;
     }
 
+
+    #region revoke
     public void RevokeFirstCorpse ()
     {
         if (corpses.Count == 0)
@@ -76,7 +78,9 @@ public class GameManager : MonoBehaviour
         
         CorpsesUpdateEvent.Invoke(corpses);
     }
+#endregion
 
+    #region kill
     public void KillPlayer () => StartCoroutine(KillPlayerCoroutine());
 
     private IEnumerator KillPlayerCoroutine()
@@ -89,31 +93,19 @@ public class GameManager : MonoBehaviour
         {
             Vector2 pos = player.transform.position;
             player.PlayDeathAnimation();
-            yield return TransiteIn();
+            yield return transitionController.TransiteIn();
             Destroy(player.gameObject);
             
             corpses.Add(Instantiate(CorpsePrefab, pos, Quaternion.identity));
             CorpsesUpdateEvent.Invoke(corpses);
             player = Instantiate(PlayerPrefab, respawnPoint, Quaternion.identity).GetComponent<Player>();
-            transitionController.AddAttachedCamera(player.transform.GetChild(0).gameObject);
-            yield return TransiteOut();
+            transitionController.SetPlayer(player);
+            yield return transitionController.TransiteOut();
         }
     }
+#endregion
 
-    public IEnumerator TransiteIn ()
-    {
-        player.active = false;
-        deathsbar.SetActive(false);
-        yield return transitionController.TransiteIn();
-    }
-
-    public IEnumerator TransiteOut ()
-    {
-        yield return transitionController.TransiteOut();
-        player.active = true;
-        deathsbar.SetActive(true);
-    }
-
+    #region load
     public void LoadLevel (int index)
     {
         StartCoroutine(LoadLevelCoroutine(index));
@@ -123,7 +115,7 @@ public class GameManager : MonoBehaviour
     {
         if (currentLevel != null)
         {
-            yield return TransiteIn();
+            yield return transitionController.TransiteIn();
 
             for (int i = 0; i < corpses.Count; i++)
                 Destroy(corpses[i]);
@@ -138,8 +130,8 @@ public class GameManager : MonoBehaviour
         currentLevelIndex = index;
         respawnPoint = Vector2.zero;
         player = Instantiate(PlayerPrefab, Vector2.zero, Quaternion.identity).GetComponent<Player>();
-        transitionController.AddAttachedCamera(player.transform.GetChild(0).gameObject);
-        yield return TransiteOut();
+        transitionController.SetPlayer(player);
+        yield return transitionController.TransiteOut();
         CorpsesUpdateEvent.Invoke(corpses);
     }
 
@@ -147,4 +139,5 @@ public class GameManager : MonoBehaviour
     {
         LoadLevel(currentLevelIndex);
     }
+    #endregion
 }

@@ -15,8 +15,8 @@ public class EndOfGameTrigger : MonoBehaviour
 
     private IEnumerator LoadEndScene ()
     {
-        GameManager gm = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
-        yield return gm.TransiteIn();
+        TransitionController tk = GameObject.FindGameObjectWithTag("GameController").GetComponent<TransitionController>();
+        yield return tk.TransiteIn();
         SceneManager.LoadSceneAsync("End");
     }
 }
