@@ -106,8 +106,10 @@ public class GameManager : MonoBehaviour
 #endregion
 
     #region load
+
     public void LoadLevel (int index)
     {
+        respawnPoint = Vector2.zero;
         StartCoroutine(LoadLevelCoroutine(index));
     }
 
@@ -128,8 +130,7 @@ public class GameManager : MonoBehaviour
 
         currentLevel = Instantiate(Levels[index]);
         currentLevelIndex = index;
-        respawnPoint = Vector2.zero;
-        player = Instantiate(PlayerPrefab, Vector2.zero, Quaternion.identity).GetComponent<Player>();
+        player = Instantiate(PlayerPrefab, respawnPoint, Quaternion.identity).GetComponent<Player>();
         transitionController.SetPlayer(player);
         yield return transitionController.TransiteOut();
         CorpsesUpdateEvent.Invoke(corpses);
@@ -137,7 +138,7 @@ public class GameManager : MonoBehaviour
 
     public void ReloadLevel()
     {
-        LoadLevel(currentLevelIndex);
+        StartCoroutine(LoadLevelCoroutine(currentLevelIndex));
     }
     #endregion
 }
