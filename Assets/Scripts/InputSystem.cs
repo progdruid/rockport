@@ -23,7 +23,7 @@ public class InputSystem : MonoBehaviour
         active = val;
     }
 
-    void Start()
+    void Awake()
     {
         ins = this;
     }

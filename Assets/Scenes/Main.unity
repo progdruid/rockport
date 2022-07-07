@@ -362,7 +362,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerPrefab: {fileID: 7112237262537267370, guid: b3ccaed0f9643254faa7ed372f92ba37, type: 3}
   CorpsePrefab: {fileID: 6388440925167425491, guid: d6a856bee9685274fa5913c94ac9635e, type: 3}
-  LoadLevelIndex: 4
+  LoadLevelIndex: 0
   Levels:
   - {fileID: 681928675020842471, guid: cf83e56af4b7ab844ab16ec517348b53, type: 3}
   - {fileID: 3211212110360164932, guid: 559a45ad67ecdf0408134d88fc1e6930, type: 3}
