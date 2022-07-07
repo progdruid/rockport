@@ -33,6 +33,9 @@ public class GameManager : MonoBehaviour
         deathsbar = GetComponent<DeathsBarManager>();
         corpses = new List<GameObject>();
 
+        InputSystem.ins.KillPlayerKeyPressEvent += KillPlayer;
+        InputSystem.ins.RevokeKeyPressEvent += RevokeFirstCorpse;
+
         LoadLevel(LoadLevelIndex);
         currentLevelIndex = LoadLevelIndex;
     }
@@ -99,7 +102,7 @@ public class GameManager : MonoBehaviour
             corpses.Add(Instantiate(CorpsePrefab, pos, Quaternion.identity));
             CorpsesUpdateEvent.Invoke(corpses);
             player = Instantiate(PlayerPrefab, respawnPoint, Quaternion.identity).GetComponent<Player>();
-            transitionController.SetPlayer(player);
+            transitionController.SetPlayer(player.transform.GetChild(0).gameObject);
             yield return transitionController.TransiteOut();
         }
     }
@@ -131,7 +134,7 @@ public class GameManager : MonoBehaviour
         currentLevel = Instantiate(Levels[index]);
         currentLevelIndex = index;
         player = Instantiate(PlayerPrefab, respawnPoint, Quaternion.identity).GetComponent<Player>();
-        transitionController.SetPlayer(player);
+        transitionController.SetPlayer(player.transform.GetChild(0).gameObject);
         yield return transitionController.TransiteOut();
         CorpsesUpdateEvent.Invoke(corpses);
     }

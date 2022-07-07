@@ -13,9 +13,7 @@ public class DangerousTriggerHandler : MonoBehaviour
 
     public void OnTriggerEnter2D (Collider2D col)
     {
-        if (col.gameObject.tag != "Player")
-            return;
-        if (!col.gameObject.GetComponent<Player>().active)
+        if (col.gameObject.tag != "Player" || !InputSystem.ins.GetActive())
             return;
 
         gameManager.KillPlayer();

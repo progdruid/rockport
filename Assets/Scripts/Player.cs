@@ -13,16 +13,12 @@ public class Player : MonoBehaviour
     [Space]
     public float BBound;
     public float FallingTimeThreshold;
-    [Space]
-    public bool active = false;
 
     //classes
     private Rigidbody2D rb;
     private new Collider2D collider;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
-
-    private GameManager gameManager;
 
     //private fields
     private float fallingTime = 0f;
@@ -37,14 +33,14 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
-
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
         collider = gameObject.GetComponent<Collider2D>();
 
         contactPoints = new List<ContactPoint2D>();
+
+        InputSystem.ins.JumpKeyPressEvent += Jump;
     }
 
     void Update()
@@ -52,36 +48,23 @@ public class Player : MonoBehaviour
         collider.GetContacts(contactPoints);
         CheckForCollision(contactPoints);
 
-        if (active)
-        {
-            MoveSide();
-
-            if (Input.GetKeyDown(KeyCode.Space) && fallingTime < FallingTimeThreshold) //Jump //Here is an exploit
-            {
-                rb.velocity += Vector2.up * JumpForce;
-            }
-
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                gameManager.KillPlayer();
-            }
-
-            if (Input.GetKey(KeyCode.Q) && Input.GetMouseButtonDown(0)) //this one will be an easter egg
-            {
-                gameManager.RevokeCorpseAt(transform.GetChild(0).GetComponent<Camera>().ScreenToWorldPoint(Input.mousePosition));
-            }
-            else if (Input.GetKeyUp(KeyCode.Q))
-            {
-                gameManager.RevokeFirstCorpse();
-            }
-        }
+        MoveSide();
+        
         animator.SetBool("Falling", fallingTime >= FallingTimeThreshold);
         animator.SetBool("Running", rb.velocity.x != 0f && fallingTime < FallingTimeThreshold);
     }
 
+    private void Jump ()
+    {
+        if (fallingTime < FallingTimeThreshold) //Jump //Here is an exploit
+        {
+            rb.velocity += Vector2.up * JumpForce;
+        }
+    }
+
     private void MoveSide ()
     {
-        float value = Input.GetAxisRaw("Horizontal");
+        float value = InputSystem.ins.HorizontalValue;
         spriteRenderer.flipX = value != 0f ? value < 0f : spriteRenderer.flipX;
 
         bool wallFree = !(touchesLeft && value < 0f) && !(touchesRight && value > 0f);
@@ -138,5 +121,10 @@ public class Player : MonoBehaviour
     public void PlayDeathAnimation ()
     {
         animator.SetBool("Died", true);
+    }
+
+    private void OnDestroy()
+    {
+        InputSystem.ins.JumpKeyPressEvent -= Jump;
     }
 }
