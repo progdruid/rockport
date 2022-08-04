@@ -9,7 +9,9 @@ public class Player : MonoBehaviour
     public float AccTime;
     public float DecTime;
     [Space]
-    public float JumpForce;
+    public float RiseTime;
+    public float JumpHeight;
+
     [Space]
     public float BBound;
     public float FallingTimeThreshold;
@@ -25,8 +27,9 @@ public class Player : MonoBehaviour
     private bool touchesLeft = false;
     private bool touchesRight = false;
 
-    private float acc => MaxSpeed / AccTime;
-    private float dec => MaxSpeed / DecTime;
+    private float acc;
+    private float dec;
+    private float jumpImpulse; //ok, nerd. it's not an impulse. it's a starting velocity 
 
     //reserved list
     private List<ContactPoint2D> contactPoints;
@@ -41,6 +44,11 @@ public class Player : MonoBehaviour
         contactPoints = new List<ContactPoint2D>();
 
         InputSystem.ins.JumpKeyPressEvent += Jump;
+
+        acc = MaxSpeed / AccTime;
+        dec = MaxSpeed / DecTime;
+        jumpImpulse = JumpHeight * 2f / RiseTime;
+        rb.gravityScale = jumpImpulse / (RiseTime * 9.8f);
     }
 
     void Update()
@@ -58,7 +66,7 @@ public class Player : MonoBehaviour
     {
         if (fallingTime < FallingTimeThreshold) //Jump //Here is an exploit
         {
-            rb.velocity += Vector2.up * JumpForce;
+            rb.velocity += Vector2.up * jumpImpulse;
         }
     }
 
@@ -71,7 +79,7 @@ public class Player : MonoBehaviour
 
         if (value != 0f)  //acceleration
         {
-            float newvel = rb.velocity.x + acc * Time.deltaTime * value * (wallFree ? 1f : 0.5f);
+            float newvel = rb.velocity.x + acc * Time.deltaTime * value * (wallFree ? 1f : 0.1f);
 
             if (Mathf.Abs(newvel) > MaxSpeed)
                 newvel = MaxSpeed * Mathf.Sign(newvel);

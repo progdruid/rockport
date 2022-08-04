@@ -94,14 +94,14 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Vector2 pos = player.transform.position;
+            Vector3 pos = player.transform.position;
             player.PlayDeathAnimation();
             yield return transitionController.TransiteIn();
             Destroy(player.gameObject);
             
             corpses.Add(Instantiate(CorpsePrefab, pos, Quaternion.identity));
             CorpsesUpdateEvent.Invoke(corpses);
-            player = Instantiate(PlayerPrefab, respawnPoint, Quaternion.identity).GetComponent<Player>();
+            player = Instantiate(PlayerPrefab, new Vector3(respawnPoint.x, respawnPoint.y, -1f), Quaternion.identity).GetComponent<Player>();
             transitionController.SetPlayer(player.transform.GetChild(0).gameObject);
             yield return transitionController.TransiteOut();
         }
@@ -133,7 +133,7 @@ public class GameManager : MonoBehaviour
 
         currentLevel = Instantiate(Levels[index]);
         currentLevelIndex = index;
-        player = Instantiate(PlayerPrefab, respawnPoint, Quaternion.identity).GetComponent<Player>();
+        player = Instantiate(PlayerPrefab, new Vector3(respawnPoint.x, respawnPoint.y, -1f), Quaternion.identity).GetComponent<Player>();
         transitionController.SetPlayer(player.transform.GetChild(0).gameObject);
         yield return transitionController.TransiteOut();
         CorpsesUpdateEvent.Invoke(corpses);
