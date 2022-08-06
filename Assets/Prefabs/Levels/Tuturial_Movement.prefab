@@ -2137,7 +2137,7 @@ GameObject:
   m_Component:
   - component: {fileID: 681928675020842470}
   m_Layer: 0
-  m_Name: Tutorial_Movement
+  m_Name: Tuturial_Movement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
