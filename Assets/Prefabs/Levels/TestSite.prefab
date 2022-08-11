@@ -1189,6 +1189,7 @@ Transform:
   m_Children:
   - {fileID: 681928675691043183}
   - {fileID: 6206542045628999008}
+  - {fileID: 2453385872985606805}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1237,6 +1238,68 @@ Grid:
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
+--- !u!1001 &4371880019682592043
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 681928675020842470}
+    m_Modifications:
+    - target: {fileID: 2206804246031749054, guid: 2a185917de6af894fa7b3977a87b7347, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2206804246031749054, guid: 2a185917de6af894fa7b3977a87b7347, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 12.975084
+      objectReference: {fileID: 0}
+    - target: {fileID: 2206804246031749054, guid: 2a185917de6af894fa7b3977a87b7347, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.4064834
+      objectReference: {fileID: 0}
+    - target: {fileID: 2206804246031749054, guid: 2a185917de6af894fa7b3977a87b7347, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2206804246031749054, guid: 2a185917de6af894fa7b3977a87b7347, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2206804246031749054, guid: 2a185917de6af894fa7b3977a87b7347, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2206804246031749054, guid: 2a185917de6af894fa7b3977a87b7347, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2206804246031749054, guid: 2a185917de6af894fa7b3977a87b7347, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2206804246031749054, guid: 2a185917de6af894fa7b3977a87b7347, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2206804246031749054, guid: 2a185917de6af894fa7b3977a87b7347, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2206804246031749054, guid: 2a185917de6af894fa7b3977a87b7347, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4654089619665691833, guid: 2a185917de6af894fa7b3977a87b7347, type: 3}
+      propertyPath: m_Name
+      value: Sawblade
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2a185917de6af894fa7b3977a87b7347, type: 3}
+--- !u!4 &2453385872985606805 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2206804246031749054, guid: 2a185917de6af894fa7b3977a87b7347, type: 3}
+  m_PrefabInstance: {fileID: 4371880019682592043}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8425065010261704903
 PrefabInstance:
   m_ObjectHideFlags: 0
