@@ -9,14 +9,20 @@ public enum MoverMotionType
     Pong
 }
 
+[System.Serializable]
+public class TransformOffsetPair
+{
+    public Transform transform;
+    [Range(0f, 1f)]
+    public float offset;
+}
+
 public class PathMover : MonoBehaviour
 {
-    public Transform[] entities;
-    [Range(0f, 1f)]
-    public float[] offsets;
     public float timePeriod;
-    public Transform[] anchors;
     public MoverMotionType motionType;
+    public TransformOffsetPair[] entities;
+    public Transform[] anchors;
 
     private float generalDist;
     private float[] dists;
@@ -24,6 +30,8 @@ public class PathMover : MonoBehaviour
     private float timePassed = 0f;
 
     private System.Func<float, float> enterpFunc;
+
+    private bool invalid => anchors == null || entities == null || (anchors.Length == 0 || entities.Length == 0);
 
     #region interp funcs
 
@@ -48,6 +56,9 @@ public class PathMover : MonoBehaviour
 
     private void Init ()
     {
+        if (invalid)
+            return;
+
         //calculating distances
         dists = new float[anchors.Length];
         generalDist = 0f;
@@ -83,9 +94,12 @@ public class PathMover : MonoBehaviour
 
     private void Move (float time)
     {
+        if (invalid)
+            return;
+
         for (int i = 0; i < entities.Length; i++)
         {
-            float distOffset = generalDist * (enterpFunc(offsets[i] + (time / timePeriod)) % 1f);
+            float distOffset = generalDist * (enterpFunc(entities[i].offset + (time / timePeriod)) % 1f);
             float tempDist = 0f;
             int anchorIndex = -1;
 
@@ -96,7 +110,7 @@ public class PathMover : MonoBehaviour
             }
 
             float t = 1f - (tempDist - distOffset) / dists[anchorIndex];
-            entities[i].position = Vector2.Lerp(anchors[anchorIndex].position, anchors[(anchorIndex + 1) % anchors.Length].position, t);
+            entities[i].transform.position = Vector2.Lerp(anchors[anchorIndex].position, anchors[(anchorIndex + 1) % anchors.Length].position, t);
         }
     }
 }
