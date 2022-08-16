@@ -144,4 +144,13 @@ public class GameManager : MonoBehaviour
         StartCoroutine(LoadLevelCoroutine(currentLevelIndex));
     }
     #endregion
+
+    #region API
+
+    public Player GetPlayer ()
+    {
+        return player;
+    }
+
+    #endregion
 }
