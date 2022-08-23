@@ -6,11 +6,11 @@ public class FinishTriggerHandler : MonoBehaviour
 {
     public int LoadLevelIndex;
 
-    GameManager manager;
+    LevelManager manager;
 
     private void Start()
     {
-        manager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+        manager = GameObject.FindGameObjectWithTag("GameController").GetComponent<LevelManager>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

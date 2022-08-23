@@ -9,13 +9,13 @@ public class DeathsBarManager : MonoBehaviour
     public GameObject EmptySkullPrefab;
     public GameObject FilledSkullPrefab;
 
-    private GameManager gm;
+    private LevelManager gm;
     private List<GameObject> skulls;
 
     private void Start()
     {
         skulls = new List<GameObject>();
-        gm = GetComponent<GameManager>();
+        gm = GetComponent<LevelManager>();
         gm.CorpsesUpdateEvent += UpdateBar;
     }
 

@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class LevelManager : MonoBehaviour
 {
-    public GameObject PlayerPrefab;
-    public GameObject CorpsePrefab;
+    public GameObject playerPrefab;
+    public GameObject corpsePrefab;
 
-    public int LoadLevelIndex;
-    public GameObject[] Levels;
+    public int levelIndex;
+    public GameObject[] levels;
 
     private List<GameObject> corpses;
     public event System.Action<List<GameObject>> CorpsesUpdateEvent;
@@ -22,12 +22,12 @@ public class GameManager : MonoBehaviour
     private TransitionController transitionController;
     private DeathsBarManager deathsbar;
 
-    public int DefaultMaxDeaths;
+    public int defaultMaxDeaths;
     public int MaxDeaths { get; private set; }
 
     void Start()
     {
-        MaxDeaths = DefaultMaxDeaths;
+        MaxDeaths = defaultMaxDeaths;
         
         transitionController = GetComponent<TransitionController>();
         deathsbar = GetComponent<DeathsBarManager>();
@@ -36,8 +36,8 @@ public class GameManager : MonoBehaviour
         InputSystem.ins.KillPlayerKeyPressEvent += KillPlayer;
         InputSystem.ins.RevokeKeyPressEvent += RevokeFirstCorpse;
 
-        LoadLevel(LoadLevelIndex);
-        currentLevelIndex = LoadLevelIndex;
+        LoadLevel(levelIndex);
+        currentLevelIndex = levelIndex;
     }
 
 
@@ -81,12 +81,10 @@ public class GameManager : MonoBehaviour
         
         CorpsesUpdateEvent.Invoke(corpses);
     }
-#endregion
+    #endregion
 
     #region kill
-    public void KillPlayer () => StartCoroutine(KillPlayerCoroutine());
-
-    private IEnumerator KillPlayerCoroutine()
+    public void KillPlayer()
     {
         if (corpses.Count + 1 > MaxDeaths)
         {
@@ -94,54 +92,69 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Vector3 pos = player.transform.position;
-            player.PlayDeathAnimation();
-            yield return transitionController.TransiteIn();
-            Destroy(player.gameObject);
-            
-            corpses.Add(Instantiate(CorpsePrefab, pos, Quaternion.identity));
-            CorpsesUpdateEvent.Invoke(corpses);
-            player = Instantiate(PlayerPrefab, new Vector3(respawnPoint.x, respawnPoint.y, -1f), Quaternion.identity).GetComponent<Player>();
-            transitionController.SetPlayer(player.transform.GetChild(0).gameObject);
-            yield return transitionController.TransiteOut();
+            StartCoroutine(KillPlayerRoutine());
         }
+    }
+
+    private IEnumerator KillPlayerRoutine()
+    {
+        Vector3 pos = player.transform.position;
+        player.PlayDeathAnimation();
+
+        yield return transitionController.TransiteIn();
+
+        Destroy(player.gameObject);
+
+        corpses.Add(Instantiate(corpsePrefab, pos, Quaternion.identity));
+        CorpsesUpdateEvent.Invoke(corpses);
+
+        player = Instantiate(playerPrefab, new Vector3(respawnPoint.x, respawnPoint.y, -1f), Quaternion.identity).GetComponent<Player>();
+
+        yield return transitionController.TransiteOut();
     }
 #endregion
 
     #region load
 
-    public void LoadLevel (int index)
+    private IEnumerator DeloadLevelRoutine ()
     {
-        respawnPoint = Vector2.zero;
-        StartCoroutine(LoadLevelCoroutine(index));
+        yield return transitionController.TransiteIn();
+
+        for (int i = 0; i < corpses.Count; i++)
+            Destroy(corpses[i]);
+        corpses.Clear();
+        CorpsesUpdateEvent.Invoke(corpses);
+
+        Destroy(player.gameObject);
+        Destroy(currentLevel);
     }
 
-    private IEnumerator LoadLevelCoroutine (int index)
+    public void LoadLevel (int index)
+    {
+        StartCoroutine(LoadLevelRoutine(index));
+    }
+
+    private IEnumerator LoadLevelRoutine (int index)
     {
         if (currentLevel != null)
         {
-            yield return transitionController.TransiteIn();
-
-            for (int i = 0; i < corpses.Count; i++)
-                Destroy(corpses[i]);
-            corpses.Clear();
-            CorpsesUpdateEvent.Invoke(corpses);
-
-            Destroy(player.gameObject);
-            Destroy(currentLevel);
+            yield return DeloadLevelRoutine();
         }
 
-        currentLevel = Instantiate(Levels[index]);
+        respawnPoint = Vector2.zero;
+
+        currentLevel = Instantiate(levels[index]);
         currentLevelIndex = index;
-        player = Instantiate(PlayerPrefab, new Vector3(respawnPoint.x, respawnPoint.y, -1f), Quaternion.identity).GetComponent<Player>();
-        transitionController.SetPlayer(player.transform.GetChild(0).gameObject);
+
+        player = Instantiate(playerPrefab, new Vector3(respawnPoint.x, respawnPoint.y, -1f), Quaternion.identity).GetComponent<Player>();
+        
         yield return transitionController.TransiteOut();
         CorpsesUpdateEvent.Invoke(corpses);
     }
 
     public void ReloadLevel()
     {
-        StartCoroutine(LoadLevelCoroutine(currentLevelIndex));
+        StartCoroutine(LoadLevelRoutine(currentLevelIndex));
     }
     #endregion
 

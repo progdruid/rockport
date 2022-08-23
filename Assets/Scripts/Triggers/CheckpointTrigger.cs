@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class CheckpointTrigger : MonoBehaviour
 {
-    private GameManager gm;
+    private LevelManager gm;
     private Animator animator;
     private bool activated;
 
     void Start()
     {
-        gm = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+        gm = GameObject.FindGameObjectWithTag("GameController").GetComponent<LevelManager>();
         animator = GetComponent<Animator>();
     }
 

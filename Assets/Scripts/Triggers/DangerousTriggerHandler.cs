@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class DangerousTriggerHandler : MonoBehaviour
 {
-    private GameManager gameManager;
+    private LevelManager gameManager;
 
     private void Start()
     {
-        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<LevelManager>();
     }
 
     public void OnTriggerEnter2D (Collider2D col)

@@ -329,7 +329,7 @@ GameObject:
   - component: {fileID: 1262337692}
   - component: {fileID: 1262337693}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: LevelManager
   m_TagString: GameController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -362,10 +362,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e4c3295bd0c1344fa659721186332d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerPrefab: {fileID: 7112237262537267370, guid: b3ccaed0f9643254faa7ed372f92ba37, type: 3}
-  CorpsePrefab: {fileID: 6388440925167425491, guid: d6a856bee9685274fa5913c94ac9635e, type: 3}
-  LoadLevelIndex: 6
-  Levels:
+  playerPrefab: {fileID: 7112237262537267370, guid: b3ccaed0f9643254faa7ed372f92ba37, type: 3}
+  corpsePrefab: {fileID: 6388440925167425491, guid: d6a856bee9685274fa5913c94ac9635e, type: 3}
+  levelIndex: 6
+  levels:
   - {fileID: 681928675020842471, guid: 5cfd9676b57a8d440a3cbf750814f2b7, type: 3}
   - {fileID: 3211212110360164932, guid: 559a45ad67ecdf0408134d88fc1e6930, type: 3}
   - {fileID: 3211212110360164932, guid: f7723ecb42f3a404ca22a72fa8550796, type: 3}
@@ -374,7 +374,7 @@ MonoBehaviour:
   - {fileID: 681928675020842471, guid: 521b9325e4b270e49997c7ffda589e92, type: 3}
   - {fileID: 681928675020842471, guid: cf83e56af4b7ab844ab16ec517348b53, type: 3}
   respawnPoint: {x: 0, y: 0}
-  DefaultMaxDeaths: 3
+  defaultMaxDeaths: 3
 --- !u!114 &1262337691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -387,8 +387,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3dd383196eca7bc4d986265b7d6c275a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CameraBetweenTransitions: {fileID: 510749001}
-  TransitionPrefab: {fileID: 3736714135761548518, guid: 4e028d94a2de054499cc7359edc9d5ea, type: 3}
+  cameraBetweenTransitions: {fileID: 510749001}
 --- !u!114 &1262337692
 MonoBehaviour:
   m_ObjectHideFlags: 0

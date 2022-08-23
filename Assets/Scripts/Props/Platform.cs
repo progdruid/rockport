@@ -12,11 +12,11 @@ public class Platform : MonoBehaviour
     private GameObject[] spriteObjects;
     private BoxCollider2D platformCollider;
 
-    private GameManager gm;
+    private LevelManager gm;
 
     void Start()
     {
-        gm = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+        gm = GameObject.FindGameObjectWithTag("GameController").GetComponent<LevelManager>();
 
         Assemble();
     }
