@@ -114,6 +114,9 @@ public class Player : MonoBehaviour
                 fallingTime = 0f;
             }
 
+            //temp
+            transform.parent = !falls && contact.collider.gameObject.layer == 6 ? contact.collider.transform : null;
+
             if (!oneTouchesLeft && point.x < 0f)                //Checking left side
                 oneTouchesLeft = Mathf.Abs(point.y) < BBound;
             else if (!oneTouchesRight && point.x > 0f)          //Checking right side
