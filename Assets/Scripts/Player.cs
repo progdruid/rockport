@@ -108,19 +108,15 @@ public class Player : MonoBehaviour
             Vector2 point = contact.point - (Vector2)gameObject.transform.position;
             point.Normalize();
 
-            if (point.y <= -BBound) //Checking bottom
+            if (Mathf.Abs(point.x) < -point.y) //Checking bottom
             {
                 falls = false;
                 fallingTime = 0f;
             }
 
-            //temp
-            transform.parent = !falls && contact.collider.gameObject.layer == 6 ? contact.collider.transform : null;
-
-            if (!oneTouchesLeft && point.x < 0f)                //Checking left side
-                oneTouchesLeft = Mathf.Abs(point.y) < BBound;
-            else if (!oneTouchesRight && point.x > 0f)          //Checking right side
-                oneTouchesRight = Mathf.Abs(point.y) < BBound;
+            bool oneTouchesSide = Mathf.Abs(point.y) < Mathf.Abs(point.x);
+            oneTouchesLeft = (oneTouchesSide && point.x < 0f) || oneTouchesLeft;
+            oneTouchesRight = (oneTouchesSide && point.x > 0f) || oneTouchesRight;
         }
         if (falls)
             fallingTime += Time.deltaTime;

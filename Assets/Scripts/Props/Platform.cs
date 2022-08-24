@@ -9,10 +9,10 @@ public class Platform : MonoBehaviour
     public Sprite sprite;
     public float colliderHeight;
 
+    private LevelManager gm;
+
     private GameObject[] spriteObjects;
     private BoxCollider2D platformCollider;
-
-    private LevelManager gm;
 
     void Start()
     {
@@ -25,11 +25,16 @@ public class Platform : MonoBehaviour
     {
         Collider2D playerCollider = gm.GetPlayer().GetComponent<Collider2D>();
         Vector2 playerPos = gm.GetPlayer().transform.position;
-        bool isInColumn = transform.position.x < playerPos.x + 1f && playerPos.x < transform.position.x + platformWidth;
-        bool isAbove = transform.position.y + 0.5f - colliderHeight < playerPos.y - 0.4f;
-        bool isValid = isInColumn && isAbove;
+        bool isValid = CheckValid(playerPos);
         
         Physics2D.IgnoreCollision(playerCollider, platformCollider, !isValid);
+    }
+
+    private bool CheckValid (Vector2 objPos)
+    {
+        bool isInColumn = transform.position.x < objPos.x + 1f && objPos.x < transform.position.x + platformWidth;
+        bool isAbove = transform.position.y + 0.5f - colliderHeight < objPos.y - 0.4f;
+        return isInColumn && isAbove;
     }
 
     private void Assemble ()
@@ -47,5 +52,17 @@ public class Platform : MonoBehaviour
         platformCollider = gameObject.AddComponent<BoxCollider2D>();
         platformCollider.size = new Vector2(platformWidth, colliderHeight);
         platformCollider.offset = new Vector2((platformWidth - 1f) / 2f, (1f - colliderHeight) / 2f);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if ((collision.gameObject.tag == "Player" || collision.gameObject.tag == "Corpse") && CheckValid(collision.transform.position))
+            collision.transform.parent = transform;
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Player" || collision.gameObject.tag == "Corpse")
+            collision.transform.parent = null;
     }
 }
