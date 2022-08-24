@@ -98,11 +98,11 @@ public class LevelManager : MonoBehaviour
 
     private IEnumerator KillPlayerRoutine()
     {
-        Vector3 pos = player.transform.position;
         player.PlayDeathAnimation();
 
         yield return transitionController.TransiteIn();
 
+        Vector3 pos = player.transform.position;
         Destroy(player.gameObject);
 
         corpses.Add(Instantiate(corpsePrefab, pos, Quaternion.identity));
