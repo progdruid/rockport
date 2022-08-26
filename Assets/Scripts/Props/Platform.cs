@@ -53,7 +53,7 @@ public class Platform : MonoBehaviour
         platformCollider.size = new Vector2(platformWidth, colliderHeight);
         platformCollider.offset = new Vector2((platformWidth - 1f) / 2f, (1f - colliderHeight) / 2f);
     }
-
+    /*
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if ((collision.gameObject.tag == "Player" || collision.gameObject.tag == "Corpse") && CheckValid(collision.transform.position))
@@ -64,5 +64,5 @@ public class Platform : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player" || collision.gameObject.tag == "Corpse")
             collision.transform.parent = null;
-    }
+    }*/
 }

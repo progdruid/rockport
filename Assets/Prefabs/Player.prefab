@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7112237262537267282}
   - component: {fileID: 7112237262537267371}
   - component: {fileID: 7112237262537267375}
-  - component: {fileID: 2379454893062023363}
+  - component: {fileID: -2468917168825091518}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -166,32 +166,21 @@ MonoBehaviour:
   JumpHeight: 2.7
   BBound: 0.5
   FallingTimeThreshold: 0.09
---- !u!61 &2379454893062023363
-BoxCollider2D:
+--- !u!114 &-2468917168825091518
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7112237262537267370}
-  m_Enabled: 0
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.03}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 0.984375, y: 0.984375}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.88, y: 0.94}
-  m_EdgeRadius: 0
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f28683da9278a6d4fbdd91735adb0fb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colliderCenterHeight: -0.03
+  minColliderX: -0.435
+  maxColliderX: 0.435
 --- !u!1 &7112237263424679084
 GameObject:
   m_ObjectHideFlags: 0

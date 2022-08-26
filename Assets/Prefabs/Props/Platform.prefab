@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1246611666111112740}
   - component: {fileID: 1246611666111112741}
+  - component: {fileID: 8436798996877552528}
   m_Layer: 6
   m_Name: Platform
   m_TagString: Untagged
@@ -47,3 +48,18 @@ MonoBehaviour:
   platformWidth: 1
   sprite: {fileID: 21300000, guid: 7423045334c40e64eab04d4f2832e81c, type: 3}
   colliderHeight: 0.2
+--- !u!114 &8436798996877552528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1246611666111112784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f28683da9278a6d4fbdd91735adb0fb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colliderCenterHeight: 0
+  minColliderX: 0
+  maxColliderX: 0

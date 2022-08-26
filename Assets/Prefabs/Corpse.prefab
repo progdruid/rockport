@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6981735195040684747}
   - component: {fileID: 6388440925167425488}
   - component: {fileID: 456645942844967705}
+  - component: {fileID: -4217505339250266617}
   m_Layer: 0
   m_Name: Corpse
   m_TagString: Corpse
@@ -162,3 +163,18 @@ PolygonCollider2D:
       - {x: 0.44, y: 0.375}
       - {x: 0.375, y: 0.44}
   m_UseDelaunayMesh: 0
+--- !u!114 &-4217505339250266617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6388440925167425491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f28683da9278a6d4fbdd91735adb0fb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  colliderCenterHeight: 0
+  minColliderX: -0.44
+  maxColliderX: 0.44

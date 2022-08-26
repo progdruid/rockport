@@ -1251,7 +1251,7 @@ GameObject:
   - component: {fileID: 8271644277334083975}
   - component: {fileID: 1274964996360047415}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: MovingPlatform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1561,6 +1561,10 @@ PrefabInstance:
     - target: {fileID: 1246611666111112740, guid: 6f2ec759d3b41da4e9112a840748c998, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1246611666111112741, guid: 6f2ec759d3b41da4e9112a840748c998, type: 3}
+      propertyPath: platformWidth
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1246611666111112784, guid: 6f2ec759d3b41da4e9112a840748c998, type: 3}
       propertyPath: m_Name
