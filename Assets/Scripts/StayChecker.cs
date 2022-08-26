@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class StayChecker : MonoBehaviour
-{
+{/*
     public float colliderCenterHeight;
     public float minColliderX;
     public float maxColliderX;
@@ -69,10 +69,20 @@ public class StayChecker : MonoBehaviour
         if (valid && collision.transform.parent == null)
             collision.transform.parent = transform;
     }*/
-
+    /*
     private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "Player" || collision.gameObject.tag == "Corpse")
             collision.transform.parent = null;
+    }*/
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        transform.parent.parent = other.transform;
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        transform.parent.parent = null;
     }
 }
