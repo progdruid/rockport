@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class JumpPad : MonoBehaviour
@@ -16,8 +17,7 @@ public class JumpPad : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        string tag = col.gameObject.tag;
-        if (tag != "Player" && tag != "Corpse")
+        if (col.gameObject.GetComponent<SignComponent>().HasSign("Body"))
             return;
 
         StartCoroutine(Push(col.gameObject.GetComponent<Rigidbody2D>()));

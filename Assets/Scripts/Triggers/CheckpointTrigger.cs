@@ -10,13 +10,16 @@ public class CheckpointTrigger : MonoBehaviour
 
     void Start()
     {
-        gm = GameObject.FindGameObjectWithTag("GameController").GetComponent<LevelManager>();
+        gm = SignComponent.FindEntity("LevelManager").GetComponent<LevelManager>();
         animator = GetComponent<Animator>();
     }
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.tag != "Player" || activated)
+        if (col.gameObject.layer == 7)
+            return;
+
+        if (!col.gameObject.GetComponent<SignComponent>().HasSign("Player") || activated)
             return;
 
         activated = true;

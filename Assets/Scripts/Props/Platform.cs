@@ -16,7 +16,7 @@ public class Platform : MonoBehaviour
 
     void Start()
     {
-        gm = GameObject.FindGameObjectWithTag("GameController").GetComponent<LevelManager>();
+        gm = SignComponent.FindEntity("LevelManager").GetComponent<LevelManager>();
 
         Assemble();
     }
@@ -53,16 +53,4 @@ public class Platform : MonoBehaviour
         platformCollider.size = new Vector2(platformWidth, colliderHeight);
         platformCollider.offset = new Vector2((platformWidth - 1f) / 2f, (1f - colliderHeight) / 2f);
     }
-    /*
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if ((collision.gameObject.tag == "Player" || collision.gameObject.tag == "Corpse") && CheckValid(collision.transform.position))
-            collision.transform.parent = transform;
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "Player" || collision.gameObject.tag == "Corpse")
-            collision.transform.parent = null;
-    }*/
 }

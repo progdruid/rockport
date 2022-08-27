@@ -8,12 +8,15 @@ public class DangerousTriggerHandler : MonoBehaviour
 
     private void Start()
     {
-        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<LevelManager>();
+        gameManager = SignComponent.FindEntity("LevelManager").GetComponent<LevelManager>();
     }
 
     public void OnTriggerEnter2D (Collider2D col)
     {
-        if (col.gameObject.tag != "Player" || !InputSystem.ins.GetActive())
+        if (col.gameObject.layer == 7)
+            return;
+
+        if (!col.gameObject.GetComponent<SignComponent>().HasSign("Player") || !InputSystem.ins.GetActive())
             return;
 
         gameManager.KillPlayer();

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2387868690376520300}
   - component: {fileID: 1319210001831765657}
   - component: {fileID: 7855783628259913288}
-  m_Layer: 3
+  m_Layer: 7
   m_Name: StayChecker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84,6 +84,7 @@ GameObject:
   - component: {fileID: 6981735195040684747}
   - component: {fileID: 6388440925167425488}
   - component: {fileID: 456645942844967705}
+  - component: {fileID: 7044112458687754230}
   m_Layer: 0
   m_Name: Corpse
   m_TagString: Corpse
@@ -234,3 +235,18 @@ PolygonCollider2D:
       - {x: 0.4375, y: 0.375}
       - {x: 0.375, y: 0.4375}
   m_UseDelaunayMesh: 0
+--- !u!114 &7044112458687754230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6388440925167425491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f61fb9e685da0a4bacc7d49d36eecb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  signs:
+  - Corpse
+  - Body

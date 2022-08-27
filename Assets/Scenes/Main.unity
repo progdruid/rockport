@@ -328,6 +328,7 @@ GameObject:
   - component: {fileID: 1262337691}
   - component: {fileID: 1262337692}
   - component: {fileID: 1262337693}
+  - component: {fileID: 1262337694}
   m_Layer: 0
   m_Name: LevelManager
   m_TagString: GameController
@@ -364,7 +365,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 7112237262537267370, guid: b3ccaed0f9643254faa7ed372f92ba37, type: 3}
   corpsePrefab: {fileID: 6388440925167425491, guid: d6a856bee9685274fa5913c94ac9635e, type: 3}
-  levelIndex: 6
+  levelIndex: 2
   levels:
   - {fileID: 681928675020842471, guid: 5cfd9676b57a8d440a3cbf750814f2b7, type: 3}
   - {fileID: 3211212110360164932, guid: 559a45ad67ecdf0408134d88fc1e6930, type: 3}
@@ -415,6 +416,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e20484af166c1934688b9f3f9f493ebb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1262337694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1262337688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f61fb9e685da0a4bacc7d49d36eecb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  signs:
+  - LevelManager
 --- !u!1 &1443867998
 GameObject:
   m_ObjectHideFlags: 0

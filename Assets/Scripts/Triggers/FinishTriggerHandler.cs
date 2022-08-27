@@ -10,11 +10,14 @@ public class FinishTriggerHandler : MonoBehaviour
 
     private void Start()
     {
-        manager = GameObject.FindGameObjectWithTag("GameController").GetComponent<LevelManager>();
+        manager = SignComponent.FindEntity("LevelManager").GetComponent<LevelManager>();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D col)
     {
+        if (col.gameObject.layer == 7)
+            return;
+
         manager.LoadLevel(LoadLevelIndex);
     }
 }
