@@ -13,19 +13,21 @@ public class Player : MonoBehaviour
     public float JumpHeight;
 
     [Space]
-    public float BBound;
-    public float FallingTimeThreshold;
+    public float CoyoteTimeThreshold;
 
     //classes
     private Rigidbody2D rb;
     private new Collider2D collider;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
+    private StayChecker stayChecker;
 
     //private fields
-    private float fallingTime = 0f;
+    private float coyoteTime = 0f;
+
     private bool touchesLeft = false;
     private bool touchesRight = false;
+    private bool staysOnGround = false;
 
     private float acc;
     private float dec;
@@ -36,6 +38,14 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Transform child = transform.GetChild(i);
+            child.TryGetComponent(out stayChecker);
+            if (stayChecker != null)
+                break;
+        }
+
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
@@ -56,15 +66,24 @@ public class Player : MonoBehaviour
         collider.GetContacts(contactPoints);
         CheckForCollision(contactPoints);
 
+        if (staysOnGround)
+        {
+            coyoteTime = 0f;
+        }
+        else
+        {
+            coyoteTime += Time.deltaTime;
+        }
+
         MoveSide();
         
-        animator.SetBool("Falling", fallingTime >= FallingTimeThreshold);
-        animator.SetBool("Running", rb.velocity.x != 0f && fallingTime < FallingTimeThreshold);
+        animator.SetBool("Falling", !stayChecker.stayingOnGround);
+        animator.SetBool("Running", rb.velocity.x != 0f && stayChecker.stayingOnGround);
     }
 
     private void Jump ()
     {
-        if (fallingTime < FallingTimeThreshold) //Jump //Here is an exploit
+        if (coyoteTime <= CoyoteTimeThreshold) //Jump //Here is an exploit
         {
             rb.velocity += Vector2.up * jumpImpulse;
         }
@@ -101,28 +120,23 @@ public class Player : MonoBehaviour
     {
         bool oneTouchesLeft = false;
         bool oneTouchesRight = false;
-        bool falls = true;
+        bool stays = false;
 
         foreach (var contact in contacts)
         {
             Vector2 point = contact.point - (Vector2)gameObject.transform.position;
             point.Normalize();
 
-            if (Mathf.Abs(point.x) < -point.y) //Checking bottom
-            {
-                falls = false;
-                fallingTime = 0f;
-            }
+            stays = Mathf.Abs(point.x) < -point.y || stays;
 
             bool oneTouchesSide = Mathf.Abs(point.y) < Mathf.Abs(point.x);
             oneTouchesLeft = (oneTouchesSide && point.x < 0f) || oneTouchesLeft;
             oneTouchesRight = (oneTouchesSide && point.x > 0f) || oneTouchesRight;
         }
-        if (falls)
-            fallingTime += Time.deltaTime;
 
         touchesLeft = oneTouchesLeft;
         touchesRight = oneTouchesRight;
+        staysOnGround = stays;
     }
 
     public void PlayDeathAnimation ()

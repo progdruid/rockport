@@ -165,8 +165,8 @@ MonoBehaviour:
   DecTime: 0.05
   RiseTime: 0.45
   JumpHeight: 2.7
-  BBound: 0.5
   FallingTimeThreshold: 0.09
+  CoyoteTimeThreshold: 0.1
 --- !u!114 &4560506952299216443
 MonoBehaviour:
   m_ObjectHideFlags: 0
