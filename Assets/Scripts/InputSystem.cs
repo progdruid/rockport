@@ -10,6 +10,7 @@ public class InputSystem : MonoBehaviour
     public event System.Action InputDisableEvent = delegate { };
     
     public float HorizontalValue { get; private set; }
+    public bool HoldingJumpKey { get; private set; }
 
     private bool active;
     public bool GetActive () => active;
@@ -34,6 +35,7 @@ public class InputSystem : MonoBehaviour
             return;
 
         HorizontalValue = Input.GetAxisRaw("Horizontal");
+        HoldingJumpKey = Input.GetKey(KeyCode.Space);
 
         if (Input.GetKeyDown(KeyCode.Space))
             JumpKeyPressEvent();
@@ -41,6 +43,7 @@ public class InputSystem : MonoBehaviour
             KillPlayerKeyPressEvent();
         else if (Input.GetKeyDown(KeyCode.Q))
             RevokeKeyPressEvent();
+
     }
 
     public static InputSystem ins { get; private set; } 

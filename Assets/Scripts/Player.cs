@@ -13,7 +13,9 @@ public class Player : MonoBehaviour
     public float JumpHeight;
 
     [Space]
-    public float CoyoteTimeThreshold;
+    public float CoyoteTime;
+    public float CompleteJumpTime;
+    [Range(0, 1)] public float CompleteJumpRatio;
 
     //classes
     private Rigidbody2D rb;
@@ -24,10 +26,12 @@ public class Player : MonoBehaviour
 
     //private fields
     private float coyoteTime = 0f;
+    private float jumpTime = 0f;
 
     private bool touchesLeft = false;
     private bool touchesRight = false;
     private bool staysOnGround = false;
+    private bool waitingForCompleteJump = false;
 
     private float acc;
     private float dec;
@@ -53,7 +57,7 @@ public class Player : MonoBehaviour
 
         contactPoints = new List<ContactPoint2D>();
 
-        InputSystem.ins.JumpKeyPressEvent += Jump;
+        InputSystem.ins.JumpKeyPressEvent += JumpBasic;
 
         acc = MaxSpeed / AccTime;
         dec = MaxSpeed / DecTime;
@@ -76,16 +80,38 @@ public class Player : MonoBehaviour
         }
 
         MoveSide();
-        
+        if (waitingForCompleteJump)
+            TryToJumpCompletely();
+
         animator.SetBool("Falling", !stayChecker.stayingOnGround);
         animator.SetBool("Running", rb.velocity.x != 0f && stayChecker.stayingOnGround);
     }
 
-    private void Jump ()
+    private void JumpBasic ()
     {
-        if (coyoteTime <= CoyoteTimeThreshold) //Jump //Here is an exploit
+        if (coyoteTime <= CoyoteTime)
         {
-            rb.velocity += Vector2.up * jumpImpulse;
+            rb.velocity += Vector2.up * jumpImpulse * CompleteJumpRatio;
+            waitingForCompleteJump = true;
+        }
+    }
+
+    private void TryToJumpCompletely ()
+    {
+        if (jumpTime < CompleteJumpTime)
+        {
+            if (InputSystem.ins.HoldingJumpKey)
+                jumpTime += Time.deltaTime;
+            else
+                waitingForCompleteJump = false;
+
+            rb.velocity += Vector2.up * jumpImpulse * (1f - CompleteJumpRatio) * Time.deltaTime / CompleteJumpTime;
+        }
+
+        if (jumpTime >= CompleteJumpTime)
+        {
+            jumpTime = 0f;
+            waitingForCompleteJump = false;
         }
     }
 
@@ -146,6 +172,6 @@ public class Player : MonoBehaviour
 
     private void OnDestroy()
     {
-        InputSystem.ins.JumpKeyPressEvent -= Jump;
+        InputSystem.ins.JumpKeyPressEvent -= JumpBasic;
     }
 }
