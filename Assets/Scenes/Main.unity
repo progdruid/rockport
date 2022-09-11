@@ -365,7 +365,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 7112237262537267370, guid: b3ccaed0f9643254faa7ed372f92ba37, type: 3}
   corpsePrefab: {fileID: 6388440925167425491, guid: d6a856bee9685274fa5913c94ac9635e, type: 3}
-  levelIndex: 2
+  levelIndex: 6
   levels:
   - {fileID: 681928675020842471, guid: 5cfd9676b57a8d440a3cbf750814f2b7, type: 3}
   - {fileID: 3211212110360164932, guid: 559a45ad67ecdf0408134d88fc1e6930, type: 3}

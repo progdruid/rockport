@@ -181,7 +181,7 @@ MonoBehaviour:
   RiseTime: 0.45
   JumpHeight: 3
   CoyoteTime: 0.1
-  CompleteJumpTime: 0.25
+  CompleteJumpTime: 0.15
   CompleteJumpRatio: 0.65
 --- !u!1 &7112237263424679084
 GameObject:
