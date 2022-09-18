@@ -178,11 +178,11 @@ MonoBehaviour:
   MaxSpeed: 7.5
   AccTime: 0.1
   DecTime: 0.05
-  RiseTime: 0.45
-  JumpHeight: 3
+  RiseTime: 0.35
+  JumpHeight: 2.9
   CoyoteTime: 0.1
-  CompleteJumpTime: 0.15
-  CompleteJumpRatio: 0.65
+  CompleteJumpTime: 22
+  CompleteJumpRatio: 1
 --- !u!1 &7112237263424679084
 GameObject:
   m_ObjectHideFlags: 0
