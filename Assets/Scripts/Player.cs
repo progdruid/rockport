@@ -59,6 +59,18 @@ public class Player : MonoBehaviour
 
         InputSystem.ins.JumpKeyPressEvent += JumpBasic;
 
+        InitValues();
+    }
+#if UNITY_EDITOR
+    private void OnValidate()
+    {   
+        if (Application.isPlaying)
+            InitValues();
+    }
+#endif
+
+    private void InitValues ()
+    {
         acc = MaxSpeed / AccTime;
         dec = MaxSpeed / DecTime;
         jumpImpulse = JumpHeight * 2f / RiseTime;
