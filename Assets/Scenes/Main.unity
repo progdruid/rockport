@@ -373,7 +373,7 @@ MonoBehaviour:
   - {fileID: 681928675020842471, guid: 9b42e750c336daa49a9dc4c5569c4466, type: 3}
   - {fileID: 681928675020842471, guid: 346f39541e2168444baf0f051520a6ee, type: 3}
   - {fileID: 681928675020842471, guid: 521b9325e4b270e49997c7ffda589e92, type: 3}
-  - {fileID: 681928675020842471, guid: cf83e56af4b7ab844ab16ec517348b53, type: 3}
+  - {fileID: 9215722690314533559, guid: 4770159bada69fd438e70ff4471a2b20, type: 3}
   respawnPoint: {x: 0, y: 0}
   defaultMaxDeaths: 3
 --- !u!114 &1262337691
