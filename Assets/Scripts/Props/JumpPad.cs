@@ -17,7 +17,8 @@ public class JumpPad : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.GetComponent<SignComponent>().HasSign("Body"))
+        bool found = col.gameObject.TryGetComponent(out SignComponent sign);
+        if (!found || !sign.HasSign("Body"))
             return;
 
         StartCoroutine(Push(col.gameObject.GetComponent<Rigidbody2D>()));
