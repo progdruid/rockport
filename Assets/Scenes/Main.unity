@@ -365,15 +365,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 7112237262537267370, guid: b3ccaed0f9643254faa7ed372f92ba37, type: 3}
   corpsePrefab: {fileID: 6388440925167425491, guid: d6a856bee9685274fa5913c94ac9635e, type: 3}
-  levelIndex: 6
+  levelIndex: 0
   levels:
-  - {fileID: 681928675020842471, guid: 5cfd9676b57a8d440a3cbf750814f2b7, type: 3}
-  - {fileID: 3211212110360164932, guid: 559a45ad67ecdf0408134d88fc1e6930, type: 3}
-  - {fileID: 3211212110360164932, guid: f7723ecb42f3a404ca22a72fa8550796, type: 3}
-  - {fileID: 681928675020842471, guid: 9b42e750c336daa49a9dc4c5569c4466, type: 3}
-  - {fileID: 681928675020842471, guid: 346f39541e2168444baf0f051520a6ee, type: 3}
-  - {fileID: 681928675020842471, guid: 521b9325e4b270e49997c7ffda589e92, type: 3}
-  - {fileID: 9215722690314533559, guid: 4770159bada69fd438e70ff4471a2b20, type: 3}
+  - {fileID: 0}
   respawnPoint: {x: 0, y: 0}
   defaultMaxDeaths: 3
 --- !u!114 &1262337691
