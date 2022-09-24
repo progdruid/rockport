@@ -367,7 +367,7 @@ MonoBehaviour:
   corpsePrefab: {fileID: 6388440925167425491, guid: d6a856bee9685274fa5913c94ac9635e, type: 3}
   levelIndex: 0
   levels:
-  - {fileID: 0}
+  - {fileID: 9215722690314533559, guid: 4770159bada69fd438e70ff4471a2b20, type: 3}
   respawnPoint: {x: 0, y: 0}
   defaultMaxDeaths: 3
 --- !u!114 &1262337691

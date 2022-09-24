@@ -23,12 +23,20 @@ public class LevelManager : MonoBehaviour
     private DeathsBarManager deathsbar;
 
     public int defaultMaxDeaths;
-    public int MaxDeaths { get; private set; }
+    public int MaxDeaths 
+    { 
+        get { return maxDeaths; } 
+        set 
+        { 
+            maxDeaths = value; 
+            if (CorpsesUpdateEvent != null) 
+                CorpsesUpdateEvent(corpses); 
+        }
+    }
+    private int maxDeaths;
 
     void Start()
     {
-        MaxDeaths = defaultMaxDeaths;
-        
         transitionController = GetComponent<TransitionController>();
         deathsbar = GetComponent<DeathsBarManager>();
         corpses = new List<GameObject>();
@@ -142,6 +150,7 @@ public class LevelManager : MonoBehaviour
         }
 
         respawnPoint = Vector2.zero;
+        MaxDeaths = 0;
 
         currentLevel = Instantiate(levels[index]);
         currentLevelIndex = index;
