@@ -5,7 +5,8 @@ using UnityEngine;
 public class InputSystem : MonoBehaviour
 {
     public event System.Action JumpKeyPressEvent = delegate { }; //to not always write if null
-    public event System.Action KillPlayerKeyPressEvent = delegate { }; //bit stupid, i know
+    public event System.Action JumpKeyReleaseEvent = delegate { }; //bit stupid, i know
+    public event System.Action KillPlayerKeyPressEvent = delegate { }; 
     public event System.Action RevokeKeyPressEvent = delegate { };
     public event System.Action InputDisableEvent = delegate { };
     
@@ -39,6 +40,8 @@ public class InputSystem : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
             JumpKeyPressEvent();
+        else if (Input.GetKeyUp(KeyCode.Space))
+            JumpKeyReleaseEvent();
         if (Input.GetKeyDown(KeyCode.E))
             KillPlayerKeyPressEvent();
         else if (Input.GetKeyDown(KeyCode.Q))

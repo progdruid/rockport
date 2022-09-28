@@ -8,14 +8,10 @@ public class Player : MonoBehaviour
     public float MaxSpeed;
     public float AccTime;
     public float DecTime;
-    [Space]
     public float RiseTime;
     public float JumpHeight;
-
-    [Space]
     public float CoyoteTime;
-    public float CompleteJumpTime;
-    [Range(0, 1)] public float CompleteJumpRatio;
+    public float SuppressMultiplier;
 
     //classes
     private Rigidbody2D rb;
@@ -26,12 +22,10 @@ public class Player : MonoBehaviour
 
     //private fields
     private float coyoteTime = 0f;
-    private float jumpTime = 0f;
 
     private bool touchesLeft = false;
     private bool touchesRight = false;
     private bool staysOnGround = false;
-    private bool waitingForCompleteJump = false;
 
     private float acc;
     private float dec;
@@ -57,7 +51,8 @@ public class Player : MonoBehaviour
 
         contactPoints = new List<ContactPoint2D>();
 
-        InputSystem.ins.JumpKeyPressEvent += JumpBasic;
+        InputSystem.ins.JumpKeyPressEvent += Jump;
+        InputSystem.ins.JumpKeyReleaseEvent += SuppressJump;
 
         InitValues();
     }
@@ -92,39 +87,21 @@ public class Player : MonoBehaviour
         }
 
         MoveSide();
-        if (waitingForCompleteJump)
-            TryToJumpCompletely();
 
         animator.SetBool("Falling", !stayChecker.stayingOnGround);
         animator.SetBool("Running", rb.velocity.x != 0f && stayChecker.stayingOnGround);
     }
 
-    private void JumpBasic ()
+    private void Jump ()
     {
         if (coyoteTime <= CoyoteTime)
-        {
-            rb.velocity += Vector2.up * jumpImpulse * CompleteJumpRatio;
-            waitingForCompleteJump = true;
-        }
+            rb.velocity += Vector2.up * jumpImpulse;
     }
 
-    private void TryToJumpCompletely ()
+    private void SuppressJump ()
     {
-        if (jumpTime < CompleteJumpTime)
-        {
-            if (InputSystem.ins.HoldingJumpKey)
-                jumpTime += Time.deltaTime;
-            else
-                waitingForCompleteJump = false;
-
-            rb.velocity += Vector2.up * jumpImpulse * (1f - CompleteJumpRatio) * Time.deltaTime / CompleteJumpTime;
-        }
-
-        if (jumpTime >= CompleteJumpTime)
-        {
-            jumpTime = 0f;
-            waitingForCompleteJump = false;
-        }
+        if (rb.velocity.y >= 0)
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * SuppressMultiplier);
     }
 
     private void MoveSide ()
@@ -184,6 +161,7 @@ public class Player : MonoBehaviour
 
     private void OnDestroy()
     {
-        InputSystem.ins.JumpKeyPressEvent -= JumpBasic;
+        InputSystem.ins.JumpKeyPressEvent -= Jump;
+        InputSystem.ins.JumpKeyReleaseEvent -= SuppressJump;
     }
 }

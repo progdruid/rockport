@@ -181,8 +181,7 @@ MonoBehaviour:
   RiseTime: 0.35
   JumpHeight: 2.9
   CoyoteTime: 0.1
-  CompleteJumpTime: 22
-  CompleteJumpRatio: 1
+  SuppressMultiplier: 0.42
 --- !u!1 &7112237263424679084
 GameObject:
   m_ObjectHideFlags: 0
