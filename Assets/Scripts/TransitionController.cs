@@ -8,16 +8,16 @@ public class TransitionController : MonoBehaviour
 
     private DeathsBarManager deathsbar;
 
-    private void Start()
+    private void Awake()
     {
-        Registry.ins.transitionController = this;
+        Registry.ins.tc = this;
 
         deathsbar = GetComponent<DeathsBarManager>();
     }
 
     public IEnumerator TransiteIn()
     {
-        InputSystem.ins.SetActive(false);
+        Registry.ins.inputSystem.SetActive(false);
         deathsbar.SetActive(false);
 
         Animator animator = Camera.main.transform.GetChild(0).GetComponent<Animator>();
@@ -39,7 +39,7 @@ public class TransitionController : MonoBehaviour
 
         yield return new WaitUntil(() => animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "None");
 
-        InputSystem.ins.SetActive(true);
+        Registry.ins.inputSystem.SetActive(true);
         deathsbar.SetActive(true);
     }
 }

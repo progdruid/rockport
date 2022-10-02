@@ -13,9 +13,10 @@ public class Registry
     #endregion
 
     public LevelManager lm;
-    public TransitionController transitionController;
+    public TransitionController tc;
     public InputSystem inputSystem;
     public CorpseManager corpseManager;
     public SkullManager skullManager;
-    
+
+    public Player player;
 }

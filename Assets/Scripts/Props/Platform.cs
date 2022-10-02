@@ -9,22 +9,19 @@ public class Platform : MonoBehaviour
     public Sprite sprite;
     public float colliderHeight;
 
-    private LevelManager gm;
-
     private GameObject[] spriteObjects;
     private BoxCollider2D platformCollider;
 
     void Start()
     {
-        gm = SignComponent.FindEntity("LevelManager").GetComponent<LevelManager>();
 
         Assemble();
     }
 
     private void Update()
     {
-        Collider2D playerCollider = gm.GetPlayer().GetComponent<Collider2D>();
-        Vector2 playerPos = gm.GetPlayer().transform.position;
+        Collider2D playerCollider = Registry.ins.player.GetComponent<Collider2D>();
+        Vector2 playerPos = Registry.ins.player.transform.position;
         bool isValid = CheckValid(playerPos);
         
         Physics2D.IgnoreCollision(playerCollider, platformCollider, !isValid);

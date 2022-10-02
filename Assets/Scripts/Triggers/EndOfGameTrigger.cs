@@ -18,8 +18,7 @@ public class EndOfGameTrigger : MonoBehaviour
 
     private IEnumerator LoadEndScene ()
     {
-        TransitionController tk = SignComponent.FindEntity("LevelManager").GetComponent<TransitionController>();
-        yield return tk.TransiteIn();
+        yield return Registry.ins.tc.TransiteIn();
         SceneManager.LoadSceneAsync("End");
     }
 }

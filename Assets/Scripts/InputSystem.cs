@@ -26,7 +26,6 @@ public class InputSystem : MonoBehaviour
 
     void Awake()
     {
-        ins = this;
         Registry.ins.inputSystem = this;
     }
 
@@ -46,6 +45,4 @@ public class InputSystem : MonoBehaviour
             KillPlayerKeyPressEvent();
 
     }
-
-    public static InputSystem ins { get; private set; } 
 }

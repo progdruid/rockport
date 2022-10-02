@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class CheckpointTrigger : MonoBehaviour
 {
-    private LevelManager gm;
     private Animator animator;
     private bool activated;
 
     void Start()
     {
-        gm = SignComponent.FindEntity("LevelManager").GetComponent<LevelManager>();
         animator = GetComponent<Animator>();
     }
 
@@ -23,7 +21,7 @@ public class CheckpointTrigger : MonoBehaviour
             return;
 
         activated = true;
-        gm.respawnPoint = transform.position;
+        Registry.ins.lm.respawnPoint = transform.position;
         animator.SetTrigger("Burned");
     }
 }

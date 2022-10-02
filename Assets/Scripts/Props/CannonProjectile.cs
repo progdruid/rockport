@@ -7,13 +7,6 @@ public class CannonProjectile : MonoBehaviour
 {
     public float Speed;
 
-    private LevelManager levelManager;
-
-    private void Start()
-    {
-        levelManager = SignComponent.FindEntity("LevelManager").GetComponent<LevelManager>();
-    }
-
     private void Update()
     {
         transform.localPosition += Vector3.up * Speed * Time.deltaTime;
@@ -23,7 +16,7 @@ public class CannonProjectile : MonoBehaviour
     {
         bool isSigned = other.gameObject.TryGetComponent(out SignComponent sign);
         if (isSigned && sign.GetSigns().Contains("Player"))
-            levelManager.KillPlayer();
+            Registry.ins.lm.KillPlayer();
 
         if (!other.isTrigger)
             Destroy(gameObject);

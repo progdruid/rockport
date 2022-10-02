@@ -51,8 +51,8 @@ public class Player : MonoBehaviour
 
         contactPoints = new List<ContactPoint2D>();
 
-        InputSystem.ins.JumpKeyPressEvent += Jump;
-        InputSystem.ins.JumpKeyReleaseEvent += SuppressJump;
+        Registry.ins.inputSystem.JumpKeyPressEvent += Jump;
+        Registry.ins.inputSystem.JumpKeyReleaseEvent += SuppressJump;
 
         InitValues();
     }
@@ -106,7 +106,7 @@ public class Player : MonoBehaviour
 
     private void MoveSide ()
     {
-        float value = InputSystem.ins.HorizontalValue;
+        float value = Registry.ins.inputSystem.HorizontalValue;
         spriteRenderer.flipX = value != 0f ? value < 0f : spriteRenderer.flipX;
 
         bool wallFree = !(touchesLeft && value < 0f) && !(touchesRight && value > 0f);
@@ -161,7 +161,7 @@ public class Player : MonoBehaviour
 
     private void OnDestroy()
     {
-        InputSystem.ins.JumpKeyPressEvent -= Jump;
-        InputSystem.ins.JumpKeyReleaseEvent -= SuppressJump;
+        Registry.ins.inputSystem.JumpKeyPressEvent -= Jump;
+        Registry.ins.inputSystem.JumpKeyReleaseEvent -= SuppressJump;
     }
 }

@@ -14,9 +14,6 @@ public class LevelManager : MonoBehaviour
     [HideInInspector]
     public Vector2 respawnPoint;
 
-    private Player player;
-    private TransitionController transitionController;
-
     private void Awake()
     {
         Registry.Init();
@@ -26,9 +23,7 @@ public class LevelManager : MonoBehaviour
     {
         Registry.ins.lm = this;
 
-        transitionController = GetComponent<TransitionController>();
-
-        InputSystem.ins.KillPlayerKeyPressEvent += KillPlayer;
+        Registry.ins.inputSystem.KillPlayerKeyPressEvent += KillPlayer;
 
         LoadLevel(levelIndex);
         currentLevelIndex = levelIndex;
@@ -43,24 +38,23 @@ public class LevelManager : MonoBehaviour
         }
         else
         {
-
             StartCoroutine(KillPlayerRoutine());
         }
     }
 
     private IEnumerator KillPlayerRoutine()
     {
-        player.PlayDeathAnimation();
+        Registry.ins.player.PlayDeathAnimation();
 
-        yield return transitionController.TransiteIn();
+        yield return Registry.ins.tc.TransiteIn();
 
         Registry.ins.skullManager.DestroySkull();
-        Destroy(player.gameObject);
-        Vector3 pos = player.transform.position;
-        player = Instantiate(playerPrefab, new Vector3(respawnPoint.x, respawnPoint.y, -1f), Quaternion.identity).GetComponent<Player>();
+        Destroy(Registry.ins.player.gameObject);
+        Vector3 pos = Registry.ins.player.transform.position;
+        Registry.ins.player = Instantiate(playerPrefab, new Vector3(respawnPoint.x, respawnPoint.y, -1f), Quaternion.identity).GetComponent<Player>();
         Registry.ins.corpseManager.SpawnCorpse(pos, Vector2.zero);
 
-        yield return transitionController.TransiteOut();
+        yield return Registry.ins.tc.TransiteOut();
     }
 #endregion
 
@@ -68,11 +62,11 @@ public class LevelManager : MonoBehaviour
 
     private IEnumerator UnloadLevelRoutine ()
     {
-        yield return transitionController.TransiteIn();
+        yield return Registry.ins.tc.TransiteIn();
 
         Registry.ins.corpseManager.ClearCorpses();
 
-        Destroy(player.gameObject);
+        Destroy(Registry.ins.player.gameObject);
         Destroy(currentLevel);
     }
 
@@ -94,23 +88,14 @@ public class LevelManager : MonoBehaviour
         currentLevel = Instantiate(levels[index]);
         currentLevelIndex = index;
 
-        player = Instantiate(playerPrefab, new Vector3(respawnPoint.x, respawnPoint.y, -1f), Quaternion.identity).GetComponent<Player>();
+        Registry.ins.player = Instantiate(playerPrefab, new Vector3(respawnPoint.x, respawnPoint.y, -1f), Quaternion.identity).GetComponent<Player>();
         
-        yield return transitionController.TransiteOut();
+        yield return Registry.ins.tc.TransiteOut();
     }
 
     public void ReloadLevel()
     {
         StartCoroutine(LoadLevelRoutine(currentLevelIndex));
     }
-    #endregion
-
-    #region API
-
-    public Player GetPlayer ()
-    {
-        return player;
-    }
-
     #endregion
 }

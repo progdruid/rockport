@@ -15,7 +15,6 @@ public class CollectibleSkull : MonoBehaviour
     //but because there is no animation yet, it is just a method
     private void Collect ()
     {
-        LevelManager lm = SignComponent.FindEntity("LevelManager").GetComponent<LevelManager>();
         Registry.ins.skullManager.AddSkull();
         //yield animation
         Destroy(gameObject);
