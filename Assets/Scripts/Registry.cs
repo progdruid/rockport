@@ -1,22 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class Registry : MonoBehaviour
+public class Registry 
 {
     #region static
     public static Registry ins { get; private set; }
 
-    private void Awake()
+    public static void Init ()
     {
-        ins = this;
+        ins = new Registry ();
     }
     #endregion
 
     public LevelManager lm;
     public TransitionController transitionController;
     public InputSystem inputSystem;
-    //public CorpseManager corpseManager;
+    public CorpseManager corpseManager;
 
     
 }

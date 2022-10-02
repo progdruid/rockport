@@ -7,7 +7,6 @@ public class InputSystem : MonoBehaviour
     public event System.Action JumpKeyPressEvent = delegate { }; //to not always write if null
     public event System.Action JumpKeyReleaseEvent = delegate { }; //bit stupid, i know
     public event System.Action KillPlayerKeyPressEvent = delegate { }; 
-    public event System.Action RevokeKeyPressEvent = delegate { };
     public event System.Action InputDisableEvent = delegate { };
     
     public float HorizontalValue { get; private set; }
@@ -45,8 +44,6 @@ public class InputSystem : MonoBehaviour
             JumpKeyReleaseEvent();
         if (Input.GetKeyDown(KeyCode.E))
             KillPlayerKeyPressEvent();
-        else if (Input.GetKeyDown(KeyCode.Q))
-            RevokeKeyPressEvent();
 
     }
 
