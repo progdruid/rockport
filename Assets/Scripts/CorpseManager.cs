@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CorpseManager : MonoBehaviour
 {
-    public event System.Action<int> CorpseUpdateEvent = delegate { };
+    public event System.Action CorpseUpdateEvent = delegate { };
 
     public GameObject corpsePrefab;
 
@@ -13,7 +13,7 @@ public class CorpseManager : MonoBehaviour
     private void Start()
     {
         Registry.ins.corpseManager = this;
-        CorpseUpdateEvent(corpses.Count);
+        CorpseUpdateEvent();
     }
 
     public void SpawnCorpse (Vector2 pos, Vector2 startVel)
@@ -22,7 +22,7 @@ public class CorpseManager : MonoBehaviour
         corpse.GetComponent<Rigidbody2D>().velocity += startVel;
         corpses.Add(corpse);
 
-        CorpseUpdateEvent(corpses.Count);
+        CorpseUpdateEvent();
     }
 
     public void ClearCorpses ()
@@ -33,7 +33,7 @@ public class CorpseManager : MonoBehaviour
             corpses.RemoveAt(i);
         }
 
-        CorpseUpdateEvent(corpses.Count);
+        CorpseUpdateEvent();
     }
 
     public int GetCorpseCount ()

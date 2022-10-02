@@ -9,7 +9,7 @@ public class LevelManager : MonoBehaviour
     public int levelIndex;
     public GameObject[] levels;
 
-    public event System.Action<int> CorpsesUpdateEvent;
+    public event System.Action CorpsesUpdateEvent;
 
     private int currentLevelIndex;
     private GameObject currentLevel;
@@ -27,7 +27,7 @@ public class LevelManager : MonoBehaviour
         { 
             maxDeaths = value; 
             if (CorpsesUpdateEvent != null) 
-                CorpsesUpdateEvent(Registry.ins.corpseManager.GetCorpseCount()); 
+                CorpsesUpdateEvent(); 
         }
     }
     private int maxDeaths;
@@ -110,7 +110,7 @@ public class LevelManager : MonoBehaviour
         player = Instantiate(playerPrefab, new Vector3(respawnPoint.x, respawnPoint.y, -1f), Quaternion.identity).GetComponent<Player>();
         
         yield return transitionController.TransiteOut();
-        CorpsesUpdateEvent.Invoke(Registry.ins.corpseManager.GetCorpseCount());
+        CorpsesUpdateEvent.Invoke();
     }
 
     public void ReloadLevel()

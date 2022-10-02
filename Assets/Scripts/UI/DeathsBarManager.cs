@@ -26,8 +26,9 @@ public class DeathsBarManager : MonoBehaviour
         Registry.ins.corpseManager.CorpseUpdateEvent -= UpdateBar;
     }
 
-    public void UpdateBar (int corpseCount)
+    public void UpdateBar ()
     {
+        int corpseCount = Registry.ins.corpseManager.GetCorpseCount();
         skulls.ForEach((GameObject skull) => Destroy(skull));
         for (int i = 0; i < gm.MaxDeaths; i++)
         {
