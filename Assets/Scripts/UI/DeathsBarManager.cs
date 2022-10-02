@@ -6,33 +6,28 @@ public class DeathsBarManager : MonoBehaviour
 {
     public GameObject DeathBar;
     [Space]
-    public GameObject EmptySkullPrefab;
-    public GameObject FilledSkullPrefab;
+    public GameObject SkullPrefab;
 
-    private LevelManager gm;
     private List<GameObject> skulls;
 
     private void Start()
     {
         skulls = new List<GameObject>();
-        gm = GetComponent<LevelManager>();
-        gm.CorpsesUpdateEvent += UpdateBar;
-        Registry.ins.corpseManager.CorpseUpdateEvent += UpdateBar;
+        Registry.ins.skullManager.SkullUpdateEvent += UpdateBar;
     }
 
     private void OnDestroy()
     {
-        gm.CorpsesUpdateEvent -= UpdateBar;
-        Registry.ins.corpseManager.CorpseUpdateEvent -= UpdateBar;
+        Registry.ins.skullManager.SkullUpdateEvent -= UpdateBar;
     }
 
     public void UpdateBar ()
     {
         int corpseCount = Registry.ins.corpseManager.GetCorpseCount();
         skulls.ForEach((GameObject skull) => Destroy(skull));
-        for (int i = 0; i < gm.MaxDeaths; i++)
+        for (int i = 0; i < Registry.ins.skullManager.GetSkullsAmount(); i++)
         {
-            var skull = Instantiate(i < corpseCount ? FilledSkullPrefab : EmptySkullPrefab);
+            var skull = Instantiate(SkullPrefab);
             skull.transform.SetParent(DeathBar.transform);
             skulls.Add(skull);
         }

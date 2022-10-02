@@ -16,6 +16,6 @@ public class Registry
     public TransitionController transitionController;
     public InputSystem inputSystem;
     public CorpseManager corpseManager;
-
+    public SkullManager skullManager;
     
 }

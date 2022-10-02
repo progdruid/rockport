@@ -16,7 +16,7 @@ public class CollectibleSkull : MonoBehaviour
     private void Collect ()
     {
         LevelManager lm = SignComponent.FindEntity("LevelManager").GetComponent<LevelManager>();
-        lm.MaxDeaths++;
+        Registry.ins.skullManager.AddSkull();
         //yield animation
         Destroy(gameObject);
     }

@@ -9,8 +9,6 @@ public class LevelManager : MonoBehaviour
     public int levelIndex;
     public GameObject[] levels;
 
-    public event System.Action CorpsesUpdateEvent;
-
     private int currentLevelIndex;
     private GameObject currentLevel;
     [HideInInspector]
@@ -18,19 +16,6 @@ public class LevelManager : MonoBehaviour
 
     private Player player;
     private TransitionController transitionController;
-
-    public int defaultMaxDeaths;
-    public int MaxDeaths 
-    { 
-        get { return maxDeaths; } 
-        set 
-        { 
-            maxDeaths = value; 
-            if (CorpsesUpdateEvent != null) 
-                CorpsesUpdateEvent(); 
-        }
-    }
-    private int maxDeaths;
 
     private void Awake()
     {
@@ -52,12 +37,13 @@ public class LevelManager : MonoBehaviour
     #region kill
     public void KillPlayer()
     {
-        if (Registry.ins.corpseManager.GetCorpseCount() + 1 > MaxDeaths)
+        if (Registry.ins.skullManager.GetSkullsAmount() == 0)
         {
             ReloadLevel();
         }
         else
         {
+
             StartCoroutine(KillPlayerRoutine());
         }
     }
@@ -68,6 +54,7 @@ public class LevelManager : MonoBehaviour
 
         yield return transitionController.TransiteIn();
 
+        Registry.ins.skullManager.DestroySkull();
         Destroy(player.gameObject);
         Vector3 pos = player.transform.position;
         player = Instantiate(playerPrefab, new Vector3(respawnPoint.x, respawnPoint.y, -1f), Quaternion.identity).GetComponent<Player>();
@@ -102,7 +89,7 @@ public class LevelManager : MonoBehaviour
         }
 
         respawnPoint = Vector2.zero;
-        MaxDeaths = 0;
+        Registry.ins.skullManager.ClearSkulls();
 
         currentLevel = Instantiate(levels[index]);
         currentLevelIndex = index;
@@ -110,7 +97,6 @@ public class LevelManager : MonoBehaviour
         player = Instantiate(playerPrefab, new Vector3(respawnPoint.x, respawnPoint.y, -1f), Quaternion.identity).GetComponent<Player>();
         
         yield return transitionController.TransiteOut();
-        CorpsesUpdateEvent.Invoke();
     }
 
     public void ReloadLevel()
