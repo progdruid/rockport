@@ -72,7 +72,13 @@ public class LevelManager : MonoBehaviour
 
     public void LoadLevel (int index)
     {
+        respawnPoint = Vector2.zero;
         StartCoroutine(LoadLevelRoutine(index));
+    }
+
+    public void ReloadLevel()
+    {
+        StartCoroutine(LoadLevelRoutine(currentLevelIndex));
     }
 
     private IEnumerator LoadLevelRoutine (int index)
@@ -82,7 +88,6 @@ public class LevelManager : MonoBehaviour
             yield return UnloadLevelRoutine();
         }
 
-        respawnPoint = Vector2.zero;
         Registry.ins.skullManager.ClearSkulls();
 
         currentLevel = Instantiate(levels[index]);
@@ -91,11 +96,6 @@ public class LevelManager : MonoBehaviour
         Registry.ins.player = Instantiate(playerPrefab, new Vector3(respawnPoint.x, respawnPoint.y, -1f), Quaternion.identity).GetComponent<Player>();
         
         yield return Registry.ins.tc.TransiteOut();
-    }
-
-    public void ReloadLevel()
-    {
-        StartCoroutine(LoadLevelRoutine(currentLevelIndex));
     }
     #endregion
 }
