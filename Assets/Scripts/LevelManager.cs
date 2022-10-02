@@ -37,6 +37,8 @@ public class LevelManager : MonoBehaviour
 
     void Start()
     {
+        Registry.ins.lm = this;
+
         transitionController = GetComponent<TransitionController>();
         deathsbar = GetComponent<DeathsBarManager>();
         corpses = new List<GameObject>();
@@ -124,7 +126,7 @@ public class LevelManager : MonoBehaviour
 
     #region load
 
-    private IEnumerator DeloadLevelRoutine ()
+    private IEnumerator UnloadLevelRoutine ()
     {
         yield return transitionController.TransiteIn();
 
@@ -146,7 +148,7 @@ public class LevelManager : MonoBehaviour
     {
         if (currentLevel != null)
         {
-            yield return DeloadLevelRoutine();
+            yield return UnloadLevelRoutine();
         }
 
         respawnPoint = Vector2.zero;

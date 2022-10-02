@@ -10,6 +10,8 @@ public class TransitionController : MonoBehaviour
 
     private void Start()
     {
+        Registry.ins.transitionController = this;
+
         deathsbar = GetComponent<DeathsBarManager>();
     }
 
