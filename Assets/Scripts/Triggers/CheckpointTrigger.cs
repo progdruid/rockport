@@ -21,7 +21,7 @@ public class CheckpointTrigger : MonoBehaviour
             return;
 
         activated = true;
-        Registry.ins.lm.respawnPoint = transform.position;
+        Registry.ins.playerManager.SetSpawnPoint(transform.position);
         animator.SetTrigger("Burned");
     }
 }

@@ -20,8 +20,8 @@ public class Platform : MonoBehaviour
 
     private void Update()
     {
-        Collider2D playerCollider = Registry.ins.player.GetComponent<Collider2D>();
-        Vector2 playerPos = Registry.ins.player.transform.position;
+        Collider2D playerCollider = Registry.ins.playerManager.player.GetComponent<Collider2D>();
+        Vector2 playerPos = Registry.ins.playerManager.player.transform.position;
         bool isValid = CheckValid(playerPos);
         
         Physics2D.IgnoreCollision(playerCollider, platformCollider, !isValid);

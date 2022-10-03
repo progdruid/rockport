@@ -8,7 +8,7 @@ public class CorpseManager : MonoBehaviour
     public GameObject corpsePrefab;
     private List<GameObject> corpses = new List<GameObject>();
 
-    private void Awake() => Registry.ins.corpseManager = this;
+    private void OnEnable() => Registry.ins.corpseManager = this;
 
     private void Start()
     {

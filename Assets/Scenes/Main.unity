@@ -324,13 +324,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1262337689}
-  - component: {fileID: 1262337690}
   - component: {fileID: 1262337691}
-  - component: {fileID: 1262337692}
   - component: {fileID: 1262337693}
   - component: {fileID: 1262337694}
   - component: {fileID: 1262337696}
+  - component: {fileID: 1262337690}
+  - component: {fileID: 1262337692}
   - component: {fileID: 1262337695}
+  - component: {fileID: 1262337697}
   m_Layer: 0
   m_Name: LevelManager
   m_TagString: GameController
@@ -365,11 +366,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e4c3295bd0c1344fa659721186332d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 7112237262537267370, guid: b3ccaed0f9643254faa7ed372f92ba37, type: 3}
   levelIndex: 0
   levels:
   - {fileID: 9215722690314533559, guid: 4770159bada69fd438e70ff4471a2b20, type: 3}
-  respawnPoint: {x: 0, y: 0}
 --- !u!114 &1262337691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -448,6 +447,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a79e17fe04108834093595c43dbcd4d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1262337697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1262337688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4002a069245e83349902ea218303bae3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 7112237262537267370, guid: b3ccaed0f9643254faa7ed372f92ba37, type: 3}
 --- !u!1 &1443867998
 GameObject:
   m_ObjectHideFlags: 0

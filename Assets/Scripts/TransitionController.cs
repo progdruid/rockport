@@ -6,10 +6,7 @@ public class TransitionController : MonoBehaviour
 {
     public GameObject cameraBetweenTransitions;
 
-    private void Awake()
-    {
-        Registry.ins.tc = this;
-    }
+    private void OnEnable() => Registry.ins.tc = this;
 
     public IEnumerator TransiteIn()
     {

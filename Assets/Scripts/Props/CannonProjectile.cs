@@ -16,7 +16,7 @@ public class CannonProjectile : MonoBehaviour
     {
         bool isSigned = other.gameObject.TryGetComponent(out SignComponent sign);
         if (isSigned && sign.GetSigns().Contains("Player"))
-            Registry.ins.lm.KillPlayer();
+            Registry.ins.playerManager.KillPlayer();
 
         if (!other.isTrigger)
             Destroy(gameObject);

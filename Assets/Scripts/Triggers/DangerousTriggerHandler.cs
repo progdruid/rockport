@@ -12,6 +12,6 @@ public class DangerousTriggerHandler : MonoBehaviour
         if (!col.gameObject.GetComponent<SignComponent>().HasSign("Player") || !Registry.ins.inputSystem.GetActive())
             return;
 
-        Registry.ins.lm.KillPlayer();
+        Registry.ins.playerManager.KillPlayer();
     }
 }
