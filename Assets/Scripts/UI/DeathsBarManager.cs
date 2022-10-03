@@ -10,6 +10,8 @@ public class DeathsBarManager : MonoBehaviour
 
     private List<GameObject> skulls;
 
+    private void Awake() => Registry.ins.deathsBar = this;
+
     private void Start()
     {
         skulls = new List<GameObject>();

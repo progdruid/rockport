@@ -32,6 +32,8 @@ public class LevelManager : MonoBehaviour
     #region kill
     public void KillPlayer()
     {
+        Registry.ins.player.PlayDeathAnimation();
+
         if (Registry.ins.skullManager.GetSkullsAmount() == 0)
         {
             ReloadLevel();
@@ -44,8 +46,6 @@ public class LevelManager : MonoBehaviour
 
     private IEnumerator KillPlayerRoutine()
     {
-        Registry.ins.player.PlayDeathAnimation();
-
         yield return Registry.ins.tc.TransiteIn();
 
         Registry.ins.skullManager.DestroySkull();

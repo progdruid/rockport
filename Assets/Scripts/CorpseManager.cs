@@ -5,14 +5,13 @@ using UnityEngine;
 public class CorpseManager : MonoBehaviour
 {
     public event System.Action CorpseUpdateEvent = delegate { };
-
     public GameObject corpsePrefab;
-
     private List<GameObject> corpses = new List<GameObject>();
+
+    private void Awake() => Registry.ins.corpseManager = this;
 
     private void Start()
     {
-        Registry.ins.corpseManager = this;
         CorpseUpdateEvent();
     }
 

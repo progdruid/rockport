@@ -18,5 +18,7 @@ public class Registry
     public CorpseManager corpseManager;
     public SkullManager skullManager;
 
+    public DeathsBarManager deathsBar;
+
     public Player player;
 }
