@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
 {
     //public fields
     public float MaxSpeed;
+    public float PushingSpeed;
     public float AccTime;
     public float DecTime;
     public float RiseTime;
@@ -28,6 +29,7 @@ public class Player : MonoBehaviour
     private bool wallRight = false;
     private bool staysOnGround = false;
 
+    private float speed;
     private float acc;
     private float dec;
     private float jumpImpulse; //ok, nerd. it's not an impulse. it's a starting velocity 
@@ -67,6 +69,7 @@ public class Player : MonoBehaviour
 
     private void InitValues ()
     {
+        speed = MaxSpeed;
         acc = MaxSpeed / AccTime;
         dec = MaxSpeed / DecTime;
         jumpImpulse = JumpHeight * 2f / RiseTime;
@@ -78,14 +81,8 @@ public class Player : MonoBehaviour
         collider.GetContacts(contactPoints);
         CheckForCollision(contactPoints);
 
-        if (staysOnGround)
-        {
-            coyoteTime = 0f;
-        }
-        else
-        {
-            coyoteTime += Time.deltaTime;
-        }
+        speed = pushing ? PushingSpeed : MaxSpeed;
+        coyoteTime = staysOnGround ? 0f : coyoteTime + Time.deltaTime;
 
         MoveSide();
         Debug.Log(pushing);
@@ -116,8 +113,8 @@ public class Player : MonoBehaviour
         {
             float newvel = rb.velocity.x + acc * Time.deltaTime * value * (wallFree ? 1f : 0.1f);
 
-            if (Mathf.Abs(newvel) > MaxSpeed)
-                newvel = MaxSpeed * Mathf.Sign(newvel);
+            if (Mathf.Abs(newvel) > speed)
+                newvel = speed * Mathf.Sign(newvel);
 
             rb.velocity = new Vector2(newvel, rb.velocity.y);
         }

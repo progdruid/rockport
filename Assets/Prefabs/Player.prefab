@@ -176,6 +176,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MaxSpeed: 7.5
+  PushingSpeed: 3
   AccTime: 0.1
   DecTime: 0.05
   RiseTime: 0.35
