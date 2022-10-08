@@ -23,8 +23,9 @@ public class Player : MonoBehaviour
     //private fields
     private float coyoteTime = 0f;
 
-    private bool touchesLeft = false;
-    private bool touchesRight = false;
+    private bool pushing = false;
+    private bool wallLeft = false;
+    private bool wallRight = false;
     private bool staysOnGround = false;
 
     private float acc;
@@ -87,7 +88,7 @@ public class Player : MonoBehaviour
         }
 
         MoveSide();
-
+        Debug.Log(pushing);
         animator.SetBool("Falling", !stayChecker.stayingOnGround);
         animator.SetBool("Running", rb.velocity.x != 0f && stayChecker.stayingOnGround);
     }
@@ -109,7 +110,7 @@ public class Player : MonoBehaviour
         float value = Registry.ins.inputSystem.HorizontalValue;
         spriteRenderer.flipX = value != 0f ? value < 0f : spriteRenderer.flipX;
 
-        bool wallFree = !(touchesLeft && value < 0f) && !(touchesRight && value > 0f);
+        bool wallFree = !(wallLeft && value < 0f) && !(wallRight && value > 0f);
 
         if (value != 0f)  //acceleration
         {
@@ -133,25 +134,24 @@ public class Player : MonoBehaviour
 
     public void CheckForCollision (List<ContactPoint2D> contacts)
     {
-        bool oneTouchesLeft = false;
-        bool oneTouchesRight = false;
-        bool stays = false;
+        wallLeft = false;
+        wallRight = false; 
+        staysOnGround = false;
+        pushing = false;
 
         foreach (var contact in contacts)
         {
             Vector2 point = contact.point - (Vector2)gameObject.transform.position;
             point.Normalize();
 
-            stays = Mathf.Abs(point.x) < -point.y || stays;
+            staysOnGround = Mathf.Abs(point.x) < -point.y || staysOnGround;
 
-            bool oneTouchesSide = Mathf.Abs(point.y) < Mathf.Abs(point.x);
-            oneTouchesLeft = (oneTouchesSide && point.x < 0f) || oneTouchesLeft;
-            oneTouchesRight = (oneTouchesSide && point.x > 0f) || oneTouchesRight;
+            bool touchesBody = contact.collider.TryGetComponent(out SignComponent sign) && sign.HasSign("Body");
+            bool touchesSide = Mathf.Abs(point.y) < Mathf.Abs(point.x);
+            pushing = (touchesBody && touchesSide) || pushing;
+            wallLeft = (touchesSide && point.x < 0f && !pushing) || wallLeft;
+            wallRight = (touchesSide && point.x > 0f && !pushing) || wallRight;
         }
-
-        touchesLeft = oneTouchesLeft;
-        touchesRight = oneTouchesRight;
-        staysOnGround = stays;
     }
 
     public void PlayDeathAnimation ()
