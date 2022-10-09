@@ -6,16 +6,16 @@ public class PlayerManager : MonoBehaviour
 {
     [SerializeField] GameObject playerPrefab;
 
+    public event System.Action<Player> PlayerSpawnEvent = delegate { };
+
     public Player player { get; private set; }
     private Vector2 spawnPoint = Vector2.zero;
 
     private void OnEnable() => Registry.ins.playerManager = this;
-
     private void Start()
     {
         Registry.ins.inputSystem.KillPlayerKeyPressEvent += KillPlayer;
     }
-
     private void OnDestroy()
     {
         Registry.ins.inputSystem.KillPlayerKeyPressEvent -= KillPlayer;
@@ -38,6 +38,7 @@ public class PlayerManager : MonoBehaviour
         }
 
         player = Instantiate(playerPrefab, new Vector3(spawnPoint.x, spawnPoint.y, -1f), Quaternion.identity).GetComponent<Player>();
+        PlayerSpawnEvent(player);
     }
 
     public void KillPlayer ()

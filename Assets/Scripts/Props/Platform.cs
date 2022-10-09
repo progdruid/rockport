@@ -5,36 +5,26 @@ using UnityEngine;
 public class Platform : MonoBehaviour
 {
     public int platformWidth;
-
-    public Sprite sprite;
     public float colliderHeight;
+    public float triggerHeight;
+    public Sprite sprite;
 
     private GameObject[] spriteObjects;
     private BoxCollider2D platformCollider;
+    private BoxCollider2D platformTrigger;
 
-    void Start()
+    private void Start()
     {
-
-        Assemble();
+        Registry.ins.corpseManager.NewCorpseEvent += IgnoreNewCorpse;
+        Setup();
     }
 
-    private void Update()
+    private void OnDestroy()
     {
-        Collider2D playerCollider = Registry.ins.playerManager.player.GetComponent<Collider2D>();
-        Vector2 playerPos = Registry.ins.playerManager.player.transform.position;
-        bool isValid = CheckValid(playerPos);
-        
-        Physics2D.IgnoreCollision(playerCollider, platformCollider, !isValid);
+        Registry.ins.corpseManager.NewCorpseEvent -= IgnoreNewCorpse;
     }
 
-    private bool CheckValid (Vector2 objPos)
-    {
-        bool isInColumn = transform.position.x < objPos.x + 1f && objPos.x < transform.position.x + platformWidth;
-        bool isAbove = transform.position.y + 0.5f - colliderHeight < objPos.y - 0.4f;
-        return isInColumn && isAbove;
-    }
-
-    private void Assemble ()
+    private void Setup ()
     {
         spriteObjects = new GameObject[platformWidth];
         for (int i = 0; i < platformWidth; i++)
@@ -49,5 +39,31 @@ public class Platform : MonoBehaviour
         platformCollider = gameObject.AddComponent<BoxCollider2D>();
         platformCollider.size = new Vector2(platformWidth, colliderHeight);
         platformCollider.offset = new Vector2((platformWidth - 1f) / 2f, (1f - colliderHeight) / 2f);
+
+        GameObject triggerObject = new GameObject("PlatformTrigger");
+        triggerObject.transform.parent = transform;
+        triggerObject.transform.localPosition = Vector3.zero;
+        triggerObject.layer = 7;
+        platformTrigger = triggerObject.AddComponent<BoxCollider2D>();
+        platformTrigger.isTrigger = true;
+        platformTrigger.size = new Vector2(platformWidth - 0.5f, triggerHeight);
+        platformTrigger.offset = new Vector2((platformWidth - 1f) / 2f, 1f + triggerHeight / 2f);
+        triggerObject.AddComponent<PlatformTrigger>().platformCollider = platformCollider;
+        
+        //sorry for this, unity is really great(no)
+        //ignoring collision for player
+        Physics2D.IgnoreCollision(platformCollider, Registry.ins.playerManager.player.GetComponent<Collider2D>(), true);
+    }
+    GameObject corpse;
+    void IgnoreNewCorpse(GameObject corpse)
+    {
+        this.corpse = corpse;
+        Physics2D.IgnoreCollision(platformCollider, corpse.GetComponent<Collider2D>(), true);
+    }
+
+    private void Update()
+    {
+        if (corpse != null)
+            Debug.Log(Physics2D.GetIgnoreCollision(platformCollider, corpse.GetComponent<Collider2D>()));
     }
 }

@@ -45,5 +45,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   platformWidth: 1
-  sprite: {fileID: 21300000, guid: 7423045334c40e64eab04d4f2832e81c, type: 3}
   colliderHeight: 0.2
+  triggerHeight: 1
+  sprite: {fileID: 21300000, guid: 7423045334c40e64eab04d4f2832e81c, type: 3}

@@ -14,9 +14,6 @@ public class CheckpointTrigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.layer == 7)
-            return;
-
         if (!col.gameObject.GetComponent<SignComponent>().HasSign("Player") || activated)
             return;
 

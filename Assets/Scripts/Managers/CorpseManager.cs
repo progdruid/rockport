@@ -5,6 +5,7 @@ using UnityEngine;
 public class CorpseManager : MonoBehaviour
 {
     public event System.Action CorpseUpdateEvent = delegate { };
+    public event System.Action<GameObject> NewCorpseEvent = delegate { };
     public GameObject corpsePrefab;
     private List<GameObject> corpses = new List<GameObject>();
 
@@ -22,6 +23,7 @@ public class CorpseManager : MonoBehaviour
         corpses.Add(corpse);
 
         CorpseUpdateEvent();
+        NewCorpseEvent(corpse);
     }
 
     public void ClearCorpses ()
