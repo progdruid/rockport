@@ -24,6 +24,7 @@ public class Player : MonoBehaviour
     //private fields
     private float coyoteTime = 0f;
 
+    private Rigidbody2D pushingRB;
     private bool pushing = false;
     private bool wallLeft = false;
     private bool wallRight = false;
@@ -85,7 +86,7 @@ public class Player : MonoBehaviour
         coyoteTime = staysOnGround ? 0f : coyoteTime + Time.deltaTime;
 
         MoveSide();
-        Debug.Log(pushing);
+
         animator.SetBool("Falling", !stayChecker.stayingOnGround);
         animator.SetBool("Running", rb.velocity.x != 0f && stayChecker.stayingOnGround);
     }
@@ -111,12 +112,15 @@ public class Player : MonoBehaviour
 
         if (value != 0f)  //acceleration
         {
-            float newvel = rb.velocity.x + acc * Time.deltaTime * value * (wallFree ? 1f : 0.1f);
+            float addvel = acc * Time.deltaTime * value * (wallFree ? 1f : 0.1f);
+            float newvel = rb.velocity.x + addvel;
 
             if (Mathf.Abs(newvel) > speed)
                 newvel = speed * Mathf.Sign(newvel);
 
             rb.velocity = new Vector2(newvel, rb.velocity.y);
+            if(pushing)
+                pushingRB.velocity = new Vector2(newvel * 0.9f, pushingRB.velocity.y);
         }
         else if (value == 0f && rb.velocity.x != 0f) //deceleration
         {
@@ -135,6 +139,7 @@ public class Player : MonoBehaviour
         wallRight = false; 
         staysOnGround = false;
         pushing = false;
+        pushingRB = null;
 
         foreach (var contact in contacts)
         {
@@ -146,9 +151,13 @@ public class Player : MonoBehaviour
             bool touchesBody = contact.collider.TryGetComponent(out SignComponent sign) && sign.HasSign("Body");
             bool touchesSide = Mathf.Abs(point.y) < Mathf.Abs(point.x);
             pushing = (touchesBody && touchesSide) || pushing;
+            pushingRB = (touchesBody && touchesSide) ? sign.GetComponent<Rigidbody2D>() : pushingRB;
             wallLeft = (touchesSide && point.x < 0f && !pushing) || wallLeft;
             wallRight = (touchesSide && point.x > 0f && !pushing) || wallRight;
         }
+
+        if (pushingRB == null && pushing)
+            Debug.Log("WTF");
     }
 
     public void PlayDeathAnimation ()
