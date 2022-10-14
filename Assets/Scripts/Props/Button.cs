@@ -2,14 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(SignalActivator))]
 public class Button : MonoBehaviour
 {
     private List<SignComponent> pressingBodies = new List<SignComponent>();
     private Animator animator;
+    private SignalActivator activator;
 
     private void Start()
     {
         animator = GetComponent<Animator>();
+        activator = GetComponent<SignalActivator>();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -23,7 +26,7 @@ public class Button : MonoBehaviour
         if (pressingBodies.Count > 1)
             return;
         animator.SetBool("Pressed", true);
-        //invoke activator event
+        activator.UpdateActivation(true, gameObject);
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -37,6 +40,6 @@ public class Button : MonoBehaviour
         if (pressingBodies.Count > 0)
             return;
         animator.SetBool("Pressed", false);
-        //invoke deactivator event
+        activator.UpdateActivation(false, gameObject);
     }
 }
