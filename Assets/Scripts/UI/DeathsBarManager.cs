@@ -27,6 +27,7 @@ public class DeathsBarManager : MonoBehaviour
     {
         int corpseCount = Registry.ins.corpseManager.GetCorpseCount();
         skulls.ForEach((GameObject skull) => Destroy(skull));
+        skulls.Clear();
         for (int i = 0; i < Registry.ins.skullManager.GetSkullsAmount(); i++)
         {
             var skull = Instantiate(SkullPrefab);
