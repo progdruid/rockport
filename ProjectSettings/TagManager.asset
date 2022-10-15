@@ -10,12 +10,12 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Player
+  - Body
   - Water
   - UI
   - Platform
   - Trigger
-  - 
+  - Ground
   - 
   - 
   - 

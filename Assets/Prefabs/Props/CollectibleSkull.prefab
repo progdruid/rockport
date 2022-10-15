@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1895417737920014308}
   - component: {fileID: 1895417737920014307}
   - component: {fileID: 1895417737920014310}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: CollectibleSkull
   m_TagString: Untagged
   m_Icon: {fileID: 0}
