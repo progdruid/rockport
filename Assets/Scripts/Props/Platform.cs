@@ -60,10 +60,4 @@ public class Platform : MonoBehaviour
         this.corpse = corpse;
         Physics2D.IgnoreCollision(platformCollider, corpse.GetComponent<Collider2D>(), true);
     }
-
-    private void Update()
-    {
-        if (corpse != null)
-            Debug.Log(Physics2D.GetIgnoreCollision(platformCollider, corpse.GetComponent<Collider2D>()));
-    }
 }
