@@ -9,6 +9,7 @@ public class PlayerManager : MonoBehaviour
     public event System.Action<Player> PlayerSpawnEvent = delegate { };
 
     public Player player { get; private set; }
+    private Rigidbody2D rb => player.GetComponent<Rigidbody2D>();
     private Vector2 spawnPoint = Vector2.zero;
 
     private void OnEnable() => Registry.ins.playerManager = this;
@@ -57,13 +58,14 @@ public class PlayerManager : MonoBehaviour
 
     private IEnumerator KillPlayerRoutine()
     {
+        Vector2 vel = rb.velocity;
         yield return Registry.ins.tc.TransiteIn();
 
         Registry.ins.skullManager.DestroySkull();
         Vector3 pos = player.transform.position;
         DestroyPlayer();
         SpawnPlayer();
-        Registry.ins.corpseManager.SpawnCorpse(pos, Vector2.zero);
+        Registry.ins.corpseManager.SpawnCorpse(pos, vel);
 
         yield return Registry.ins.tc.TransiteOut();
     }
