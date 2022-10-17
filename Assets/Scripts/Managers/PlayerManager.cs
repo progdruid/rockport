@@ -6,7 +6,7 @@ public class PlayerManager : MonoBehaviour
 {
     [SerializeField] GameObject playerPrefab;
 
-    public event System.Action<Player> PlayerSpawnEvent = delegate { };
+    public event System.Action<GameObject> PlayerSpawnEvent = delegate { };
 
     public Player player { get; private set; }
     private Rigidbody2D rb => player.GetComponent<Rigidbody2D>();
@@ -39,7 +39,7 @@ public class PlayerManager : MonoBehaviour
         }
 
         player = Instantiate(playerPrefab, new Vector3(spawnPoint.x, spawnPoint.y, -1f), Quaternion.identity).GetComponent<Player>();
-        PlayerSpawnEvent(player);
+        PlayerSpawnEvent(player.gameObject);
     }
 
     public void KillPlayer ()

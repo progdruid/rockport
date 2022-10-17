@@ -13,15 +13,17 @@ public class Platform : MonoBehaviour
     private BoxCollider2D platformCollider;
     private BoxCollider2D platformTrigger;
 
-    private void Start()
+    private void Awake()
     {
-        Registry.ins.corpseManager.NewCorpseEvent += IgnoreNewCorpse;
+        Registry.ins.corpseManager.NewCorpseEvent += IgnoreNewBody;
+        Registry.ins.playerManager.PlayerSpawnEvent += IgnoreNewBody;
         Setup();
     }
 
     private void OnDestroy()
     {
-        Registry.ins.corpseManager.NewCorpseEvent -= IgnoreNewCorpse;
+        Registry.ins.corpseManager.NewCorpseEvent -= IgnoreNewBody;
+        Registry.ins.playerManager.PlayerSpawnEvent -= IgnoreNewBody;
     }
 
     private void Setup ()
@@ -49,15 +51,10 @@ public class Platform : MonoBehaviour
         platformTrigger.size = new Vector2(platformWidth - 0.5f, triggerHeight);
         platformTrigger.offset = new Vector2((platformWidth - 1f) / 2f, 1f + triggerHeight / 2f);
         triggerObject.AddComponent<PlatformTrigger>().platformCollider = platformCollider;
-        
-        //sorry for this, unity is really great(no)
-        //ignoring collision for player
-        Physics2D.IgnoreCollision(platformCollider, Registry.ins.playerManager.player.GetComponent<Collider2D>(), true);
     }
-    GameObject corpse;
-    void IgnoreNewCorpse(GameObject corpse)
+
+    void IgnoreNewBody(GameObject body)
     {
-        this.corpse = corpse;
-        Physics2D.IgnoreCollision(platformCollider, corpse.GetComponent<Collider2D>(), true);
+        Physics2D.IgnoreCollision(platformCollider, body.GetComponent<Collider2D>(), true);
     }
 }
