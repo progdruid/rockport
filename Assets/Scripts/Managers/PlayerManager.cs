@@ -59,10 +59,10 @@ public class PlayerManager : MonoBehaviour
     private IEnumerator KillPlayerRoutine()
     {
         Vector2 vel = rb.velocity;
+        Vector3 pos = player.transform.position;
         yield return Registry.ins.tc.TransiteIn();
 
         Registry.ins.skullManager.DestroySkull();
-        Vector3 pos = player.transform.position;
         DestroyPlayer();
         SpawnPlayer();
         Registry.ins.corpseManager.SpawnCorpse(pos, vel);
