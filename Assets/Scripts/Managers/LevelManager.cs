@@ -22,10 +22,10 @@ public class LevelManager : MonoBehaviour
 
     private IEnumerator UnloadLevelRoutine ()
     {
-        yield return Registry.ins.tc.TransiteIn();
+        yield return Registry.ins.cameraManager.TransiteIn();
 
         Registry.ins.corpseManager.ClearCorpses();
-
+        Registry.ins.cameraManager.Untarget();
         Registry.ins.playerManager.DestroyPlayer();
         Destroy(currentLevel);
     }
@@ -55,7 +55,7 @@ public class LevelManager : MonoBehaviour
 
         Registry.ins.playerManager.SpawnPlayer();
         
-        yield return Registry.ins.tc.TransiteOut();
+        yield return Registry.ins.cameraManager.TransiteOut();
     }
     #endregion
 }

@@ -16,7 +16,7 @@ public class CorpseManager : MonoBehaviour
         CorpseUpdateEvent();
     }
 
-    public void SpawnCorpse (Vector2 pos, Vector2 startVel)
+    public GameObject SpawnCorpse (Vector2 pos, Vector2 startVel)
     {
         GameObject corpse = Instantiate(corpsePrefab, pos, Quaternion.identity);
         corpse.GetComponent<Rigidbody2D>().velocity += startVel;
@@ -24,6 +24,8 @@ public class CorpseManager : MonoBehaviour
 
         CorpseUpdateEvent();
         NewCorpseEvent(corpse);
+
+        return corpse;
     }
 
     public void ClearCorpses ()

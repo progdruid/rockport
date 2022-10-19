@@ -60,14 +60,18 @@ public class PlayerManager : MonoBehaviour
     {
         Vector2 vel = rb.velocity;
         Vector3 pos = player.transform.position;
-        yield return Registry.ins.tc.TransiteIn();
 
         Registry.ins.skullManager.DestroySkull();
+        Registry.ins.cameraManager.Untarget();
         DestroyPlayer();
-        SpawnPlayer();
-        Registry.ins.corpseManager.SpawnCorpse(pos, vel);
+        Transform corpse = Registry.ins.corpseManager.SpawnCorpse(pos, vel).transform;
+        Registry.ins.cameraManager.SetTarget(corpse);
+        yield return new WaitForSeconds(0.5f);
+        yield return Registry.ins.cameraManager.TransiteIn();
 
-        yield return Registry.ins.tc.TransiteOut();
+        SpawnPlayer();
+
+        yield return Registry.ins.cameraManager.TransiteOut();
     }
 
     public void DestroyPlayer ()
