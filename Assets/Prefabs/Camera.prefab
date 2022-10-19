@@ -47,8 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06e32808b1bfbcb4a9252100a599986b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  closeSpeed: 5
-  minimalRange: 0
+  boxSize: 2
 --- !u!20 &654563176251057828
 Camera:
   m_ObjectHideFlags: 0

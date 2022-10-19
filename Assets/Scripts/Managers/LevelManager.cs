@@ -25,7 +25,6 @@ public class LevelManager : MonoBehaviour
         yield return Registry.ins.cameraManager.TransiteIn();
 
         Registry.ins.corpseManager.ClearCorpses();
-        Registry.ins.cameraManager.Untarget();
         Registry.ins.playerManager.DestroyPlayer();
         Destroy(currentLevel);
     }

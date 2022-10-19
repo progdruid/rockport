@@ -62,7 +62,6 @@ public class PlayerManager : MonoBehaviour
         Vector3 pos = player.transform.position;
 
         Registry.ins.skullManager.DestroySkull();
-        Registry.ins.cameraManager.Untarget();
         DestroyPlayer();
         Transform corpse = Registry.ins.corpseManager.SpawnCorpse(pos, vel).transform;
         Registry.ins.cameraManager.SetTarget(corpse);

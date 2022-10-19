@@ -5,8 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Camera), typeof(Rigidbody2D))]
 public class CameraManager : MonoBehaviour
 {
-    [SerializeField] float closeSpeed;
-    [SerializeField] float minimalRange;
+    [SerializeField] float boxSize;
 
     private new Camera camera;
     private Rigidbody2D rb;
@@ -32,21 +31,29 @@ public class CameraManager : MonoBehaviour
 
     void Update()
     {
-        if (transiting)
+        if (transiting || target == null)
             return;
+
+        Vector2 diff = target.position - transform.position;
+        float addx = 0f;
+        if (Mathf.Abs(diff.x) > boxSize)
+            addx += Mathf.Sign(diff.x) * (Mathf.Abs(diff.x) - boxSize);
+        float addy = 0f;
+        if (Mathf.Abs(diff.y) > boxSize)
+            addy += Mathf.Sign(diff.y) * (Mathf.Abs(diff.y) - boxSize);
+
+        transform.position += new Vector3(addx, addy, 0f);
     }
 
     public void SetTarget (Transform target)
     {
         this.target = target;
-        transform.parent = target;
-        transform.position = new Vector3(target.position.x, target.position.y, transform.position.z);
     }
 
-    public void Untarget()
+    public void SetAndMoveToTarget (Transform target)
     {
-        transform.parent = null;
-        target = null;
+        this.target = target;
+        transform.position = new Vector3(target.position.x, target.position.y, transform.position.z);
     }
 
     public IEnumerator TransiteIn ()
@@ -71,5 +78,5 @@ public class CameraManager : MonoBehaviour
         transiting = false;
     }
 
-    private void HandlePlayerSpawn(GameObject player) => SetTarget(player.transform);
+    private void HandlePlayerSpawn(GameObject player) => SetAndMoveToTarget(player.transform);
 }
