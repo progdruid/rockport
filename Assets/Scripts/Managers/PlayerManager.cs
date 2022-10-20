@@ -64,6 +64,7 @@ public class PlayerManager : MonoBehaviour
         Registry.ins.skullManager.DestroySkull();
         DestroyPlayer();
         Transform corpse = Registry.ins.corpseManager.SpawnCorpse(pos, vel).transform;
+        corpse.GetComponent<CorpsePhysics>().kickedMode = true;
         Registry.ins.cameraManager.SetTarget(corpse);
         yield return new WaitForSeconds(0.5f);
         yield return Registry.ins.cameraManager.TransiteIn();

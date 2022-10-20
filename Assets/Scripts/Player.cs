@@ -155,9 +155,6 @@ public class Player : MonoBehaviour
             wallLeft = (touchesSide && point.x < 0f && !pushing) || wallLeft;
             wallRight = (touchesSide && point.x > 0f && !pushing) || wallRight;
         }
-
-        if (pushingRB == null && pushing)
-            Debug.Log("WTF");
     }
 
     public void PlayDeathAnimation ()
