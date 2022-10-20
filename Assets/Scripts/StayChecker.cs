@@ -6,7 +6,7 @@ public class StayChecker : MonoBehaviour
 {
     public bool stayingOnGround { get; private set; }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerStay2D(Collider2D other)
     {
         stayingOnGround = true;
         transform.parent.parent = other.transform;
