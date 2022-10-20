@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CircleMover : MonoBehaviour
 {
+    [SerializeField] SignalActivator signal;
+    [Space]
     public float timePeriod;
     public MoverMotionType motionType;
     public Transform anchor;
@@ -11,15 +13,16 @@ public class CircleMover : MonoBehaviour
     public TransformOffsetPair[] entities;
    
     private float timePassed = 0f;
+    private bool activated = true;
 
     private System.Func<float, float> enterpFunc;
     private bool invalid => anchor == null || entities == null || (entities.Length == 0);
 
     #region interp funcs
 
-    private float LinearEnterp(float x) => x;
-    private float SineEnterp(float x) => Mathf.Clamp(1f - (Mathf.Cos(x * Mathf.PI * 2f) + 1f) / 2f, 0f, 1f);
-    private float PongEnterp(float x) => Mathf.PingPong(x * 2f, 1f);
+    private float LinearInterp(float x) => x;
+    private float SineInterp(float x) => Mathf.Clamp(1f - (Mathf.Cos(x * Mathf.PI * 2f) + 1f) / 2f, 0f, 1f);
+    private float PongInterp(float x) => Mathf.PingPong(x * 2f, 1f);
 
     #endregion
 
@@ -29,34 +32,51 @@ public class CircleMover : MonoBehaviour
         Init();
     }
 
+    private void OnDestroy()
+    {
+        if (signal != null)
+            signal.ActivationUpdateEvent -= HandleActivation;
+    }
+
+#if UNITY_EDITOR
     void OnValidate()
     {
         Init();
         Move(0f);
     }
+#endif
     #endregion
 
     private void Init()
     {
+        if (signal != null)
+        {
+            activated = false;
+            signal.ActivationUpdateEvent += HandleActivation;
+        }
+
         if (invalid)
             return;
 
         switch (motionType)
         {
             case MoverMotionType.Linear:
-                enterpFunc = LinearEnterp;
+                enterpFunc = LinearInterp;
                 break;
             case MoverMotionType.Sine:
-                enterpFunc = SineEnterp;
+                enterpFunc = SineInterp;
                 break;
             case MoverMotionType.Pong:
-                enterpFunc = PongEnterp;
+                enterpFunc = PongInterp;
                 break;
         }
     }
 
     void Update()
     {
+        if (!activated)
+            return;
+
         if (timePassed > timePeriod)
             timePassed = 0f;
 
@@ -77,4 +97,6 @@ public class CircleMover : MonoBehaviour
             entities[i].transform.position = (Vector2)anchor.position + addvector;
         }
     }
+
+    private void HandleActivation(bool active, GameObject source) => activated = active;
 }

@@ -19,6 +19,8 @@ public class TransformOffsetPair
 
 public class PathMover : MonoBehaviour
 {
+    [SerializeField] SignalActivator signal;
+    [Space]
     public float timePeriod;
     public MoverMotionType motionType;
     public TransformOffsetPair[] entities;
@@ -26,18 +28,17 @@ public class PathMover : MonoBehaviour
 
     private float generalDist;
     private float[] dists;
-
     private float timePassed = 0f;
-
-    private System.Func<float, float> enterpFunc;
+    private System.Func<float, float> interpFunc;
+    private bool activated = true;
 
     private bool invalid => anchors == null || entities == null || (anchors.Length == 0 || entities.Length == 0);
 
     #region interp funcs
 
-    private float LinearEnterp(float x) => x;
-    private float SineEnterp(float x) => Mathf.Clamp(1f - (Mathf.Cos(x * Mathf.PI * 2f) + 1f) / 2f, 0f, 1f);
-    private float PongEnterp(float x) => Mathf.PingPong(x * 2f, 1f);
+    private float LinearInterp(float x) => x;
+    private float SineInterp(float x) => Mathf.Clamp(1f - (Mathf.Cos(x * Mathf.PI * 2f) + 1f) / 2f, 0f, 1f);
+    private float PongInterp(float x) => Mathf.PingPong(x * 2f, 1f);
 
     #endregion
 
@@ -47,15 +48,29 @@ public class PathMover : MonoBehaviour
         Init();
     }
 
+    private void OnDestroy()
+    {
+        if (signal != null)
+            signal.ActivationUpdateEvent -= HandleActivation;
+    }
+
+#if UNITY_EDITOR
     void OnValidate()
     {
         Init();
         Move(0f);
     }
+#endif
     #endregion
 
     private void Init ()
     {
+        if (signal != null)
+        { 
+            activated = false;
+            signal.ActivationUpdateEvent += HandleActivation;
+        }
+
         if (invalid)
             return;
 
@@ -71,19 +86,22 @@ public class PathMover : MonoBehaviour
         switch (motionType)
         {
             case MoverMotionType.Linear:
-                enterpFunc = LinearEnterp;
+                interpFunc = LinearInterp;
                 break;
             case MoverMotionType.Sine:
-                enterpFunc = SineEnterp;
+                interpFunc = SineInterp;
                 break;
             case MoverMotionType.Pong:
-                enterpFunc = PongEnterp;
+                interpFunc = PongInterp;
                 break;
         }
     }
 
     void Update()
     {
+        if (!activated)
+            return;
+
         if (timePassed > timePeriod)
             timePassed = 0f;
 
@@ -99,7 +117,7 @@ public class PathMover : MonoBehaviour
 
         for (int i = 0; i < entities.Length; i++)
         {
-            float distOffset = generalDist * (enterpFunc(entities[i].offset + (time / timePeriod)) % 1f);
+            float distOffset = generalDist * (interpFunc(entities[i].offset + (time / timePeriod)) % 1f);
             float tempDist = 0f;
             int anchorIndex = -1;
 
@@ -113,4 +131,6 @@ public class PathMover : MonoBehaviour
             entities[i].transform.position = Vector2.Lerp(anchors[anchorIndex].position, anchors[(anchorIndex + 1) % anchors.Length].position, t);
         }
     }
+
+    private void HandleActivation(bool active, GameObject source) => activated = active;
 }
