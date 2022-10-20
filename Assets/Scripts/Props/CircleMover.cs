@@ -13,7 +13,6 @@ public class CircleMover : MonoBehaviour
     public TransformOffsetPair[] entities;
    
     private float timePassed = 0f;
-    private bool activated = true;
 
     private System.Func<float, float> enterpFunc;
     private bool invalid => anchor == null || entities == null || (entities.Length == 0);
@@ -32,12 +31,6 @@ public class CircleMover : MonoBehaviour
         Init();
     }
 
-    private void OnDestroy()
-    {
-        if (signal != null)
-            signal.ActivationUpdateEvent -= HandleActivation;
-    }
-
 #if UNITY_EDITOR
     void OnValidate()
     {
@@ -49,12 +42,6 @@ public class CircleMover : MonoBehaviour
 
     private void Init()
     {
-        if (signal != null)
-        {
-            activated = false;
-            signal.ActivationUpdateEvent += HandleActivation;
-        }
-
         if (invalid)
             return;
 
@@ -74,7 +61,7 @@ public class CircleMover : MonoBehaviour
 
     void Update()
     {
-        if (!activated)
+        if (signal != null && !signal.activated)
             return;
 
         if (timePassed > timePeriod)
@@ -97,6 +84,4 @@ public class CircleMover : MonoBehaviour
             entities[i].transform.position = (Vector2)anchor.position + addvector;
         }
     }
-
-    private void HandleActivation(bool active, GameObject source) => activated = active;
 }

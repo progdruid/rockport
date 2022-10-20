@@ -4,13 +4,12 @@ using UnityEngine;
 
 public class Cannon : MonoBehaviour
 {
+    [SerializeField] SignalActivator signal;
     public float timePeriod;
-
     public GameObject ProjectilePrefab;
 
     private Vector3 relativeProjSpawnPoint = new Vector3(0f, 0.25f, -1f);
     private Animator animator;
-
     private float timePassed;
 
     void Start()
@@ -20,6 +19,9 @@ public class Cannon : MonoBehaviour
 
     void Update()
     {
+        if (signal != null && signal.activated)//cuz by activating signal you're disabling cannons
+            return;
+
         if (timePassed < timePeriod)
             timePassed += Time.deltaTime;
         else

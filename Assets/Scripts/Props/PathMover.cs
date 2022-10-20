@@ -30,7 +30,6 @@ public class PathMover : MonoBehaviour
     private float[] dists;
     private float timePassed = 0f;
     private System.Func<float, float> interpFunc;
-    private bool activated = true;
 
     private bool invalid => anchors == null || entities == null || (anchors.Length == 0 || entities.Length == 0);
 
@@ -48,12 +47,6 @@ public class PathMover : MonoBehaviour
         Init();
     }
 
-    private void OnDestroy()
-    {
-        if (signal != null)
-            signal.ActivationUpdateEvent -= HandleActivation;
-    }
-
 #if UNITY_EDITOR
     void OnValidate()
     {
@@ -65,12 +58,6 @@ public class PathMover : MonoBehaviour
 
     private void Init ()
     {
-        if (signal != null)
-        { 
-            activated = false;
-            signal.ActivationUpdateEvent += HandleActivation;
-        }
-
         if (invalid)
             return;
 
@@ -99,7 +86,7 @@ public class PathMover : MonoBehaviour
 
     void Update()
     {
-        if (!activated)
+        if (signal != null && !signal.activated)
             return;
 
         if (timePassed > timePeriod)
@@ -131,6 +118,4 @@ public class PathMover : MonoBehaviour
             entities[i].transform.position = Vector2.Lerp(anchors[anchorIndex].position, anchors[(anchorIndex + 1) % anchors.Length].position, t);
         }
     }
-
-    private void HandleActivation(bool active, GameObject source) => activated = active;
 }

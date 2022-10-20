@@ -12,11 +12,11 @@ public class SignalMediator : SignalActivator
 
     [SerializeField] SignalCombinationMode mode;
     [SerializeField] List<SignalActivator> activators;
-    private List<GameObject> activated;
+    private List<GameObject> activeSources;
 
     private void Start()
     {
-        activated = new List<GameObject>();
+        activeSources = new List<GameObject>();
 
         for (int i = 0; i < activators.Count; i++)
             activators[i].ActivationUpdateEvent += UpdateActivation;
@@ -30,12 +30,12 @@ public class SignalMediator : SignalActivator
 
     public override void UpdateActivation(bool active, GameObject source)
     {
-        if (active) activated.Add(source);
-        else activated.Remove(source);
+        if (active) activeSources.Add(source);
+        else activeSources.Remove(source);
 
         if (mode == SignalCombinationMode.AND)
-            base.UpdateActivation(activated.Count == activators.Count, gameObject); //lol
+            base.UpdateActivation(activeSources.Count == activators.Count, gameObject); //lol
         else if (mode == SignalCombinationMode.OR)
-            base.UpdateActivation(activated.Count > 0, gameObject);
+            base.UpdateActivation(activeSources.Count > 0, gameObject);
     }
 }
