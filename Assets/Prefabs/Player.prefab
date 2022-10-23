@@ -174,11 +174,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9c9fdadbe5a31241913bd6878eeff35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxSpeed: 7.5
+  MaxSpeed: 7
   PushingSpeed: 4
   AccTime: 0.1
   DecTime: 0.05
-  RiseTime: 0.35
+  RiseTime: 0.4
   JumpHeight: 2.9
   CoyoteTime: 0.1
   SuppressMultiplier: 0.25
