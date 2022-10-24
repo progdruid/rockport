@@ -8,6 +8,7 @@ public class CircleMover : MonoBehaviour
     [Space]
     public float timePeriod;
     public MoverMotionType motionType;
+    public bool flip;
     public Transform anchor;
     public float radius;
     public TransformOffsetPair[] entities;
@@ -79,7 +80,10 @@ public class CircleMover : MonoBehaviour
 
         for (int i = 0; i < entities.Length; i++)
         {
-            float angle = enterpFunc(time / timePeriod + entities[i].offset) * Mathf.PI * 2f;
+            float interpVal = ((time / timePeriod + entities[i].offset) % 1f);
+            if (flip)
+                interpVal = 1f - interpVal;
+            float angle = enterpFunc(interpVal) * Mathf.PI * 2f;
             Vector2 addvector = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
             entities[i].transform.position = (Vector2)anchor.position + addvector;
         }
