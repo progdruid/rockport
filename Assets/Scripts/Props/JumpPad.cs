@@ -29,6 +29,13 @@ public class JumpPad : MonoBehaviour
     {
         animator.SetTrigger("Pressed");
         yield return new WaitForSeconds(TimeOffset);
-        pressingBody.velocity = new Vector2(pressingBody.velocity.x, Impulse);
+        float massMult = 1f;
+        if (pressingBody.transform.childCount > 0)
+        {
+            StayChecker checker = pressingBody.transform.GetChild(0).GetComponent<StayChecker>();
+            massMult = checker.massMult;
+        }
+        pressingBody.velocity = new Vector2(pressingBody.velocity.x, Impulse * massMult);
+        
     }
 }

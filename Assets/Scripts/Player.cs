@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     public float JumpHeight;
     public float CoyoteTime;
     public float SuppressMultiplier;
+    public float MaxJumpImpulseMultiplier;
 
     //classes
     private Rigidbody2D rb;
@@ -94,7 +95,11 @@ public class Player : MonoBehaviour
     private void Jump ()
     {
         if (coyoteTime <= CoyoteTime)
-            rb.velocity += Vector2.up * jumpImpulse;
+        {
+            float newVel = rb.velocity.y + jumpImpulse;
+            newVel = Mathf.Clamp(newVel, -100, jumpImpulse * MaxJumpImpulseMultiplier);
+            rb.velocity = new Vector2(rb.velocity.x, newVel);
+        }
     }
 
     private void SuppressJump ()
