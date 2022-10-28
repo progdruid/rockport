@@ -145,5 +145,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e21cc1fbfd3a75941b35f06ce01512e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Impulse: 17
+  Impulse: 16
   TimeOffset: 0.04
