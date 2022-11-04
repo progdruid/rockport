@@ -10,6 +10,9 @@ public class StayChecker : MonoBehaviour
     public float normalMass { get; private set; }
     public float massMult => (normalMass + additionalMass) / normalMass;
 
+    public event System.Action<Collider2D> StayEvent = delegate { };
+    public event System.Action<Collider2D> ExitEvent = delegate { };
+
     private StayChecker otherChecker;
 
     private void Start()
@@ -32,6 +35,8 @@ public class StayChecker : MonoBehaviour
 
         if (found)
             otherChecker.additionalMass += normalMass + additionalMass;
+
+        StayEvent(other);
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -41,5 +46,7 @@ public class StayChecker : MonoBehaviour
         if (otherChecker != null)
             otherChecker.additionalMass -= normalMass + additionalMass;
         otherChecker = null;
+
+        ExitEvent(other);
     }
 }
