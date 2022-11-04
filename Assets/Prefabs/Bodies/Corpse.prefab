@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 3938242994105235464}
   - component: {fileID: 8207401305756667770}
   - component: {fileID: 591765629211865318}
+  - component: {fileID: 7147797176712555694}
   m_Layer: 3
   m_Name: Corpse
   m_TagString: Corpse
@@ -224,6 +225,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2007c2c82f560bf469258d6a187119ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  active: 1
+  stayChecker: {fileID: 8645702990333080041}
+--- !u!114 &7147797176712555694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6388440925167425491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57d91e74d2bf3b141ad8232d095053ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   active: 1

@@ -30,11 +30,10 @@ public class JumpPad : MonoBehaviour
         animator.SetTrigger("Pressed");
         yield return new WaitForSeconds(TimeOffset);
         float massMult = 1f;
-        if (pressingBody.transform.childCount > 0)
-        {
-            StayChecker checker = pressingBody.transform.GetChild(0).GetComponent<StayChecker>();
-            massMult = checker.massMult;
-        }
+        bool found = pressingBody.TryGetComponent(out MassDivider massDivider);
+        if (found)
+            massMult = massDivider.massMult;
+        
         pressingBody.velocity = new Vector2(pressingBody.velocity.x, Impulse * massMult);
         
     }
