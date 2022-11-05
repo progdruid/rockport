@@ -7,21 +7,38 @@ public class InputSystem : MonoBehaviour
     public event System.Action JumpKeyPressEvent = delegate { }; //to not always write if null
     public event System.Action JumpKeyReleaseEvent = delegate { }; //bit stupid, i know
     public event System.Action KillPlayerKeyPressEvent = delegate { }; 
-    public event System.Action InputDisableEvent = delegate { };
+    public event System.Action<bool, bool> ActiveUpdateEvent = delegate { };
+    public event System.Action<bool, bool> CanWalkUpdateEvent = delegate { };
+    public event System.Action<bool, bool> CanJumpUpdateEvent = delegate { };
     
     public float HorizontalValue { get; private set; }
     public bool HoldingJumpKey { get; private set; }
 
     private bool active;
-    public bool GetActive () => active;
-    public void SetActive (bool val)
-    {
-        if (!val && active)
-        {
-            HorizontalValue = 0f;
-            InputDisableEvent();
+    public bool Active{
+        get { return active; }
+        set{
+            ActiveUpdateEvent(active, value);
+            active = value;
         }
-        active = val;
+    }
+
+    private bool canWalk;
+    public bool CanWalk {
+        get { return canWalk; }
+        set {
+            CanWalkUpdateEvent(canWalk, value);
+            canWalk = value; 
+        }
+    }
+
+    private bool canJump;
+    public bool CanJump{
+        get { return canJump; }
+        set{
+            CanJumpUpdateEvent(canJump, value);
+            canJump = value;
+        }
     }
 
     void OnEnable() => Registry.ins.inputSystem = this;
@@ -31,10 +48,15 @@ public class InputSystem : MonoBehaviour
         if (!active)
             return;
 
-        HorizontalValue = Input.GetAxisRaw("Horizontal");
-        HoldingJumpKey = Input.GetKey(KeyCode.Space);
+        HorizontalValue = 0f;
+        HoldingJumpKey = false;
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (CanWalk)
+            HorizontalValue = Input.GetAxisRaw("Horizontal");
+        if (CanJump)
+            HoldingJumpKey = Input.GetKey(KeyCode.Space);
+
+        if (Input.GetKeyDown(KeyCode.Space) && canJump)
             JumpKeyPressEvent();
         else if (Input.GetKeyUp(KeyCode.Space))
             JumpKeyReleaseEvent();

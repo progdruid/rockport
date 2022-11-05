@@ -9,7 +9,7 @@ public class DangerousTriggerHandler : MonoBehaviour
         if (col.gameObject.layer == 7)
             return;
 
-        if (!col.gameObject.GetComponent<SignComponent>().HasSign("Player") || !Registry.ins.inputSystem.GetActive())
+        if (!col.gameObject.GetComponent<SignComponent>().HasSign("Player") || !Registry.ins.inputSystem.Active)
             return;
 
         Registry.ins.playerManager.KillPlayer();

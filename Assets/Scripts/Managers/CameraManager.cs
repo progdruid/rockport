@@ -58,7 +58,7 @@ public class CameraManager : MonoBehaviour
 
     public IEnumerator TransiteIn ()
     {
-        Registry.ins.inputSystem.SetActive(false);
+        Registry.ins.inputSystem.Active = false;
         Registry.ins.deathsBar.SetActive(false);
 
         transition.SetTrigger("Transition");
@@ -73,7 +73,7 @@ public class CameraManager : MonoBehaviour
 
         yield return new WaitUntil(() => transition.GetCurrentAnimatorClipInfo(0)[0].clip.name == "None");
         
-        Registry.ins.inputSystem.SetActive(true);
+        Registry.ins.inputSystem.Active = true;
         Registry.ins.deathsBar.SetActive(true);
         transiting = false;
     }
