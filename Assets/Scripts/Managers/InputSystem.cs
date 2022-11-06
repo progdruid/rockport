@@ -20,10 +20,12 @@ public class InputSystem : MonoBehaviour
         set{
             ActiveUpdateEvent(active, value);
             active = value;
+            CanWalk = value;
+            CanJump = value;
         }
     }
 
-    private bool canWalk;
+    private bool canWalk = true;
     public bool CanWalk {
         get { return canWalk; }
         set {
@@ -32,7 +34,7 @@ public class InputSystem : MonoBehaviour
         }
     }
 
-    private bool canJump;
+    private bool canJump = true;
     public bool CanJump{
         get { return canJump; }
         set{
@@ -60,6 +62,7 @@ public class InputSystem : MonoBehaviour
             JumpKeyPressEvent();
         else if (Input.GetKeyUp(KeyCode.Space))
             JumpKeyReleaseEvent();
+
         if (Input.GetKeyDown(KeyCode.E))
             KillPlayerKeyPressEvent();
 

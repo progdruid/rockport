@@ -29,7 +29,7 @@ public class Player : MonoBehaviour
     private bool pushing = false;
     private bool wallLeft = false;
     private bool wallRight = false;
-    private bool staysOnGround = false;
+    //private bool staysOnGround = false;
 
     private float speed;
     private float acc;
@@ -84,7 +84,7 @@ public class Player : MonoBehaviour
         CheckForCollision(contactPoints);
 
         speed = pushing ? PushingSpeed : MaxSpeed;
-        coyoteTime = staysOnGround ? 0f : coyoteTime + Time.deltaTime;
+        coyoteTime = stayChecker.stayingOnGround ? 0f : coyoteTime + Time.deltaTime;
 
         MoveSide();
 
@@ -98,7 +98,7 @@ public class Player : MonoBehaviour
         {
             float newVel = rb.velocity.y + jumpImpulse;
             newVel = Mathf.Clamp(newVel, -100, jumpImpulse * MaxJumpImpulseMultiplier);
-            rb.velocity = new Vector2(rb.velocity.x, newVel);
+            rb.velocity = new Vector2(rb.velocity.x, newVel); Debug.Log("Jumped: " + Registry.ins.inputSystem.CanJump + ", " + stayChecker.stayingOnGround);
         }
     }
 
@@ -142,7 +142,7 @@ public class Player : MonoBehaviour
     {
         wallLeft = false;
         wallRight = false; 
-        staysOnGround = false;
+        //staysOnGround = false;
         pushing = false;
         pushingRB = null;
 
@@ -151,7 +151,7 @@ public class Player : MonoBehaviour
             Vector2 point = contact.point - (Vector2)gameObject.transform.position;
             point.Normalize();
 
-            staysOnGround = Mathf.Abs(point.x) < -point.y || staysOnGround;
+            //staysOnGround = Mathf.Abs(point.x) < -point.y || staysOnGround;
 
             bool touchesBody = contact.collider.TryGetComponent(out SignComponent sign) && sign.HasSign("Body");
             bool touchesSide = Mathf.Abs(point.y) < Mathf.Abs(point.x);

@@ -15,13 +15,16 @@ public class JumpPad : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    private void OnTriggerEnter2D(Collider2D col)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        bool found = col.gameObject.TryGetComponent(out SignComponent sign);
+        bool found = other.gameObject.TryGetComponent(out SignComponent sign);
         if (!found || !sign.HasSign("Body"))
             return;
 
-        StartCoroutine(Push(col.gameObject.GetComponent<Rigidbody2D>()));
+        //disables jump if it's a player //lil hack to avoid the if statement
+        Registry.ins.inputSystem.CanJump = !sign.HasSign("Player");
+
+        StartCoroutine(Push(other.gameObject.GetComponent<Rigidbody2D>()));
 
     }
 
@@ -36,5 +39,13 @@ public class JumpPad : MonoBehaviour
         
         pressingBody.velocity = new Vector2(pressingBody.velocity.x, Impulse * massMult);
         
+    }
+
+    private void OnTriggerExit2D (Collider2D other)
+    {
+        bool found = other.TryGetComponent(out SignComponent sign);
+
+        //enables jump if it's a player //lil hack to avoid the if statement
+        Registry.ins.inputSystem.CanJump = Registry.ins.inputSystem.CanJump || (found && sign.HasSign("Player"));
     }
 }
