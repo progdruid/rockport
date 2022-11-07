@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     public float RiseTime;
     public float JumpHeight;
     public float CoyoteTime;
+    public float JumpCooldown;
     public float SuppressMultiplier;
     public float MaxJumpImpulseMultiplier;
 
@@ -24,6 +25,7 @@ public class Player : MonoBehaviour
 
     //private fields
     private float coyoteTime = 0f;
+    private float jumpCooldown = 0f;
 
     private Rigidbody2D pushingRB;
     private bool pushing = false;
@@ -85,6 +87,7 @@ public class Player : MonoBehaviour
 
         speed = pushing ? PushingSpeed : MaxSpeed;
         coyoteTime = stayChecker.stayingOnGround ? 0f : coyoteTime + Time.deltaTime;
+        jumpCooldown += jumpCooldown < JumpCooldown ? Time.deltaTime : 0f;
 
         MoveSide();
 
@@ -92,13 +95,16 @@ public class Player : MonoBehaviour
         animator.SetBool("Running", rb.velocity.x != 0f && stayChecker.stayingOnGround);
     }
 
+    public void ResetJumpCooldown () => jumpCooldown = 0f;
+
     private void Jump ()
     {
-        if (coyoteTime <= CoyoteTime)
+        if (coyoteTime <= CoyoteTime && jumpCooldown >= JumpCooldown)
         {
             float newVel = rb.velocity.y + jumpImpulse;
             newVel = Mathf.Clamp(newVel, -100, jumpImpulse * MaxJumpImpulseMultiplier);
-            rb.velocity = new Vector2(rb.velocity.x, newVel); Debug.Log("Jumped: " + Registry.ins.inputSystem.CanJump + ", " + stayChecker.stayingOnGround);
+            rb.velocity = new Vector2(rb.velocity.x, newVel);
+            ResetJumpCooldown();
         }
     }
 
@@ -138,7 +144,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void CheckForCollision (List<ContactPoint2D> contacts)
+    private void CheckForCollision (List<ContactPoint2D> contacts)
     {
         wallLeft = false;
         wallRight = false; 

@@ -21,15 +21,15 @@ public class JumpPad : MonoBehaviour
         if (!found || !sign.HasSign("Body"))
             return;
 
-        //disables jump if it's a player //lil hack to avoid the if statement
-        Registry.ins.inputSystem.CanJump = !sign.HasSign("Player");
-
-        StartCoroutine(Push(other.gameObject.GetComponent<Rigidbody2D>()));
-
+        StartCoroutine(Push(other.gameObject.GetComponent<Rigidbody2D>(), sign));
     }
 
-    private IEnumerator Push (Rigidbody2D pressingBody)
+    private IEnumerator Push (Rigidbody2D pressingBody, SignComponent sign)
     {
+        //disables jump if it's a player //lil hack to avoid the if statement
+        bool isPlayer = sign.HasSign("Player");
+        Registry.ins.inputSystem.CanJump = !isPlayer;
+
         animator.SetTrigger("Pressed");
         yield return new WaitForSeconds(TimeOffset);
         float massMult = 1f;
@@ -38,7 +38,9 @@ public class JumpPad : MonoBehaviour
             massMult = massDivider.massMult;
         
         pressingBody.velocity = new Vector2(pressingBody.velocity.x, Impulse * massMult);
-        
+
+        if (isPlayer)
+            Registry.ins.playerManager.ResetJumpCooldown();
     }
 
     private void OnTriggerExit2D (Collider2D other)

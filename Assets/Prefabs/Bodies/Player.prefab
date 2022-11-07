@@ -182,6 +182,7 @@ MonoBehaviour:
   RiseTime: 0.4
   JumpHeight: 2.9
   CoyoteTime: 0.1
+  JumpCooldown: 0.1
   SuppressMultiplier: 0.25
   MaxJumpImpulseMultiplier: 1.25
 --- !u!114 &313712622161599492
