@@ -31,6 +31,9 @@ public class InputSystem : MonoBehaviour
         set {
             CanWalkUpdateEvent(canWalk, value);
             canWalk = value; 
+            if (!value)
+                HorizontalValue = 0f;
+            
         }
     }
 
@@ -40,6 +43,8 @@ public class InputSystem : MonoBehaviour
         set{
             CanJumpUpdateEvent(canJump, value);
             canJump = value;
+            if (!value)
+                HoldingJumpKey = false;
         }
     }
 
@@ -49,9 +54,6 @@ public class InputSystem : MonoBehaviour
     {
         if (!active)
             return;
-
-        HorizontalValue = 0f;
-        HoldingJumpKey = false;
 
         if (CanWalk)
             HorizontalValue = Input.GetAxisRaw("Horizontal");
