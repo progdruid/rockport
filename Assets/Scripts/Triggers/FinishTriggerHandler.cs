@@ -8,9 +8,6 @@ public class FinishTriggerHandler : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.layer == 7)
-            return;
-
         Registry.ins.lm.LoadLevel(LoadLevelIndex);
     }
 }

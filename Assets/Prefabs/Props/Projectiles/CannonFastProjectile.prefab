@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1442562128340248023}
   - component: {fileID: -6585154816807318171}
   - component: {fileID: -5287706220888603728}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: CannonFastProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
