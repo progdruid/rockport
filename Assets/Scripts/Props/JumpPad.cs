@@ -36,8 +36,11 @@ public class JumpPad : MonoBehaviour
         bool found = pressingBody.TryGetComponent(out MassDivider massDivider);
         if (found)
             massMult = massDivider.massMult;
-        
-        pressingBody.velocity = new Vector2(pressingBody.velocity.x, Impulse * massMult);
+
+        float angle = transform.rotation.z;
+        float velX = pressingBody.velocity.x * Mathf.Cos(angle) + Impulse * massMult * Mathf.Sin(angle);
+        float velY = pressingBody.velocity.y * Mathf.Sin(angle) + Impulse * massMult * Mathf.Cos(angle);
+        pressingBody.velocity = new Vector2(velX, velY);
 
         if (isPlayer)
             Registry.ins.playerManager.ResetJumpCooldown();
