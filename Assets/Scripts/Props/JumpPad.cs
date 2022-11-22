@@ -7,6 +7,7 @@ public class JumpPad : MonoBehaviour
 {
     public float Impulse;
     public float TimeOffset;
+    public float DefaultPlayerHorizontalMultiplier;
 
     private Animator animator;
 
@@ -37,10 +38,19 @@ public class JumpPad : MonoBehaviour
         if (found)
             massMult = massDivider.massMult;
 
-        float angle = transform.rotation.z;
-        float velX = pressingBody.velocity.x * Mathf.Cos(angle) + Impulse * massMult * Mathf.Sin(angle);
+        float bodySpecificHorMult = 1f;
+        if (isPlayer)
+            bodySpecificHorMult = DefaultPlayerHorizontalMultiplier;
+
+        float angle = transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
+        angle = angle > Mathf.PI ? -(Mathf.PI * 2 - angle) : angle;
+        float velX = pressingBody.velocity.x * Mathf.Cos(angle) - Impulse * massMult * Mathf.Sin(angle) * bodySpecificHorMult;
         float velY = pressingBody.velocity.y * Mathf.Sin(angle) + Impulse * massMult * Mathf.Cos(angle);
         pressingBody.velocity = new Vector2(velX, velY);
+        //Debug.Log(angle);
+        bool isInRange = (Mathf.Abs(angle) < Mathf.PI * 3f / 4f && Mathf.Abs(angle) > Mathf.PI / 4f);
+        if (pressingBody.TryGetComponent(out CorpsePhysics corpse) && isInRange)
+            corpse.kickedMode = true;
 
         if (isPlayer)
             Registry.ins.playerManager.ResetJumpCooldown();

@@ -147,3 +147,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Impulse: 16
   TimeOffset: 0.04
+  DefaultPlayerHorizontalMultiplier: 2
