@@ -19,7 +19,13 @@ public class SignalMediator : SignalActivator
         activeSources = new List<GameObject>();
 
         for (int i = 0; i < activators.Count; i++)
+        { 
             activators[i].ActivationUpdateEvent += UpdateActivation;
+            if (activators[i].activated)
+                activeSources.Add(activators[i].gameObject);
+        }
+
+        base.UpdateActivation(Calculate(), gameObject);
     }
 
     private void OnDestroy()
@@ -33,9 +39,13 @@ public class SignalMediator : SignalActivator
         if (active) activeSources.Add(source);
         else activeSources.Remove(source);
 
-        if (mode == SignalCombinationMode.AND)
-            base.UpdateActivation(activeSources.Count == activators.Count, gameObject); //lol
-        else if (mode == SignalCombinationMode.OR)
-            base.UpdateActivation(activeSources.Count > 0, gameObject);
+        base.UpdateActivation(Calculate(), gameObject);
+    }
+
+    private bool Calculate ()
+    {
+        bool and = (mode == SignalCombinationMode.AND) && (activeSources.Count == activators.Count);
+        bool or = (mode == SignalCombinationMode.OR) && (activeSources.Count > 0);
+        return and || or;
     }
 }
