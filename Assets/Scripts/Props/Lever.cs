@@ -18,11 +18,11 @@ public class Lever : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         bool found = other.TryGetComponent(out SignComponent sign);
-        if (pulled || !found || !sign.HasSign("Body"))
+        if (!found || !sign.HasSign("Body"))
             return;
 
-        pulled = true;
+        pulled = !pulled;
         animator.SetTrigger("Pulled");
-        signal.UpdateActivation(true, gameObject);
+        signal.UpdateActivation(pulled, gameObject);
     }
 }
