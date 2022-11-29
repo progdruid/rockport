@@ -6,6 +6,7 @@ public class Cannon : MonoBehaviour
 {
     [SerializeField] SignalActivator signal;
     public float timePeriod;
+    public float offset;
     public GameObject ProjectilePrefab;
 
     private Vector3 relativeProjSpawnPoint = new Vector3(0f, 0.25f, -1f);
@@ -15,6 +16,7 @@ public class Cannon : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
+        timePassed = -offset;
     }
 
     void Update()
