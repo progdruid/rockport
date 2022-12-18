@@ -179,7 +179,7 @@ MonoBehaviour:
   PushingSpeed: 4
   AccTime: 0.1
   DecTime: 0.05
-  RiseTime: 0.4
+  RiseTime: 0.37
   JumpHeight: 2.9
   CoyoteTime: 0.1
   JumpCooldown: 0.1

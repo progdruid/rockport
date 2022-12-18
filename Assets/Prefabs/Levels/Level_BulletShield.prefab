@@ -218,7 +218,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8058371194849230521}
   m_Layer: 0
-  m_Name: Level3_BulletShield
+  m_Name: Level_BulletShield
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
