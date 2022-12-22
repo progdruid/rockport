@@ -46,28 +46,29 @@ public class PlayerManager : MonoBehaviour
     {
         player.PlayDeathAnimation();
 
-        if (Registry.ins.skullManager.GetSkullsAmount() == 0)
-        {
-            Registry.ins.lm.ReloadLevel();
-        }
-        else
-        {
-            StartCoroutine(KillPlayerRoutine());
-        }
+        bool spawnCorpse = Registry.ins.skullManager.GetSkullsAmount() != 0;
+        StartCoroutine(KillPlayerRoutine(spawnCorpse));
     }
 
-    private IEnumerator KillPlayerRoutine()
+    private IEnumerator KillPlayerRoutine(bool spawnCorpse)
     {
         Vector2 vel = rb.velocity;
         Vector3 pos = player.transform.position;
+        
+        if (spawnCorpse) 
+        {
+            Registry.ins.skullManager.DestroySkull();
+            DestroyPlayer();
+            Transform corpse = Registry.ins.corpseManager.SpawnCorpse(pos, vel).transform;
+            corpse.GetComponent<CorpsePhysics>().kickedMode = true;
+            Registry.ins.cameraManager.SetTarget(corpse);
+            yield return new WaitForSeconds(0.5f);
+        }
 
-        Registry.ins.skullManager.DestroySkull();
-        DestroyPlayer();
-        Transform corpse = Registry.ins.corpseManager.SpawnCorpse(pos, vel).transform;
-        corpse.GetComponent<CorpsePhysics>().kickedMode = true;
-        Registry.ins.cameraManager.SetTarget(corpse);
-        yield return new WaitForSeconds(0.5f);
         yield return Registry.ins.cameraManager.TransiteIn();
+
+        if (!spawnCorpse)
+            DestroyPlayer();
 
         SpawnPlayer();
 

@@ -47,7 +47,7 @@ public class JumpPad : MonoBehaviour
         float velX = pressingBody.velocity.x * Mathf.Cos(angle) - Impulse * massMult * Mathf.Sin(angle) * bodySpecificHorMult;
         float velY = pressingBody.velocity.y * Mathf.Sin(angle) + Impulse * massMult * Mathf.Cos(angle);
         pressingBody.velocity = new Vector2(velX, velY);
-        //Debug.Log(angle);
+
         bool isInRange = (Mathf.Abs(angle) < Mathf.PI * 3f / 4f && Mathf.Abs(angle) > Mathf.PI / 4f);
         if (pressingBody.TryGetComponent(out CorpsePhysics corpse) && isInRange)
             corpse.kickedMode = true;
