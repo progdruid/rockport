@@ -37,8 +37,12 @@ public class Cannon : MonoBehaviour
     {
         if (animator != null)
             animator.SetTrigger("Shot");
-        Transform proj = Instantiate(ProjectilePrefab, transform, false).transform;
-        proj.localPosition = relativeProjSpawnPoint;
-
+        float angle = transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
+        float x = transform.position.x - Mathf.Sin(angle) * 0.25f;
+        float y = transform.position.y + Mathf.Cos(angle) * 0.25f;
+        Vector3 spawnPoint = new Vector3(x, y, 0f);
+        Quaternion spawnRot = transform.rotation;
+        Transform proj = Instantiate(ProjectilePrefab, spawnPoint, spawnRot).transform;
+        
     }
 }

@@ -6,10 +6,18 @@ using UnityEngine;
 public class CannonProjectile : MonoBehaviour
 {
     public float Speed;
+    private Vector3 dir;
+
+    private void Start()
+    {
+        float x = -Mathf.Sin(transform.rotation.eulerAngles.z * Mathf.Deg2Rad);
+        float y = Mathf.Cos(transform.rotation.eulerAngles.z * Mathf.Deg2Rad);
+        dir = new Vector3(x, y, 0f);
+    }
 
     private void Update()
     {
-        transform.localPosition += Vector3.up * Speed * Time.deltaTime;
+        transform.localPosition += dir * Speed * Time.deltaTime;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
