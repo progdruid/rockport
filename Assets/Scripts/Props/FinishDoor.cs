@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FinishTriggerHandler : MonoBehaviour
+public class FinishDoor : MonoBehaviour
 {
     public int LoadLevelIndex;
 
