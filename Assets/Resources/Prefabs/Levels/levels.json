@@ -1,0 +1,102 @@
+{
+  "levels": [
+    {
+      "id": 0,
+      "name": "Testing Grounds",
+      "necessaryLevelsIDs": [],
+      "path": "Prefabs/Levels/Testing Grounds.prefab",
+      "completed": true
+    },
+    {
+      "id": 1,
+      "name": "Valley of Spikes",
+      "necessaryLevelsIDs": [],
+      "path": "Prefabs/Levels/Level_ValleyOfSpikes.prefab",
+      "completed": false
+    },
+    {
+      "id": 2,
+      "name": "Spikey Dilemma",
+      "necessaryLevelsIDs": [ 1 ],
+      "path": "Prefabs/Levels/Level_SpikeyDilemma.prefab",
+      "completed": false
+    },
+    {
+      "id": 3,
+      "name": "Cannonyard",
+      "necessaryLevelsIDs": [ 2 ],
+      "path": "Prefabs/Levels/Level_CannonYard.prefab",
+      "completed": false
+    },
+    {
+      "id": 4,
+      "name": "Bullet Shield",
+      "necessaryLevelsIDs": [ 3 ],
+      "path": "Prefabs/Levels/Level_BulletShield.prefab",
+      "completed": false
+    },
+    {
+      "id": 5,
+      "name": "Fruits",
+      "necessaryLevelsIDs": [ 4 ],
+      "path": "Prefabs/Levels/Level_Fruits.prefab",
+      "completed": false
+    },
+    {
+      "id": 6,
+      "name": "Roundabout Delivery",
+      "necessaryLevelsIDs": [ 5 ],
+      "path": "Prefabs/Levels/Level_RoundaboutDelivery.prefab",
+      "completed": false
+    },
+    {
+      "id": 7,
+      "name": "-",
+      "necessaryLevelsIDs": [ 6 ],
+      "path": "Prefabs/Levels/-.prefab",
+      "completed": false
+    },
+    {
+      "id": 8,
+      "name": "Slicer",
+      "necessaryLevelsIDs": [ 7 ],
+      "path": "Prefabs/Levels/Level_Slicer.prefab",
+      "completed": false
+    },
+    {
+      "id": 9,
+      "name": "Jump Beacon",
+      "necessaryLevelsIDs": [ 8 ],
+      "path": "Prefabs/Levels/Level_JumpBeacon.prefab",
+      "completed": false
+    },
+    {
+      "id": 10,
+      "name": "Thrower",
+      "necessaryLevelsIDs": [ 9 ],
+      "path": "Prefabs/Levels/Level_Thrower.prefab",
+      "completed": false
+    },
+    {
+      "id": 12,
+      "name": "Locked Corridor",
+      "necessaryLevelsIDs": [ 11 ],
+      "path": "Prefabs/Levels/Level_LockedCorridor.prefab",
+      "completed": false
+    },
+    {
+      "id": 19,
+      "name": "Pit of Imprisoned",
+      "necessaryLevelsIDs": [ 18 ],
+      "path": "Prefabs/Levels/Level_PitOfImprisoned.prefab",
+      "completed": false
+    },
+    {
+      "id": -1,
+      "name": "Metronome",
+      "necessaryLevelsIDs": [],
+      "path": "Prefabs/Levels/Level_Metronome.prefab",
+      "completed": false
+    }
+  ]
+}
