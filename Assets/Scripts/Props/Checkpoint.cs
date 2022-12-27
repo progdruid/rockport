@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CheckpointTrigger : MonoBehaviour
+public class Checkpoint : MonoBehaviour
 {
     private Animator animator;
     private bool activated;
@@ -14,7 +14,7 @@ public class CheckpointTrigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (!col.gameObject.GetComponent<SignComponent>().HasSign("Player") || activated)
+        if (!col.gameObject.GetComponent<SignComponent>().HasSign("Body") || activated)
             return;
 
         activated = true;
