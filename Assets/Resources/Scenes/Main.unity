@@ -306,21 +306,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e4c3295bd0c1344fa659721186332d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelIndex: 4
-  levels:
-  - {fileID: 9215722690314533559, guid: 4770159bada69fd438e70ff4471a2b20, type: 3}
-  - {fileID: 9215722690314533559, guid: e1dd87b446a650f4395025711b9a4c21, type: 3}
-  - {fileID: 9215722690314533559, guid: 3093731dd53ed7f4d848c42243a5d220, type: 3}
-  - {fileID: 9215722690314533559, guid: a03a15db51945404383f3eb1717b1192, type: 3}
-  - {fileID: 9215722690314533559, guid: 46d77818ca24ca342802ad7c17eebda6, type: 3}
-  - {fileID: 9215722690314533559, guid: 95951afe2e9222949a09419375db2e09, type: 3}
-  - {fileID: 9215722690314533559, guid: 4636eab905fcc3542821e1654c1885ac, type: 3}
-  - {fileID: 9215722690314533559, guid: 4770159bada69fd438e70ff4471a2b20, type: 3}
-  - {fileID: 9215722690314533559, guid: bc3cdfac60df09a42b44fbd71950a59d, type: 3}
-  - {fileID: 9215722690314533559, guid: 37a01b0984b59ab49a34b428cec7359a, type: 3}
-  - {fileID: 9215722690314533559, guid: f5e89c7b164670d4b93d27d3e8731894, type: 3}
-  - {fileID: 9215722690314533559, guid: 8328db6b7a27597469ebe155427e6dc8, type: 3}
-  - {fileID: 9215722690314533559, guid: 8dba14d9216bde04c987bb81d7bfc010, type: 3}
+  loadLevelID: 1
+  leveltreePath: Prefabs/Levels/levels.json
 --- !u!114 &1262337692
 MonoBehaviour:
   m_ObjectHideFlags: 0

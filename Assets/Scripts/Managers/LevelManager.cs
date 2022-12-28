@@ -4,18 +4,22 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
-    public int levelIndex;
-    public GameObject[] levels;
+    public int loadLevelID;
+    public string leveltreePath;
 
     private int currentLevelIndex;
     private GameObject currentLevel;
+
+    private LevelTree levelTree;
 
     private void OnEnable() => Registry.ins.lm = this;
 
     void Start()
     {
-        LoadLevel(levelIndex);
-        currentLevelIndex = levelIndex;
+        levelTree = LevelTree.Extract(leveltreePath);
+        currentLevelIndex = levelTree.GetLevelIndex(loadLevelID);
+
+        LoadLevel(currentLevelIndex);
     }
 
     #region load
@@ -49,7 +53,9 @@ public class LevelManager : MonoBehaviour
 
         Registry.ins.skullManager.ClearSkulls();
 
-        currentLevel = Instantiate(levels[index]);
+        string path = levelTree.levels[index].path;
+        GameObject prefab = Resources.Load<GameObject>(path);
+        currentLevel = Instantiate(prefab);
         currentLevelIndex = index;
 
         Registry.ins.playerManager.SpawnPlayer();
