@@ -4,9 +4,15 @@ using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
+#if UNITY_EDITOR
+    public bool loadDirectly;
+    public GameObject levelPrefab;
+#endif
+
     public int loadLevelID;
     public string leveltreePath;
 
+    private GameObject levelToLoad;
     private int currentLevelIndex;
     private GameObject currentLevel;
 
@@ -16,13 +22,29 @@ public class LevelManager : MonoBehaviour
 
     void Start()
     {
-        levelTree = LevelTree.Extract(leveltreePath);
-        currentLevelIndex = levelTree.GetLevelIndex(loadLevelID);
+#if UNITY_EDITOR
+        if (loadDirectly)
+            levelToLoad = levelPrefab;
+        else
+            LoadTree();
+#endif
 
+#if !UNITY_EDITOR
+        LoadTree();
+#endif
         LoadLevel(currentLevelIndex);
     }
 
-    #region load
+    private void LoadTree ()
+    {
+        levelTree = LevelTree.Extract(leveltreePath);
+        currentLevelIndex = levelTree.GetLevelIndex(loadLevelID);
+
+        string path = levelTree.levels[currentLevelIndex].path;
+        levelToLoad = Resources.Load<GameObject>(path);
+    }
+
+#region load
 
     private IEnumerator UnloadLevelRoutine ()
     {
@@ -53,14 +75,37 @@ public class LevelManager : MonoBehaviour
 
         Registry.ins.skullManager.ClearSkulls();
 
-        string path = levelTree.levels[index].path;
-        GameObject prefab = Resources.Load<GameObject>(path);
-        currentLevel = Instantiate(prefab);
+        currentLevel = Instantiate(levelToLoad);
         currentLevelIndex = index;
 
         Registry.ins.playerManager.SpawnPlayer();
         
         yield return Registry.ins.cameraManager.TransiteOut();
     }
-    #endregion
+#endregion
 }
+
+#if UNITY_EDITOR
+[UnityEditor.CustomEditor(typeof(LevelManager))]
+public class LevelManagerEditor : UnityEditor.Editor
+{
+    public override void OnInspectorGUI()
+    {
+        LevelManager levelManager = (LevelManager)target;
+        
+        levelManager.loadDirectly = UnityEditor.EditorGUILayout.Toggle("Load Directly", levelManager.loadDirectly);
+        
+        UnityEditor.EditorGUILayout.Space();
+
+        if (levelManager.loadDirectly)
+        {
+            levelManager.levelPrefab = (GameObject)UnityEditor.EditorGUILayout.ObjectField("Load Prefab", levelManager.levelPrefab, typeof(GameObject), true);
+        }
+        else
+        {
+            levelManager.loadLevelID = UnityEditor.EditorGUILayout.IntField("Load Level ID", levelManager.loadLevelID);
+            levelManager.leveltreePath = UnityEditor.EditorGUILayout.TextField("Leveltree Path", levelManager.leveltreePath);
+        }
+    }
+}
+#endif
