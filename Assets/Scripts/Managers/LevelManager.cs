@@ -5,16 +5,16 @@ using UnityEngine;
 public class LevelManager : MonoBehaviour
 {
 #if UNITY_EDITOR
-    public bool loadDirectly;
-    public GameObject levelPrefab;
+    public bool loadDirectly;       //if you want to load a level from a plain prefab without a leveltree
+    public GameObject levelPrefab; 
 #endif
 
-    public int loadLevelID;
+    public int loadLevelID;         //id of the loading level [LevelData.id]
     public string leveltreePath;
 
-    private GameObject levelToLoad;
-    private int currentLevelIndex;
-    private GameObject currentLevel;
+    private int currentLevelIndex;  //index in tree if used
+    private GameObject currentLevel;//level in scene
+    private GameObject levelToLoad; //level prefab in files
 
     private LevelTree levelTree;
 
@@ -32,7 +32,7 @@ public class LevelManager : MonoBehaviour
 #if !UNITY_EDITOR
         LoadTree();
 #endif
-        LoadLevel(currentLevelIndex);
+        LoadLevel();
     }
 
     private void LoadTree ()
@@ -55,18 +55,13 @@ public class LevelManager : MonoBehaviour
         Destroy(currentLevel);
     }
 
-    public void LoadLevel (int index)
+    public void LoadLevel ()
     {
         Registry.ins.playerManager.SetSpawnPoint(Vector2.zero);
-        StartCoroutine(LoadLevelRoutine(index));
+        StartCoroutine(LoadLevelRoutine());
     }
 
-    public void ReloadLevel()
-    {
-        StartCoroutine(LoadLevelRoutine(currentLevelIndex));
-    }
-
-    private IEnumerator LoadLevelRoutine (int index)
+    private IEnumerator LoadLevelRoutine ()
     {
         if (currentLevel != null)
         {
@@ -74,17 +69,14 @@ public class LevelManager : MonoBehaviour
         }
 
         Registry.ins.skullManager.ClearSkulls();
-
         currentLevel = Instantiate(levelToLoad);
-        currentLevelIndex = index;
-
         Registry.ins.playerManager.SpawnPlayer();
-        
         yield return Registry.ins.cameraManager.TransiteOut();
     }
 #endregion
 }
 
+#region disgusting unity editor code
 #if UNITY_EDITOR
 [UnityEditor.CustomEditor(typeof(LevelManager))]
 public class LevelManagerEditor : UnityEditor.Editor
@@ -109,3 +101,4 @@ public class LevelManagerEditor : UnityEditor.Editor
     }
 }
 #endif
+#endregion
