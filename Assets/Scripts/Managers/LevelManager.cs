@@ -57,7 +57,6 @@ public class LevelManager : MonoBehaviour
 
     public void LoadLevel ()
     {
-        Registry.ins.playerManager.SetSpawnPoint(Vector2.zero);
         StartCoroutine(LoadLevelRoutine());
     }
 
@@ -70,10 +69,26 @@ public class LevelManager : MonoBehaviour
 
         Registry.ins.skullManager.ClearSkulls();
         currentLevel = Instantiate(levelToLoad);
+
+        TryFindAndSetSpawnPoint();
+        
         Registry.ins.playerManager.SpawnPlayer();
         yield return Registry.ins.cameraManager.TransiteOut();
     }
-#endregion
+
+    private void TryFindAndSetSpawnPoint ()
+    {
+        try
+        {
+            Transform spawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint").transform;
+            Registry.ins.playerManager.SetSpawnPoint(spawnPoint.position);
+        }
+        catch
+        { 
+            Registry.ins.playerManager.SetSpawnPoint(Vector2.zero); 
+        }
+    }
+    #endregion
 }
 
 #region disgusting unity editor code
