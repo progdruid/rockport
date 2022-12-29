@@ -28,7 +28,8 @@ public class Player : MonoBehaviour
     private float jumpCooldown = 0f;
 
     private Rigidbody2D pushingRB;
-    private bool pushing = false;
+    private bool pushingLeft = false;
+    private bool pushingRight = false;
     private bool wallLeft = false;
     private bool wallRight = false;
     //private bool staysOnGround = false;
@@ -85,7 +86,7 @@ public class Player : MonoBehaviour
         collider.GetContacts(contactPoints);
         CheckForCollision(contactPoints);
 
-        speed = pushing ? PushingSpeed : MaxSpeed;
+        speed = (pushingLeft || pushingRight) ? PushingSpeed : MaxSpeed;
         coyoteTime = stayChecker.stayingOnGround ? 0f : coyoteTime + Time.deltaTime;
         jumpCooldown += jumpCooldown < JumpCooldown ? Time.deltaTime : 0f;
 
@@ -130,7 +131,7 @@ public class Player : MonoBehaviour
                 newvel = speed * Mathf.Sign(newvel);
 
             rb.velocity = new Vector2(newvel, rb.velocity.y);
-            if(pushing)
+            if((pushingLeft && newvel < 0f) || (pushingRight && newvel > 0f))
                 pushingRB.velocity = new Vector2(newvel * 0.9f, pushingRB.velocity.y);
         }
         else if (value == 0f && rb.velocity.x != 0f) //deceleration
@@ -149,7 +150,8 @@ public class Player : MonoBehaviour
         wallLeft = false;
         wallRight = false; 
         //staysOnGround = false;
-        pushing = false;
+        pushingLeft = false;
+        pushingRight = false;
         pushingRB = null;
 
         foreach (var contact in contacts)
@@ -161,10 +163,13 @@ public class Player : MonoBehaviour
 
             bool touchesBody = contact.collider.TryGetComponent(out SignComponent sign) && sign.HasSign("Body");
             bool touchesSide = Mathf.Abs(point.y) < Mathf.Abs(point.x);
-            pushing = (touchesBody && touchesSide) || pushing;
+            bool touchesLeft = touchesSide && point.x < 0;
+            bool touchesRight = touchesSide && point.x > 0;
+            pushingLeft = (touchesBody && touchesLeft) || pushingLeft;
+            pushingRight = (touchesBody && touchesRight) || pushingRight;
             pushingRB = (touchesBody && touchesSide) ? sign.GetComponent<Rigidbody2D>() : pushingRB;
-            wallLeft = (touchesSide && point.x < 0f && !pushing) || wallLeft;
-            wallRight = (touchesSide && point.x > 0f && !pushing) || wallRight;
+            wallLeft = (touchesSide && point.x < 0f && !pushingLeft) || wallLeft;
+            wallRight = (touchesSide && point.x > 0f && !pushingRight) || wallRight;
         }
     }
 
