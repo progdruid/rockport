@@ -8,19 +8,19 @@ public class CameraManager : MonoBehaviour
     [SerializeField] float boxSize;
 
     private new Camera camera;
-    private Rigidbody2D rb;
     private Animator transition;
     private Transform target;
 
     private bool transiting = true;
 
     private void OnEnable() => Registry.ins.cameraManager = this;
-    void Start()
+    void Awake()
     {
         camera = GetComponent<Camera>();
-        rb = GetComponent<Rigidbody2D>();
         transition = camera.transform.GetChild(0).GetComponent<Animator>();
-
+    }
+    private void Start()
+    {
         Registry.ins.playerManager.PlayerSpawnEvent += HandlePlayerSpawn;
     }
 

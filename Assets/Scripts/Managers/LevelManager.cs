@@ -18,7 +18,7 @@ public class LevelManager : MonoBehaviour
 
     private LevelTree levelTree;
 
-    private void OnEnable() => Registry.ins.lm = this;
+    private void Awake() => Registry.ins.lm = this;
 
     void Start()
     {

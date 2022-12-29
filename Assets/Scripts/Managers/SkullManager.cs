@@ -8,7 +8,7 @@ public class SkullManager : MonoBehaviour
 
     private int availableSkulls;
 
-    private void OnEnable() => Registry.ins.skullManager = this;
+    private void Awake() => Registry.ins.skullManager = this;
 
     public void ClearSkulls ()
     {

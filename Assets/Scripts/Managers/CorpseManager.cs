@@ -9,12 +9,8 @@ public class CorpseManager : MonoBehaviour
     public GameObject corpsePrefab;
     private List<GameObject> corpses = new List<GameObject>();
 
-    private void OnEnable() => Registry.ins.corpseManager = this;
-
-    private void Start()
-    {
-        CorpseUpdateEvent();
-    }
+    private void Awake() => Registry.ins.corpseManager = this;
+    private void Start() => CorpseUpdateEvent();
 
     public GameObject SpawnCorpse (Vector2 pos, Vector2 startVel)
     {

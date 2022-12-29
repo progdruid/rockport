@@ -48,7 +48,7 @@ public class InputSystem : MonoBehaviour
         }
     }
 
-    void OnEnable() => Registry.ins.inputSystem = this;
+    void Awake() => Registry.ins.inputSystem = this;
 
     void Update()
     {

@@ -12,21 +12,11 @@ public class PlayerManager : MonoBehaviour
     private Rigidbody2D rb => player.GetComponent<Rigidbody2D>();
     private Vector2 spawnPoint = Vector2.zero;
 
-    private void OnEnable() => Registry.ins.playerManager = this;
-    private void Start()
-    {
-        Registry.ins.inputSystem.KillPlayerKeyPressEvent += KillPlayer;
-    }
-    private void OnDestroy()
-    {
-        Registry.ins.inputSystem.KillPlayerKeyPressEvent -= KillPlayer;
-    }
-
-    public void SetSpawnPoint (Vector2 pos)
-    {
-        spawnPoint = pos;
-    }
-
+    private void Awake() => Registry.ins.playerManager = this;
+    private void Start() => Registry.ins.inputSystem.KillPlayerKeyPressEvent += KillPlayer;
+    private void OnDestroy() => Registry.ins.inputSystem.KillPlayerKeyPressEvent -= KillPlayer;
+    public void SetSpawnPoint (Vector2 pos) => spawnPoint = pos;
+    
     public void SpawnPlayer ()
     {
         if (player != null)
