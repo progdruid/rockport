@@ -51,9 +51,9 @@
     },
     {
       "id": 7,
-      "name": "-",
+      "name": "Puppeteer",
       "necessaryLevelsIDs": [ 6 ],
-      "path": "Prefabs/Levels/-",
+      "path": "Prefabs/Levels/Level_Puppeteer",
       "completed": false
     },
     {
