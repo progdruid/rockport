@@ -11,6 +11,7 @@ public class PlayerManager : MonoBehaviour
     public Player player { get; private set; }
     private Rigidbody2D rb => player.GetComponent<Rigidbody2D>();
     private Vector2 spawnPoint = Vector2.zero;
+    private bool killingPlayer;
 
     private void Awake() => Registry.ins.playerManager = this;
     private void Start() => Registry.ins.inputSystem.KillPlayerKeyPressEvent += KillPlayer;
@@ -34,6 +35,9 @@ public class PlayerManager : MonoBehaviour
 
     public void KillPlayer ()
     {
+        if (killingPlayer)
+            return;
+        killingPlayer = true;
         player.PlayDeathAnimation();
 
         bool spawnCorpse = Registry.ins.skullManager.GetSkullsAmount() != 0;
@@ -59,6 +63,7 @@ public class PlayerManager : MonoBehaviour
 
         if (!spawnCorpse)
             DestroyPlayer();
+        killingPlayer = false;
 
         SpawnPlayer();
 
