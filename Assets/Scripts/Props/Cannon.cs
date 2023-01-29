@@ -11,12 +11,10 @@ public class Cannon : MonoBehaviour
 
     private Vector3 relativeProjSpawnPoint = new Vector3(0f, 0.25f, -1f);
     private Animator animator;
-    private float timePassed;
 
     void Start()
     {
         animator = GetComponent<Animator>();
-        timePassed = -offset;
     }
 
     void Update()
@@ -24,13 +22,8 @@ public class Cannon : MonoBehaviour
         if (signal != null && signal.activated)//cuz by activating signal you're disabling cannons
             return;
 
-        if (timePassed < timePeriod)
-            timePassed += Time.deltaTime;
-        else
-        {
-            timePassed = 0;
+        if ((Time.time + timePeriod - offset)%timePeriod <= Time.deltaTime)
             Shoot();
-        }
     }
 
     private void Shoot ()
