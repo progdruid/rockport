@@ -78,6 +78,13 @@
       "completed": false
     },
     {
+      "id": 11,
+      "name": "Blocker",
+      "necessaryLevelsIDs": [ 10 ],
+      "path": "Prefabs/Levels/Level_Blocker",
+      "completed": false
+    },
+    {
       "id": 12,
       "name": "Locked Corridor",
       "necessaryLevelsIDs": [ 11 ],
