@@ -28,28 +28,42 @@ public class JumpPad : MonoBehaviour
     private IEnumerator Push (Rigidbody2D pressingBody, SignComponent sign)
     {
         //disables jump if it's a player //lil hack to avoid the if statement
-        bool isPlayer = sign.HasSign("Player");
+        bool isPlayer = pressingBody.TryGetComponent(out Player player);
+        bool isCorpse = pressingBody.TryGetComponent(out CorpsePhysics corpse);
         Registry.ins.inputSystem.CanJump = !isPlayer;
 
         animator.SetTrigger("Pressed");
+
         yield return new WaitForSeconds(TimeOffset);
+
+
+        //jump pads should always push on the same height, even if
+        //there are multible bodies stacked one onto another
         float massMult = 1f;
         bool found = pressingBody.TryGetComponent(out MassDivider massDivider);
         if (found)
             massMult = massDivider.massMult;
 
+        //player physics does not work well with horizontal jump pads, because of deceleration
+        //therefore the greated m
         float bodySpecificHorMult = 1f;
         if (isPlayer)
-            bodySpecificHorMult = DefaultPlayerHorizontalMultiplier;
+           bodySpecificHorMult = DefaultPlayerHorizontalMultiplier;
 
+        //calc angle
         float angle = transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
         angle = angle > Mathf.PI ? -(Mathf.PI * 2 - angle) : angle;
+
+        //calc the velocity xy
         float velX = pressingBody.velocity.x * Mathf.Cos(angle) - Impulse * massMult * Mathf.Sin(angle) * bodySpecificHorMult;
         float velY = pressingBody.velocity.y * Mathf.Sin(angle) + Impulse * massMult * Mathf.Cos(angle);
+
         pressingBody.velocity = new Vector2(velX, velY);
 
+
+        //if it is a corpse, give a kicked mode to this corpse
         bool isInRange = (Mathf.Abs(angle) < Mathf.PI * 3f / 4f && Mathf.Abs(angle) > Mathf.PI / 4f);
-        if (pressingBody.TryGetComponent(out CorpsePhysics corpse) && isInRange)
+        if (isCorpse && isInRange)
             corpse.kickedMode = true;
 
         if (isPlayer)
@@ -58,9 +72,12 @@ public class JumpPad : MonoBehaviour
 
     private void OnTriggerExit2D (Collider2D other)
     {
-        bool found = other.TryGetComponent(out SignComponent sign);
+        bool found = other.TryGetComponent(out Player player);
 
-        //enables jump if it's a player //lil hack to avoid the if statement
-        Registry.ins.inputSystem.CanJump = Registry.ins.inputSystem.CanJump || (found && sign.HasSign("Player"));
+        if (found)
+        {
+            Registry.ins.inputSystem.CanJump = true;
+            player.pushedByPad = true;
+        }
     }
 }

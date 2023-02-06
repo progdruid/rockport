@@ -16,6 +16,8 @@ public class Player : MonoBehaviour
     public float SuppressMultiplier;
     public float MaxJumpImpulseMultiplier;
 
+    [HideInInspector] public bool pushedByPad;
+
     //classes
     private Rigidbody2D rb;
     private new Collider2D collider;
@@ -89,6 +91,7 @@ public class Player : MonoBehaviour
         speed = (pushingLeft || pushingRight) ? PushingSpeed : MaxSpeed;
         coyoteTime = stayChecker.stayingOnGround ? 0f : coyoteTime + Time.deltaTime;
         jumpCooldown += jumpCooldown < JumpCooldown ? Time.deltaTime : 0f;
+        pushedByPad = !stayChecker.stayingOnGround && pushedByPad;
 
         MoveSide();
 
@@ -100,7 +103,7 @@ public class Player : MonoBehaviour
 
     private void Jump ()
     {
-        if (coyoteTime <= CoyoteTime && jumpCooldown >= JumpCooldown)
+        if (coyoteTime <= CoyoteTime && jumpCooldown >= JumpCooldown && !pushedByPad)
         {
             float newVel = rb.velocity.y + jumpImpulse;
             newVel = Mathf.Clamp(newVel, -100, jumpImpulse * MaxJumpImpulseMultiplier);
@@ -111,7 +114,7 @@ public class Player : MonoBehaviour
 
     private void SuppressJump ()
     {
-        if (rb.velocity.y >= 0)
+        if (rb.velocity.y >= 0 && !pushedByPad)
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * SuppressMultiplier);
     }
 
