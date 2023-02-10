@@ -51,43 +51,50 @@
     },
     {
       "id": 7,
-      "name": "Puppeteer",
+      "name": "Mortal Elevator",
       "necessaryLevelsIDs": [ 6 ],
-      "path": "Prefabs/Levels/Level_Puppeteer",
+      "path": "Prefabs/Levels/Level_MortalElevator",
       "completed": false
     },
     {
       "id": 8,
-      "name": "Slicer",
+      "name": "Puppeteer",
       "necessaryLevelsIDs": [ 7 ],
-      "path": "Prefabs/Levels/Level_Slicer",
+      "path": "Prefabs/Levels/Level_Puppeteer",
       "completed": false
     },
     {
       "id": 9,
-      "name": "Jump Beacon",
+      "name": "Slicer",
       "necessaryLevelsIDs": [ 8 ],
-      "path": "Prefabs/Levels/Level_JumpBeacon",
+      "path": "Prefabs/Levels/Level_Slicer",
       "completed": false
     },
     {
       "id": 10,
-      "name": "Thrower",
+      "name": "Jump Beacon",
       "necessaryLevelsIDs": [ 9 ],
-      "path": "Prefabs/Levels/Level_Thrower",
+      "path": "Prefabs/Levels/Level_JumpBeacon",
       "completed": false
     },
     {
       "id": 11,
-      "name": "Blocker",
+      "name": "Thrower",
       "necessaryLevelsIDs": [ 10 ],
-      "path": "Prefabs/Levels/Level_Blocker",
+      "path": "Prefabs/Levels/Level_Thrower",
       "completed": false
     },
     {
       "id": 12,
-      "name": "Locked Corridor",
+      "name": "Blocker",
       "necessaryLevelsIDs": [ 11 ],
+      "path": "Prefabs/Levels/Level_Blocker",
+      "completed": false
+    },
+    {
+      "id": 13,
+      "name": "Locked Corridor",
+      "necessaryLevelsIDs": [ 12 ],
       "path": "Prefabs/Levels/Level_LockedCorridor",
       "completed": false
     },
