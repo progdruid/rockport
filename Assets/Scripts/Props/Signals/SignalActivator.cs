@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SignalActivator : MonoBehaviour
 {
+    [SerializeField] bool Output;
     public bool activated { get; private set; }
     public event System.Action<bool, GameObject> ActivationUpdateEvent = delegate { };
 
@@ -20,6 +21,7 @@ public class SignalActivator : MonoBehaviour
     public virtual void UpdateActivation (bool active, GameObject source)
     {
         activated = active;
+        Output = active;
         ActivationUpdateEvent (active, source);
     }
 }

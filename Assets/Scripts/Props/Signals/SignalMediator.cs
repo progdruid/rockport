@@ -36,8 +36,8 @@ public class SignalMediator : SignalActivator
 
     public override void UpdateActivation(bool active, GameObject source)
     {
-        if (active) activeSources.Add(source);
-        else activeSources.Remove(source);
+        if (active && !activeSources.Contains(source)) activeSources.Add(source);
+        if (!active) activeSources.Remove(source);
 
         base.UpdateActivation(Calculate(), gameObject);
     }
