@@ -45,7 +45,7 @@ public class JumpPad : MonoBehaviour
             massMult = massDivider.massMult;
 
         //player physics does not work well with horizontal jump pads, because of deceleration
-        //therefore the greated m
+        //therefore the greater multipilier is used
         float bodySpecificHorMult = 1f;
         if (isPlayer)
            bodySpecificHorMult = DefaultPlayerHorizontalMultiplier;
@@ -57,7 +57,7 @@ public class JumpPad : MonoBehaviour
         //calc the velocity xy
         float velX = pressingBody.velocity.x * Mathf.Cos(angle) - Impulse * massMult * Mathf.Sin(angle) * bodySpecificHorMult;
         float velY = pressingBody.velocity.y * Mathf.Sin(angle) + Impulse * massMult * Mathf.Cos(angle);
-
+        
         pressingBody.velocity = new Vector2(velX, velY);
 
 

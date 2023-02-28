@@ -99,10 +99,10 @@
       "completed": false
     },
     {
-      "id": 19,
-      "name": "Pit of Imprisoned",
-      "necessaryLevelsIDs": [ 18 ],
-      "path": "Prefabs/Levels/Level_PitOfImprisoned",
+      "id": 14,
+      "name": "Locked Barriers",
+      "necessaryLevelsIDs": [ 13 ],
+      "path": "Prefabs/Levels/Level_LockedBarriers",
       "completed": false
     },
     {
