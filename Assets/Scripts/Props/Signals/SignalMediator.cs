@@ -7,7 +7,8 @@ public class SignalMediator : SignalActivator
     private enum SignalCombinationMode
     {
         AND,
-        OR
+        OR,
+        XOR
     }
 
     [SerializeField] SignalCombinationMode mode;
@@ -44,8 +45,15 @@ public class SignalMediator : SignalActivator
 
     private bool Calculate ()
     {
-        bool and = (mode == SignalCombinationMode.AND) && (activeSources.Count == activators.Count);
-        bool or = (mode == SignalCombinationMode.OR) && (activeSources.Count > 0);
-        return and || or;
+        bool res = false;
+
+        if (mode == SignalCombinationMode.AND)
+            res = activeSources.Count == activators.Count;
+        else if (mode == SignalCombinationMode.OR)
+            res = activeSources.Count > 0;
+        else if (mode == SignalCombinationMode.XOR)
+            res = activeSources.Count > 0 && activeSources.Count < activators.Count;
+
+        return res;
     }
 }
