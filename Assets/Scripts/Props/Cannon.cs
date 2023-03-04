@@ -9,7 +9,6 @@ public class Cannon : MonoBehaviour
     public float offset;
     public GameObject ProjectilePrefab;
 
-    private Vector3 relativeProjSpawnPoint = new Vector3(0f, 0.25f, -1f);
     private Animator animator;
 
     void Start()
@@ -33,7 +32,7 @@ public class Cannon : MonoBehaviour
         float angle = transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
         float x = transform.position.x - Mathf.Sin(angle) * 0.25f;
         float y = transform.position.y + Mathf.Cos(angle) * 0.25f;
-        Vector3 spawnPoint = new Vector3(x, y, 0f);
+        Vector3 spawnPoint = new Vector3(x, y, -0.5f);
         Quaternion spawnRot = transform.rotation;
         Transform proj = Instantiate(ProjectilePrefab, spawnPoint, spawnRot).transform;
         
