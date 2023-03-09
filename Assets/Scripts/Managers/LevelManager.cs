@@ -12,11 +12,15 @@ public class LevelManager : MonoBehaviour
     public int loadLevelID;         //id of the loading level [LevelData.id]
     public string leveltreePath;
 
+    //temporary property
+    //to-do in future:
+    //  * rename LevelManager -> LevelLoader which will only accept LevelData as an input
+    //  * create a separate class LevelTreeManager or smth that will manage all processes with the level tree
+    public LevelTree levelTree { get; private set; } 
+
     private int currentLevelIndex;  //index in tree if used
     private GameObject currentLevel;//level in scene
     private GameObject levelToLoad; //level prefab in files
-
-    private LevelTree levelTree;
 
     private void Awake() => Registry.ins.lm = this;
 
@@ -26,18 +30,19 @@ public class LevelManager : MonoBehaviour
         if (loadDirectly)
             levelToLoad = levelPrefab;
         else
-            LoadTree();
+        {
+            levelTree = LevelTree.Extract(leveltreePath);
+        }
 #endif
 
 #if !UNITY_EDITOR
-        LoadTree();
+        levelTree = LevelTree.Extract(leveltreePath);
 #endif
         LoadLevel();
     }
 
-    private void LoadTree ()
+    private void LoadAndPrepareLevelPrefab ()
     {
-        levelTree = LevelTree.Extract(leveltreePath);
         currentLevelIndex = levelTree.GetLevelIndex(loadLevelID);
 
         string path = levelTree.levels[currentLevelIndex].path;
@@ -46,10 +51,8 @@ public class LevelManager : MonoBehaviour
 
 #region load
 
-    private IEnumerator UnloadLevelRoutine ()
+    private void UnloadLevel ()
     {
-        yield return Registry.ins.cameraManager.TransiteIn();
-
         Registry.ins.corpseManager.ClearCorpses();
         Registry.ins.playerManager.DestroyPlayer();
         Destroy(currentLevel);
@@ -64,8 +67,18 @@ public class LevelManager : MonoBehaviour
     {
         if (currentLevel != null)
         {
-            yield return UnloadLevelRoutine();
+            yield return Registry.ins.cameraManager.TransiteIn();
+            UnloadLevel();
         }
+
+
+#if UNITY_EDITOR
+        if (!loadDirectly)
+            LoadAndPrepareLevelPrefab();
+#endif
+#if !UNITY_EDITOR
+        LoadAndPrepareLevelPrefab();
+#endif
 
         Registry.ins.skullManager.ClearSkulls();
         currentLevel = Instantiate(levelToLoad);
@@ -78,15 +91,16 @@ public class LevelManager : MonoBehaviour
 
     private void TryFindAndSetSpawnPoint ()
     {
-        try
-        {
-            Transform spawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint").transform;
-            Registry.ins.playerManager.SetSpawnPoint(spawnPoint.position);
-        }
-        catch
-        { 
-            Registry.ins.playerManager.SetSpawnPoint(Vector2.zero); 
-        }
+        Transform spawnPoint;
+        for (int i = 0; i < currentLevel.transform.childCount; i++)
+            if (currentLevel.transform.GetChild(i).tag == "SpawnPoint")
+            {
+                spawnPoint = currentLevel.transform.GetChild(i);
+                Registry.ins.playerManager.SetSpawnPoint(spawnPoint.position);
+                return;
+            }
+
+        Registry.ins.playerManager.SetSpawnPoint(Vector2.zero);
     }
     #endregion
 }
