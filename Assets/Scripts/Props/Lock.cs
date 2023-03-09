@@ -15,13 +15,15 @@ public class Lock : MonoBehaviour
     {
         tilemap = GetComponent<Tilemap>();
         col = GetComponent<Collider2D>();
-
-        signal.ActivationUpdateEvent += HandleActivation;
+        
+        if (signal != null)
+            signal.ActivationUpdateEvent += HandleActivation;
     }
 
     private void OnDestroy()
     {
-        signal.ActivationUpdateEvent -= HandleActivation;
+        if (signal != null)
+            signal.ActivationUpdateEvent -= HandleActivation;
     }
 
     private void HandleActivation (bool activated, GameObject source)
