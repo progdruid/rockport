@@ -65,8 +65,13 @@ public class InputSystem : MonoBehaviour
         else if (Input.GetKeyUp(KeyCode.Space))
             JumpKeyReleaseEvent();
 
+        //temporary
+        //will not be in the final game
+        //exists only for testing
         if (Input.GetKeyDown(KeyCode.E))
             KillPlayerKeyPressEvent();
+        if (Input.GetKeyDown(KeyCode.R))
+            Registry.ins.lm.LoadLevel();
 
     }
 }
