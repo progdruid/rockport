@@ -41,15 +41,20 @@ public class LevelManager : MonoBehaviour
         LoadLevel();
     }
 
-    private void LoadAndPrepareLevelPrefab ()
+    public void AttachToLevelAsChild (Transform transform)
+    {
+        transform.SetParent(currentLevel.transform);
+    }
+
+#region load
+
+    private void LoadAndPrepareLevelPrefab()
     {
         currentLevelIndex = levelTree.GetLevelIndex(loadLevelID);
 
         string path = levelTree.levels[currentLevelIndex].path;
         levelToLoad = Resources.Load<GameObject>(path);
     }
-
-#region load
 
     private void UnloadLevel ()
     {

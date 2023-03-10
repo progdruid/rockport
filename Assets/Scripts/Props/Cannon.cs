@@ -35,6 +35,6 @@ public class Cannon : MonoBehaviour
         Vector3 spawnPoint = new Vector3(x, y, -0.5f);
         Quaternion spawnRot = transform.rotation;
         Transform proj = Instantiate(ProjectilePrefab, spawnPoint, spawnRot).transform;
-        
+        Registry.ins.lm.AttachToLevelAsChild(proj);
     }
 }
