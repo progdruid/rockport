@@ -66,13 +66,6 @@ public class Player : MonoBehaviour
 
         InitValues();
     }
-#if UNITY_EDITOR
-    private void OnValidate()
-    {   
-        if (Application.isPlaying)
-            InitValues();
-    }
-#endif
 
     private void InitValues ()
     {

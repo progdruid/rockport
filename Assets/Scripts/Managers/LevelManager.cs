@@ -6,9 +6,9 @@ public class LevelManager : MonoBehaviour
 {
 #if UNITY_EDITOR
     public bool loadDirectly;       //if you want to load a level from a plain prefab without a leveltree
-    public GameObject levelPrefab; 
+    public GameObject levelPrefab;
 #endif
-
+    
     public int loadLevelID;         //id of the loading level [LevelData.id]
     public string leveltreePath;
 
@@ -26,18 +26,27 @@ public class LevelManager : MonoBehaviour
 
     void Start()
     {
+        bool allowedToExtractLevelTree = true;
+        //GameObject.FindGameObjectWithTag("Test").SetActive(false);
 #if UNITY_EDITOR
+        allowedToExtractLevelTree = false;
+        //GameObject.FindGameObjectWithTag("Test").SetActive(false);
         if (loadDirectly)
             levelToLoad = levelPrefab;
         else
         {
             levelTree = LevelTree.Extract(leveltreePath);
+            //GameObject.FindGameObjectWithTag("Test").SetActive(false);
         }
 #endif
-
-#if !UNITY_EDITOR
-        levelTree = LevelTree.Extract(leveltreePath);
-#endif
+        //GameObject.FindGameObjectWithTag("Test").SetActive(false);
+        if (allowedToExtractLevelTree)
+        {
+            //GameObject.FindGameObjectWithTag("Test").SetActive(false);
+            levelTree = LevelTree.Extract(leveltreePath); 
+            //GameObject.FindGameObjectWithTag("Test").SetActive(false);
+        }
+        //GameObject.FindGameObjectWithTag("Test").SetActive(false);
         LoadLevel();
     }
 
@@ -76,14 +85,12 @@ public class LevelManager : MonoBehaviour
             UnloadLevel();
         }
 
-
+        bool allowedToLoadPrefab = true;
 #if UNITY_EDITOR
-        if (!loadDirectly)
+        allowedToLoadPrefab = !loadDirectly;
+#endif
+        if (allowedToLoadPrefab)
             LoadAndPrepareLevelPrefab();
-#endif
-#if !UNITY_EDITOR
-        LoadAndPrepareLevelPrefab();
-#endif
 
         Registry.ins.skullManager.ClearSkulls();
         currentLevel = Instantiate(levelToLoad);

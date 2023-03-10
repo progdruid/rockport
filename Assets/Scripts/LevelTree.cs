@@ -30,9 +30,13 @@ public struct LevelTree
 
     public static LevelTree Extract (string path)
     {
-        StreamReader reader = new StreamReader("Assets/Resources/" + path);
-        string json = reader.ReadToEnd();
-        reader.Close();
+        //GameObject.FindGameObjectWithTag("Test").SetActive(false);
+        //StreamReader reader = new StreamReader("Assets/Resources/" + path);
+        Object file = Resources.Load(path);
+        GameObject.FindGameObjectWithTag("Test").SetActive(false);
+        
+        string json = ((TextAsset)file).text;
+        //reader.Close();
 
         LevelTree tree = JsonUtility.FromJson<LevelTree>(json);
         return tree;

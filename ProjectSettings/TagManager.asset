@@ -7,6 +7,7 @@ TagManager:
   - Ground
   - Corpse
   - SpawnPoint
+  - Test
   layers:
   - Default
   - TransparentFX
