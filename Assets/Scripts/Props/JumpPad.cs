@@ -27,7 +27,7 @@ public class JumpPad : MonoBehaviour
 
     private IEnumerator Push (Rigidbody2D pressingBody, SignComponent sign)
     {
-        //disables jump if it's a player //lil hack to avoid the if statement
+        //disables jump if it's a trigPlayer //lil hack to avoid the if statement
         bool isPlayer = pressingBody.TryGetComponent(out Player player);
         bool isCorpse = pressingBody.TryGetComponent(out CorpsePhysics corpse);
         Registry.ins.inputSystem.CanJump = !isPlayer;
@@ -44,7 +44,7 @@ public class JumpPad : MonoBehaviour
         if (found)
             massMult = massDivider.massMult;
 
-        //player physics does not work well with horizontal jump pads, because of deceleration
+        //trigPlayer physics does not work well with horizontal jump pads, because of deceleration
         //therefore the greater multipilier is used
         float bodySpecificHorMult = 1f;
         if (isPlayer)

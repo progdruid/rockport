@@ -27,7 +27,7 @@ public class CollectibleSkull : MonoBehaviour
             Collect();
     }
 
-    //suppesed to be a coroutine due to animation,
+    //supposed to be a coroutine due to animation,
     //but because there is no animation yet, it is just a method
     private void Collect ()
     {
