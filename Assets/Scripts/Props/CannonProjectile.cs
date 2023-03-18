@@ -3,16 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[RequireComponent(typeof(UniversalTrigger))]
 public class CannonProjectile : MonoBehaviour
 {
     public float Speed;
     private Vector3 dir;
 
+    private UniversalTrigger trigger;
+
     private void Start()
     {
+        trigger = GetComponent<UniversalTrigger>();
+        trigger.EnterEvent += HandleTriggerEnter;
+
         float x = -Mathf.Sin(transform.rotation.eulerAngles.z * Mathf.Deg2Rad);
         float y = Mathf.Cos(transform.rotation.eulerAngles.z * Mathf.Deg2Rad);
         dir = new Vector3(x, y, 0f);
+    }
+
+    private void OnDestroy()
+    {
+        trigger.EnterEvent -= HandleTriggerEnter;
     }
 
     private void Update()
@@ -20,10 +31,9 @@ public class CannonProjectile : MonoBehaviour
         transform.localPosition += dir * Speed * Time.deltaTime;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void HandleTriggerEnter (Collider2D other, TriggeredType type)
     {
-        bool isSigned = other.gameObject.TryGetComponent(out SignComponent sign);
-        if (isSigned && sign.GetSigns().Contains("Player"))
+        if (type == TriggeredType.Player)
             Registry.ins.playerManager.KillPlayer();
 
         if (!other.isTrigger)

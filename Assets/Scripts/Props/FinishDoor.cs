@@ -3,12 +3,27 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 
+[RequireComponent(typeof(UniversalTrigger))]
 public class FinishDoor : MonoBehaviour
 {
-    private void OnTriggerEnter2D(Collider2D col)
+    private UniversalTrigger trigger;
+
+    #region ceremony
+    private void Start()
     {
-        bool signFound = col.TryGetComponent(out SignComponent sign);
-        if (!signFound || !sign.HasSign("Player"))
+        trigger = GetComponent<UniversalTrigger>();
+        trigger.EnterEvent += HandleTriggerEnter;
+    }
+
+    private void OnDestroy()
+    {
+        trigger.EnterEvent -= HandleTriggerEnter;
+    }
+    #endregion
+
+    private void HandleTriggerEnter (Collider2D col, TriggeredType type)
+    {
+        if (type != TriggeredType.Player)
             return;
 
 #if UNITY_EDITOR
@@ -28,5 +43,14 @@ public class FinishDoor : MonoBehaviour
 
         Registry.ins.lm.loadLevelID = currentId + 1;
         Registry.ins.lm.LoadLevel();
-    }
+    }/*
+
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        bool signFound = col.TryGetComponent(out SignComponent sign);
+        if (!signFound || !sign.HasSign("Player"))
+            return;
+
+
+    }*/
 }

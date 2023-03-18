@@ -2,19 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(UniversalTrigger))]
 public class Checkpoint : MonoBehaviour
 {
     private Animator animator;
+    private UniversalTrigger trigger;
+
     private bool activated;
 
-    void Start()
+    #region ceremony
+    private void Start()
     {
         animator = GetComponent<Animator>();
+        trigger = GetComponent<UniversalTrigger>();
+        trigger.EnterEvent += HandleTriggerEnter;
     }
 
-    private void OnTriggerEnter2D(Collider2D col)
+    private void OnDestroy()
     {
-        if (!col.gameObject.GetComponent<SignComponent>().HasSign("Body") || activated)
+        trigger.EnterEvent -= HandleTriggerEnter;
+    }
+    #endregion
+
+    private void HandleTriggerEnter(Collider2D other, TriggeredType type)
+    {
+        if ((type != TriggeredType.Player && type != TriggeredType.Corpse) || activated)
             return;
 
         activated = true;

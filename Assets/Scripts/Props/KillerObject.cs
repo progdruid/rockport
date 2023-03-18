@@ -2,12 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(UniversalTrigger))]
 public class KillerObject : MonoBehaviour
 {
-    public void OnTriggerEnter2D (Collider2D col)
+    private UniversalTrigger trigger;
+
+    #region ceremony
+    private void Start()
     {
-        bool isSigned = col.gameObject.TryGetComponent(out SignComponent sign);
-        if (!isSigned || !sign.HasSign("Player") || !Registry.ins.inputSystem.Active)
+        trigger = GetComponent<UniversalTrigger>();
+        trigger.EnterEvent += HandleTriggerEnter;
+    }
+
+    private void OnDestroy()
+    {
+        trigger.EnterEvent -= HandleTriggerEnter;
+    }
+    #endregion
+
+    private void HandleTriggerEnter (Collider2D col, TriggeredType type)
+    {
+        if (type != TriggeredType.Player || !Registry.ins.inputSystem.Active)
             return;
 
         Registry.ins.playerManager.KillPlayer();

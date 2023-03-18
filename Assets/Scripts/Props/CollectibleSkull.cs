@@ -1,13 +1,29 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(UniversalTrigger))]
 public class CollectibleSkull : MonoBehaviour
 {
-    private void OnTriggerEnter2D(Collider2D other)
+    private UniversalTrigger trigger;
+
+    #region ceremony
+    private void Start()
     {
-        bool found = other.TryGetComponent(out SignComponent sign);
-        if (found && sign.HasSign("Player"))
+        trigger = GetComponent<UniversalTrigger>();
+        trigger.EnterEvent += HandleTriggerEnter;
+    }
+
+    private void OnDestroy()
+    {
+        trigger.EnterEvent -= HandleTriggerEnter;
+    }
+    #endregion
+
+    private void HandleTriggerEnter(Collider2D other, TriggeredType type)
+    {
+        if (type == TriggeredType.Player)
             Collect();
     }
 

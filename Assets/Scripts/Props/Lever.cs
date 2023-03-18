@@ -2,24 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(SignalActivator))]
+[RequireComponent(typeof(SignalActivator), typeof(UniversalTrigger))]
 public class Lever : MonoBehaviour
 {
-    private SignalActivator signal;
-    private Animator animator;
-
     private bool pulled;
 
-    private void Start ()
+    private SignalActivator signal;
+    private Animator animator;
+    private UniversalTrigger trigger;
+
+    #region ceremony
+    private void Start()
     {
         signal = GetComponent<SignalActivator>();
         animator = GetComponent<Animator>();
+        trigger = GetComponent<UniversalTrigger>();
+
+        trigger.EnterEvent += HandleTriggerEnter;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnDestroy()
     {
-        bool found = other.TryGetComponent(out SignComponent sign);
-        if (!found || !sign.HasSign("Body"))
+        trigger.EnterEvent -= HandleTriggerEnter;
+    }
+    #endregion
+
+    private void HandleTriggerEnter (Collider2D other, TriggeredType type)
+    {
+        if (type != TriggeredType.Player && type != TriggeredType.Corpse)
             return;
 
         pulled = !pulled;

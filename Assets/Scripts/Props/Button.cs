@@ -2,41 +2,50 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(SignalActivator))]
+[RequireComponent(typeof(SignalActivator), typeof(UniversalTrigger))]
 public class Button : MonoBehaviour
 {
-    private List<SignComponent> pressingBodies = new List<SignComponent>();
+    private List<Collider2D> pressingBodies = new List<Collider2D>();
+
     private Animator animator;
     private SignalActivator activator;
+    private UniversalTrigger trigger;
 
+    #region ceremony
     private void Start()
     {
         animator = GetComponent<Animator>();
         activator = GetComponent<SignalActivator>();
+        trigger = GetComponent<UniversalTrigger>();
+        trigger.EnterEvent += HandleTriggerEnter;
+        trigger.ExitEvent += HandleTriggerExit;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnDestroy()
     {
-        bool found = other.TryGetComponent(out SignComponent sign);
-        bool valid = found && sign.HasSign("Body") && !pressingBodies.Contains(sign);
-        if (!valid)
+        trigger.EnterEvent -= HandleTriggerEnter;
+        trigger.ExitEvent -= HandleTriggerExit;
+    }
+    #endregion
+
+    private void HandleTriggerEnter (Collider2D other, TriggeredType type)
+    {
+        if ((type != TriggeredType.Player && type != TriggeredType.Corpse) || pressingBodies.Contains(other))
             return;
         
-        pressingBodies.Add(sign);
+        pressingBodies.Add(other);
         if (pressingBodies.Count > 1)
             return;
         animator.SetBool("Pressed", true);
         activator.UpdateActivation(true, gameObject);
     }
 
-    private void OnTriggerExit2D(Collider2D other)
+    private void HandleTriggerExit (Collider2D other, TriggeredType type)
     {
-        bool found = other.TryGetComponent(out SignComponent sign);
-        bool valid = found && sign.HasSign("Body") && pressingBodies.Contains(sign);
-        if (!valid)
+        if ((type != TriggeredType.Player && type != TriggeredType.Corpse) || !pressingBodies.Contains(other))
             return;
 
-        pressingBodies.Remove(sign);
+        pressingBodies.Remove(other);
         if (pressingBodies.Count > 0)
             return;
         animator.SetBool("Pressed", false);

@@ -2,31 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(SignalActivator))]
+[RequireComponent(typeof(SignalActivator), typeof(UniversalTrigger))]
 public class Piston : MonoBehaviour
 {
     private SignalActivator signal;
     private Animator animator;
-    private Collider2D trigger;
+    private Collider2D triggerCollider;
+    private UniversalTrigger trigger;
 
     private bool pressed = false;
 
+    #region ceremony
     private void Start()
     {
         signal = GetComponent<SignalActivator>();
         animator = GetComponent<Animator>();
-        trigger = GetComponent<Collider2D>();
+        triggerCollider = GetComponent<Collider2D>();
+        trigger = GetComponent<UniversalTrigger>();
+
+        trigger.EnterEvent += HandleTriggerEnter;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnDestroy()
     {
-        bool found = other.TryGetComponent(out SignComponent sign);
-        if (!found || !sign.HasSign("Body") || pressed)
+        trigger.EnterEvent -= HandleTriggerEnter;
+    }
+    #endregion
+
+    private void HandleTriggerEnter(Collider2D other, TriggeredType type)
+    {
+        if ((type != TriggeredType.Player && type != TriggeredType.Corpse) || pressed)
             return;
 
         pressed = !pressed;
         animator.SetTrigger("Pressed");
         signal.UpdateActivation(pressed, gameObject);
-        trigger.enabled = false;
+        triggerCollider.enabled = false;
     }
 }
