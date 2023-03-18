@@ -16,6 +16,9 @@ public class UniversalTrigger : MonoBehaviour
     public event System.Action<Collider2D, TriggeredType> EnterEvent = delegate { };
     public event System.Action<Collider2D, TriggeredType> ExitEvent = delegate { };
 
+    protected void InvokeEnterEvent(Collider2D other, TriggeredType type) => EnterEvent(other, type);
+    protected void InvokeExitEvent(Collider2D other, TriggeredType type) => ExitEvent(other, type);
+
     protected virtual void OnTriggerEnter2D(Collider2D other)
     {   
         TriggeredType type = TriggeredType.Wall;
@@ -23,8 +26,8 @@ public class UniversalTrigger : MonoBehaviour
             type = TriggeredType.Player;
         else if (other.tag == "Corpse")
             type = TriggeredType.Corpse;
-            
-        EnterEvent(other, type);
+
+        InvokeEnterEvent(other, type);
     }
 
     protected virtual void OnTriggerExit2D(Collider2D other)
@@ -35,6 +38,6 @@ public class UniversalTrigger : MonoBehaviour
         else if (other.tag == "Corpse")
             type = TriggeredType.Corpse;
 
-        ExitEvent(other, type);
+        InvokeExitEvent(other, type);
     }
 }

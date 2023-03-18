@@ -15,6 +15,9 @@ public class Player : MonoBehaviour
     public float JumpCooldown;
     public float SuppressMultiplier;
     public float MaxJumpImpulseMultiplier;
+    [Space]
+    public BodySideTrigger rightTrigger;
+    public BodySideTrigger leftTrigger;
 
     [HideInInspector] public bool pushedByPad;
 
@@ -29,20 +32,10 @@ public class Player : MonoBehaviour
     private float coyoteTime = 0f;
     private float jumpCooldown = 0f;
 
-    private Rigidbody2D pushingRB;
-    private bool pushingLeft = false;
-    private bool pushingRight = false;
-    private bool wallLeft = false;
-    private bool wallRight = false;
-    //private bool staysOnGround = false;
-
     private float speed;
     private float acc;
     private float dec;
     private float jumpImpulse; //ok, nerd. it's not an impulse. it's a starting velocity 
-
-    //reserved list
-    private List<ContactPoint2D> contactPoints;
 
     void Start()
     {
@@ -58,8 +51,6 @@ public class Player : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
         collider = gameObject.GetComponent<Collider2D>();
-
-        contactPoints = new List<ContactPoint2D>();
 
         Registry.ins.inputSystem.JumpKeyPressEvent += Jump;
         Registry.ins.inputSystem.JumpKeyReleaseEvent += SuppressJump;
@@ -78,10 +69,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        collider.GetContacts(contactPoints);
-        CheckForCollision(contactPoints);
-
-        speed = (pushingLeft || pushingRight) ? PushingSpeed : MaxSpeed;
+        speed = (leftTrigger.corpseTriggered || rightTrigger.corpseTriggered) ? PushingSpeed : MaxSpeed;
         coyoteTime = stayChecker.stayingOnGround ? 0f : coyoteTime + Time.deltaTime;
         jumpCooldown += jumpCooldown < JumpCooldown ? Time.deltaTime : 0f;
         pushedByPad = !stayChecker.stayingOnGround && pushedByPad;
@@ -116,7 +104,7 @@ public class Player : MonoBehaviour
         float value = Registry.ins.inputSystem.HorizontalValue;
         spriteRenderer.flipX = value != 0f ? value < 0f : spriteRenderer.flipX;
 
-        bool wallFree = !(wallLeft && value < 0f) && !(wallRight && value > 0f);
+        bool wallFree = !(leftTrigger.wallTriggered && value < 0f) && !(rightTrigger.wallTriggered && value > 0f);
 
         if (value != 0f)  //acceleration
         {
@@ -127,8 +115,10 @@ public class Player : MonoBehaviour
                 newvel = speed * Mathf.Sign(newvel);
 
             rb.velocity = new Vector2(newvel, rb.velocity.y);
-            if((pushingLeft && newvel < 0f) || (pushingRight && newvel > 0f))
-                pushingRB.velocity = new Vector2(newvel * 0.9f, pushingRB.velocity.y);
+            if (leftTrigger.corpseTriggered && newvel < 0f)
+                leftTrigger.corpseRB.velocity = new Vector2(newvel * 0.9f, leftTrigger.corpseRB.velocity.y);
+            else if (rightTrigger.corpseTriggered && newvel > 0f)
+                rightTrigger.corpseRB.velocity = new Vector2(newvel * 0.9f, rightTrigger.corpseRB.velocity.y);
         }
         else if (value == 0f && rb.velocity.x != 0f) //deceleration
         {
@@ -138,34 +128,6 @@ public class Player : MonoBehaviour
                 newvel = 0f;
 
             rb.velocity = new Vector2(newvel, rb.velocity.y);
-        }
-    }
-
-    private void CheckForCollision (List<ContactPoint2D> contacts)
-    {
-        wallLeft = false;
-        wallRight = false; 
-        //staysOnGround = false;
-        pushingLeft = false;
-        pushingRight = false;
-        pushingRB = null;
-
-        foreach (var contact in contacts)
-        {
-            Vector2 point = contact.point - (Vector2)gameObject.transform.position;
-            point.Normalize();
-
-            //staysOnGround = Mathf.Abs(point.x) < -point.y || staysOnGround;
-
-            bool touchesBody = contact.collider.TryGetComponent(out SignComponent sign) && sign.HasSign("Body");
-            bool touchesSide = Mathf.Abs(point.y) < Mathf.Abs(point.x);
-            bool touchesLeft = touchesSide && point.x < 0;
-            bool touchesRight = touchesSide && point.x > 0;
-            pushingLeft = (touchesBody && touchesLeft) || pushingLeft;
-            pushingRight = (touchesBody && touchesRight) || pushingRight;
-            pushingRB = (touchesBody && touchesSide) ? sign.GetComponent<Rigidbody2D>() : pushingRB;
-            wallLeft = (touchesSide && point.x < 0f && !pushingLeft) || wallLeft;
-            wallRight = (touchesSide && point.x > 0f && !pushingRight) || wallRight;
         }
     }
 
