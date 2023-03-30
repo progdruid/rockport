@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     [Space]
     public BodySideTrigger rightTrigger;
     public BodySideTrigger leftTrigger;
+    public BodySideTrigger bottomTrigger;
 
     [HideInInspector] public bool pushedByPad;
 
@@ -26,7 +27,7 @@ public class Player : MonoBehaviour
     private new Collider2D collider;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
-    private StayChecker stayChecker;
+    //private StayChecker stayChecker;
 
     //private fields
     private float coyoteTime = 0f;
@@ -39,13 +40,13 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        for (int i = 0; i < transform.childCount; i++)
-        {
-            Transform child = transform.GetChild(i);
-            child.TryGetComponent(out stayChecker);
-            if (stayChecker != null)
-                break;
-        }
+        //for (int i = 0; i < transform.childCount; i++)
+        //{
+        //    Transform child = transform.GetChild(i);
+        //    child.TryGetComponent(out stayChecker);
+        //    if (stayChecker != null)
+        //        break;
+        //}
 
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -70,14 +71,14 @@ public class Player : MonoBehaviour
     void Update()
     {
         speed = (leftTrigger.corpseTriggered || rightTrigger.corpseTriggered) ? PushingSpeed : MaxSpeed;
-        coyoteTime = stayChecker.stayingOnGround ? 0f : coyoteTime + Time.deltaTime;
+        coyoteTime = bottomTrigger.triggered ? 0f : coyoteTime + Time.deltaTime;
         jumpCooldown += jumpCooldown < JumpCooldown ? Time.deltaTime : 0f;
-        pushedByPad = !stayChecker.stayingOnGround && pushedByPad;
+        pushedByPad = !bottomTrigger.triggered && pushedByPad;
 
         MoveSide();
 
-        animator.SetBool("Falling", !stayChecker.stayingOnGround);
-        animator.SetBool("Running", rb.velocity.x != 0f && stayChecker.stayingOnGround);
+        animator.SetBool("Falling", !bottomTrigger.triggered);
+        animator.SetBool("Running", rb.velocity.x != 0f && bottomTrigger.triggered);
     }
 
     public void ResetJumpCooldown () => jumpCooldown = 0f;

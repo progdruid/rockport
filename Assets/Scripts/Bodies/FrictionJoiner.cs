@@ -5,7 +5,8 @@ using UnityEngine;
 public class FrictionJoiner : MonoBehaviour
 {
     public bool active;
-    [SerializeField] StayChecker stayChecker;
+    //[SerializeField] StayChecker stayChecker;
+    [SerializeField] BodySideTrigger bottomTrigger;
 
     private FrictionJoint2D joint;
 
@@ -15,14 +16,14 @@ public class FrictionJoiner : MonoBehaviour
         joint.enabled = false;
 
 
-        stayChecker.EnterEvent += HandleBodyEnter;
-        stayChecker.ExitEvent += HandleBodyExit;
+        bottomTrigger.EnterEvent += HandleBodyEnter;
+        bottomTrigger.ExitEvent += HandleBodyExit;
     }
 
     private void OnDestroy()
     {
-        stayChecker.EnterEvent -= HandleBodyEnter;
-        stayChecker.ExitEvent -= HandleBodyExit;
+        bottomTrigger.EnterEvent -= HandleBodyEnter;
+        bottomTrigger.ExitEvent -= HandleBodyExit;
     }
 
     private void HandleBodyEnter (Collider2D other)

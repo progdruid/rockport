@@ -5,7 +5,8 @@ using UnityEngine;
 public class MassDivider : MonoBehaviour
 {
     public bool active;
-    [SerializeField] StayChecker stayChecker;
+    [SerializeField] BodySideTrigger bottomTrigger;
+    //[SerializeField] StayChecker stayChecker;
 
     public float additionalMass { get; private set; }
     public float normalMass { get; private set; }
@@ -18,14 +19,14 @@ public class MassDivider : MonoBehaviour
         var rb = GetComponent<Rigidbody2D>();
         normalMass = rb.mass;
 
-        stayChecker.EnterEvent += HandleBodyEnter;
-        stayChecker.ExitEvent += HandleBodyExit;
+        bottomTrigger.EnterEvent += HandleBodyEnter;
+        bottomTrigger.ExitEvent += HandleBodyExit;
     }
 
     private void OnDestroy()
     {
-        stayChecker.EnterEvent -= HandleBodyEnter;
-        stayChecker.ExitEvent -= HandleBodyExit;
+        bottomTrigger.EnterEvent -= HandleBodyEnter;
+        bottomTrigger.ExitEvent -= HandleBodyExit;
     }
 
     private void HandleBodyEnter(Collider2D other)

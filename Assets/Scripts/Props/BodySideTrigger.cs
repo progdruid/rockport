@@ -5,6 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Collider2D))]
 public class BodySideTrigger : MonoBehaviour
 {
+    public bool triggered => trigPlayer != null || trigCorpses.Count > 0 || trigWalls.Count > 0;
     public bool playerTriggered => trigPlayer != null;
     public bool corpseTriggered => trigCorpses.Count > 0;
     public bool wallTriggered => trigWalls.Count > 0;
@@ -16,6 +17,9 @@ public class BodySideTrigger : MonoBehaviour
     private List<Collider2D> trigCorpses = new List<Collider2D>();
     private List<Collider2D> trigWalls = new List<Collider2D>();
 
+    public event System.Action<Collider2D> EnterEvent = delegate { };
+    public event System.Action<Collider2D> ExitEvent = delegate { };
+
     private void OnTriggerEnter2D (Collider2D other)
     {
         if (other.tag == "Player" && trigPlayer == null)
@@ -26,13 +30,13 @@ public class BodySideTrigger : MonoBehaviour
         else if (other.tag == "Corpse" && !trigCorpses.Contains(other))
         {
             trigCorpses.Add(other);
-            if (corpseRB == null)
-                corpseRB = other.GetComponent<Rigidbody2D>();
+            corpseRB = other.GetComponent<Rigidbody2D>();
         }
         else if (other.tag != "Player" && other.tag != "Corpse" && !trigWalls.Contains(other))
             trigWalls.Add(other);
-
-        Debug.Log($"{gameObject.name}: p = {playerTriggered}, c = {corpseTriggered}, w = {wallTriggered}.");
+        
+        EnterEvent(other);
+        //Debug.Log($"{gameObject.name}: p = {playerTriggered}, c = {corpseTriggered}, w = {wallTriggered}.");
     }
 
     private void OnTriggerExit2D (Collider2D other)
@@ -51,6 +55,7 @@ public class BodySideTrigger : MonoBehaviour
         else if (other.tag != "Player" && other.tag != "Corpse" && trigWalls.Contains(other))
             trigWalls.Remove(other);
 
-        Debug.Log($"{gameObject.name}: p = {playerTriggered}, c = {corpseTriggered}, w = {wallTriggered}.");
+        ExitEvent(other);
+        //Debug.Log($"{gameObject.name}: p = {playerTriggered}, c = {corpseTriggered}, w = {wallTriggered}.");
     }
 }
