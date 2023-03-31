@@ -36,14 +36,6 @@ public class JumpPad : MonoBehaviour
 
         yield return new WaitForSeconds(TimeOffset);
 
-
-        //jump pads should always push on the same height, even if
-        //there are multible bodies stacked one onto another
-        float massMult = 1f;
-        bool found = pressingBody.TryGetComponent(out MassDivider massDivider);
-        if (found && massDivider.enabled)
-            massMult = massDivider.massMult;
-
         //trigPlayer physics does not work well with horizontal jump pads, because of deceleration
         //therefore the greater multipilier is used
         float bodySpecificHorMult = 1f;
@@ -55,8 +47,8 @@ public class JumpPad : MonoBehaviour
         angle = angle > Mathf.PI ? -(Mathf.PI * 2 - angle) : angle;
         
         //calc the velocity xy
-        float velX = pressingBody.velocity.x * Mathf.Cos(angle) - Impulse * massMult * Mathf.Sin(angle) * bodySpecificHorMult;
-        float velY = pressingBody.velocity.y * Mathf.Sin(angle) + Impulse * massMult * Mathf.Cos(angle);
+        float velX = pressingBody.velocity.x * Mathf.Cos(angle) - Impulse * Mathf.Sin(angle) * bodySpecificHorMult;
+        float velY = pressingBody.velocity.y * Mathf.Sin(angle) + Impulse * Mathf.Cos(angle);
         
         pressingBody.velocity = new Vector2(velX, velY);
 
