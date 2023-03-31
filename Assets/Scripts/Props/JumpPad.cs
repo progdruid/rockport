@@ -41,7 +41,7 @@ public class JumpPad : MonoBehaviour
         //there are multible bodies stacked one onto another
         float massMult = 1f;
         bool found = pressingBody.TryGetComponent(out MassDivider massDivider);
-        if (found)
+        if (found && massDivider.enabled)
             massMult = massDivider.massMult;
 
         //trigPlayer physics does not work well with horizontal jump pads, because of deceleration
@@ -53,7 +53,7 @@ public class JumpPad : MonoBehaviour
         //calc angle
         float angle = transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
         angle = angle > Mathf.PI ? -(Mathf.PI * 2 - angle) : angle;
-
+        
         //calc the velocity xy
         float velX = pressingBody.velocity.x * Mathf.Cos(angle) - Impulse * massMult * Mathf.Sin(angle) * bodySpecificHorMult;
         float velY = pressingBody.velocity.y * Mathf.Sin(angle) + Impulse * massMult * Mathf.Cos(angle);

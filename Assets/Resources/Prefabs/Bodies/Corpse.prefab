@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 3938242994105235464}
   - component: {fileID: 591765629211865318}
   - component: {fileID: 7147797176712555694}
+  - component: {fileID: 5308784867081697611}
   m_Layer: 3
   m_Name: Corpse
   m_TagString: Corpse
@@ -263,13 +264,27 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6388440925167425491}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 57d91e74d2bf3b141ad8232d095053ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   active: 1
   bottomTrigger: {fileID: 8915032620530056132}
+--- !u!114 &5308784867081697611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6388440925167425491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 030017cb498886e4aadbeabf3bd95d72, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bottomTrigger: {fileID: 8915032620530056132}
+  rb: {fileID: 6388440925167425488}
 --- !u!1001 &8288236971246576285
 PrefabInstance:
   m_ObjectHideFlags: 0
