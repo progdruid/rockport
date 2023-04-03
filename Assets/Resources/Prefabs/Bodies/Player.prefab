@@ -410,6 +410,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bottomTrigger: {fileID: 2918216114742306363}
   rb: {fileID: 7112237262537267371}
+  player_optional: {fileID: 9184977755300486699}
 --- !u!1001 &2360628837602492258
 PrefabInstance:
   m_ObjectHideFlags: 0

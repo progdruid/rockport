@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class MassNullifier : MonoBehaviour
 {
-    //[SerializeField] StayChecker stayChecker;
     [SerializeField] BodySideTrigger bottomTrigger;
     [SerializeField] Rigidbody2D rb;
+    [SerializeField] Player player_optional;
 
     private float defaultMass;
 
@@ -16,12 +16,18 @@ public class MassNullifier : MonoBehaviour
 
         bottomTrigger.EnterEvent += HandleTriggerChange;
         bottomTrigger.ExitEvent += HandleTriggerChange;
+
+        if (player_optional != null)
+            player_optional.PreJumpEvent += HandleJump;
     }
 
     private void OnDestroy()
     {
         bottomTrigger.EnterEvent -= HandleTriggerChange;
         bottomTrigger.ExitEvent -= HandleTriggerChange;
+
+        if (player_optional != null)
+            player_optional.PreJumpEvent -= HandleJump;
     }
 
     private void HandleTriggerChange (Collider2D other)
@@ -36,5 +42,8 @@ public class MassNullifier : MonoBehaviour
         }
     }
 
-
+    private void HandleJump ()
+    {
+        rb.mass = defaultMass;
+    }
 }

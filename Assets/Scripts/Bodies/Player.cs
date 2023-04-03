@@ -22,12 +22,13 @@ public class Player : MonoBehaviour
 
     [HideInInspector] public bool pushedByPad;
 
+    public event System.Action PreJumpEvent = delegate { };
+
     //classes
     private Rigidbody2D rb;
     private new Collider2D collider;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
-    //private StayChecker stayChecker;
 
     //private fields
     private float coyoteTime = 0f;
@@ -40,14 +41,6 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        //for (int i = 0; i < transform.childCount; i++)
-        //{
-        //    Transform child = transform.GetChild(i);
-        //    child.TryGetComponent(out stayChecker);
-        //    if (stayChecker != null)
-        //        break;
-        //}
-
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
@@ -87,6 +80,7 @@ public class Player : MonoBehaviour
     {
         if (coyoteTime <= CoyoteTime && jumpCooldown >= JumpCooldown && !pushedByPad)
         {
+            PreJumpEvent();
             float newVel = rb.velocity.y + jumpImpulse;
             newVel = Mathf.Clamp(newVel, -100, jumpImpulse * MaxJumpImpulseMultiplier);
             rb.velocity = new Vector2(rb.velocity.x, newVel);
