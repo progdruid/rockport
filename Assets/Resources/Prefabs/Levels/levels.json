@@ -86,9 +86,9 @@
     },
     {
       "id": 12,
-      "name": "Thrower",
+      "name": "Bounce Challenge",
       "necessaryLevelsIDs": [ 11 ],
-      "path": "Prefabs/Levels/Level_Thrower",
+      "path": "Prefabs/Levels/Level_BounceChallenge",
       "completed": false
     },
     {

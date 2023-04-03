@@ -307,8 +307,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e4c3295bd0c1344fa659721186332d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loadDirectly: 0
-  levelPrefab: {fileID: 9215722690314533559, guid: b21cbb4b78dcd8e4a99e11fbaff29d9c, type: 3}
+  loadDirectly: 1
+  levelPrefab: {fileID: 9215722690314533559, guid: f5e89c7b164670d4b93d27d3e8731894, type: 3}
   loadLevelID: 1
   leveltreePath: Prefabs/Levels/levels
 --- !u!114 &1262337692
