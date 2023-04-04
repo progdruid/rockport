@@ -29,35 +29,13 @@ public class JumpPad : MonoBehaviour
     {
         //disables jump if it's a trigPlayer //lil hack to avoid the if statement
         bool isPlayer = pressingBody.TryGetComponent(out Player player);
-        bool isCorpse = pressingBody.TryGetComponent(out CorpsePhysics corpse);
         Registry.ins.inputSystem.CanJump = !isPlayer;
 
         animator.SetTrigger("Pressed");
 
         yield return new WaitForSeconds(TimeOffset);
 
-        //trigPlayer physics does not work well with horizontal jump pads, because of deceleration
-        //therefore the greater multipilier is used
-        float bodySpecificHorMult = 1f;
-        if (isPlayer)
-           bodySpecificHorMult = DefaultPlayerHorizontalMultiplier;
-
-        //calc angle
-        float angle = transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
-        angle = angle > Mathf.PI ? -(Mathf.PI * 2 - angle) : angle;
-        
-        //calc the velocity xy
-        float velX = pressingBody.velocity.x * Mathf.Cos(angle) - Impulse * Mathf.Sin(angle) * bodySpecificHorMult;
-        float velY = pressingBody.velocity.y * Mathf.Sin(angle) + Impulse * Mathf.Cos(angle);
-        
-        pressingBody.velocity = new Vector2(velX, velY);
-
-
-        //if it is a corpse, give a kicked mode to this corpse
-        bool isInRange = (Mathf.Abs(angle) < Mathf.PI * 3f / 4f && Mathf.Abs(angle) > Mathf.PI / 4f);
-        if (isCorpse && isInRange)
-            corpse.kickedMode = true;
-
+        pressingBody.velocity += new Vector2(0f, Impulse);
         if (isPlayer)
             Registry.ins.playerManager.ResetJumpCooldown();
     }
