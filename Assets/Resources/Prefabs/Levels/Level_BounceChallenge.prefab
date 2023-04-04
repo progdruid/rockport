@@ -511,7 +511,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 21454352661399369, guid: a39bfa46c7b596e43b90c3341836efc4, type: 3}
       propertyPath: Impulse
-      value: 16
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 21454352661399372, guid: a39bfa46c7b596e43b90c3341836efc4, type: 3}
       propertyPath: m_Name
