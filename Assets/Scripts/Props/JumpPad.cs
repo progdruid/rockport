@@ -7,13 +7,23 @@ public class JumpPad : MonoBehaviour
 {
     public float Impulse;
     public float TimeOffset;
-    public float DefaultPlayerHorizontalMultiplier;
+    public float CooldownForSameBody;
 
     private Animator animator;
+
+    //parallel lists lol
+    private int count;
+    private List<Collider2D> collidersInside;
+    private List<Rigidbody2D> rbsInside;
+    private List<float> timesInside;
 
     private void Start()
     {
         animator = GetComponent<Animator>();
+
+        collidersInside = new List<Collider2D>();
+        rbsInside = new List<Rigidbody2D>();
+        timesInside = new List<float>();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -22,10 +32,16 @@ public class JumpPad : MonoBehaviour
         if (!found || !sign.HasSign("Body"))
             return;
 
-        StartCoroutine(Push(other.gameObject.GetComponent<Rigidbody2D>(), sign));
+        Rigidbody2D rb = other.gameObject.GetComponent<Rigidbody2D>();
+        collidersInside.Add(other);
+        rbsInside.Add(rb);
+        timesInside.Add(Time.time);
+        count++;
+
+        StartCoroutine(Push(rb));
     }
 
-    private IEnumerator Push (Rigidbody2D pressingBody, SignComponent sign)
+    private IEnumerator Push (Rigidbody2D pressingBody)
     {
         //disables jump if it's a trigPlayer //lil hack to avoid the if statement
         bool isPlayer = pressingBody.TryGetComponent(out Player player);
@@ -42,6 +58,12 @@ public class JumpPad : MonoBehaviour
 
     private void OnTriggerExit2D (Collider2D other)
     {
+        int id = collidersInside.IndexOf(other);
+        collidersInside.RemoveAt(id);
+        rbsInside.RemoveAt(id);
+        timesInside.RemoveAt(id);
+        count--;
+
         bool found = other.TryGetComponent(out Player player);
 
         if (found)
@@ -49,5 +71,16 @@ public class JumpPad : MonoBehaviour
             Registry.ins.inputSystem.CanJump = true;
             player.pushedByPad = true;
         }
+    }
+
+    private void Update ()
+    {
+        for (int i = 0; i < count; i++)
+            if (Time.time - timesInside[i] >= CooldownForSameBody)
+            {
+                Debug.Log("K");
+                timesInside[i] = Time.time;
+                StartCoroutine(Push(rbsInside[i]));
+            }
     }
 }
