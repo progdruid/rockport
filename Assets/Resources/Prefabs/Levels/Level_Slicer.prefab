@@ -249,7 +249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be615118bc9a7c943b3b95f4c58cb7d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offset: 20
+  offset: 0
   clockwise: 0
   period: 13
   signal: {fileID: 0}
