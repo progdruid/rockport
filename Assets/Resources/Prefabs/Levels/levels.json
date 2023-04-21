@@ -113,6 +113,13 @@
       "completed": false
     },
     {
+      "id": 16,
+      "name": "Phantom Pathway",
+      "necessaryLevelsIDs": [ 15 ],
+      "path": "Prefabs/Levels/Level_PhantomPathway",
+      "completed": false
+    },
+    {
       "id": -1,
       "name": "Metronome",
       "necessaryLevelsIDs": [],
