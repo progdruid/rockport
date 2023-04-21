@@ -32,7 +32,7 @@ public class MassNullifier : MonoBehaviour
 
     private void HandleTriggerChange (Collider2D other)
     {
-        if (bottomTrigger.corpseTriggered || bottomTrigger.playerTriggered)
+        if ((bottomTrigger.corpseTriggered || bottomTrigger.playerTriggered) && !bottomTrigger.wallTriggered)
         {
             rb.mass = 0.001f;
         }

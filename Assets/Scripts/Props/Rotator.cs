@@ -10,16 +10,15 @@ public class Rotator : MonoBehaviour
     [Space]
     [SerializeField] SignalActivator signal;
 
-    Vector3 standartRotation;
+    float timeOffset = 0f;
+    int clockwiseMult = 1;
 
     void Start()
     {
-        float angvel = 360f / period;
         if (clockwise)
-            angvel *= -1;
+            clockwiseMult *= -1;
 
-        transform.Rotate(new Vector3(0f, 0f, offset));
-        standartRotation = new Vector3(0f, 0f, angvel);
+        timeOffset = offset / 360f * period;
     }
 
     void Update()
@@ -27,7 +26,6 @@ public class Rotator : MonoBehaviour
         if (signal != null && !signal.activated)
             return;
 
-
-        transform.Rotate(standartRotation * Time.deltaTime);
+        transform.rotation = Quaternion.Euler(0f, 0f, clockwiseMult * (Time.time - timeOffset) / period * 360f);
     }
 }

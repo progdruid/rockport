@@ -26,9 +26,9 @@ public class CannonProjectile : MonoBehaviour
         trigger.EnterEvent -= HandleTriggerEnter;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        transform.localPosition += dir * Speed * Time.deltaTime;
+        transform.localPosition += dir * Speed * Time.fixedDeltaTime;
     }
 
     private void HandleTriggerEnter (Collider2D other, TriggeredType type)

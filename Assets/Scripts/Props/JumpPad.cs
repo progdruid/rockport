@@ -78,7 +78,6 @@ public class JumpPad : MonoBehaviour
         for (int i = 0; i < count; i++)
             if (Time.time - timesInside[i] >= CooldownForSameBody)
             {
-                Debug.Log("K");
                 timesInside[i] = Time.time;
                 StartCoroutine(Push(rbsInside[i]));
             }
