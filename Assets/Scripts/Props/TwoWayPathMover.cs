@@ -2,49 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum MoverMotionType
-{
-    Linear,
-    Sine,
-    Pong
-}
-
-[System.Serializable]
-public class TransformOffsetPair
-{
-    public Transform transform;
-    [Range(0f, 1f)]
-    public float offset;
-}
-
-public class PathMover : MonoBehaviour
+public class TwoWayPathMover : MonoBehaviour
 {
     [SerializeField] SignalActivator signal;
+    [SerializeField] SignalActivator inverseSignal;
     [Space]
     public float timePeriod;
-    public MoverMotionType motionType;
-    public TransformOffsetPair[] entities;
+    public Transform[] entities;
     public Transform[] anchors;
 
     private float generalDist;
     private float[] dists;
     private float timePassed = 0f;
-    private System.Func<float, float> interpFunc;
 
     private bool invalid => anchors == null || entities == null || (anchors.Length == 0 || entities.Length == 0);
-
-    #region interp funcs
-
-    private float LinearInterp(float x) => x;
-    private float SineInterp(float x) => Mathf.Clamp(1f - (Mathf.Cos(x * Mathf.PI * 2f) + 1f) / 2f, 0f, 1f);
-    private float PongInterp(float x) => Mathf.PingPong(x * 2f, 1f);
-
-    #endregion
 
     #region Unity funcs
     private void Start()
     {
         Init();
+        Move(0f);
     }
 
 #if UNITY_EDITOR
@@ -56,7 +33,7 @@ public class PathMover : MonoBehaviour
 #endif
     #endregion
 
-    private void Init ()
+    private void Init()
     {
         if (invalid)
             return;
@@ -66,43 +43,38 @@ public class PathMover : MonoBehaviour
         generalDist = 0f;
         for (int i = 0; i < anchors.Length; i++)
         {
-            dists[i] = Vector2.Distance(anchors[i].position, anchors[(i + 1)%anchors.Length].position);
-            generalDist += dists[i];
-        }
-
-        switch (motionType)
-        {
-            case MoverMotionType.Linear:
-                interpFunc = LinearInterp;
-                break;
-            case MoverMotionType.Sine:
-                interpFunc = SineInterp;
-                break;
-            case MoverMotionType.Pong:
-                interpFunc = PongInterp;
-                break;
+            dists[i] = Vector2.Distance(anchors[i].position, anchors[(i + 1) % anchors.Length].position);
+            if (i < anchors.Length - 1)
+                generalDist += dists[i];
         }
     }
 
     void Update()
     {
-        if (signal != null && !signal.activated)
+        if (signal == null || inverseSignal == null)
             return;
 
-        timePassed = ((timePassed + Time.deltaTime) % timePeriod + timePeriod) % timePeriod;
-
         Move(timePassed);
+        
+        if (signal.activated && !inverseSignal.activated)
+            timePassed += Time.deltaTime;
+        else if (!signal.activated && inverseSignal.activated)
+            timePassed -= Time.deltaTime;
 
+        if (timePassed < 0f)
+            timePassed = 0f;
+        else if (timePassed > timePeriod)
+            timePassed = timePeriod;
     }
 
-    private void Move (float time)
+    private void Move(float time)
     {
         if (invalid)
             return;
 
         for (int i = 0; i < entities.Length; i++)
         {
-            float distOffset = generalDist * (interpFunc(entities[i].offset + (time / timePeriod)) % 1f);
+            float distOffset = generalDist * (time / timePeriod);
             float tempDist = 0f;
             int anchorIndex = -1;
 
