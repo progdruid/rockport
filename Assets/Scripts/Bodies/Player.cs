@@ -128,6 +128,7 @@ public class Player : MonoBehaviour
 
     public void PlayDeathAnimation ()
     {
+        gameObject.layer = 10;
         animator.SetBool("Died", true);
     }
 
