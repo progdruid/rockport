@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class FrictionJoiner : MonoBehaviour
 {
-    public bool active;
-    //[SerializeField] StayChecker stayChecker;
     [SerializeField] BodySideTrigger bottomTrigger;
 
     private FrictionJoint2D joint;
@@ -16,32 +14,32 @@ public class FrictionJoiner : MonoBehaviour
         joint.enabled = false;
 
 
-        bottomTrigger.EnterEvent += HandleBodyEnter;
-        bottomTrigger.ExitEvent += HandleBodyExit;
+        bottomTrigger.EnterEvent += HandleBodyUpdate;
+        bottomTrigger.ExitEvent += HandleBodyUpdate;
     }
 
     private void OnDestroy()
     {
-        bottomTrigger.EnterEvent -= HandleBodyEnter;
-        bottomTrigger.ExitEvent -= HandleBodyExit;
+        bottomTrigger.EnterEvent -= HandleBodyUpdate;
+        bottomTrigger.ExitEvent -= HandleBodyUpdate;
     }
 
-    private void HandleBodyEnter (Collider2D other)
+    private void HandleBodyUpdate (Collider2D other)
     {
-        if (!active)
-            return;
-
-        bool found = other.TryGetComponent(out Rigidbody2D rb);
-        if (!found)
-            return;
-
-        joint.enabled = true;
-        joint.connectedBody = rb;
-    }
-
-    private void HandleBodyExit (Collider2D other)
-    {
-        joint.connectedBody = null;
-        joint.enabled = false;
+        if (bottomTrigger.playerTriggered)
+        {
+            joint.enabled = true;
+            joint.connectedBody = bottomTrigger.playerRB;
+        }
+        else if (bottomTrigger.corpseTriggered)
+        {
+            joint.enabled = true;
+            joint.connectedBody = bottomTrigger.corpseRB;
+        }
+        else
+        {
+            joint.connectedBody = null;
+            joint.enabled = false;
+        }
     }
 }
