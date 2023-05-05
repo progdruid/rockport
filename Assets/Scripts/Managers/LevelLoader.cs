@@ -1,92 +1,103 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelLoader : MonoBehaviour
 {
+    /*
 #if UNITY_EDITOR
     public bool loadDirectly;       //if you want to load a level from a plain prefab without a leveltree
     public GameObject levelPrefab;
-#endif
+#endif*/
     
     public int loadLevelID;         //id of the loading level [LevelData.id]
-    public string leveltreePath;
 
-    //temporary property
-    //to-do in future:
-    //  * create a separate class LevelTreeManager or smth that will manage all processes with the level tree
-    public LevelTree levelTree { get; private set; } 
+    [SerializeField] LevelTreeManager levelTreeManager;
 
-    private int currentLevelIndex;  //index in tree if used
-    private GameObject currentLevel;//level in scene
-    private GameObject levelToLoad; //level prefab in files
+    private int currentLevelID;  //index in tree if used
+    private LevelTree.LevelData currentLevelData;
+    private GameObject currentLevelGameObject;//level in scene
+    private GameObject prefabToLoad; //level prefab in files
 
     private void Awake() => Registry.ins.lm = this;
 
     void Start()
     {
-        bool allowedToExtractLevelTree = true;
-#if UNITY_EDITOR
-        allowedToExtractLevelTree = false;
-
-        if (loadDirectly)
-            levelToLoad = levelPrefab;
-        else
-        {
-            levelTree = LevelTree.Extract(leveltreePath);
-        }
-#endif
-        if (allowedToExtractLevelTree)
-        {
-            levelTree = LevelTree.Extract(leveltreePath); 
-        }
-        LoadLevel();
+        /*#if UNITY_EDITOR
+                if (loadDirectly)
+                    prefabToLoad = levelPrefab;
+        #endif*/
+        MakeDecision(loadLevelID);
     }
 
     public void AttachToLevelAsChild (Transform transform)
     {
-        transform.SetParent(currentLevel.transform);
+        transform.SetParent(currentLevelGameObject.transform);
+    }
+
+    public void ProceedFurther ()
+    {
+        MakeDecision(currentLevelID + 1);
+    }
+
+    public void ReloadLevel()
+    {
+        StartCoroutine(LoadLevelRoutine(currentLevelData));
+    }
+
+    private void MakeDecision(int id)
+    {
+        LevelTree.LevelData? levelData = levelTreeManager.TryGetLevel(id);
+        
+        if (levelData == null)
+        {
+            SceneManager.LoadScene("Menu");
+            return;
+        }
+        currentLevelData = levelData.Value;
+        currentLevelID = id;
+        LoadLevel(levelData.Value);
     }
 
 #region load
 
-    private void LoadAndPrepareLevelPrefab()
+    private void PrepareLevelPrefab()
     {
-        currentLevelIndex = levelTree.GetLevelIndex(loadLevelID);
-
-        string path = levelTree.levels[currentLevelIndex].path;
-        levelToLoad = Resources.Load<GameObject>(path);
+        string path = levelTreeManager.TryGetLevel(currentLevelID).Value.path;
+        prefabToLoad = Resources.Load<GameObject>(path);
     }
 
     private void UnloadLevel ()
     {
         Registry.ins.corpseManager.ClearCorpses();
         Registry.ins.playerManager.DestroyPlayer();
-        Destroy(currentLevel);
+        Destroy(currentLevelGameObject);
     }
 
-    public void LoadLevel ()
+    public void LoadLevel (LevelTree.LevelData levelData)
     {
-        StartCoroutine(LoadLevelRoutine());
+        StartCoroutine(LoadLevelRoutine(levelData));
     }
 
-    private IEnumerator LoadLevelRoutine ()
+    private IEnumerator LoadLevelRoutine (LevelTree.LevelData levelData)
     {
-        if (currentLevel != null)
+        if (currentLevelGameObject != null)
         {
             yield return Registry.ins.cameraManager.TransiteIn();
             UnloadLevel();
         }
 
         bool allowedToLoadPrefab = true;
-#if UNITY_EDITOR
+
+/*#if UNITY_EDITOR
         allowedToLoadPrefab = !loadDirectly;
-#endif
+#endif*/
         if (allowedToLoadPrefab)
-            LoadAndPrepareLevelPrefab();
+            PrepareLevelPrefab();
 
         Registry.ins.skullManager.ClearSkulls();
-        currentLevel = Instantiate(levelToLoad);
+        currentLevelGameObject = Instantiate(prefabToLoad);
 
         TryFindAndSetSpawnPoint();
         
@@ -97,10 +108,10 @@ public class LevelLoader : MonoBehaviour
     private void TryFindAndSetSpawnPoint ()
     {
         Transform spawnPoint;
-        for (int i = 0; i < currentLevel.transform.childCount; i++)
-            if (currentLevel.transform.GetChild(i).tag == "SpawnPoint")
+        for (int i = 0; i < currentLevelGameObject.transform.childCount; i++)
+            if (currentLevelGameObject.transform.GetChild(i).tag == "SpawnPoint")
             {
-                spawnPoint = currentLevel.transform.GetChild(i);
+                spawnPoint = currentLevelGameObject.transform.GetChild(i);
                 Registry.ins.playerManager.SetSpawnPoint(spawnPoint.position);
                 return;
             }
@@ -110,7 +121,7 @@ public class LevelLoader : MonoBehaviour
     #endregion
 
 }
-
+/*
 #region disgusting unity editor code
 #if UNITY_EDITOR
 [UnityEditor.CustomEditor(typeof(LevelLoader))]
@@ -136,4 +147,4 @@ public class LevelManagerEditor : UnityEditor.Editor
     }
 }
 #endif
-#endregion
+#endregion*/

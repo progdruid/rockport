@@ -71,7 +71,7 @@ public class InputSystem : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E))
             KillPlayerKeyPressEvent();
         if (Input.GetKeyDown(KeyCode.R))
-            Registry.ins.lm.LoadLevel();
+            Registry.ins.lm.ReloadLevel();
 
     }
 }

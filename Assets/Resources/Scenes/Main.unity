@@ -269,6 +269,7 @@ GameObject:
   - component: {fileID: 1262337693}
   - component: {fileID: 1262337694}
   - component: {fileID: 1262337696}
+  - component: {fileID: 1262337698}
   - component: {fileID: 1262337690}
   - component: {fileID: 1262337692}
   - component: {fileID: 1262337695}
@@ -307,10 +308,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e4c3295bd0c1344fa659721186332d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loadDirectly: 0
-  levelPrefab: {fileID: 9215722690314533559, guid: 4770159bada69fd438e70ff4471a2b20, type: 3}
-  loadLevelID: 1
-  leveltreePath: Prefabs/Levels/levels
+  loadLevelID: 16
+  levelTreeManager: {fileID: 1262337698}
 --- !u!114 &1262337692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -390,6 +389,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 7112237262537267370, guid: b3ccaed0f9643254faa7ed372f92ba37, type: 3}
+--- !u!114 &1262337698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1262337688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42de448d305ebe146b05040c9ecc7d24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leveltreePath: Prefabs/Levels/levels
 --- !u!1 &1443867998
 GameObject:
   m_ObjectHideFlags: 0
