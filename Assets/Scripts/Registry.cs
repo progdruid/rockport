@@ -5,7 +5,7 @@ public class Registry
 {
     public static Registry ins { get; private set; } = new Registry();
 
-    public LevelManager lm;
+    public LevelLoader lm;
     public CameraManager cameraManager;
     public InputSystem inputSystem;
     public CorpseManager corpseManager;

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelManager : MonoBehaviour
+public class LevelLoader : MonoBehaviour
 {
 #if UNITY_EDITOR
     public bool loadDirectly;       //if you want to load a level from a plain prefab without a leveltree
@@ -14,7 +14,6 @@ public class LevelManager : MonoBehaviour
 
     //temporary property
     //to-do in future:
-    //  * rename LevelManager -> LevelLoader which will only accept LevelData as an input
     //  * create a separate class LevelTreeManager or smth that will manage all processes with the level tree
     public LevelTree levelTree { get; private set; } 
 
@@ -27,26 +26,20 @@ public class LevelManager : MonoBehaviour
     void Start()
     {
         bool allowedToExtractLevelTree = true;
-        //GameObject.FindGameObjectWithTag("Test").SetActive(false);
 #if UNITY_EDITOR
         allowedToExtractLevelTree = false;
-        //GameObject.FindGameObjectWithTag("Test").SetActive(false);
+
         if (loadDirectly)
             levelToLoad = levelPrefab;
         else
         {
             levelTree = LevelTree.Extract(leveltreePath);
-            //GameObject.FindGameObjectWithTag("Test").SetActive(false);
         }
 #endif
-        //GameObject.FindGameObjectWithTag("Test").SetActive(false);
         if (allowedToExtractLevelTree)
         {
-            //GameObject.FindGameObjectWithTag("Test").SetActive(false);
             levelTree = LevelTree.Extract(leveltreePath); 
-            //GameObject.FindGameObjectWithTag("Test").SetActive(false);
         }
-        //GameObject.FindGameObjectWithTag("Test").SetActive(false);
         LoadLevel();
     }
 
@@ -115,16 +108,17 @@ public class LevelManager : MonoBehaviour
         Registry.ins.playerManager.SetSpawnPoint(Vector2.zero);
     }
     #endregion
+
 }
 
 #region disgusting unity editor code
 #if UNITY_EDITOR
-[UnityEditor.CustomEditor(typeof(LevelManager))]
+[UnityEditor.CustomEditor(typeof(LevelLoader))]
 public class LevelManagerEditor : UnityEditor.Editor
 {
     public override void OnInspectorGUI()
     {
-        LevelManager levelManager = (LevelManager)target;
+        LevelLoader levelManager = (LevelLoader)target;
         
         levelManager.loadDirectly = UnityEditor.EditorGUILayout.Toggle("Load Directly", levelManager.loadDirectly);
         
