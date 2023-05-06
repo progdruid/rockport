@@ -1102,8 +1102,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelTreeManager: {fileID: 1354416699}
-  levelLabel: {fileID: 0}
-  levelIdText: {fileID: 0}
+  levelTitle: {fileID: 205174579}
+  levelIdText: {fileID: 219637970}
 --- !u!4 &1354416698
 Transform:
   m_ObjectHideFlags: 0
