@@ -11,7 +11,7 @@ public class LevelLoader : MonoBehaviour
     public GameObject levelPrefab;
 #endif*/
     
-    public int loadLevelID;         //id of the loading level [LevelData.id]
+    //public int loadLevelID;         //id of the loading level [LevelData.id]
 
     [SerializeField] LevelTreeManager levelTreeManager;
 
@@ -28,6 +28,7 @@ public class LevelLoader : MonoBehaviour
                 if (loadDirectly)
                     prefabToLoad = levelPrefab;
         #endif*/
+        int loadLevelID = PlayerPrefs.GetInt("Level_ID_Selected_in_Menu");
         MakeDecision(loadLevelID);
     }
 
@@ -59,6 +60,7 @@ public class LevelLoader : MonoBehaviour
         currentLevelID = id;
         LoadLevel(levelData.Value);
     }
+
 
 #region load
 

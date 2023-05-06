@@ -21,4 +21,6 @@ public class LevelTreeManager : MonoBehaviour
         else
             return null;
     }
+
+    public int GetLevelCount() => levelTree.levels.Length;
 }
