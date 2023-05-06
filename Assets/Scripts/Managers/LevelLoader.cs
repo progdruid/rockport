@@ -47,6 +47,8 @@ public class LevelLoader : MonoBehaviour
         StartCoroutine(LoadLevelRoutine(currentLevelData));
     }
 
+    public void QuitToMenu() => SceneManager.LoadScene("Menu");
+
     private void MakeDecision(int id)
     {
         LevelTree.LevelData? levelData = levelTreeManager.TryGetLevel(id);

@@ -72,6 +72,8 @@ public class InputSystem : MonoBehaviour
             KillPlayerKeyPressEvent();
         if (Input.GetKeyDown(KeyCode.R))
             Registry.ins.lm.ReloadLevel();
+        if (Input.GetKeyDown(KeyCode.Q))
+            Registry.ins.lm.QuitToMenu();
 
     }
 }
