@@ -4,12 +4,20 @@ using UnityEngine;
 
 public class TwoWayPathMover : MonoBehaviour
 {
+    private enum PriorWay : int
+    {
+        None = 0,
+        Main = 1,
+        Inverse = -1
+    }
+
     [SerializeField] SignalActivator signal;
     [SerializeField] SignalActivator inverseSignal;
+    [SerializeField] PriorWay priorWay;
     [Space]
-    public float timePeriod;
-    public Transform[] entities;
-    public Transform[] anchors;
+    [SerializeField] float timePeriod;
+    [SerializeField] Transform[] entities;
+    [SerializeField] Transform[] anchors;
 
     private float generalDist;
     private float[] dists;
@@ -55,11 +63,13 @@ public class TwoWayPathMover : MonoBehaviour
             return;
 
         Move(timePassed);
-        
+
         if (signal.activated && !inverseSignal.activated)
             timePassed += Time.deltaTime;
         else if (!signal.activated && inverseSignal.activated)
             timePassed -= Time.deltaTime;
+        else if (signal.activated && inverseSignal.activated)
+            timePassed += Time.deltaTime * (int)priorWay;
 
         if (timePassed < 0f)
             timePassed = 0f;
