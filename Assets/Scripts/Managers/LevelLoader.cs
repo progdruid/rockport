@@ -5,29 +5,16 @@ using UnityEngine.SceneManagement;
 
 public class LevelLoader : MonoBehaviour
 {
-    /*
-#if UNITY_EDITOR
-    public bool loadDirectly;       //if you want to load a level from a plain prefab without a leveltree
-    public GameObject levelPrefab;
-#endif*/
-    
-    //public int loadLevelID;         //id of the loading level [LevelData.id]
-
     [SerializeField] LevelTreeManager levelTreeManager;
 
     private int currentLevelID;  //index in tree if used
     private LevelTree.LevelData currentLevelData;
     private GameObject currentLevelGameObject;//level in scene
-    private GameObject prefabToLoad; //level prefab in files
 
     private void Awake() => Registry.ins.lm = this;
 
     void Start()
     {
-        /*#if UNITY_EDITOR
-                if (loadDirectly)
-                    prefabToLoad = levelPrefab;
-        #endif*/
         int loadLevelID = PlayerPrefs.GetInt("Level_ID_Selected_in_Menu");
         MakeDecision(loadLevelID);
     }
@@ -66,10 +53,10 @@ public class LevelLoader : MonoBehaviour
 
 #region load
 
-    private void PrepareLevelPrefab()
+    private GameObject GetLevelPrefab()
     {
         string path = levelTreeManager.TryGetLevel(currentLevelID).Value.path;
-        prefabToLoad = Resources.Load<GameObject>(path);
+        return Resources.Load<GameObject>(path);
     }
 
     private void UnloadLevel ()
@@ -92,13 +79,7 @@ public class LevelLoader : MonoBehaviour
             UnloadLevel();
         }
 
-        bool allowedToLoadPrefab = true;
-
-/*#if UNITY_EDITOR
-        allowedToLoadPrefab = !loadDirectly;
-#endif*/
-        if (allowedToLoadPrefab)
-            PrepareLevelPrefab();
+        GameObject prefabToLoad = GetLevelPrefab();
 
         Registry.ins.skullManager.ClearSkulls();
         currentLevelGameObject = Instantiate(prefabToLoad);
