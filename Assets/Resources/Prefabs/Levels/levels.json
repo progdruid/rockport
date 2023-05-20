@@ -23,9 +23,9 @@
     },
     {
       "id": 3,
-      "name": "Spikey Dilemma",
+      "name": "Spiky Dilemma",
       "necessaryLevelsIDs": [ 2 ],
-      "path": "Prefabs/Levels/Level_SpikeyDilemma",
+      "path": "Prefabs/Levels/Level_SpikyDilemma",
       "completed": false
     },
     {

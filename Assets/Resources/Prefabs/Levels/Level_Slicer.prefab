@@ -427,6 +427,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   signal: {fileID: 2990152491073041392}
   inverseSignal: {fileID: 5005721569171466459}
+  priorWay: 0
   timePeriod: 24
   entities:
   - {fileID: 2403390121947010153}
@@ -16111,7 +16112,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2506753360683001255, guid: 9f8871a7a5184bd4bb05b10319de6a72, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 45.5
+      value: 44.5
       objectReference: {fileID: 0}
     - target: {fileID: 2506753360683001255, guid: 9f8871a7a5184bd4bb05b10319de6a72, type: 3}
       propertyPath: m_LocalPosition.z

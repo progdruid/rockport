@@ -113,7 +113,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8058371194849230521}
   m_Layer: 0
-  m_Name: Level_SpikeyDilemma
+  m_Name: Level_SpikyDilemma
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7251,7 +7251,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2506753360683001255, guid: 9f8871a7a5184bd4bb05b10319de6a72, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 2506753360683001255, guid: 9f8871a7a5184bd4bb05b10319de6a72, type: 3}
       propertyPath: m_LocalPosition.z
