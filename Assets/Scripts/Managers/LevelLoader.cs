@@ -18,8 +18,8 @@ public class LevelLoader : MonoBehaviour
     void Start()
     {
         Application.targetFrameRate = 60;
-        defaultVSyncCount = QualitySettings.vSyncCount;
-        QualitySettings.vSyncCount = 2;
+        //defaultVSyncCount = QualitySettings.vSyncCount;
+        //QualitySettings.vSyncCount = 2;
         int loadLevelID = PlayerPrefs.GetInt("Level_ID_Selected_in_Menu");
         MakeDecision(loadLevelID);
     }
@@ -42,7 +42,7 @@ public class LevelLoader : MonoBehaviour
     public void QuitToMenu()
     {
         Application.targetFrameRate = -1;
-        QualitySettings.vSyncCount = defaultVSyncCount;
+        //QualitySettings.vSyncCount = defaultVSyncCount;
 
         SceneManager.LoadScene("Menu");
     }
