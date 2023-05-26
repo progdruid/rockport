@@ -13,7 +13,7 @@ public class ParallaxBackground : MonoBehaviour
         targetTransform = Camera.main.gameObject.transform;
     }
 
-    void FixedUpdate()
+    void Update()
     {
         transform.position = new Vector3(targetTransform.position.x * parallaxCoeficient, targetTransform.position.y * parallaxCoeficient, transform.position.z);
     }
