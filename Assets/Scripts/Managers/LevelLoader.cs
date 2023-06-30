@@ -11,10 +11,15 @@ public class LevelLoader : MonoBehaviour
     private LevelTree.LevelData currentLevelData;
     private GameObject currentLevelGameObject;//level in scene
 
+    private int defaultVSyncCount = 0;
+
     private void Awake() => Registry.ins.lm = this;
 
     void Start()
     {
+        Application.targetFrameRate = 60;
+        //defaultVSyncCount = QualitySettings.vSyncCount;
+        //QualitySettings.vSyncCount = 2;
         int loadLevelID = PlayerPrefs.GetInt("Level_ID_Selected_in_Menu");
         MakeDecision(loadLevelID);
     }
@@ -34,8 +39,13 @@ public class LevelLoader : MonoBehaviour
         StartCoroutine(LoadLevelRoutine(currentLevelData));
     }
 
-    public void QuitToMenu() => SceneManager.LoadScene("Menu");
+    public void QuitToMenu()
+    {
+        Application.targetFrameRate = -1;
+        //QualitySettings.vSyncCount = defaultVSyncCount;
 
+        SceneManager.LoadScene("Menu");
+    }
     private void MakeDecision(int id)
     {
         LevelTree.LevelData? levelData = levelTreeManager.TryGetLevel(id);
