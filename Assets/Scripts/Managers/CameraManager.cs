@@ -7,6 +7,11 @@ public class CameraManager : MonoBehaviour
 {
     [SerializeField] float boxSize;
 
+    [SerializeField] float boxTopHalfSize;
+    [SerializeField] float boxBottomHalfSize;
+    [SerializeField] float boxRightHalfSize;
+    [SerializeField] float boxLeftHalfSize;
+
     private new Camera camera;
     private Animator transition;
     private Transform target;
@@ -33,16 +38,11 @@ public class CameraManager : MonoBehaviour
     {
         if (transiting || target == null)
             return;
+        
+        float newPosX = Mathf.Clamp(transform.position.x, target.position.x - boxLeftHalfSize, target.position.x + boxRightHalfSize);
+        float newPosY = Mathf.Clamp(transform.position.y, target.position.y - boxBottomHalfSize, target.position.y + boxTopHalfSize);
 
-        Vector2 diff = target.position - transform.position;
-        float addx = 0f;
-        if (Mathf.Abs(diff.x) > boxSize)
-            addx += Mathf.Sign(diff.x) * (Mathf.Abs(diff.x) - boxSize);
-        float addy = 0f;
-        if (Mathf.Abs(diff.y) > boxSize)
-            addy += Mathf.Sign(diff.y) * (Mathf.Abs(diff.y) - boxSize);
-
-        transform.position += new Vector3(addx, addy, 0f);
+        transform.position = new Vector3(newPosX, newPosY, transform.position.z);
     }
 
     public void SetTarget (Transform target)

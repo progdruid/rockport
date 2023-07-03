@@ -10760,6 +10760,22 @@ PrefabInstance:
       propertyPath: m_NormalizedViewPortRect.height
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 654563176251057829, guid: 915d0621642943f43bf86372e3cf4f0b, type: 3}
+      propertyPath: boxTopHalfSize
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 654563176251057829, guid: 915d0621642943f43bf86372e3cf4f0b, type: 3}
+      propertyPath: boxLeftHalfSize
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 654563176251057829, guid: 915d0621642943f43bf86372e3cf4f0b, type: 3}
+      propertyPath: boxRightHalfSize
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 654563176251057829, guid: 915d0621642943f43bf86372e3cf4f0b, type: 3}
+      propertyPath: boxBottomHalfSize
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 654563176251057830, guid: 915d0621642943f43bf86372e3cf4f0b, type: 3}
       propertyPath: m_Name
       value: Camera
