@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InputSystem : MonoBehaviour
 {
-    public event System.Action JumpKeyPressEvent = delegate { }; //to not always write if null
+    public event System.Action JumpKeyPressEvent = delegate { }; //not to always write if null
     public event System.Action JumpKeyReleaseEvent = delegate { }; //bit stupid, i know
     public event System.Action KillPlayerKeyPressEvent = delegate { }; 
     public event System.Action<bool, bool> ActiveUpdateEvent = delegate { };

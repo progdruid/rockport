@@ -13,9 +13,22 @@ public class PlayerManager : MonoBehaviour
     private Vector2 spawnPoint = Vector2.zero;
     private bool killingPlayer;
 
-    private void Awake() => Registry.ins.playerManager = this;
-    private void Start() => Registry.ins.inputSystem.KillPlayerKeyPressEvent += KillPlayer;
-    private void OnDestroy() => Registry.ins.inputSystem.KillPlayerKeyPressEvent -= KillPlayer;
+    private void Awake()
+    {
+        Registry.ins.playerManager = this;
+        GetComponent<LevelLoader>().levelInstantiationEvent += TryFindAndSetSpawnPoint;
+    }
+
+    private void Start() 
+    {
+        Registry.ins.inputSystem.KillPlayerKeyPressEvent += KillPlayer;
+        //Registry.ins.lm.levelInstantiationEvent += TryFindAndSetSpawnPoint;
+    }
+    private void OnDestroy()
+    {
+        Registry.ins.inputSystem.KillPlayerKeyPressEvent -= KillPlayer;
+        Registry.ins.lm.levelInstantiationEvent -= TryFindAndSetSpawnPoint;
+    }
     public void SetSpawnPoint (Vector2 pos) => spawnPoint = pos;
     
     public void SpawnPlayer ()
@@ -80,5 +93,16 @@ public class PlayerManager : MonoBehaviour
     {
         if (player != null)
             player.ResetJumpCooldown();
+    }
+
+    private void TryFindAndSetSpawnPoint ()
+    {
+        GameObject foundObject = GetComponent<LevelLoader>().TryFindObjectWithTag("SpawnPoint");
+
+        if (foundObject != null)
+            SetSpawnPoint(foundObject.transform.position);
+        else
+            SetSpawnPoint(Vector2.zero);
+        Debug.Log(spawnPoint);
     }
 }

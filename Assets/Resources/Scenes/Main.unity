@@ -2772,6 +2772,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parallaxCoeficient: 0.7
+  levelLoader: {fileID: 1262337690}
 --- !u!4 &670748251
 Transform:
   m_ObjectHideFlags: 0
@@ -2967,6 +2968,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parallaxCoeficient: 0.5
+  levelLoader: {fileID: 1262337690}
 --- !u!4 &725263554
 Transform:
   m_ObjectHideFlags: 0
@@ -6273,10 +6275,10 @@ GameObject:
   - component: {fileID: 1262337694}
   - component: {fileID: 1262337696}
   - component: {fileID: 1262337698}
+  - component: {fileID: 1262337697}
   - component: {fileID: 1262337690}
   - component: {fileID: 1262337692}
   - component: {fileID: 1262337695}
-  - component: {fileID: 1262337697}
   m_Layer: 0
   m_Name: LevelManager
   m_TagString: GameController

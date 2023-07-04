@@ -7,11 +7,13 @@ public class LevelLoader : MonoBehaviour
 {
     [SerializeField] LevelTreeManager levelTreeManager;
 
+    public event System.Action levelInstantiationEvent = delegate { };
+
     private int currentLevelID;  //index in tree if used
     private LevelTree.LevelData currentLevelData;
     private GameObject currentLevelGameObject;//level in scene
 
-    private int defaultVSyncCount = 0;
+    //private int defaultVSyncCount = 0;
 
     private void Awake() => Registry.ins.lm = this;
 
@@ -93,27 +95,23 @@ public class LevelLoader : MonoBehaviour
 
         Registry.ins.skullManager.ClearSkulls();
         currentLevelGameObject = Instantiate(prefabToLoad);
-
-        TryFindAndSetSpawnPoint();
+        
+        levelInstantiationEvent();
         
         Registry.ins.playerManager.SpawnPlayer();
         yield return Registry.ins.cameraManager.TransiteOut();
     }
-
-    private void TryFindAndSetSpawnPoint ()
-    {
-        Transform spawnPoint;
-        for (int i = 0; i < currentLevelGameObject.transform.childCount; i++)
-            if (currentLevelGameObject.transform.GetChild(i).tag == "SpawnPoint")
-            {
-                spawnPoint = currentLevelGameObject.transform.GetChild(i);
-                Registry.ins.playerManager.SetSpawnPoint(spawnPoint.position);
-                return;
-            }
-
-        Registry.ins.playerManager.SetSpawnPoint(Vector2.zero);
-    }
     #endregion
+
+    //DO NOT CHANGE TO GameObject.FindGameObjectWithTag: IT DOES NOT WORK!
+    public GameObject TryFindObjectWithTag(string tag)
+    {
+        for (int i = 0; i < currentLevelGameObject.transform.childCount; i++)
+            if (currentLevelGameObject.transform.GetChild(i).tag == tag)
+                return currentLevelGameObject.transform.GetChild(i).gameObject;
+
+        return null;
+    }
 
 }
 /*

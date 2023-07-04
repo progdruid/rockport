@@ -8,6 +8,7 @@ TagManager:
   - Corpse
   - SpawnPoint
   - Test
+  - EquatorialLineObject
   layers:
   - Default
   - TransparentFX
