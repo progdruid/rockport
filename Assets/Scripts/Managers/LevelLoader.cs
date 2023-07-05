@@ -109,7 +109,7 @@ public class LevelLoader : MonoBehaviour
         for (int i = 0; i < currentLevelGameObject.transform.childCount; i++)
             if (currentLevelGameObject.transform.GetChild(i).tag == tag)
                 return currentLevelGameObject.transform.GetChild(i).gameObject;
-
+        
         return null;
     }
 

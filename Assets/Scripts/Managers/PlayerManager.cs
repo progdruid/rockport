@@ -16,13 +16,13 @@ public class PlayerManager : MonoBehaviour
     private void Awake()
     {
         Registry.ins.playerManager = this;
+        //this is an exception, this event will be invoked on Start, so there is no other option that finding it manually
         GetComponent<LevelLoader>().levelInstantiationEvent += TryFindAndSetSpawnPoint;
     }
 
     private void Start() 
     {
         Registry.ins.inputSystem.KillPlayerKeyPressEvent += KillPlayer;
-        //Registry.ins.lm.levelInstantiationEvent += TryFindAndSetSpawnPoint;
     }
     private void OnDestroy()
     {
@@ -103,6 +103,5 @@ public class PlayerManager : MonoBehaviour
             SetSpawnPoint(foundObject.transform.position);
         else
             SetSpawnPoint(Vector2.zero);
-        Debug.Log(spawnPoint);
     }
 }

@@ -22,16 +22,12 @@ public class ParallaxBackground : MonoBehaviour
             levelLoader.GetComponent<LevelLoader>().levelInstantiationEvent -= Init;
     }
 
-    void Start()
-    {
-        Init();
-    }
-
     private void Init()
     {
         targetTransform = Camera.main.gameObject.transform;
 
         GameObject foundObject = levelLoader.TryFindObjectWithTag("EquatorialLineObject");
+
         if (foundObject != null)
             equatorialLinePoint = (Vector2)foundObject.transform.position;
         else
