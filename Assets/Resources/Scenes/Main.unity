@@ -2772,7 +2772,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parallaxCoeficient: 0.7
-  levelLoader: {fileID: 1262337690}
 --- !u!4 &670748251
 Transform:
   m_ObjectHideFlags: 0
@@ -2968,7 +2967,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parallaxCoeficient: 0.5
-  levelLoader: {fileID: 1262337690}
 --- !u!4 &725263554
 Transform:
   m_ObjectHideFlags: 0
