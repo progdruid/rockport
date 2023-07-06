@@ -26,6 +26,7 @@ public class DeathsBarManager : MonoBehaviour
     {
         var skull = Instantiate(SkullIconPrefab);
         skull.transform.SetParent(DeathBar.transform);
+        skull.transform.localScale = Vector3.one;
         skullIcons.Add(skull);
         skull.SetActive(startState);
         return skull;

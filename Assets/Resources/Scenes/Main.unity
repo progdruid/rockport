@@ -6325,7 +6325,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DeathBar: {fileID: 921371728}
-  SkullIconPrefab: {fileID: 3615580850514776341, guid: 99d4f5bc83299854593216d32377924e, type: 3}
+  SkullIconPrefab: {fileID: 1933346034816213403, guid: 13557e9d120c1094e9d23d4ff50ae21c, type: 3}
   MaxSkullIcons: 10
 --- !u!114 &1262337693
 MonoBehaviour:
@@ -7603,7 +7603,7 @@ Canvas:
   serializedVersion: 3
   m_RenderMode: 1
   m_Camera: {fileID: 1191371538}
-  m_PlaneDistance: 100
+  m_PlaneDistance: 2
   m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
