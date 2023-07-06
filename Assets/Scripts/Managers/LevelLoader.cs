@@ -13,18 +13,6 @@ public class LevelLoader : MonoBehaviour
     private LevelTree.LevelData currentLevelData;
     private GameObject currentLevelGameObject;//level in scene
 
-    //private int defaultVSyncCount = 0;
-
-    private void Awake() => Registry.ins.lm = this;
-
-    void Start()
-    {
-        Application.targetFrameRate = 60;
-        //defaultVSyncCount = QualitySettings.vSyncCount;
-        //QualitySettings.vSyncCount = 2;
-        int loadLevelID = PlayerPrefs.GetInt("Level_ID_Selected_in_Menu");
-        MakeDecision(loadLevelID);
-    }
 
     public void AttachToLevelAsChild (Transform transform)
     {
@@ -44,10 +32,23 @@ public class LevelLoader : MonoBehaviour
     public void QuitToMenu()
     {
         Application.targetFrameRate = -1;
-        //QualitySettings.vSyncCount = defaultVSyncCount;
-
         SceneManager.LoadScene("Menu");
     }
+
+    //DO NOT CHANGE TO GameObject.FindGameObjectWithTag: IT DOES NOT WORK!
+    public GameObject TryFindObjectWithTag(string tag)
+    {
+        if (currentLevelGameObject == null)
+            return null;
+
+        for (int i = 0; i < currentLevelGameObject.transform.childCount; i++)
+            if (currentLevelGameObject.transform.GetChild(i).tag == tag)
+                return currentLevelGameObject.transform.GetChild(i).gameObject;
+        
+        return null;
+    }
+
+
     private void MakeDecision(int id)
     {
         LevelTree.LevelData? levelData = levelTreeManager.TryGetLevel(id);
@@ -59,39 +60,29 @@ public class LevelLoader : MonoBehaviour
         }
         currentLevelData = levelData.Value;
         currentLevelID = id;
-        LoadLevel(levelData.Value);
+        StartCoroutine(LoadLevelRoutine(levelData.Value));
     }
-
-
-#region load
-
-    private GameObject GetLevelPrefab()
+    
+    private GameObject GetLevelPrefabFromFiles()
     {
         string path = levelTreeManager.TryGetLevel(currentLevelID).Value.path;
         return Resources.Load<GameObject>(path);
     }
 
-    private void UnloadLevel ()
-    {
-        Registry.ins.corpseManager.ClearCorpses();
-        Registry.ins.playerManager.DestroyPlayer();
-        Destroy(currentLevelGameObject);
-    }
-
-    public void LoadLevel (LevelTree.LevelData levelData)
-    {
-        StartCoroutine(LoadLevelRoutine(levelData));
-    }
-
     private IEnumerator LoadLevelRoutine (LevelTree.LevelData levelData)
     {
+        UnsubscribeFromInput();
+
         if (currentLevelGameObject != null)
         {
             yield return Registry.ins.cameraManager.TransiteIn();
-            UnloadLevel();
+
+            Registry.ins.corpseManager.ClearCorpses();
+            Registry.ins.playerManager.DestroyPlayer();
+            Destroy(currentLevelGameObject);
         }
 
-        GameObject prefabToLoad = GetLevelPrefab();
+        GameObject prefabToLoad = GetLevelPrefabFromFiles();
 
         Registry.ins.skullManager.ClearSkulls();
         currentLevelGameObject = Instantiate(prefabToLoad);
@@ -100,19 +91,31 @@ public class LevelLoader : MonoBehaviour
         
         Registry.ins.playerManager.SpawnPlayer();
         yield return Registry.ins.cameraManager.TransiteOut();
-    }
-    #endregion
 
-    //DO NOT CHANGE TO GameObject.FindGameObjectWithTag: IT DOES NOT WORK!
-    public GameObject TryFindObjectWithTag(string tag)
+        SubscribeToInput();
+    }
+
+    private void SubscribeToInput()
     {
-        for (int i = 0; i < currentLevelGameObject.transform.childCount; i++)
-            if (currentLevelGameObject.transform.GetChild(i).tag == tag)
-                return currentLevelGameObject.transform.GetChild(i).gameObject;
-        
-        return null;
+        Registry.ins.inputSystem.QuitActivationEvent += QuitToMenu;
+        Registry.ins.inputSystem.ReloadActivationEvent += ReloadLevel;
     }
 
+    private void UnsubscribeFromInput()
+    {
+        Registry.ins.inputSystem.QuitActivationEvent -= QuitToMenu;
+        Registry.ins.inputSystem.ReloadActivationEvent -= ReloadLevel;
+    }
+
+    private void Awake() => Registry.ins.lm = this;
+    void Start()
+    {
+        Application.targetFrameRate = 60;
+
+        int loadLevelID = PlayerPrefs.GetInt("Level_ID_Selected_in_Menu");
+        MakeDecision(loadLevelID);
+    }
+    private void OnDestroy() => UnsubscribeFromInput();
 }
 /*
 #region disgusting unity editor code

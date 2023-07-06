@@ -4,13 +4,19 @@ using UnityEngine;
 
 public class InputSystem : MonoBehaviour
 {
-    public event System.Action JumpKeyPressEvent = delegate { }; //not to always write if null
-    public event System.Action JumpKeyReleaseEvent = delegate { }; //bit stupid, i know
+    //game input events
+    public event System.Action QuitActivationEvent = delegate { };
+    public event System.Action ReloadActivationEvent = delegate { };
     public event System.Action KillPlayerKeyPressEvent = delegate { }; 
+
+    //state update events
     public event System.Action<bool, bool> ActiveUpdateEvent = delegate { };
     public event System.Action<bool, bool> CanWalkUpdateEvent = delegate { };
     public event System.Action<bool, bool> CanJumpUpdateEvent = delegate { };
     
+    //player input
+    public event System.Action JumpKeyPressEvent = delegate { }; //not to always write if null
+    public event System.Action JumpKeyReleaseEvent = delegate { }; //bit stupid, i know
     public float HorizontalValue { get; private set; }
     public bool HoldingJumpKey { get; private set; }
 
@@ -65,15 +71,15 @@ public class InputSystem : MonoBehaviour
         else if (Input.GetKeyUp(KeyCode.Space))
             JumpKeyReleaseEvent();
 
-        //temporary
+        //player kill key is temporary
         //will not be in the final game
         //exists only for testing
         if (Input.GetKeyDown(KeyCode.E))
             KillPlayerKeyPressEvent();
         if (Input.GetKeyDown(KeyCode.R))
-            Registry.ins.lm.ReloadLevel();
+            ReloadActivationEvent();
         if (Input.GetKeyDown(KeyCode.Q))
-            Registry.ins.lm.QuitToMenu();
+            QuitActivationEvent();
 
     }
 }
