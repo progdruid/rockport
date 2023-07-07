@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CombinedInputSet : InputSet
+public class PCInputSet : InputSet
 {
     void Update()
     {
@@ -24,13 +24,10 @@ public class CombinedInputSet : InputSet
         //exists only for testing
         if (Input.GetKeyDown(KeyCode.E))
             InvokeKillPlayerKeyPressEvent();
-        /*if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R))
             InvokeReloadActivationEvent();
         if (Input.GetKeyDown(KeyCode.Q))
             InvokeQuitActivationEvent();
-        */
-    }
 
-    public void HandleQuitButtonClick() => InvokeQuitActivationEvent();
-    public void HandleReloadButtonClick() => InvokeReloadActivationEvent();
+    }
 }
