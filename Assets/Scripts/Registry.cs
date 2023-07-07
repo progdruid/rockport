@@ -7,7 +7,7 @@ public class Registry
 
     public LevelLoader lm;
     public CameraManager cameraManager;
-    public InputSystem inputSystem;
+    public InputSet inputSet;
     public CorpseManager corpseManager;
     public SkullManager skullManager;
     public PlayerManager playerManager;

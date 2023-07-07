@@ -22,7 +22,7 @@ public class KillerObject : MonoBehaviour
 
     private void HandleTriggerEnter (Collider2D col, TriggeredType type)
     {
-        if (type != TriggeredType.Player || !Registry.ins.inputSystem.Active)
+        if (type != TriggeredType.Player || !Registry.ins.inputSet.Active)
             return;
 
         Registry.ins.playerManager.KillPlayer();

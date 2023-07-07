@@ -46,8 +46,8 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         collider = gameObject.GetComponent<Collider2D>();
 
-        Registry.ins.inputSystem.JumpKeyPressEvent += Jump;
-        Registry.ins.inputSystem.JumpKeyReleaseEvent += SuppressJump;
+        Registry.ins.inputSet.JumpKeyPressEvent += Jump;
+        Registry.ins.inputSet.JumpKeyReleaseEvent += SuppressJump;
 
         InitValues();
     }
@@ -96,7 +96,7 @@ public class Player : MonoBehaviour
 
     private void MoveSide ()
     {
-        float value = Registry.ins.inputSystem.HorizontalValue;
+        float value = Registry.ins.inputSet.HorizontalValue;
         spriteRenderer.flipX = value != 0f ? value < 0f : spriteRenderer.flipX;
 
         bool wallFree = !(leftTrigger.wallTriggered && value < 0f) && !(rightTrigger.wallTriggered && value > 0f);
@@ -134,7 +134,7 @@ public class Player : MonoBehaviour
 
     private void OnDestroy()
     {
-        Registry.ins.inputSystem.JumpKeyPressEvent -= Jump;
-        Registry.ins.inputSystem.JumpKeyReleaseEvent -= SuppressJump;
+        Registry.ins.inputSet.JumpKeyPressEvent -= Jump;
+        Registry.ins.inputSet.JumpKeyReleaseEvent -= SuppressJump;
     }
 }

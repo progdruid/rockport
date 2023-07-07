@@ -22,11 +22,11 @@ public class PlayerManager : MonoBehaviour
 
     private void Start() 
     {
-        Registry.ins.inputSystem.KillPlayerKeyPressEvent += KillPlayer;
+        Registry.ins.inputSet.KillPlayerKeyPressEvent += KillPlayer;
     }
     private void OnDestroy()
     {
-        Registry.ins.inputSystem.KillPlayerKeyPressEvent -= KillPlayer;
+        Registry.ins.inputSet.KillPlayerKeyPressEvent -= KillPlayer;
         Registry.ins.lm.levelInstantiationEvent -= TryFindAndSetSpawnPoint;
     }
     public void SetSpawnPoint (Vector2 pos) => spawnPoint = pos;

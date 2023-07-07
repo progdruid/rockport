@@ -97,14 +97,14 @@ public class LevelLoader : MonoBehaviour
 
     private void SubscribeToInput()
     {
-        Registry.ins.inputSystem.QuitActivationEvent += QuitToMenu;
-        Registry.ins.inputSystem.ReloadActivationEvent += ReloadLevel;
+        Registry.ins.inputSet.QuitActivationEvent += QuitToMenu;
+        Registry.ins.inputSet.ReloadActivationEvent += ReloadLevel;
     }
 
     private void UnsubscribeFromInput()
     {
-        Registry.ins.inputSystem.QuitActivationEvent -= QuitToMenu;
-        Registry.ins.inputSystem.ReloadActivationEvent -= ReloadLevel;
+        Registry.ins.inputSet.QuitActivationEvent -= QuitToMenu;
+        Registry.ins.inputSet.ReloadActivationEvent -= ReloadLevel;
     }
 
     private void Awake() => Registry.ins.lm = this;

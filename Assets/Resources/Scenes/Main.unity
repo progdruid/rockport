@@ -6269,7 +6269,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1262337689}
-  - component: {fileID: 1262337693}
+  - component: {fileID: 1262337699}
   - component: {fileID: 1262337694}
   - component: {fileID: 1262337696}
   - component: {fileID: 1262337698}
@@ -6327,18 +6327,6 @@ MonoBehaviour:
   DeathBar: {fileID: 921371728}
   SkullIconPrefab: {fileID: 1933346034816213403, guid: 13557e9d120c1094e9d23d4ff50ae21c, type: 3}
   MaxSkullIcons: 10
---- !u!114 &1262337693
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1262337688}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e20484af166c1934688b9f3f9f493ebb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1262337694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6404,6 +6392,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   leveltreePath: Prefabs/Levels/levels
+--- !u!114 &1262337699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1262337688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b98ec2dd4dcd8384d8f5309f5a864d56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1277225199
 GameObject:
   m_ObjectHideFlags: 0

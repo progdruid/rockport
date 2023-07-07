@@ -45,7 +45,7 @@ public class JumpPad : MonoBehaviour
     {
         //disables jump if it's a trigPlayer //lil hack to avoid the if statement
         bool isPlayer = pressingBody.TryGetComponent(out Player player);
-        Registry.ins.inputSystem.CanJump = !isPlayer;
+        Registry.ins.inputSet.CanJump = !isPlayer;
 
         animator.SetTrigger("Pressed");
 
@@ -68,7 +68,7 @@ public class JumpPad : MonoBehaviour
 
         if (found)
         {
-            Registry.ins.inputSystem.CanJump = true;
+            Registry.ins.inputSet.CanJump = true;
             player.pushedByPad = true;
         }
     }
