@@ -5,13 +5,16 @@ using UnityEngine;
 public class InputSet : MonoBehaviour
 {
     //game input events
-    public event System.Action QuitActivationEvent = delegate { };
-    public event System.Action ReloadActivationEvent = delegate { };
+    public event System.Action QuitActivationEvent = delegate { }; //not to always write if null
+    public event System.Action ReloadActivationEvent = delegate { }; //bit stupid, i know
     public event System.Action KillPlayerKeyPressEvent = delegate { };
     protected void InvokeQuitActivationEvent() => QuitActivationEvent();
     protected void InvokeReloadActivationEvent() => ReloadActivationEvent();
-    protected void InvokeKillPlayerKeyPressEvent() => KillPlayerKeyPressEvent();
-
+    protected void InvokeKillPlayerKeyPressEvent()
+    {
+        if (Active)
+            KillPlayerKeyPressEvent();
+    }
 
     //state update events
     public event System.Action<bool, bool> ActiveUpdateEvent = delegate { };
@@ -20,13 +23,30 @@ public class InputSet : MonoBehaviour
     
 
     //player input
-    public event System.Action JumpKeyPressEvent = delegate { }; //not to always write if null
-    public event System.Action JumpKeyReleaseEvent = delegate { }; //bit stupid, i know
-    protected void InvokeJumpKeyPressEvent() => JumpKeyPressEvent();
-    protected void InvokeJumpKeyReleaseEvent() => JumpKeyReleaseEvent();
+    public event System.Action JumpKeyPressEvent = delegate { }; 
+    public event System.Action JumpKeyReleaseEvent = delegate { }; 
+    protected void InvokeJumpKeyPressEvent() 
+    {
+        if (Active && CanJump)
+            JumpKeyPressEvent(); 
+    }
+    protected void InvokeJumpKeyReleaseEvent()
+    {
+        if (Active && CanJump)
+            JumpKeyReleaseEvent();
+    }
 
-    public float HorizontalValue { get; protected set; }
-    public bool HoldingJumpKey { get; protected set; }
+    private float hValue = 0f;
+    public float HorizontalValue 
+    {
+        get { return hValue; }
+        protected set
+        {
+            if (Active && CanWalk)
+                hValue = value;
+            else hValue = 0f;
+        } 
+    }
 
     private bool active;
     public bool Active{
@@ -57,8 +77,6 @@ public class InputSet : MonoBehaviour
         set{
             CanJumpUpdateEvent(canJump, value);
             canJump = value;
-            if (!value)
-                HoldingJumpKey = false;
         }
     }
 

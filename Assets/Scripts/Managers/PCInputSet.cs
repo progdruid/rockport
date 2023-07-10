@@ -11,8 +11,6 @@ public class PCInputSet : InputSet
 
         if (CanWalk)
             HorizontalValue = Input.GetAxisRaw("Horizontal");
-        if (CanJump)
-            HoldingJumpKey = Input.GetKey(KeyCode.Space);
 
         if (Input.GetKeyDown(KeyCode.Space) && CanJump)
             InvokeJumpKeyPressEvent();
