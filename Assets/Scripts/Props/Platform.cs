@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class Platform : MonoBehaviour
 {
-    public int platformWidth;
-    public float colliderHeight;
-    public float triggerHeight;
-    public Sprite sprite;
+    [SerializeField] int platformWidth;
+    [SerializeField] float colliderHeight;
+    [SerializeField] float triggerHeight;
+    [SerializeField] Sprite sprite;
+    [SerializeField] Sprite[] sprites;
 
     private GameObject[] spriteObjects;
     private BoxCollider2D platformCollider;
@@ -28,14 +29,26 @@ public class Platform : MonoBehaviour
 
     private void Setup ()
     {
-        spriteObjects = new GameObject[platformWidth];
-        for (int i = 0; i < platformWidth; i++)
+        System.Random rand = new System.Random();
+
+        spriteObjects = new GameObject[platformWidth * 2];
+        for (int i = 0; i < platformWidth * 2; i++)
         {
-            spriteObjects[i] = new GameObject("Platform_" + i);
+            spriteObjects[i] = new GameObject("Platform_" + System.Convert.ToString(i/2f));
             spriteObjects[i].transform.position = transform.position;
             spriteObjects[i].transform.parent = transform;
-            spriteObjects[i].transform.position += new Vector3(i, 0, 0);
-            spriteObjects[i].AddComponent<SpriteRenderer>().sprite = sprite;
+            spriteObjects[i].transform.position += new Vector3(i / 2f - 0.25f, 0.25f, 0);
+
+            if (i >= 1 && i < platformWidth * 2 - 1)
+            {
+                int spriteIndex = rand.Next(0, 3);
+                spriteObjects[i].AddComponent<SpriteRenderer>().sprite = sprites[spriteIndex];
+                rand = new System.Random(spriteIndex);
+            }
+            else if (i == 0)
+                spriteObjects[i].AddComponent<SpriteRenderer>().sprite = sprites[0];
+            else if (i == platformWidth * 2 - 1)
+                spriteObjects[i].AddComponent<SpriteRenderer>().sprite = sprites[3];
         }
 
         platformCollider = gameObject.AddComponent<BoxCollider2D>();

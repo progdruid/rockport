@@ -10461,7 +10461,6 @@ GameObject:
   - component: {fileID: 1893933803}
   - component: {fileID: 1893933802}
   - component: {fileID: 1893933801}
-  - component: {fileID: 1893933800}
   m_Layer: 5
   m_Name: JumpButton
   m_TagString: Untagged
@@ -10489,18 +10488,6 @@ RectTransform:
   m_AnchoredPosition: {x: -100, y: 100}
   m_SizeDelta: {x: 300, y: 300}
   m_Pivot: {x: 1, y: 0}
---- !u!114 &1893933800
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1893933798}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2c87056fd0e96345b1a57994b4ba163, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1893933801
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10763,7 +10750,6 @@ GameObject:
   - component: {fileID: 2017490877}
   - component: {fileID: 2017490876}
   - component: {fileID: 2017490875}
-  - component: {fileID: 2017490874}
   m_Layer: 5
   m_Name: LeftLeftButton
   m_TagString: Untagged
@@ -10791,18 +10777,6 @@ RectTransform:
   m_AnchoredPosition: {x: 20, y: 150}
   m_SizeDelta: {x: 300, y: 300}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &2017490874
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2017490872}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2c87056fd0e96345b1a57994b4ba163, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2017490875
 MonoBehaviour:
   m_ObjectHideFlags: 0

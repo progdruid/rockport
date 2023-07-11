@@ -48,3 +48,8 @@ MonoBehaviour:
   colliderHeight: 0.2
   triggerHeight: 1
   sprite: {fileID: 21300000, guid: 7423045334c40e64eab04d4f2832e81c, type: 3}
+  sprites:
+  - {fileID: 1686027942, guid: e968cd4db2dcaa4448ae133a806b2bbb, type: 3}
+  - {fileID: 1231087184, guid: e968cd4db2dcaa4448ae133a806b2bbb, type: 3}
+  - {fileID: -1471991583, guid: e968cd4db2dcaa4448ae133a806b2bbb, type: 3}
+  - {fileID: -847883850, guid: e968cd4db2dcaa4448ae133a806b2bbb, type: 3}
