@@ -241,6 +241,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   drag: 5
   bottomTrigger: {fileID: 8915032620530056132}
+  UltraJumpCooldown: 0.4
+  MaxJumpImpulseMultiplier: 1.25
   kickedMode: 0
 --- !u!114 &591765629211865318
 MonoBehaviour:
@@ -254,7 +256,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2007c2c82f560bf469258d6a187119ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  active: 1
   bottomTrigger: {fileID: 8915032620530056132}
 --- !u!114 &5308784867081697611
 MonoBehaviour:
@@ -270,6 +271,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bottomTrigger: {fileID: 8915032620530056132}
   rb: {fileID: 6388440925167425488}
+  player_optional: {fileID: 0}
 --- !u!1001 &8288236971246576285
 PrefabInstance:
   m_ObjectHideFlags: 0

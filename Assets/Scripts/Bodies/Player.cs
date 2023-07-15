@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IUltraJumper
 {
     //public fields
     public float MaxSpeed;
@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     public float JumpHeight;
     public float CoyoteTime;
     public float JumpCooldown;
+    public float UltraJumpCooldown;
     public float SuppressMultiplier;
     public float MaxJumpImpulseMultiplier;
     [Space]
@@ -20,19 +21,19 @@ public class Player : MonoBehaviour
     public BodySideTrigger leftTrigger;
     public BodySideTrigger bottomTrigger;
 
-    [HideInInspector] public bool pushedByPad;
-
     public event System.Action PreJumpEvent = delegate { };
 
     //classes
     private Rigidbody2D rb;
-    private new Collider2D collider;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
 
     //private fields
+    private bool ultraJumped = false;
+
     private float coyoteTime = 0f;
     private float jumpCooldown = 0f;
+    private float ultraJumpCooldown = 0f;
 
     private float speed;
     private float acc;
@@ -44,9 +45,8 @@ public class Player : MonoBehaviour
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
-        collider = gameObject.GetComponent<Collider2D>();
 
-        Registry.ins.inputSet.JumpKeyPressEvent += Jump;
+        Registry.ins.inputSet.JumpKeyPressEvent += MakeRegularJump;
         Registry.ins.inputSet.JumpKeyReleaseEvent += SuppressJump;
 
         InitValues();
@@ -66,9 +66,10 @@ public class Player : MonoBehaviour
         speed = (leftTrigger.corpseTriggered || rightTrigger.corpseTriggered) ? PushingSpeed : MaxSpeed;
         coyoteTime = bottomTrigger.triggered ? 0f : coyoteTime + Time.deltaTime;
         jumpCooldown += jumpCooldown < JumpCooldown ? Time.deltaTime : 0f;
-        pushedByPad = !bottomTrigger.triggered && pushedByPad;
+        ultraJumpCooldown += ultraJumpCooldown < UltraJumpCooldown ? Time.deltaTime : 0f;
+        ultraJumped = !bottomTrigger.triggered && ultraJumped;
 
-        MoveSide();
+        ComputeHorizontalVelocity();
 
         animator.SetBool("Falling", !bottomTrigger.triggered);
         animator.SetBool("Running", rb.velocity.x != 0f && bottomTrigger.triggered);
@@ -76,25 +77,42 @@ public class Player : MonoBehaviour
 
     public void ResetJumpCooldown () => jumpCooldown = 0f;
 
-    private void Jump ()
+    public void PresetUltraJumped(bool value) => ultraJumped = value;
+
+    public void MakeUltraJump(float initJumpVelocity)
     {
-        if (coyoteTime <= CoyoteTime && jumpCooldown >= JumpCooldown && !pushedByPad)
+        if (ultraJumpCooldown >= UltraJumpCooldown)
+        {
+            ultraJumped = true;
+            ultraJumpCooldown = 0f;
+            ApplyVerticalVelocity(initJumpVelocity);
+        }
+    }
+
+    private void MakeRegularJump()
+    {
+        if (coyoteTime <= CoyoteTime && jumpCooldown >= JumpCooldown && !ultraJumped)
         {
             PreJumpEvent();
-            float newVel = rb.velocity.y + jumpImpulse;
-            newVel = Mathf.Clamp(newVel, -100, jumpImpulse * MaxJumpImpulseMultiplier);
-            rb.velocity = new Vector2(rb.velocity.x, newVel);
+            ApplyVerticalVelocity(jumpImpulse);
             ResetJumpCooldown();
         }
     }
 
     private void SuppressJump ()
     {
-        if (rb.velocity.y >= 0 && !pushedByPad)
+        if (rb.velocity.y >= 0 && !ultraJumped)
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * SuppressMultiplier);
     }
 
-    private void MoveSide ()
+    private void ApplyVerticalVelocity(float initJumpVelocity)
+    {
+        float newVel = rb.velocity.y + initJumpVelocity;
+        newVel = Mathf.Clamp(newVel, -100, initJumpVelocity * MaxJumpImpulseMultiplier);
+        rb.velocity = new Vector2(rb.velocity.x, newVel);
+    }
+
+    private void ComputeHorizontalVelocity ()
     {
         float value = Registry.ins.inputSet.HorizontalValue;
         spriteRenderer.flipX = value != 0f ? value < 0f : spriteRenderer.flipX;
@@ -134,7 +152,7 @@ public class Player : MonoBehaviour
 
     private void OnDestroy()
     {
-        Registry.ins.inputSet.JumpKeyPressEvent -= Jump;
+        Registry.ins.inputSet.JumpKeyPressEvent -= MakeRegularJump;
         Registry.ins.inputSet.JumpKeyReleaseEvent -= SuppressJump;
     }
 }

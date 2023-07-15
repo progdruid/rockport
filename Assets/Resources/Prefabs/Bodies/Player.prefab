@@ -390,12 +390,12 @@ MonoBehaviour:
   JumpHeight: 2.9
   CoyoteTime: 0.1
   JumpCooldown: 0.1
+  UltraJumpCooldown: 0.4
   SuppressMultiplier: 0.25
   MaxJumpImpulseMultiplier: 1.25
   rightTrigger: {fileID: 6082142449999395931}
   leftTrigger: {fileID: 4895462373448374787}
   bottomTrigger: {fileID: 2918216114742306363}
-  pushedByPad: 0
 --- !u!114 &1536751752382011063
 MonoBehaviour:
   m_ObjectHideFlags: 0

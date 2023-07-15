@@ -7,79 +7,56 @@ public class JumpPad : MonoBehaviour
 {
     public float Impulse;
     public float TimeOffset;
-    public float CooldownForSameBody;
 
     private Animator animator;
-
-    //parallel lists lol
-    private int count;
-    private List<Collider2D> collidersInside;
-    private List<Rigidbody2D> rbsInside;
-    private List<float> timesInside;
+    private List<(Collider2D col, IUltraJumper jumper, bool isPlayer)> bodiesInside;
 
     private void Start()
     {
         animator = GetComponent<Animator>();
 
-        collidersInside = new List<Collider2D>();
-        rbsInside = new List<Rigidbody2D>();
-        timesInside = new List<float>();
+        bodiesInside = new List<(Collider2D col, IUltraJumper jumper, bool isPlayer)>();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        bool found = other.gameObject.TryGetComponent(out SignComponent sign);
-        if (!found || !sign.HasSign("Body"))
+        if (other.tag != "Player" && other.tag != "Corpse")
             return;
 
-        Rigidbody2D rb = other.gameObject.GetComponent<Rigidbody2D>();
-        collidersInside.Add(other);
-        rbsInside.Add(rb);
-        timesInside.Add(Time.time);
-        count++;
+        IUltraJumper jumper = (IUltraJumper)(other.gameObject.GetComponent<Player>());
+        if (jumper == null)
+            jumper = (IUltraJumper)(other.gameObject.GetComponent<CorpsePhysics>());
+        
+        var body = (other, jumper, other.tag == "Player");
+        bodiesInside.Add(body);
 
-        StartCoroutine(Push(rb));
+        StartCoroutine(Push(body));
     }
 
-    private IEnumerator Push (Rigidbody2D pressingBody)
+    private IEnumerator Push ((Collider2D col, IUltraJumper jumper, bool isPlayer) pressingBody)
     {
-        //disables jump if it's a trigPlayer //lil hack to avoid the if statement
-        bool isPlayer = pressingBody.TryGetComponent(out Player player);
-        Registry.ins.inputSet.CanJump = !isPlayer;
-
+        pressingBody.jumper.PresetUltraJumped(true);
+        
         animator.SetTrigger("Pressed");
-
         yield return new WaitForSeconds(TimeOffset);
-
-        pressingBody.velocity += new Vector2(0f, Impulse);
-        if (isPlayer)
-            Registry.ins.playerManager.ResetJumpCooldown();
+        
+        pressingBody.jumper.MakeUltraJump(Impulse);
     }
 
     private void OnTriggerExit2D (Collider2D other)
     {
-        int id = collidersInside.IndexOf(other);
-        collidersInside.RemoveAt(id);
-        rbsInside.RemoveAt(id);
-        timesInside.RemoveAt(id);
-        count--;
+        bodiesInside.RemoveAll((x) => x.col == other);
 
-        bool found = other.TryGetComponent(out Player player);
-
-        if (found)
-        {
+        if (other.tag == "Player")
             Registry.ins.inputSet.CanJump = true;
-            player.pushedByPad = true;
-        }
     }
-
+    
     private void Update ()
     {
-        for (int i = 0; i < count; i++)
-            if (Time.time - timesInside[i] >= CooldownForSameBody)
-            {
-                timesInside[i] = Time.time;
-                StartCoroutine(Push(rbsInside[i]));
-            }
+        for (int i = 0; i < bodiesInside.Count; i++)
+        {
+            bodiesInside[i] = (bodiesInside[i].col, bodiesInside[i].jumper, bodiesInside[i].isPlayer);
+            StartCoroutine(Push(bodiesInside[i]));
+        }
     }
 }
