@@ -16,6 +16,7 @@ public class Player : MonoBehaviour, IUltraJumper
     public float UltraJumpCooldown;
     public float SuppressMultiplier;
     public float MaxJumpImpulseMultiplier;
+    public float AnimationJumpDisableCooldown;
     [Space]
     public BodySideTrigger rightTrigger;
     public BodySideTrigger leftTrigger;
@@ -32,8 +33,9 @@ public class Player : MonoBehaviour, IUltraJumper
     private bool ultraJumped = false;
 
     private float coyoteTime = 0f;
-    private float jumpCooldown = 0f;
-    private float ultraJumpCooldown = 0f;
+    private float jumpCooldownTime = 0f;
+    private float ultraJumpCooldownTime = 0f;
+    private float animJumpDisableCDTime = 0f;
 
     private float speed;
     private float acc;
@@ -65,33 +67,36 @@ public class Player : MonoBehaviour, IUltraJumper
     {
         speed = (leftTrigger.corpseTriggered || rightTrigger.corpseTriggered) ? PushingSpeed : MaxSpeed;
         coyoteTime = bottomTrigger.triggered ? 0f : coyoteTime + Time.deltaTime;
-        jumpCooldown += jumpCooldown < JumpCooldown ? Time.deltaTime : 0f;
-        ultraJumpCooldown += ultraJumpCooldown < UltraJumpCooldown ? Time.deltaTime : 0f;
+        jumpCooldownTime += jumpCooldownTime < JumpCooldown ? Time.deltaTime : 0f;
+        ultraJumpCooldownTime += ultraJumpCooldownTime < UltraJumpCooldown ? Time.deltaTime : 0f;
+        animJumpDisableCDTime += animJumpDisableCDTime < AnimationJumpDisableCooldown ? Time.deltaTime : 0f;
         ultraJumped = !bottomTrigger.triggered && ultraJumped;
 
         ComputeHorizontalVelocity();
 
-        animator.SetBool("Falling", !bottomTrigger.triggered);
+        animator.SetBool("Grounded", bottomTrigger.triggered);
         animator.SetBool("Running", rb.velocity.x != 0f && bottomTrigger.triggered);
+        if (animJumpDisableCDTime >= AnimationJumpDisableCooldown && animator.GetBool("Jumped"))
+            animator.SetBool("Jumped", !bottomTrigger.triggered);
     }
 
-    public void ResetJumpCooldown () => jumpCooldown = 0f;
+    public void ResetJumpCooldown () => jumpCooldownTime = 0f;
 
     public void PresetUltraJumped(bool value) => ultraJumped = value;
 
     public void MakeUltraJump(float initJumpVelocity)
     {
-        if (ultraJumpCooldown >= UltraJumpCooldown)
+        if (ultraJumpCooldownTime >= UltraJumpCooldown)
         {
             ultraJumped = true;
-            ultraJumpCooldown = 0f;
+            ultraJumpCooldownTime = 0f;
             ApplyVerticalVelocity(initJumpVelocity);
         }
     }
 
     private void MakeRegularJump()
     {
-        if (coyoteTime <= CoyoteTime && jumpCooldown >= JumpCooldown && !ultraJumped)
+        if (coyoteTime <= CoyoteTime && jumpCooldownTime >= JumpCooldown && !ultraJumped)
         {
             PreJumpEvent();
             ApplyVerticalVelocity(jumpImpulse);
@@ -110,6 +115,8 @@ public class Player : MonoBehaviour, IUltraJumper
         float newVel = rb.velocity.y + initJumpVelocity;
         newVel = Mathf.Clamp(newVel, -100, initJumpVelocity * MaxJumpImpulseMultiplier);
         rb.velocity = new Vector2(rb.velocity.x, newVel);
+        animator.SetBool("Jumped", true);
+        animJumpDisableCDTime = 0f;
     }
 
     private void ComputeHorizontalVelocity ()
