@@ -508,6 +508,111 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: player_dust_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 56
+        width: 64
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b49a7024df43a114abeb864a21bf1214
+      internalID: -1171260190
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_dust_1
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 56
+        width: 64
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: edfb68156c1651845a41947bc2804ee7
+      internalID: -398734003
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_dust_2
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 56
+        width: 64
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: feb965e18daadc044b58507bcef5ec27
+      internalID: -1612515613
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_dust_3
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 56
+        width: 64
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d26b2d0b5bb6e7546870a5ff7aa98b6b
+      internalID: -1796839707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: player_dust_4
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 56
+        width: 64
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2b0249b6a642bf84cba6fa31bc375ea0
+      internalID: -118311065
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -525,10 +630,14 @@ TextureImporter:
       player_idle_1: 1185982686
       player_run_1: -754055761
       player_run_3: 1909967713
+      player_dust_1: -398734003
+      player_dust_2: -1612515613
       player_run_7: -1891871347
       player_run_0: -1737379577
       player_jump_3: -675245742
       player_run_2: -747022897
+      player_dust_3: -1796839707
+      player_dust_4: -118311065
       player_run_4: 26083472
       player_jump_0: 1707097451
       player_jump_5: 1071798873
@@ -537,6 +646,7 @@ TextureImporter:
       player_jump_7: 782261509
       player_jump_2: 439414997
       player_idle_0: -2013510329
+      player_dust_0: -1171260190
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
