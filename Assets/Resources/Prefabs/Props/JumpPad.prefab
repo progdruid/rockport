@@ -33,7 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &21454352661399371
 SpriteRenderer:
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: dae3da8022dbd7940bda04d89ddf97f3, type: 3}
+  m_Sprite: {fileID: 1660400900, guid: 0eaaf102ef851e242be42afa35f67104, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -166,4 +166,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Impulse: 16
   TimeOffset: 0.04
-  CooldownForSameBody: 0.4

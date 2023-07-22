@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6193151338692432666}
   - component: {fileID: 8501781832293843370}
   - component: {fileID: 1741816900823185137}
+  - component: {fileID: 5468403581610328225}
   m_Layer: 7
   m_Name: Piston
   m_TagString: Untagged
@@ -77,7 +78,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: ea130f3b6ab318c4fbc8bcdc2ea113a9, type: 3}
+  m_Sprite: {fileID: -1309011164, guid: 0eaaf102ef851e242be42afa35f67104, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -176,5 +177,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5e7c1376844afc048854a09e82672ab0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5468403581610328225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5446164943144171519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff8e7bac2415822468cf3a3c4404665b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

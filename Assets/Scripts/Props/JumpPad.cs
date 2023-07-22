@@ -37,9 +37,10 @@ public class JumpPad : MonoBehaviour
     {
         pressingBody.jumper.PresetUltraJumped(true);
         
-        animator.SetTrigger("Pressed");
+        animator.SetBool("Pressed", true);
         yield return new WaitForSeconds(TimeOffset);
-        
+        animator.SetBool("Pressed", false);
+	
         pressingBody.jumper.MakeUltraJump(Impulse);
     }
 
