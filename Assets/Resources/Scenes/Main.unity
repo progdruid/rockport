@@ -6563,6 +6563,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 7112237262537267370, guid: b3ccaed0f9643254faa7ed372f92ba37, type: 3}
+  smokeEffectPrefab: {fileID: 1079392192033553945, guid: ec523a26f72f91f42a77d54904f6e373, type: 3}
+  smokeTimeOffset: 0.3
 --- !u!114 &1262337698
 MonoBehaviour:
   m_ObjectHideFlags: 0

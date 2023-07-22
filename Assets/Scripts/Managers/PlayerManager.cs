@@ -5,13 +5,15 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     [SerializeField] GameObject playerPrefab;
+    [SerializeField] GameObject smokeEffectPrefab;
+    [SerializeField] float smokeTimeOffset;
 
     public event System.Action<GameObject> PlayerSpawnEvent = delegate { };
 
     public Player player { get; private set; }
-    private Rigidbody2D rb => player.GetComponent<Rigidbody2D>();
-    private Vector2 spawnPoint = Vector2.zero;
-    private bool killingPlayer;
+    private Rigidbody2D _rb => player.GetComponent<Rigidbody2D>();
+    private Vector2 _spawnPoint = Vector2.zero;
+    private bool _killingPlayer;
 
     private void Awake()
     {
@@ -29,7 +31,7 @@ public class PlayerManager : MonoBehaviour
         Registry.ins.inputSet.KillPlayerKeyPressEvent -= KillPlayer;
         Registry.ins.lm.levelInstantiationEvent -= TryFindAndSetSpawnPoint;
     }
-    public void SetSpawnPoint (Vector2 pos) => spawnPoint = pos;
+    public void SetSpawnPoint (Vector2 pos) => _spawnPoint = pos;
     
     public void SpawnPlayer ()
     {
@@ -42,27 +44,34 @@ public class PlayerManager : MonoBehaviour
             return;
         }
 
-        player = Instantiate(playerPrefab, new Vector3(spawnPoint.x, spawnPoint.y, -1f), Quaternion.identity).GetComponent<Player>();
+        player = Instantiate(playerPrefab, new Vector3(_spawnPoint.x, _spawnPoint.y, -1f), Quaternion.identity).GetComponent<Player>();
         PlayerSpawnEvent(player.gameObject);
     }
 
     public void KillPlayer ()
     {
-        if (killingPlayer)
+        if (_killingPlayer)
             return;
-        killingPlayer = true;
+        _killingPlayer = true;
         player.PlayDeathAnimation();
 
-        bool spawnCorpse = Registry.ins.skullManager.GetSkullsAmount() != 0;
-        StartCoroutine(KillPlayerRoutine(spawnCorpse));
+        bool canSpawnCorpse = Registry.ins.skullManager.GetSkullsAmount() != 0;
+        StartCoroutine(KillPlayerRoutine(canSpawnCorpse));
     }
 
-    private IEnumerator KillPlayerRoutine(bool spawnCorpse)
+    private IEnumerator KillPlayerRoutine(bool shouldSpawnCorpse)
     {
-        Vector2 vel = rb.velocity;
+        Vector2 vel = _rb.velocity;
         Vector3 pos = player.transform.position;
-        
-        if (spawnCorpse) 
+
+        Instantiate(smokeEffectPrefab, new Vector3(pos.x, pos.y, smokeEffectPrefab.transform.position.z), Quaternion.identity);
+
+        _rb.constraints = RigidbodyConstraints2D.FreezePosition;
+        Registry.ins.inputSet.Active = false;
+
+        yield return new WaitForSeconds(smokeTimeOffset);
+
+        if (shouldSpawnCorpse) 
         {
             Registry.ins.skullManager.DestroySkull();
             DestroyPlayer();
@@ -74,13 +83,14 @@ public class PlayerManager : MonoBehaviour
 
         yield return Registry.ins.cameraManager.TransiteIn();
 
-        if (!spawnCorpse)
+        if (!shouldSpawnCorpse)
             DestroyPlayer();
-        killingPlayer = false;
+        _killingPlayer = false;
 
         SpawnPlayer();
 
         yield return Registry.ins.cameraManager.TransiteOut();
+        Registry.ins.inputSet.Active = true;
     }
 
     public void DestroyPlayer ()

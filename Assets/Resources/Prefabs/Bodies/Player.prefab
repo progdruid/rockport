@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95e3f2fff55657f499ff1a2a5a19945a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LandingDustPrefab: {fileID: 1825618007634176254, guid: a5a0b6388f353d34ea0087c5d80d5566, type: 3}
+  LandingDustPrefab: {fileID: 2625986167463492280, guid: d15531b3a30a07443beebbef91a6afa6, type: 3}
   BottomTrigger: {fileID: 2918216114742306363}
   SpawningPoint: {fileID: 1138232065740235648}
   SpawnCooldown: 0.1
