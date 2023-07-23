@@ -71,7 +71,7 @@ public class Player : MonoBehaviour, IUltraJumper
         ultraJumpCooldownTime += ultraJumpCooldownTime < UltraJumpCooldown ? Time.deltaTime : 0f;
         animJumpDisableCDTime += animJumpDisableCDTime < AnimationJumpDisableCooldown ? Time.deltaTime : 0f;
         ultraJumped = !bottomTrigger.triggered && ultraJumped;
-
+        //Debug.Log(leftTrigger.triggered);
         ComputeHorizontalVelocity();
 
         animator.SetBool("Grounded", bottomTrigger.triggered);

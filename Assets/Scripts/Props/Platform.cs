@@ -16,15 +16,7 @@ public class Platform : MonoBehaviour
 
     private void Awake()
     {
-        Registry.ins.corpseManager.NewCorpseEvent += IgnoreNewBody;
-        Registry.ins.playerManager.PlayerSpawnEvent += IgnoreNewBody;
         Setup();
-    }
-
-    private void OnDestroy()
-    {
-        Registry.ins.corpseManager.NewCorpseEvent -= IgnoreNewBody;
-        Registry.ins.playerManager.PlayerSpawnEvent -= IgnoreNewBody;
     }
 
     private void Setup ()
@@ -66,8 +58,4 @@ public class Platform : MonoBehaviour
         triggerObject.AddComponent<PlatformTrigger>().platformCollider = platformCollider;
     }
 
-    void IgnoreNewBody(GameObject body)
-    {
-        Physics2D.IgnoreCollision(platformCollider, body.GetComponent<Collider2D>(), true);
-    }
 }
