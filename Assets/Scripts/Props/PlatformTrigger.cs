@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(UniversalTrigger))]
@@ -10,7 +11,10 @@ public class PlatformTrigger : MonoBehaviour
     private UniversalTrigger trigger;
     private Collider2D triggerCollider;
 
-    private List<Collider2D> collidersAccounted = new ();
+    private Collider2D[] collidersGot = new Collider2D[10];
+    private Dictionary<Collider2D, bool> colliderMap = new();
+
+    private ContactFilter2D filter;
 
     #region ceremony
 
@@ -24,38 +28,70 @@ public class PlatformTrigger : MonoBehaviour
     {
         trigger = GetComponent<UniversalTrigger>();
         triggerCollider = GetComponent<Collider2D>();
-        
+
         trigger.EnterEvent += HandleTriggerEnter;
-        //trigger.ExitEvent += HandleTriggerExit;
+        trigger.ExitEvent += HandleTriggerExit;
+
+        filter = new();
+        filter.useTriggers = false;
     }
 
     private void OnDestroy()
     {
         trigger.EnterEvent -= HandleTriggerEnter;
-        //trigger.ExitEvent -= HandleTriggerExit;
+        trigger.ExitEvent -= HandleTriggerExit;
 
         Registry.ins.corpseManager.NewCorpseEvent -= HandleNewBody;
         Registry.ins.playerManager.PlayerSpawnEvent -= HandleNewBody;
     }
     #endregion
-
+    /*
     private void FixedUpdate()
     {
-        for (int i = 0; i < collidersAccounted.Count; i++)
+        int resNumber = triggerCollider.OverlapCollider(filter, collidersGot);
+
+        for (int i = 0; i < resNumber; i++)
+        {
+            bool got = colliderMap.ContainsKey(collidersGot[i]);
+            if (got)
+                colliderMap[collidersGot[i]] = true;
+            else
+            {
+                colliderMap.Add(collidersGot[i], true);
+                IgnoreBody(collidersGot[i], false);
+            }
+        }
+
+        var arr = colliderMap.ToArray();
+        for (int i = 0; i < arr.Length; i++)
+        {
+            if (arr[i].Key == null)
+            {
+                colliderMap.Remove(arr[i].Key);
+                continue;
+            }
+            if (!arr[i].Value)
+            {
+                IgnoreBody(arr[i].Key, true);
+                colliderMap.Remove(arr[i].Key);
+            }
+            colliderMap[arr[i].Key] = false;
+        }
+
+        /*for (int i = 0; i < collidersAccounted.Count; i++)
             if (!triggerCollider.IsTouching(collidersAccounted[i]))
             {
                 IgnoreBody(collidersAccounted[i], true);
                 collidersAccounted.RemoveAt(i);
                 i--;
             }
-    }
+    }*/
     
     private void HandleTriggerEnter(Collider2D other, TriggeredType type)
     {
         if (type == TriggeredType.Player || type == TriggeredType.Corpse)
         {
 	        IgnoreBody(other, false);
-	        collidersAccounted.Add(other);
 	    }
     }
 
@@ -68,15 +104,15 @@ public class PlatformTrigger : MonoBehaviour
                 Physics2D.IgnoreCollision(bodyCol.transform.GetChild(i).GetComponent<Collider2D>(), platformCollider, value);
             }
     }
-    /*
+    
     private void HandleTriggerExit (Collider2D other, TriggeredType type)
     {
         if (type == TriggeredType.Player || type == TriggeredType.Corpse)
-            Physics2D.IgnoreCollision(other, platformCollider, true);
-    }*/
+            IgnoreBody(other, true);
+    }//*/
 
     private void HandleNewBody(GameObject body)
     {
-        Physics2D.IgnoreCollision(platformCollider, body.GetComponent<Collider2D>(), true);
+        IgnoreBody(body.GetComponent<Collider2D>(), true);
     }
 }
