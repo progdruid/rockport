@@ -41,8 +41,6 @@ public class PlatformTrigger : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //if (transform.parent.name == "Platform (2)")
-        //    Debug.Log(Physics2D.GetIgnoreCollision(GameObject.FindGameObjectWithTag("Player").GetComponent<Collider2D>(), platformCollider));
         for (int i = 0; i < collidersAccounted.Count; i++)
             if (!triggerCollider.IsTouching(collidersAccounted[i]))
             {
