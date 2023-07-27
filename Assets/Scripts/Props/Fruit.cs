@@ -31,9 +31,11 @@ public class Fruit : MonoBehaviour
 
     private IEnumerator Collect ()
     {
+        _trigger.EnterEvent -= HandleTriggerEnter;
         _animator.SetTrigger("Collect");
         Registry.ins.skullManager.AddSkull();
         yield return new WaitUntil(() => _animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "None");
+        GetComponent<SpriteRenderer>().enabled = false;
         Destroy(gameObject);
     }
 }
