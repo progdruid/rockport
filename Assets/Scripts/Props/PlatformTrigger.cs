@@ -9,12 +9,6 @@ public class PlatformTrigger : MonoBehaviour
     public Collider2D platformCollider;
 
     private UniversalTrigger trigger;
-    private Collider2D triggerCollider;
-
-    private Collider2D[] collidersGot = new Collider2D[10];
-    private Dictionary<Collider2D, bool> colliderMap = new();
-
-    private ContactFilter2D filter;
 
     #region ceremony
 
@@ -27,13 +21,9 @@ public class PlatformTrigger : MonoBehaviour
     private void Start()
     {
         trigger = GetComponent<UniversalTrigger>();
-        triggerCollider = GetComponent<Collider2D>();
 
         trigger.EnterEvent += HandleTriggerEnter;
         trigger.ExitEvent += HandleTriggerExit;
-
-        filter = new();
-        filter.useTriggers = false;
     }
 
     private void OnDestroy()

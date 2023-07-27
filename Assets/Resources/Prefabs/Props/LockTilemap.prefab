@@ -132,6 +132,25 @@ TilemapCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -152,5 +171,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   signal: {fileID: 0}
-  tile1: {fileID: 11400000, guid: b475fcde7d08ac24fb49c26ee293d2e1, type: 2}
-  tile2: {fileID: 11400000, guid: 3b1d74a67cb6672459ae204804844e66, type: 2}
+  pairs:
+  - shownTile: {fileID: 11400000, guid: 2bdf586fb61188d4b8d3add7e7d81e01, type: 2}
+    hiddenTile: {fileID: 11400000, guid: 6afdf427f75505a468a153c8c236fd45, type: 2}
+  - shownTile: {fileID: 11400000, guid: f2ed69baf1dcada4b9830295d8cdecb5, type: 2}
+    hiddenTile: {fileID: 11400000, guid: 9fc7bf9e161afbe44a39ae93aa7cd9d0, type: 2}
+  - shownTile: {fileID: 11400000, guid: 1768f601c3c594e4284f4131a80388b3, type: 2}
+    hiddenTile: {fileID: 11400000, guid: 6f823e2a43f6d5d469a2ae909fa9d6f6, type: 2}
+  - shownTile: {fileID: 11400000, guid: bbbe858b3ac16fe4b92eec3ad01d57fb, type: 2}
+    hiddenTile: {fileID: 11400000, guid: c2129511c53fdf442b6dafb51238db22, type: 2}
+  - shownTile: {fileID: 11400000, guid: ae3037e9028c5ad4f94087b7b645f9bb, type: 2}
+    hiddenTile: {fileID: 11400000, guid: c3fc0af8100146649ae2bafae7a48f3f, type: 2}
+  - shownTile: {fileID: 11400000, guid: ad1f5eee270dd544491218ceb0980bbd, type: 2}
+    hiddenTile: {fileID: 11400000, guid: b8c0cb5e2f2713947bb25d29f1dc1685, type: 2}
+  - shownTile: {fileID: 11400000, guid: de68de067d56e6e47b8663eec43ce93b, type: 2}
+    hiddenTile: {fileID: 11400000, guid: 0f4d07f3d3b03e54aa9f482c2087eb06, type: 2}
+  - shownTile: {fileID: 11400000, guid: 6171fd46618018c4d973977c2e0b0775, type: 2}
+    hiddenTile: {fileID: 11400000, guid: 803b282acc0094c40a4cf2d6370c5ffb, type: 2}
+  - shownTile: {fileID: 11400000, guid: 978cecc9cf3665e4c8569994fcf7f2a8, type: 2}
+    hiddenTile: {fileID: 11400000, guid: 51d4d0d097a4c7e4390fa8ef52f9cae3, type: 2}
+  - shownTile: {fileID: 11400000, guid: b4500e07a6018ba41a5fc60c06ba3a0b, type: 2}
+    hiddenTile: {fileID: 11400000, guid: 997cac569486a5743bd0005ed9b34225, type: 2}
+  - shownTile: {fileID: 11400000, guid: dec80ae291ebb67499d7bbc138bf7188, type: 2}
+    hiddenTile: {fileID: 11400000, guid: 768b035f4d070ed49809832f508d95df, type: 2}
+  - shownTile: {fileID: 11400000, guid: d3f0b44740e03e74d84f0d6d196c5c4e, type: 2}
+    hiddenTile: {fileID: 11400000, guid: 3573bbe34be67c242937892411174257, type: 2}
+  - shownTile: {fileID: 11400000, guid: c69cad88820df6446aa2273a7a781b1d, type: 2}
+    hiddenTile: {fileID: 11400000, guid: 5ceafd26a0e63964bb6c8585ecb9f0ba, type: 2}

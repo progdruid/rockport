@@ -5,8 +5,13 @@ using UnityEngine.Tilemaps;
 
 public class Lock : MonoBehaviour
 {
+    [System.Serializable]
+    public struct TilePair {
+        public TileBase shownTile, hiddenTile;
+    }
+
     [SerializeField] SignalActivator signal;
-    [SerializeField] TileBase tile1, tile2;
+    [SerializeField] TilePair[] pairs;
 
     private Tilemap tilemap;
     private Collider2D col;
@@ -29,9 +34,26 @@ public class Lock : MonoBehaviour
     private void HandleActivation (bool activated, GameObject source)
     {
         col.enabled = !activated;
+        for (int i = 0; i < pairs.Length; i++)
+        {
+            TileBase tileToBeSwapped = null;
+            TileBase tileToBeSwappedTo = null;
+            if (activated)
+            {
+                tileToBeSwapped = pairs[i].shownTile;
+                tileToBeSwappedTo = pairs[i].hiddenTile;
+            }
+            else
+            {
+                tileToBeSwapped = pairs[i].hiddenTile;
+                tileToBeSwappedTo = pairs[i].shownTile;
+            }
+            tilemap.SwapTile(tileToBeSwapped, tileToBeSwappedTo);
+        }
+/*
         if (activated)
             tilemap.SwapTile(tile1, tile2);
         else
-            tilemap.SwapTile(tile2, tile1);
+            tilemap.SwapTile(tile2, tile1);*/
     }
 }

@@ -7,28 +7,31 @@ using UnityEngine;
 public class CannonProjectile : MonoBehaviour
 {
     public float Speed;
-    private Vector3 dir;
 
-    private UniversalTrigger trigger;
+    private UniversalTrigger _trigger;
+    private Animator _animator;
+
+    private bool _active = true;
+    private Vector2 _direction = Vector2.zero;
+
+    public void SetDirection (Vector2 dir) => _direction = dir;
 
     private void Start()
     {
-        trigger = GetComponent<UniversalTrigger>();
-        trigger.EnterEvent += HandleTriggerEnter;
-
-        float x = -Mathf.Sin(transform.rotation.eulerAngles.z * Mathf.Deg2Rad);
-        float y = Mathf.Cos(transform.rotation.eulerAngles.z * Mathf.Deg2Rad);
-        dir = new Vector3(x, y, 0f);
+        _animator = GetComponent<Animator>();
+        _trigger = GetComponent<UniversalTrigger>();
+        _trigger.EnterEvent += HandleTriggerEnter;
     }
 
     private void OnDestroy()
     {
-        trigger.EnterEvent -= HandleTriggerEnter;
+        _trigger.EnterEvent -= HandleTriggerEnter;
     }
 
     private void FixedUpdate()
     {
-        transform.localPosition += dir * Speed * Time.fixedDeltaTime;
+        if (_active)
+            transform.localPosition += (Vector3)_direction * Speed * Time.fixedDeltaTime;
     }
 
     private void HandleTriggerEnter (Collider2D other, TriggeredType type)
@@ -37,6 +40,15 @@ public class CannonProjectile : MonoBehaviour
             Registry.ins.playerManager.KillPlayer();
 
         if (!other.isTrigger)
-            Destroy(gameObject);
+            StartCoroutine(CollisionRoutine(other));
+    }
+
+    private IEnumerator CollisionRoutine (Collider2D other)
+    {
+        _animator.SetTrigger("Collided");
+        GetComponent<Collider2D>().enabled = false;
+        _active = false;
+        yield return new WaitUntil(() => _animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "None");
+        Destroy(gameObject);
     }
 }
