@@ -32,7 +32,7 @@ public class Cannon : MonoBehaviour
         float angle = transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
         float x = transform.position.x - Mathf.Sin(angle) * 0.3f;
         float y = transform.position.y + Mathf.Cos(angle) * 0.3f;
-        Vector3 spawnPoint = new Vector3(x, y, -0.5f);
+        Vector3 spawnPoint = new Vector3(x, y, 0.01f);
         Transform projTransform = Instantiate(ProjectilePrefab, spawnPoint, Quaternion.identity).transform;
         CannonProjectile proj = projTransform.GetComponent<CannonProjectile>();
         proj.SetDirection(new Vector2(-Mathf.Sin(angle), Mathf.Cos(angle))); 
