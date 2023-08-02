@@ -59,6 +59,7 @@ GameObject:
   - component: {fileID: 6268214625558230780}
   - component: {fileID: 7587227455386899364}
   - component: {fileID: 4895462373448374787}
+  - component: {fileID: 7517708151784765917}
   m_Layer: 7
   m_Name: LeftSideTrigger
   m_TagString: Untagged
@@ -138,6 +139,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26f068d7677e8bc4ebdbd18607e46d62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7517708151784765917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1703842481216451188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff8e7bac2415822468cf3a3c4404665b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2887640161250793881
 GameObject:
   m_ObjectHideFlags: 0
@@ -149,6 +162,7 @@ GameObject:
   - component: {fileID: 2981574014489335988}
   - component: {fileID: 7512231360267588256}
   - component: {fileID: 6082142449999395931}
+  - component: {fileID: 331391584933150922}
   m_Layer: 7
   m_Name: RightSideTrigger
   m_TagString: Untagged
@@ -226,6 +240,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26f068d7677e8bc4ebdbd18607e46d62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &331391584933150922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2887640161250793881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff8e7bac2415822468cf3a3c4404665b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &7112237262537267370

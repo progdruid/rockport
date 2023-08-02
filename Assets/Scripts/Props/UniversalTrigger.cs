@@ -16,10 +16,12 @@ public class UniversalTrigger : MonoBehaviour
     public event System.Action<Collider2D, TriggeredType> EnterEvent = delegate { };
     public event System.Action<Collider2D, TriggeredType> ExitEvent = delegate { };
 
-    private Dictionary<string, TriggeredType> tagTypePairs = new()
+    protected Dictionary<string, TriggeredType> tagTypeMap = new()
     {
         { "Dirt", TriggeredType.Dirt },
         { "Wood", TriggeredType.Wood },
+        { "Untagged", TriggeredType.Wood },
+        { "Ground", TriggeredType.Wood },
         { "Player", TriggeredType.Player },
         { "Corpse", TriggeredType.Corpse }
     };
@@ -29,14 +31,14 @@ public class UniversalTrigger : MonoBehaviour
 
     protected virtual void OnTriggerEnter2D(Collider2D other)
     {
-        TriggeredType type = tagTypePairs[other.tag];
+        TriggeredType type = tagTypeMap[other.tag];
 
         InvokeEnterEvent(other, type);
     }
 
     protected virtual void OnTriggerExit2D(Collider2D other)
     {
-        TriggeredType type = tagTypePairs[other.tag];
+        TriggeredType type = tagTypeMap[other.tag];
 
         InvokeExitEvent(other, type);
     }

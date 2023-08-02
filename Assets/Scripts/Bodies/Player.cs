@@ -136,9 +136,9 @@ public class Player : MonoBehaviour, IUltraJumper
 
             rb.velocity = new Vector2(newvel, rb.velocity.y);
             if (leftTrigger.corpseTriggered && newvel < 0f)
-                leftTrigger.corpseRB.velocity = new Vector2(newvel * 0.9f, leftTrigger.corpseRB.velocity.y);
+                leftTrigger.body.velocity = new Vector2(newvel * 0.9f, leftTrigger.body.velocity.y);
             else if (rightTrigger.corpseTriggered && newvel > 0f)
-                rightTrigger.corpseRB.velocity = new Vector2(newvel * 0.9f, rightTrigger.corpseRB.velocity.y);
+                rightTrigger.body.velocity = new Vector2(newvel * 0.9f, rightTrigger.body.velocity.y);
         }
         else if (value == 0f && rb.velocity.x != 0f) //deceleration
         {

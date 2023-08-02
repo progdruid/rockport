@@ -7,7 +7,6 @@ public class Platform : MonoBehaviour
     [SerializeField] int platformWidth;
     [SerializeField] float colliderHeight;
     [SerializeField] float triggerHeight;
-    [SerializeField] Sprite sprite;
     [SerializeField] Sprite[] sprites;
 
     private GameObject[] spriteObjects;

@@ -13,7 +13,6 @@ public class FrictionJoiner : MonoBehaviour
         joint = GetComponent<FrictionJoint2D>();
         joint.enabled = false;
 
-
         bottomTrigger.EnterEvent += HandleBodyUpdate;
         bottomTrigger.ExitEvent += HandleBodyUpdate;
     }
@@ -24,17 +23,12 @@ public class FrictionJoiner : MonoBehaviour
         bottomTrigger.ExitEvent -= HandleBodyUpdate;
     }
 
-    private void HandleBodyUpdate (Collider2D other)
+    private void HandleBodyUpdate (Collider2D other, TriggeredType type)
     {
-        if (bottomTrigger.playerTriggered)
+        if (bottomTrigger.body != null)
         {
             joint.enabled = true;
-            joint.connectedBody = bottomTrigger.playerRB;
-        }
-        else if (bottomTrigger.corpseTriggered)
-        {
-            joint.enabled = true;
-            joint.connectedBody = bottomTrigger.corpseRB;
+            joint.connectedBody = bottomTrigger.body;
         }
         else
         {

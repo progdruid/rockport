@@ -15,7 +15,7 @@ public class LandingDustSpawner : MonoBehaviour
     private void Start() => BottomTrigger.EnterEvent += HandleLanding;
     private void OnDestroy() => BottomTrigger.EnterEvent -= HandleLanding;
 
-    private void HandleLanding (Collider2D other)
+    private void HandleLanding (Collider2D other, TriggeredType type)
     {
         if (_lastEnterTime == 0 || Time.time - _lastEnterTime >= SpawnCooldown)
             Instantiate(LandingDustPrefab, SpawningPoint.position, Quaternion.identity);

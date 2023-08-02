@@ -30,7 +30,7 @@ public class MassNullifier : MonoBehaviour
             player_optional.PreJumpEvent -= HandleJump;
     }
 
-    private void HandleTriggerChange (Collider2D other)
+    private void HandleTriggerChange (Collider2D other, TriggeredType type)
     {
         if ((bottomTrigger.corpseTriggered || bottomTrigger.playerTriggered) && !bottomTrigger.wallTriggered)
         {
