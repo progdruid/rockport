@@ -11,8 +11,8 @@ public class TwoWayPathMover : MonoBehaviour
         Inverse = -1
     }
 
-    [SerializeField] SignalActivator signal;
-    [SerializeField] SignalActivator inverseSignal;
+    [SerializeField] SignalSource signal;
+    [SerializeField] SignalSource inverseSignal;
     [SerializeField] PriorWay priorWay;
     [Space]
     [SerializeField] float timePeriod;

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(UniversalTrigger))]
+[RequireComponent(typeof(UniversalTrigger), typeof(Animator))]
 public class Checkpoint : MonoBehaviour
 {
     private Animator animator;

@@ -5,38 +5,38 @@ using UnityEngine;
 public enum TriggeredType
 {
     None,
-    Wall,
+    Dirt,
+    Wood,
     Player,
     Corpse
 }
 
-[RequireComponent(typeof(Collider2D))]
 public class UniversalTrigger : MonoBehaviour
 {
     public event System.Action<Collider2D, TriggeredType> EnterEvent = delegate { };
     public event System.Action<Collider2D, TriggeredType> ExitEvent = delegate { };
 
+    private Dictionary<string, TriggeredType> tagTypePairs = new()
+    {
+        { "Dirt", TriggeredType.Dirt },
+        { "Wood", TriggeredType.Wood },
+        { "Player", TriggeredType.Player },
+        { "Corpse", TriggeredType.Corpse }
+    };
+
     protected void InvokeEnterEvent(Collider2D other, TriggeredType type) => EnterEvent(other, type);
     protected void InvokeExitEvent(Collider2D other, TriggeredType type) => ExitEvent(other, type);
 
     protected virtual void OnTriggerEnter2D(Collider2D other)
-    {   
-        TriggeredType type = TriggeredType.Wall;
-        if (other.tag == "Player")
-            type = TriggeredType.Player;
-        else if (other.tag == "Corpse")
-            type = TriggeredType.Corpse;
+    {
+        TriggeredType type = tagTypePairs[other.tag];
 
         InvokeEnterEvent(other, type);
     }
 
     protected virtual void OnTriggerExit2D(Collider2D other)
     {
-        TriggeredType type = TriggeredType.Wall;
-        if (other.tag == "Player")
-            type = TriggeredType.Player;
-        else if (other.tag == "Corpse")
-            type = TriggeredType.Corpse;
+        TriggeredType type = tagTypePairs[other.tag];
 
         InvokeExitEvent(other, type);
     }

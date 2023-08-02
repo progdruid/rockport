@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+[RequireComponent(typeof(Tilemap), typeof(Collider2D))]
 public class Lock : MonoBehaviour
 {
     [System.Serializable]
@@ -10,7 +11,7 @@ public class Lock : MonoBehaviour
         public TileBase shownTile, hiddenTile;
     }
 
-    [SerializeField] SignalActivator signal;
+    [SerializeField] SignalSource signal;
     [SerializeField] TilePair[] pairs;
 
     private Tilemap tilemap;
@@ -22,13 +23,13 @@ public class Lock : MonoBehaviour
         col = GetComponent<Collider2D>();
         
         if (signal != null)
-            signal.ActivationUpdateEvent += HandleActivation;
+            signal.SignalUpdateEvent += HandleActivation;
     }
 
     private void OnDestroy()
     {
         if (signal != null)
-            signal.ActivationUpdateEvent -= HandleActivation;
+            signal.SignalUpdateEvent -= HandleActivation;
     }
 
     private void HandleActivation (bool activated, GameObject source)
@@ -50,10 +51,5 @@ public class Lock : MonoBehaviour
             }
             tilemap.SwapTile(tileToBeSwapped, tileToBeSwappedTo);
         }
-/*
-        if (activated)
-            tilemap.SwapTile(tile1, tile2);
-        else
-            tilemap.SwapTile(tile2, tile1);*/
     }
 }

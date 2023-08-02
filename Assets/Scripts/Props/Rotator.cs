@@ -8,7 +8,7 @@ public class Rotator : MonoBehaviour
     [SerializeField] bool clockwise;
     [SerializeField] float period;
     [Space]
-    [SerializeField] SignalActivator signal;
+    [SerializeField] SignalSource signal;
 
     float timeOffset = 0f;
     int clockwiseMult = 1;

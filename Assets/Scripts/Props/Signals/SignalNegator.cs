@@ -2,23 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SignalNegator : SignalActivator
+public class SignalNegator : SignalSource
 {
-    [SerializeField] SignalActivator signal;
+    [SerializeField] SignalSource signal;
 
     private void Start()
     {
-        signal.ActivationUpdateEvent += UpdateActivation;
-        UpdateActivation(signal.activated, signal.gameObject);
+        signal.SignalUpdateEvent += UpdateSignal;
+        UpdateSignal(signal.activated, signal.gameObject);
     }
 
     private void OnDestroy()
     {
-        signal.ActivationUpdateEvent -= UpdateActivation;
+        signal.SignalUpdateEvent -= UpdateSignal;
     }
 
-    public override void UpdateActivation(bool active, GameObject source)
+    public override void UpdateSignal(bool active, GameObject source)
     {
-        base.UpdateActivation(!active, source);
+        base.UpdateSignal(!active, source);
     }
 }

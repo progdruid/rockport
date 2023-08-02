@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(SignalActivator), typeof(UniversalTrigger))]
+[RequireComponent(typeof(UniversalTrigger), typeof(SignalSource), typeof(Animator))]
 public class Piston : MonoBehaviour
 {
-    private SignalActivator signal;
+    private SignalSource signal;
     private Animator animator;
     private Collider2D triggerCollider;
     private UniversalTrigger trigger;
@@ -15,7 +15,7 @@ public class Piston : MonoBehaviour
     #region ceremony
     private void Start()
     {
-        signal = GetComponent<SignalActivator>();
+        signal = GetComponent<SignalSource>();
         animator = GetComponent<Animator>();
         triggerCollider = GetComponent<Collider2D>();
         trigger = GetComponent<UniversalTrigger>();
@@ -36,7 +36,7 @@ public class Piston : MonoBehaviour
 
         pressed = !pressed;
         animator.SetTrigger("Pressed");
-        signal.UpdateActivation(pressed, gameObject);
+        signal.UpdateSignal(pressed, gameObject);
         triggerCollider.enabled = false;
     }
 }

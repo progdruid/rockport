@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SignalMediator : SignalActivator
+public class SignalMediator : SignalSource
 {
     private enum SignalCombinationMode
     {
@@ -12,7 +12,7 @@ public class SignalMediator : SignalActivator
     }
 
     [SerializeField] SignalCombinationMode mode;
-    [SerializeField] List<SignalActivator> activators;
+    [SerializeField] List<SignalSource> activators;
     private List<GameObject> activeSources;
 
     private void Start()
@@ -21,26 +21,26 @@ public class SignalMediator : SignalActivator
 
         for (int i = 0; i < activators.Count; i++)
         { 
-            activators[i].ActivationUpdateEvent += UpdateActivation;
+            activators[i].SignalUpdateEvent += UpdateSignal;
             if (activators[i].activated)
                 activeSources.Add(activators[i].gameObject);
         }
 
-        base.UpdateActivation(Calculate(), gameObject);
+        base.UpdateSignal(Calculate(), gameObject);
     }
 
     private void OnDestroy()
     {
         for (int i = 0; i < activators.Count; i++)
-            activators[i].ActivationUpdateEvent -= UpdateActivation;
+            activators[i].SignalUpdateEvent -= UpdateSignal;
     }
 
-    public override void UpdateActivation(bool active, GameObject source)
+    public override void UpdateSignal(bool active, GameObject source)
     {
         if (active && !activeSources.Contains(source)) activeSources.Add(source);
         if (!active) activeSources.Remove(source);
 
-        base.UpdateActivation(Calculate(), gameObject);
+        base.UpdateSignal(Calculate(), gameObject);
     }
 
     private bool Calculate ()

@@ -2,20 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(SignalActivator), typeof(UniversalTrigger))]
+[RequireComponent(typeof(UniversalTrigger), typeof(SignalSource), typeof(Animator))]
 public class Button : MonoBehaviour
 {
     private List<Collider2D> pressingBodies = new List<Collider2D>();
 
     private Animator animator;
-    private SignalActivator activator;
+    private SignalSource signal;
     private UniversalTrigger trigger;
 
     #region ceremony
     private void Start()
     {
         animator = GetComponent<Animator>();
-        activator = GetComponent<SignalActivator>();
+        signal = GetComponent<SignalSource>();
         trigger = GetComponent<UniversalTrigger>();
         trigger.EnterEvent += HandleTriggerEnter;
         trigger.ExitEvent += HandleTriggerExit;
@@ -37,7 +37,7 @@ public class Button : MonoBehaviour
         if (pressingBodies.Count > 1)
             return;
         animator.SetBool("Pressed", true);
-        activator.UpdateActivation(true, gameObject);
+        signal.UpdateSignal(true, gameObject);
     }
 
     private void HandleTriggerExit (Collider2D other, TriggeredType type)
@@ -49,6 +49,6 @@ public class Button : MonoBehaviour
         if (pressingBodies.Count > 0)
             return;
         animator.SetBool("Pressed", false);
-        activator.UpdateActivation(false, gameObject);
+        signal.UpdateSignal(false, gameObject);
     }
 }

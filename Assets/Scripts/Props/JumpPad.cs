@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 public class JumpPad : MonoBehaviour
 {
     public float Impulse;
@@ -33,17 +34,6 @@ public class JumpPad : MonoBehaviour
         StartCoroutine(Push(body));
     }
 
-    private IEnumerator Push ((Collider2D col, IUltraJumper jumper, bool isPlayer) pressingBody)
-    {
-        pressingBody.jumper.PresetUltraJumped(true);
-        
-        animator.SetBool("Pressed", true);
-        yield return new WaitForSeconds(TimeOffset);
-        animator.SetBool("Pressed", false);
-	
-        pressingBody.jumper.MakeUltraJump(Impulse);
-    }
-
     private void OnTriggerExit2D (Collider2D other)
     {
         bodiesInside.RemoveAll((x) => x.col == other);
@@ -59,5 +49,16 @@ public class JumpPad : MonoBehaviour
             bodiesInside[i] = (bodiesInside[i].col, bodiesInside[i].jumper, bodiesInside[i].isPlayer);
             StartCoroutine(Push(bodiesInside[i]));
         }
+    }
+
+    private IEnumerator Push ((Collider2D col, IUltraJumper jumper, bool isPlayer) pressingBody)
+    {
+        pressingBody.jumper.PresetUltraJumped(true);
+        
+        animator.SetBool("Pressed", true);
+        yield return new WaitForSeconds(TimeOffset);
+        animator.SetBool("Pressed", false);
+	
+        pressingBody.jumper.MakeUltraJump(Impulse);
     }
 }

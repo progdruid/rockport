@@ -35,56 +35,7 @@ public class PlatformTrigger : MonoBehaviour
         Registry.ins.playerManager.PlayerSpawnEvent -= HandleNewBody;
     }
     #endregion
-    /*
-    private void FixedUpdate()
-    {
-        int resNumber = triggerCollider.OverlapCollider(filter, collidersGot);
-
-        for (int i = 0; i < resNumber; i++)
-        {
-            bool got = colliderMap.ContainsKey(collidersGot[i]);
-            if (got)
-                colliderMap[collidersGot[i]] = true;
-            else
-            {
-                colliderMap.Add(collidersGot[i], true);
-                IgnoreBody(collidersGot[i], false);
-            }
-        }
-
-        var arr = colliderMap.ToArray();
-        for (int i = 0; i < arr.Length; i++)
-        {
-            if (arr[i].Key == null)
-            {
-                colliderMap.Remove(arr[i].Key);
-                continue;
-            }
-            if (!arr[i].Value)
-            {
-                IgnoreBody(arr[i].Key, true);
-                colliderMap.Remove(arr[i].Key);
-            }
-            colliderMap[arr[i].Key] = false;
-        }
-
-        /*for (int i = 0; i < collidersAccounted.Count; i++)
-            if (!triggerCollider.IsTouching(collidersAccounted[i]))
-            {
-                IgnoreBody(collidersAccounted[i], true);
-                collidersAccounted.RemoveAt(i);
-                i--;
-            }
-    }*/
     
-    private void HandleTriggerEnter(Collider2D other, TriggeredType type)
-    {
-        if (type == TriggeredType.Player || type == TriggeredType.Corpse)
-        {
-	        IgnoreBody(other, false);
-	    }
-    }
-
     private void IgnoreBody(Collider2D bodyCol, bool value) 
     {
         Physics2D.IgnoreCollision(bodyCol, platformCollider, value);
@@ -95,14 +46,23 @@ public class PlatformTrigger : MonoBehaviour
             }
     }
     
+    private void HandleTriggerEnter(Collider2D other, TriggeredType type)
+    {
+        if (type == TriggeredType.Player || type == TriggeredType.Corpse)
+        {
+	        IgnoreBody(other, false);
+	    }
+    }
+    
     private void HandleTriggerExit (Collider2D other, TriggeredType type)
     {
         if (type == TriggeredType.Player || type == TriggeredType.Corpse)
             IgnoreBody(other, true);
-    }//*/
+    }
 
     private void HandleNewBody(GameObject body)
     {
         IgnoreBody(body.GetComponent<Collider2D>(), true);
     }
+
 }

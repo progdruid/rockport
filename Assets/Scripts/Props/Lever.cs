@@ -2,19 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(SignalActivator), typeof(UniversalTrigger))]
+[RequireComponent(typeof(UniversalTrigger), typeof(SignalSource), typeof(Animator))]
 public class Lever : MonoBehaviour
 {
     private bool pulled;
 
-    private SignalActivator signal;
+    private SignalSource signal;
     private Animator animator;
     private UniversalTrigger trigger;
 
     #region ceremony
     private void Start()
     {
-        signal = GetComponent<SignalActivator>();
+        signal = GetComponent<SignalSource>();
         animator = GetComponent<Animator>();
         trigger = GetComponent<UniversalTrigger>();
 
@@ -34,6 +34,6 @@ public class Lever : MonoBehaviour
 
         pulled = !pulled;
         animator.SetTrigger("Pulled");
-        signal.UpdateActivation(pulled, gameObject);
+        signal.UpdateSignal(pulled, gameObject);
     }
 }

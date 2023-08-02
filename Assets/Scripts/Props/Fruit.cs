@@ -3,23 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(UniversalTrigger))]
+[RequireComponent(typeof(UniversalTrigger), typeof(Animator))]
 public class Fruit : MonoBehaviour
 {
-    private UniversalTrigger _trigger;
-    private Animator _animator;
+    private UniversalTrigger trigger;
+    private Animator animator;
 
     #region ceremony
     private void Start()
     {
-        _trigger = GetComponent<UniversalTrigger>();
-        _animator = GetComponent<Animator>();
-        _trigger.EnterEvent += HandleTriggerEnter;
+        trigger = GetComponent<UniversalTrigger>();
+        animator = GetComponent<Animator>();
+        trigger.EnterEvent += HandleTriggerEnter;
     }
 
     private void OnDestroy()
     {
-        _trigger.EnterEvent -= HandleTriggerEnter;
+        trigger.EnterEvent -= HandleTriggerEnter;
     }
     #endregion
 
@@ -31,10 +31,10 @@ public class Fruit : MonoBehaviour
 
     private IEnumerator Collect ()
     {
-        _trigger.EnterEvent -= HandleTriggerEnter;
-        _animator.SetTrigger("Collect");
+        trigger.EnterEvent -= HandleTriggerEnter;
+        animator.SetTrigger("Collect");
         Registry.ins.skullManager.AddSkull();
-        yield return new WaitUntil(() => _animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "None");
+        yield return new WaitUntil(() => animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "None");
         GetComponent<SpriteRenderer>().enabled = false;
         Destroy(gameObject);
     }

@@ -19,27 +19,17 @@ public class TransformOffsetPair
 
 public class PathMover : MonoBehaviour
 {
-    [SerializeField] SignalActivator signal;
+    [SerializeField] SignalSource signal;
     [Space]
     public float timePeriod;
-    public MoverMotionType motionType;
     public TransformOffsetPair[] entities;
     public Transform[] anchors;
 
     private float generalDist;
     private float[] dists;
     private float timePassed = 0f;
-    private System.Func<float, float> interpFunc;
 
     private bool invalid => anchors == null || entities == null || (anchors.Length == 0 || entities.Length == 0);
-
-    #region interp funcs
-
-    private float LinearInterp(float x) => x;
-    private float SineInterp(float x) => Mathf.Clamp(1f - (Mathf.Cos(x * Mathf.PI * 2f) + 1f) / 2f, 0f, 1f);
-    private float PongInterp(float x) => Mathf.PingPong(x * 2f, 1f);
-
-    #endregion
 
     #region Unity funcs
     private void Start()
@@ -69,19 +59,6 @@ public class PathMover : MonoBehaviour
             dists[i] = Vector2.Distance(anchors[i].position, anchors[(i + 1)%anchors.Length].position);
             generalDist += dists[i];
         }
-
-        switch (motionType)
-        {
-            case MoverMotionType.Linear:
-                interpFunc = LinearInterp;
-                break;
-            case MoverMotionType.Sine:
-                interpFunc = SineInterp;
-                break;
-            case MoverMotionType.Pong:
-                interpFunc = PongInterp;
-                break;
-        }
     }
 
     void Update()
@@ -102,7 +79,7 @@ public class PathMover : MonoBehaviour
 
         for (int i = 0; i < entities.Length; i++)
         {
-            float distOffset = generalDist * (interpFunc(entities[i].offset + (time / timePeriod)) % 1f);
+            float distOffset = generalDist * ((entities[i].offset + time / timePeriod) % 1f);
             float tempDist = 0f;
             int anchorIndex = -1;
 

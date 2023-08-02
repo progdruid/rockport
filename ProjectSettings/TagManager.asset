@@ -4,11 +4,13 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Ground
+  - Dirt
   - Corpse
   - SpawnPoint
   - Test
   - EquatorialLineObject
+  - Wood
+  - Ground
   layers:
   - Default
   - TransparentFX
