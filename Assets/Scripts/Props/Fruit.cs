@@ -2,10 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(UniversalTrigger), typeof(Animator))]
 public class Fruit : MonoBehaviour
 {
+    [SerializeField] UnityEvent OnCollect;
+
     private UniversalTrigger trigger;
     private Animator animator;
 
@@ -33,6 +36,7 @@ public class Fruit : MonoBehaviour
     {
         trigger.EnterEvent -= HandleTriggerEnter;
         animator.SetTrigger("Collect");
+        OnCollect.Invoke();
         Registry.ins.skullManager.AddSkull();
         yield return new WaitUntil(() => animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "None");
         GetComponent<SpriteRenderer>().enabled = false;

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4474564773389252263}
   - component: {fileID: 5100340618042901692}
   - component: {fileID: 197024348253492449}
+  - component: {fileID: 8031111110247332790}
   m_Layer: 8
   m_Name: LockTilemap
   m_TagString: Untagged
@@ -198,3 +199,54 @@ MonoBehaviour:
     hiddenTile: {fileID: 11400000, guid: 3573bbe34be67c242937892411174257, type: 2}
   - shownTile: {fileID: 11400000, guid: c69cad88820df6446aa2273a7a781b1d, type: 2}
     hiddenTile: {fileID: 11400000, guid: 5ceafd26a0e63964bb6c8585ecb9f0ba, type: 2}
+  OnLock:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8031111110247332790}
+        m_TargetAssemblyTypeName: CustomSoundEmitter, Assembly-CSharp
+        m_MethodName: EmitSound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Lock
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnUnlock:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8031111110247332790}
+        m_TargetAssemblyTypeName: CustomSoundEmitter, Assembly-CSharp
+        m_MethodName: EmitSound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Unlock
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &8031111110247332790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1505520888987423389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e984b16d942098a48a7154c76fe87e04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: Lock
+    clip: {fileID: 8300000, guid: 4767653a98d72354ba14c84ac7d730f6, type: 3}
+    volume: 1
+  - name: Unlock
+    clip: {fileID: 8300000, guid: 9e8bba71f02abcf4e96a0a492ba5cf90, type: 3}
+    volume: 1
+  mute: 0
+  emitPeriodInCalls: 0

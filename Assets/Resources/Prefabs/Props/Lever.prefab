@@ -13,8 +13,9 @@ GameObject:
   - component: {fileID: 4458304063344961077}
   - component: {fileID: 7140596103091189562}
   - component: {fileID: 6454096567764440237}
-  - component: {fileID: 1631953488003019050}
   - component: {fileID: 1316271077788222086}
+  - component: {fileID: 1631953488003019050}
+  - component: {fileID: 6492544912425087458}
   m_Layer: 7
   m_Name: Lever
   m_TagString: Untagged
@@ -167,18 +168,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Output: 0
---- !u!114 &1631953488003019050
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7506068762721029047}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62cb4f27bfbc9b64180bf5506e894ad8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1316271077788222086
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,3 +180,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff8e7bac2415822468cf3a3c4404665b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1631953488003019050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7506068762721029047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62cb4f27bfbc9b64180bf5506e894ad8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnPull:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6492544912425087458}
+        m_TargetAssemblyTypeName: CustomSoundEmitter, Assembly-CSharp
+        m_MethodName: EmitSound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Pull
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6492544912425087458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7506068762721029047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e984b16d942098a48a7154c76fe87e04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: Pull
+    clip: {fileID: 8300000, guid: 9d67b7f41524c2d4e9efaaef544f550e, type: 3}
+    volume: 1
+  mute: 0
+  emitPeriodInCalls: 0

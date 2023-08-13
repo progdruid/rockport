@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 3658617579862564219}
   - component: {fileID: 7513358594332271681}
   - component: {fileID: 6473081886207708476}
+  - component: {fileID: 3593656765806976042}
   m_Layer: 7
   m_Name: Button
   m_TagString: Untagged
@@ -166,6 +167,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61531828e72d6d34998fb583e43ca38e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnPress:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3593656765806976042}
+        m_TargetAssemblyTypeName: CustomSoundEmitter, Assembly-CSharp
+        m_MethodName: EmitSound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ButtonPress
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnUnpress:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3593656765806976042}
+        m_TargetAssemblyTypeName: CustomSoundEmitter, Assembly-CSharp
+        m_MethodName: EmitSound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ButtonUnpress
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &7513358594332271681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,3 +222,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff8e7bac2415822468cf3a3c4404665b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3593656765806976042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3658617579862564220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e984b16d942098a48a7154c76fe87e04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: ButtonPress
+    clip: {fileID: 8300000, guid: 08cb377cac24d18499d11b8fda452028, type: 3}
+    volume: 1
+  - name: ButtonUnpress
+    clip: {fileID: 8300000, guid: 4c00f78f03dde5d4c9df7563824bc768, type: 3}
+    volume: 1
+  mute: 0
+  emitPeriodInCalls: 0

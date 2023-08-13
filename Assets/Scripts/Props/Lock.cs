@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Tilemaps;
 
 [RequireComponent(typeof(Tilemap), typeof(Collider2D))]
@@ -13,6 +14,8 @@ public class Lock : MonoBehaviour
 
     [SerializeField] SignalSource signal;
     [SerializeField] TilePair[] pairs;
+    [SerializeField] UnityEvent OnLock;
+    [SerializeField] UnityEvent OnUnlock;
 
     private Tilemap tilemap;
     private Collider2D col;
@@ -43,13 +46,16 @@ public class Lock : MonoBehaviour
             {
                 tileToBeSwapped = pairs[i].shownTile;
                 tileToBeSwappedTo = pairs[i].hiddenTile;
+                OnUnlock.Invoke();
             }
             else
             {
                 tileToBeSwapped = pairs[i].hiddenTile;
                 tileToBeSwappedTo = pairs[i].shownTile;
+                OnLock.Invoke();
             }
             tilemap.SwapTile(tileToBeSwapped, tileToBeSwappedTo);
+            
         }
     }
 }

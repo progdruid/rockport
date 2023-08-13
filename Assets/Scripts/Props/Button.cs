@@ -1,10 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(UniversalTrigger), typeof(SignalSource), typeof(Animator))]
 public class Button : MonoBehaviour
 {
+    [SerializeField] UnityEvent OnPress;
+    [SerializeField] UnityEvent OnUnpress;
+
     private List<Collider2D> pressingBodies = new List<Collider2D>();
 
     private Animator animator;
@@ -36,6 +40,7 @@ public class Button : MonoBehaviour
         pressingBodies.Add(other);
         if (pressingBodies.Count > 1)
             return;
+        OnPress.Invoke();
         animator.SetBool("Pressed", true);
         signal.UpdateSignal(true, gameObject);
     }
@@ -48,6 +53,7 @@ public class Button : MonoBehaviour
         pressingBodies.Remove(other);
         if (pressingBodies.Count > 0)
             return;
+        OnUnpress.Invoke();
         animator.SetBool("Pressed", false);
         signal.UpdateSignal(false, gameObject);
     }

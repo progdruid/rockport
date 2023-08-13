@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(UniversalTrigger), typeof(Animator))]
 public class Checkpoint : MonoBehaviour
 {
+    [SerializeField] UnityEvent OnIgnition;
+
     private Animator animator;
     private UniversalTrigger trigger;
 
@@ -31,6 +34,7 @@ public class Checkpoint : MonoBehaviour
 
         activated = true;
         Registry.ins.playerManager.SetSpawnPoint(transform.position);
+        OnIgnition.Invoke();
         animator.SetTrigger("Burned");
     }
 }

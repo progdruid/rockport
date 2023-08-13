@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Animator))]
 public class Cannon : MonoBehaviour
@@ -9,6 +10,7 @@ public class Cannon : MonoBehaviour
     [SerializeField] float timePeriod;
     [SerializeField] float offset;
     [SerializeField] GameObject ProjectilePrefab;
+    [SerializeField] UnityEvent OnShoot;
 
     private Animator animator;
 
@@ -28,8 +30,8 @@ public class Cannon : MonoBehaviour
 
     private void Shoot ()
     {
-        if (animator != null)
-            animator.SetTrigger("Shot");
+        animator.SetTrigger("Shot");
+        OnShoot.Invoke();
 
         float angle = transform.rotation.eulerAngles.z * Mathf.Deg2Rad;
         float x = transform.position.x - Mathf.Sin(angle) * 0.3f;

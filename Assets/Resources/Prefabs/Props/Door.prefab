@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4365052880456163300}
   - component: {fileID: 4365052880456163301}
   - component: {fileID: 8443300701681391596}
+  - component: {fileID: 3108557415503862509}
   m_Layer: 8
   m_Name: Door
   m_TagString: Untagged
@@ -164,4 +165,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14f96e7baf175d04893469238f7be446, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnOpening:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3108557415503862509}
+        m_TargetAssemblyTypeName: CustomSoundEmitter, Assembly-CSharp
+        m_MethodName: EmitSound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Open
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnClosing:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3108557415503862509}
+        m_TargetAssemblyTypeName: CustomSoundEmitter, Assembly-CSharp
+        m_MethodName: EmitSound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Close
+          m_BoolArgument: 0
+        m_CallState: 2
   signalSource: {fileID: 0}
+--- !u!114 &3108557415503862509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4365052880456163302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e984b16d942098a48a7154c76fe87e04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: Open
+    clip: {fileID: 8300000, guid: 6a6a63835cce2ec46b3c6d92870e8b3a, type: 3}
+    volume: 1
+  - name: Close
+    clip: {fileID: 8300000, guid: b68db59b880cfdc4b9cd78d41d6c82fa, type: 3}
+    volume: 1
+  mute: 0
+  emitPeriodInCalls: 0

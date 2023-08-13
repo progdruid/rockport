@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(UniversalTrigger), typeof(SignalSource), typeof(Animator))]
 public class Piston : MonoBehaviour
 {
+    [SerializeField] UnityEvent OnPress;
+
     private SignalSource signal;
     private Animator animator;
     private Collider2D triggerCollider;
@@ -35,6 +38,7 @@ public class Piston : MonoBehaviour
             return;
 
         pressed = !pressed;
+        OnPress.Invoke();
         animator.SetTrigger("Pressed");
         signal.UpdateSignal(pressed, gameObject);
         triggerCollider.enabled = false;

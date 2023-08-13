@@ -13,8 +13,9 @@ GameObject:
   - component: {fileID: 5446164943144171518}
   - component: {fileID: 6193151338692432666}
   - component: {fileID: 8501781832293843370}
-  - component: {fileID: 1741816900823185137}
   - component: {fileID: 5468403581610328225}
+  - component: {fileID: 1741816900823185137}
+  - component: {fileID: 2548417118669467974}
   m_Layer: 7
   m_Name: Piston
   m_TagString: Untagged
@@ -167,18 +168,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Output: 0
---- !u!114 &1741816900823185137
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5446164943144171519}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e7c1376844afc048854a09e82672ab0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5468403581610328225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,3 +180,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff8e7bac2415822468cf3a3c4404665b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1741816900823185137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5446164943144171519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e7c1376844afc048854a09e82672ab0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnPress:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2548417118669467974}
+        m_TargetAssemblyTypeName: CustomSoundEmitter, Assembly-CSharp
+        m_MethodName: EmitSound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Press
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2548417118669467974
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5446164943144171519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e984b16d942098a48a7154c76fe87e04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: Press
+    clip: {fileID: 8300000, guid: 9d67b7f41524c2d4e9efaaef544f550e, type: 3}
+    volume: 1
+  mute: 0
+  emitPeriodInCalls: 0

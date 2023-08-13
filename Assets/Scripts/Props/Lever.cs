@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(UniversalTrigger), typeof(SignalSource), typeof(Animator))]
 public class Lever : MonoBehaviour
 {
+    [SerializeField] UnityEvent OnPull;
+
     private bool pulled;
 
     private SignalSource signal;
@@ -33,6 +36,7 @@ public class Lever : MonoBehaviour
             return;
 
         pulled = !pulled;
+        OnPull.Invoke();
         animator.SetTrigger("Pulled");
         signal.UpdateSignal(pulled, gameObject);
     }
