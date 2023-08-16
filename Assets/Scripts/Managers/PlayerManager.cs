@@ -9,6 +9,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] float smokeTimeOffset;
 
     public event System.Action<GameObject> PlayerSpawnEvent = delegate { };
+    public event System.Action PlayerDeathEvent = delegate { };
 
     public Player player { get; private set; }
     private Rigidbody2D _rb => player.GetComponent<Rigidbody2D>();
@@ -53,7 +54,7 @@ public class PlayerManager : MonoBehaviour
         if (_killingPlayer)
             return;
         _killingPlayer = true;
-        player.PlayDeathAnimation();
+        PlayerDeathEvent();
 
         bool canSpawnCorpse = Registry.ins.skullManager.GetSkullsAmount() != 0;
         StartCoroutine(KillPlayerRoutine(canSpawnCorpse));

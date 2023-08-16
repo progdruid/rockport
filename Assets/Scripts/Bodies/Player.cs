@@ -51,6 +51,8 @@ public class Player : MonoBehaviour, IUltraJumper
         Registry.ins.inputSet.JumpKeyPressEvent += MakeRegularJump;
         Registry.ins.inputSet.JumpKeyReleaseEvent += SuppressJump;
 
+        Registry.ins.playerManager.PlayerDeathEvent += HandleDeath;
+
         InitValues();
     }
 
@@ -71,7 +73,7 @@ public class Player : MonoBehaviour, IUltraJumper
         ultraJumpCooldownTime += ultraJumpCooldownTime < UltraJumpCooldown ? Time.deltaTime : 0f;
         animJumpDisableCDTime += animJumpDisableCDTime < AnimationJumpDisableCooldown ? Time.deltaTime : 0f;
         ultraJumped = !bottomTrigger.triggered && ultraJumped;
-        //Debug.Log(leftTrigger.triggered);
+        
         ComputeHorizontalVelocity();
 
         animator.SetBool("Grounded", bottomTrigger.triggered);
@@ -151,7 +153,7 @@ public class Player : MonoBehaviour, IUltraJumper
         }
     }
 
-    public void PlayDeathAnimation ()
+    private void HandleDeath ()
     {
         gameObject.layer = 10;
         animator.SetBool("Died", true);
@@ -161,5 +163,7 @@ public class Player : MonoBehaviour, IUltraJumper
     {
         Registry.ins.inputSet.JumpKeyPressEvent -= MakeRegularJump;
         Registry.ins.inputSet.JumpKeyReleaseEvent -= SuppressJump;
+
+        Registry.ins.playerManager.PlayerDeathEvent -= HandleDeath;
     }
 }
