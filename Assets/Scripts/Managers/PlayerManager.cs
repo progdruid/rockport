@@ -64,6 +64,7 @@ public class PlayerManager : MonoBehaviour
     {
         Vector2 vel = _rb.velocity;
         Vector3 pos = player.transform.position;
+        bool flipX = player.GetComponent<SpriteRenderer>().flipX;
 
         Instantiate(smokeEffectPrefab, new Vector3(pos.x, pos.y, smokeEffectPrefab.transform.position.z), Quaternion.identity);
 
@@ -76,8 +77,7 @@ public class PlayerManager : MonoBehaviour
         {
             Registry.ins.skullManager.DestroySkull();
             DestroyPlayer();
-            Transform corpse = Registry.ins.corpseManager.SpawnCorpse(pos, vel).transform;
-            corpse.GetComponent<CorpsePhysics>().kickedMode = true;
+            Transform corpse = Registry.ins.corpseManager.SpawnCorpse(pos, vel, flipX).transform;
             Registry.ins.cameraManager.SetTarget(corpse);
             yield return new WaitForSeconds(0.5f);
         }

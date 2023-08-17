@@ -12,10 +12,12 @@ public class CorpseManager : MonoBehaviour
     private void Awake() => Registry.ins.corpseManager = this;
     private void Start() => CorpseUpdateEvent();
 
-    public GameObject SpawnCorpse (Vector2 pos, Vector2 startVel)
+    public GameObject SpawnCorpse (Vector2 pos, Vector2 startVel, bool flipX)
     {
         GameObject corpse = Instantiate(corpsePrefab, new Vector3(pos.x, pos.y, -1), Quaternion.identity);
         corpse.GetComponent<Rigidbody2D>().velocity += startVel;
+        corpse.GetComponent<CorpsePhysics>().kickedMode = true;
+        corpse.GetComponent<SpriteRenderer>().flipX = flipX;
         corpses.Add(corpse);
 
         CorpseUpdateEvent();
