@@ -65,6 +65,8 @@ GameObject:
   - component: {fileID: 3938242994105235464}
   - component: {fileID: 591765629211865318}
   - component: {fileID: 5308784867081697611}
+  - component: {fileID: 4220866727327242973}
+  - component: {fileID: -1029165355295783249}
   m_Layer: 3
   m_Name: Corpse
   m_TagString: Corpse
@@ -300,6 +302,44 @@ MonoBehaviour:
   bottomTrigger: {fileID: 8915032620530056132}
   rb: {fileID: 6388440925167425488}
   player_optional: {fileID: 0}
+--- !u!114 &4220866727327242973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6388440925167425491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e984b16d942098a48a7154c76fe87e04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: LandingGrass
+    clip: {fileID: 8300000, guid: 7c4deed2ca4a91c4cbeecc3467fe0644, type: 3}
+    volume: 1
+  - name: LandingSolid
+    clip: {fileID: 8300000, guid: 9c742c15aa3b7d34691ce28e8c4d2dd9, type: 3}
+    volume: 1
+  - name: Death
+    clip: {fileID: 8300000, guid: a89aa0d9bbbdde24cac22d692244d02c, type: 3}
+    volume: 1
+  mute: 0
+  emitPeriodInCalls: 0
+--- !u!114 &-1029165355295783249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6388440925167425491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c88b68e8d7cefd42be9d79de755a018, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  landingCooldown: 0.1
+  bottomTrigger: {fileID: 8915032620530056132}
 --- !u!1001 &8288236971246576285
 PrefabInstance:
   m_ObjectHideFlags: 0

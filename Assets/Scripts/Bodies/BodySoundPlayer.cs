@@ -4,35 +4,33 @@ using UnityEngine;
 
 public class BodySoundPlayer : MonoBehaviour
 {
-    [SerializeField] float landingCooldown;
-    [SerializeField] BodySideTrigger bottomTrigger;
+    [SerializeField] protected float landingCooldown;
+    [SerializeField] protected BodySideTrigger bottomTrigger;
 
-    private CustomSoundEmitter soundEmitter;
-    private Player player;
+    protected CustomSoundEmitter soundEmitter;
+    private Rigidbody2D rb;
 
-    private TriggeredType standingType;
-    private float lastLandingTime;
+    protected TriggeredType standingType;
+    protected float lastLandingTime;
 
-    void Start()
+    protected virtual void Start()
     {
         soundEmitter = GetComponent<CustomSoundEmitter>();
-        player = GetComponent<Player>();
+        rb = GetComponent<Rigidbody2D>();
 
         bottomTrigger.EnterEvent += HandleLanding;
         bottomTrigger.ExitEvent += HandleExit;
-        player.PreJumpEvent += HandleJump;
     }
 
-    void OnDestroy()
+    protected virtual void OnDestroy()
     {
         bottomTrigger.EnterEvent -= HandleLanding;
         bottomTrigger.ExitEvent -= HandleExit;
-        player.PreJumpEvent -= HandleJump;
     }
 
-    private void HandleLanding (Collider2D other, TriggeredType type)
+    protected virtual void HandleLanding (Collider2D other, TriggeredType type)
     {
-        bool valid = standingType == TriggeredType.None && (lastLandingTime == 0 || Time.time - lastLandingTime >= landingCooldown);
+        bool valid = standingType == TriggeredType.None && (lastLandingTime == 0 || Time.time - lastLandingTime >= landingCooldown) && rb.velocity.y <= 0;
 
         if (valid && type == TriggeredType.Dirt)
             soundEmitter.EmitSound("LandingGrass");
@@ -47,15 +45,5 @@ public class BodySoundPlayer : MonoBehaviour
     {
         if (!bottomTrigger.triggered)
             standingType = TriggeredType.None;
-    }
-
-    private void HandleJump ()
-    {
-        soundEmitter.EmitSound("Jump");
-    }
-
-    private void HandleWalkingChange (TriggeredType type)
-    {
-
     }
 }
