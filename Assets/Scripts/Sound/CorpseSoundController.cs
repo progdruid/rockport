@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CorpseSoundPlayer : BodySoundPlayer
+public class CorpseSoundController : BodySoundController
 {
     protected override void Start ()
     {

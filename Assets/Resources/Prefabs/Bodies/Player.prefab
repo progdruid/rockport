@@ -1,5 +1,56 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &847121100213313128
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7396137428960267915}
+  - component: {fileID: 2648686558376332298}
+  m_Layer: 3
+  m_Name: SoundPlayer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7396137428960267915
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 847121100213313128}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7112237262537267374}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2648686558376332298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 847121100213313128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06a4c98769cc0c44d91edf7c75987ef6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: WalkGrass
+    clip: {fileID: 8300000, guid: ed661ddefdab90c44aba99485fad5a98, type: 3}
+    volume: 1
+  - name: WalkSolid
+    clip: {fileID: 8300000, guid: 2c169c232a277ee49b2f5608355b3206, type: 3}
+    volume: 1
 --- !u!1 &1591034996328503693
 GameObject:
   m_ObjectHideFlags: 0
@@ -254,6 +305,62 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff8e7bac2415822468cf3a3c4404665b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &3610746304413143566
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5984829613376836120}
+  - component: {fileID: 7490611023848015896}
+  m_Layer: 3
+  m_Name: SoundEmitter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5984829613376836120
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3610746304413143566}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7112237262537267374}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7490611023848015896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3610746304413143566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e984b16d942098a48a7154c76fe87e04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: LandingGrass
+    clip: {fileID: 8300000, guid: 7c4deed2ca4a91c4cbeecc3467fe0644, type: 3}
+    volume: 1
+  - name: LandingSolid
+    clip: {fileID: 8300000, guid: 9c742c15aa3b7d34691ce28e8c4d2dd9, type: 3}
+    volume: 1
+  - name: Jump
+    clip: {fileID: 8300000, guid: 5f81b4848a947eb428c1a4ee3a07e714, type: 3}
+    volume: 1
+  mute: 0
+  emitPeriodInCalls: 0
 --- !u!1 &7112237262537267370
 GameObject:
   m_ObjectHideFlags: 0
@@ -270,7 +377,6 @@ GameObject:
   - component: {fileID: 4560506952299216443}
   - component: {fileID: 9184977755300486699}
   - component: {fileID: 1536751752382011063}
-  - component: {fileID: -4611781401523964769}
   - component: {fileID: 4497122357495874153}
   m_Layer: 3
   m_Name: Player
@@ -295,6 +401,8 @@ Transform:
   - {fileID: 6268214625558230780}
   - {fileID: 2981574014489335988}
   - {fileID: 1138232065740235648}
+  - {fileID: 5984829613376836120}
+  - {fileID: 7396137428960267915}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -489,30 +597,6 @@ MonoBehaviour:
   bottomTrigger: {fileID: 2918216114742306363}
   rb: {fileID: 7112237262537267371}
   player_optional: {fileID: 9184977755300486699}
---- !u!114 &-4611781401523964769
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7112237262537267370}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e984b16d942098a48a7154c76fe87e04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sounds:
-  - name: LandingGrass
-    clip: {fileID: 8300000, guid: 7c4deed2ca4a91c4cbeecc3467fe0644, type: 3}
-    volume: 1
-  - name: LandingSolid
-    clip: {fileID: 8300000, guid: 9c742c15aa3b7d34691ce28e8c4d2dd9, type: 3}
-    volume: 1
-  - name: Jump
-    clip: {fileID: 8300000, guid: 5f81b4848a947eb428c1a4ee3a07e714, type: 3}
-    volume: 1
-  mute: 0
-  emitPeriodInCalls: 0
 --- !u!114 &4497122357495874153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -527,6 +611,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   landingCooldown: 0.1
   bottomTrigger: {fileID: 2918216114742306363}
+  soundEmitter: {fileID: 7490611023848015896}
+  soundPlayer: {fileID: 2648686558376332298}
 --- !u!1001 &2360628837602492258
 PrefabInstance:
   m_ObjectHideFlags: 0

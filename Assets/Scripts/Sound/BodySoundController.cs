@@ -2,20 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BodySoundPlayer : MonoBehaviour
+public class BodySoundController : MonoBehaviour
 {
     [SerializeField] protected float landingCooldown;
     [SerializeField] protected BodySideTrigger bottomTrigger;
-
-    protected CustomSoundEmitter soundEmitter;
-    private Rigidbody2D rb;
+    [SerializeField] protected CustomSoundEmitter soundEmitter;
+    
+    protected Rigidbody2D rb;
 
     protected TriggeredType standingType;
     protected float lastLandingTime;
 
     protected virtual void Start()
     {
-        soundEmitter = GetComponent<CustomSoundEmitter>();
+        //soundEmitter = GetComponent<CustomSoundEmitter>();
         rb = GetComponent<Rigidbody2D>();
 
         bottomTrigger.EnterEvent += HandleLanding;
@@ -41,7 +41,7 @@ public class BodySoundPlayer : MonoBehaviour
         standingType = type;
     }
 
-    private void HandleExit (Collider2D other, TriggeredType type)
+    protected virtual void HandleExit (Collider2D other, TriggeredType type)
     {
         if (!bottomTrigger.triggered)
             standingType = TriggeredType.None;

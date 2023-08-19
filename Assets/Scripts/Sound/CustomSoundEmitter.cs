@@ -2,16 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public struct CustomSound
+{
+    public string name;
+    public AudioClip clip;
+    [Range(0f, 1f)] public float volume;
+}
+
 public class CustomSoundEmitter : MonoBehaviour
 {
-    [System.Serializable]
-    private struct CustomSound
-    {
-        public string name;
-        public AudioClip clip;
-        [Range(0f, 1f)] public float volume;
-    }
-
     [SerializeField] CustomSound[] sounds;
     [SerializeField] bool mute;
     [SerializeField] [Range(1, 10)] int emitPeriodInCalls;
@@ -39,7 +39,7 @@ public class CustomSoundEmitter : MonoBehaviour
 
         bool found = soundMap.TryGetValue(clipName, out CustomSound sound);
         if (!found)
-            throw new KeyNotFoundException($"{gameObject.name}'s EventSoundEmitter does not have an audio clip with the given name: {clipName}");
+            throw new KeyNotFoundException($"{gameObject.name}'s CustomSoundEmitter does not have an audio clip with the given name: {clipName}");
         
         numSources++;
         numCalls = 0;
@@ -51,7 +51,8 @@ public class CustomSoundEmitter : MonoBehaviour
         source.clip = sound.clip;
         source.volume = sound.volume;
         source.Play();
-        StartCoroutine(WaitForEndAndDestroy(source));
+        if (source != null && gameObject.activeSelf)
+            StartCoroutine(WaitForEndAndDestroy(source));
     }
 
     private IEnumerator WaitForEndAndDestroy (AudioSource source)
