@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 3938242994105235464}
   - component: {fileID: 591765629211865318}
   - component: {fileID: 5308784867081697611}
-  - component: {fileID: -1029165355295783249}
+  - component: {fileID: -4062892864499950858}
   m_Layer: 3
   m_Name: Corpse
   m_TagString: Corpse
@@ -358,7 +358,7 @@ MonoBehaviour:
   bottomTrigger: {fileID: 8915032620530056132}
   rb: {fileID: 6388440925167425488}
   player_optional: {fileID: 0}
---- !u!114 &-1029165355295783249
+--- !u!114 &-4062892864499950858
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -367,7 +367,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6388440925167425491}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c88b68e8d7cefd42be9d79de755a018, type: 3}
+  m_Script: {fileID: 11500000, guid: e83ede2297a58654fa808a539428fe3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   landingCooldown: 0.1

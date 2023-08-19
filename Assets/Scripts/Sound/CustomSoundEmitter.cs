@@ -12,6 +12,7 @@ public struct CustomSound
 
 public class CustomSoundEmitter : MonoBehaviour
 {
+    [SerializeField] string[] startSounds;
     [SerializeField] CustomSound[] sounds;
     [SerializeField] bool mute;
     [SerializeField] [Range(1, 10)] int emitPeriodInCalls;
@@ -28,6 +29,12 @@ public class CustomSoundEmitter : MonoBehaviour
             soundMap.TryAdd(sound.name, sound);
         if (emitPeriodInCalls == 0)
             emitPeriodInCalls = 1;
+    }
+
+    void Start()
+    {
+        foreach (string sound in startSounds)
+            EmitSound(sound);
     }
 
     public void EmitSound (string clipName)
