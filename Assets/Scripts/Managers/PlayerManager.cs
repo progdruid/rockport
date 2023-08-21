@@ -19,7 +19,7 @@ public class PlayerManager : MonoBehaviour
     private void Awake()
     {
         Registry.ins.playerManager = this;
-        //this is an exception, this event will be invoked on Start, so there is no other option that finding it manually
+        //this is an exception, this event will be invoked on Start, so there is no other option than finding it manually
         GetComponent<LevelLoader>().levelInstantiationEvent += TryFindAndSetSpawnPoint;
     }
 
