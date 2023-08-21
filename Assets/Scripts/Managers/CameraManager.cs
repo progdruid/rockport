@@ -12,6 +12,8 @@ public class CameraManager : MonoBehaviour
     [SerializeField] float boxRightHalfSize;
     [SerializeField] float boxLeftHalfSize;
 
+    [SerializeField] CustomSoundEmitter soundEmitter;
+
     private new Camera camera;
     private Animator transition;
     private Transform target;
@@ -61,6 +63,7 @@ public class CameraManager : MonoBehaviour
         Registry.ins.inputSet.Active = false;
         Registry.ins.deathsBar.SetActive(false);
 
+        soundEmitter.EmitSound("TransiteIn");
         transition.SetTrigger("Transition");
         transiting = true;
 
@@ -69,6 +72,7 @@ public class CameraManager : MonoBehaviour
 
     public IEnumerator TransiteOut ()
     {
+        soundEmitter.EmitSound("TransiteOut");
         transition.SetTrigger("Transition");
 
         yield return new WaitUntil(() => transition.GetCurrentAnimatorClipInfo(0)[0].clip.name == "None");
