@@ -18,7 +18,7 @@ public class CameraManager : MonoBehaviour
     private Animator transition;
     private Transform target;
 
-    private bool transiting = true;
+    public bool transiting { get; private set; } = true;
 
     private void OnEnable() => Registry.ins.cameraManager = this;
     void Awake()
@@ -60,12 +60,12 @@ public class CameraManager : MonoBehaviour
 
     public IEnumerator TransiteIn ()
     {
+        transiting = true;
         Registry.ins.inputSet.Active = false;
         Registry.ins.deathsBar.SetActive(false);
 
         soundEmitter.EmitSound("TransiteIn");
         transition.SetTrigger("Transition");
-        transiting = true;
 
         yield return new WaitUntil(() => transition.GetCurrentAnimatorClipInfo(0)[0].clip.name == "Full");
     }

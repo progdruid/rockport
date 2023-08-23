@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class LevelLoader : MonoBehaviour
 {
     [SerializeField] LevelTreeManager levelTreeManager;
+    [SerializeField] SequentialSoundPlayer soundPlayer;
 
     public event System.Action levelInstantiationEvent = delegate { };
 
@@ -55,12 +56,18 @@ public class LevelLoader : MonoBehaviour
         
         if (levelData == null)
         {
-            SceneManager.LoadScene("Menu");
+            StartCoroutine(GoToMenuRoutine());
             return;
         }
         currentLevelData = levelData.Value;
         currentLevelID = id;
         StartCoroutine(LoadLevelRoutine(levelData.Value));
+    }
+
+    private IEnumerator GoToMenuRoutine ()
+    {
+        yield return soundPlayer.StopPlaying();
+        SceneManager.LoadScene("Menu");
     }
     
     private GameObject GetLevelPrefabFromFiles()
@@ -113,6 +120,7 @@ public class LevelLoader : MonoBehaviour
         Application.targetFrameRate = 60;
 
         int loadLevelID = PlayerPrefs.GetInt("Level_ID_Selected_in_Menu");
+        soundPlayer.StartPlaying();
         MakeDecision(loadLevelID);
     }
     private void OnDestroy() => UnsubscribeFromInput();

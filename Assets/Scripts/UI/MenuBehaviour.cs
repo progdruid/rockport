@@ -10,13 +10,19 @@ public class MenuBehaviour : MonoBehaviour
     [Space]
     [SerializeField] TMP_Text levelTitle;
     [SerializeField] TMP_Text levelIdText;
+    [Space]
+    [SerializeField] SequentialSoundPlayer soundPlayer;
     
     private LevelTree.LevelData selectedLevelData;
     
     private int maxID = 16;
     private int minId = 0;
 
-    private void Start() => UpdateTextFields(1);
+    private void Start()
+    {
+        soundPlayer.StartPlaying();
+        UpdateTextFields(1);
+    }
 
     private void UpdateTextFields (int newId)
     {
@@ -31,6 +37,12 @@ public class MenuBehaviour : MonoBehaviour
 
     public void HandlePlayButton ()
     {
+        StartCoroutine(HandlePlayButtonRoutine());
+    }
+
+    private IEnumerator HandlePlayButtonRoutine ()
+    {
+        yield return soundPlayer.StopPlaying();
         PlayerPrefs.SetInt("Level_ID_Selected_in_Menu", selectedLevelData.id);
         SceneManager.LoadScene("Main");
     }
