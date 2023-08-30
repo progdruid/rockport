@@ -38,7 +38,7 @@ public class LevelListBehaviour : MonoBehaviour
         {
             selectionChanged = selectedUnit != levelIndex || selectionChanged; //make it true if selectedUnit != levelIndex
             oscillationDone = selectedUnit == levelIndex && oscillationDone; //make it false if selectedUnit != levelIndex
-
+            
             selectedUnit = levelIndex;
         }
     }
