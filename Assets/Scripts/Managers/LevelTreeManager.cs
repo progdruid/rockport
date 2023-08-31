@@ -26,13 +26,10 @@ public class LevelTreeManager : MonoBehaviour
 
     public int GetPublicLevelCount()
     {
-        int id = 0;
-        int index = 0;
-        while (index != -1)
-        {
-            index = levelTree.GetLevelIndex(id);
-            id++;
-        }
-        return id;
+        int count = 0;
+        for (int i = 0; i < levelTree.levels.Length; i++)
+            if (levelTree.levels[i].published)
+                count++;
+        return count;
     }
 }
