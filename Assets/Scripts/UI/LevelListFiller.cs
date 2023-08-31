@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class LevelListFiller : MonoBehaviour
 {
@@ -11,6 +12,10 @@ public class LevelListFiller : MonoBehaviour
     [SerializeField] string completedLevelSignName;
     [Space]
     [SerializeField] TextAsset levelTreeConfig;
+    [Space]
+    [SerializeField] UnityEvent<int> OnAvailableLevelsChange;
+
+    public int availableLevels => Mathf.Min(completedLevelCount + 1, publishedLevelCount);
 
     private float elementHeight;
 
@@ -19,8 +24,6 @@ public class LevelListFiller : MonoBehaviour
     private int completedLevelCount;
     private List<GameObject> levelElements;
     private RectTransform incompletePrefabRect, completedPrefabRect;
-
-    private int availableLevels => Mathf.Min(completedLevelCount + 1, publishedLevelCount);
 
     private void CountLevels()
     {
@@ -32,6 +35,7 @@ public class LevelListFiller : MonoBehaviour
             if (levelTree.levels[i].completed)
                 completedLevelCount++;
         }
+        OnAvailableLevelsChange.Invoke(availableLevels);
     }
     private void ClearPrevious ()
     {

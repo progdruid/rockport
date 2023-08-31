@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class LevelListMover : MonoBehaviour
 {
-    [SerializeField] int heightInLevels;
     [SerializeField] float acceleration;
     [SerializeField] float oscillationAcc;
     [SerializeField] float oscillationMinInitSpeed;
     [SerializeField] float nearThreshold;
     [SerializeField] Sprite sampleUnitSprite;
 
+    private int heightInLevels;
     private float unitHeight;
     private float defaultY;
 
@@ -21,7 +21,9 @@ public class LevelListMover : MonoBehaviour
     private bool selectionChanged = false;
 
     private float selectedY => defaultY - unitHeight * selectedUnit;
-    
+
+    public void UpdateLevelCount(int count) => heightInLevels = count;
+
     public int GetSelectedLevel() => selectedUnit;
 
     public void MoveListUp ()
