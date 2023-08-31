@@ -21,8 +21,6 @@ public class LevelListMover : MonoBehaviour
     private bool oscillating = false;
     private bool oscillationDone = true;
     private bool selectionChanged = false;
-    private bool selectionBetweenLastAndCurrent = false;
-    private float lastFrameY = 0f;
 
     private float selectedY => defaultY - unitHeight * selectedUnit;
 
@@ -79,16 +77,22 @@ public class LevelListMover : MonoBehaviour
         oscillating = false;
     }
 
-    //rewrite all of this to check with selectionBetween only
-    //make it with future prediction
     private void FixedUpdate()
     {
         if (oscillating)
             return;
-        
+
+        int dir = (int)Mathf.Sign(selectedY - transform.position.y);
+        float nextSpeed = speed + acceleration * dir * Time.fixedDeltaTime;
+        nextSpeed = Mathf.Sign(nextSpeed) * Mathf.Clamp(Mathf.Abs(nextSpeed), 0f, maxSpeed);
+        float nextY = transform.position.y + nextSpeed * Time.fixedDeltaTime;
+        bool selectionBetweenCurrentAndNext = (transform.position.y - selectedY) * (selectedY - nextY) > 0;
         bool inThreshold = Mathf.Abs(selectedY - transform.position.y) <= nearThreshold;
 
-        if ((inThreshold || selectionBetweenLastAndCurrent) && !oscillationDone)
+        //yes, both check are neseccary
+        //first one is there to avoid trembling
+        //second one is there to fix a bug with passing the threshold range in one frame that is left unhandled by the first check
+        if ((inThreshold || selectionBetweenCurrentAndNext) && !oscillationDone)
         {
             transform.position = new(transform.position.x, selectedY, transform.position.z);
             selectionChanged = false;
@@ -99,22 +103,16 @@ public class LevelListMover : MonoBehaviour
             oscillationDone = true;
             speed = 0;
         }
-        else if (!inThreshold && !selectionBetweenLastAndCurrent)
+        else if (!inThreshold && !selectionBetweenCurrentAndNext)
         {
-            int dir = (int)Mathf.Sign(selectedY - transform.position.y);
-            speed += acceleration * dir * Time.fixedDeltaTime;
-            speed = Mathf.Sign(speed) * Mathf.Clamp(Mathf.Abs(speed), 0f, maxSpeed);
-            transform.position += Vector3.up * speed * Time.fixedDeltaTime;
+            transform.position = new Vector3(transform.position.x, nextY, transform.position.z);
+            speed = nextSpeed;
         }
-
-        selectionBetweenLastAndCurrent = (transform.position.y - selectedY) * (selectedY - lastFrameY) > 0;
-        lastFrameY = transform.position.y;
     }
 
     void Start()
     {
         defaultY = transform.position.y;
         unitHeight = sampleUnitSprite.bounds.extents.y * 2;
-        lastFrameY = transform.position.y;
     }
 }
