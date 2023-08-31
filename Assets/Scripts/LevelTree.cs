@@ -12,8 +12,8 @@ public struct LevelTree
     {
         public int id;
         public string name;
-        public int[] necessaryLevelsIDs;
         public string path;
+        public bool published;
         public bool completed;
     }
 

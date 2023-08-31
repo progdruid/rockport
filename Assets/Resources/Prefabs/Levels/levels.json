@@ -3,127 +3,127 @@
     {
       "id": 0,
       "name": "Testing Grounds",
-      "necessaryLevelsIDs": [],
       "path": "Prefabs/Levels/TestingGrounds",
+      "published": false,
       "completed": true
     },
     {
       "id": 1,
       "name": "Valley of Spikes",
-      "necessaryLevelsIDs": [],
       "path": "Prefabs/Levels/Level_ValleyOfSpikes",
+      "published": true,
       "completed": false
     },
     {
       "id": 2,
       "name": "Among the Trees",
-      "necessaryLevelsIDs": [ 1 ],
       "path": "Prefabs/Levels/Level_AmongTheTrees",
+      "published": true,
       "completed": false
     },
     {
       "id": 3,
       "name": "Spiky Dilemma",
-      "necessaryLevelsIDs": [ 2 ],
       "path": "Prefabs/Levels/Level_SpikyDilemma",
+      "published": true,
       "completed": false
     },
     {
       "id": 4,
       "name": "Cannonyard",
-      "necessaryLevelsIDs": [ 3 ],
       "path": "Prefabs/Levels/Level_CannonYard",
+      "published": true,
       "completed": false
     },
     {
       "id": 5,
       "name": "Bullet Shield",
-      "necessaryLevelsIDs": [ 4 ],
       "path": "Prefabs/Levels/Level_BulletShield",
+      "published": true,
       "completed": false
     },
     {
       "id": 6,
       "name": "Fruits",
-      "necessaryLevelsIDs": [ 5 ],
       "path": "Prefabs/Levels/Level_Fruits",
+      "published": true,
       "completed": false
     },
     {
       "id": 7,
       "name": "Roundabout Delivery",
-      "necessaryLevelsIDs": [ 6 ],
       "path": "Prefabs/Levels/Level_RoundaboutDelivery",
+      "published": true,
       "completed": false
     },
     {
       "id": 8,
       "name": "Mortal Elevator",
-      "necessaryLevelsIDs": [ 7 ],
       "path": "Prefabs/Levels/Level_MortalElevator",
+      "published": true,
       "completed": false
     },
     {
       "id": 9,
       "name": "Puppeteer",
-      "necessaryLevelsIDs": [ 8 ],
       "path": "Prefabs/Levels/Level_Puppeteer",
+      "published": true,
       "completed": false
     },
     {
       "id": 10,
       "name": "Slicer",
-      "necessaryLevelsIDs": [ 9 ],
       "path": "Prefabs/Levels/Level_Slicer",
+      "published": true,
       "completed": false
     },
     {
       "id": 11,
       "name": "Jump Beacon",
-      "necessaryLevelsIDs": [ 10 ],
       "path": "Prefabs/Levels/Level_JumpBeacon",
+      "published": true,
       "completed": false
     },
     {
       "id": 12,
       "name": "Bounce Challenge",
-      "necessaryLevelsIDs": [ 11 ],
       "path": "Prefabs/Levels/Level_BounceChallenge",
+      "published": true,
       "completed": false
     },
     {
       "id": 13,
       "name": "Blocker",
-      "necessaryLevelsIDs": [ 12 ],
       "path": "Prefabs/Levels/Level_Blocker",
+      "published": true,
       "completed": false
     },
     {
       "id": 14,
       "name": "Locked Corridor",
-      "necessaryLevelsIDs": [ 13 ],
       "path": "Prefabs/Levels/Level_LockedCorridor",
+      "published": true,
       "completed": false
     },
     {
       "id": 15,
       "name": "Locked Barriers",
-      "necessaryLevelsIDs": [ 14 ],
       "path": "Prefabs/Levels/Level_LockedBarriers",
+      "published": true,
       "completed": false
     },
     {
       "id": 16,
       "name": "Phantom Pathway",
-      "necessaryLevelsIDs": [ 15 ],
       "path": "Prefabs/Levels/Level_PhantomPathway",
+      "published": true,
       "completed": false
     },
     {
       "id": -1,
       "name": "Metronome",
-      "necessaryLevelsIDs": [],
       "path": "Prefabs/Levels/Level_Metronome",
+      "published": false,
       "completed": false
     }
   ]
