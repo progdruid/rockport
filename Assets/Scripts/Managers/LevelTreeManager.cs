@@ -22,5 +22,17 @@ public class LevelTreeManager : MonoBehaviour
             return null;
     }
 
-    public int GetLevelCount() => levelTree.levels.Length;
+    public int GetFullLevelCount() => levelTree.levels.Length;
+
+    public int GetPublicLevelCount()
+    {
+        int id = 0;
+        int index = 0;
+        while (index != -1)
+        {
+            index = levelTree.GetLevelIndex(id);
+            id++;
+        }
+        return id;
+    }
 }
