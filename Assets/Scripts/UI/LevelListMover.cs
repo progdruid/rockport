@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelListBehaviour : MonoBehaviour
+public class LevelListMover : MonoBehaviour
 {
     [SerializeField] int heightInLevels;
     [SerializeField] float acceleration;
@@ -21,6 +21,8 @@ public class LevelListBehaviour : MonoBehaviour
     private bool selectionChanged = false;
 
     private float selectedY => defaultY - unitHeight * selectedUnit;
+    
+    public int GetSelectedLevel() => selectedUnit;
 
     public void MoveListUp ()
     {
