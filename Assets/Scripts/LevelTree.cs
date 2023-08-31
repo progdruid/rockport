@@ -8,7 +8,7 @@ using UnityEngine;
 public struct LevelTree
 {
     [System.Serializable]
-    public struct LevelData
+    public class LevelData
     {
         public int id;
         public string name;

@@ -22,7 +22,7 @@ public class LevelLoader : MonoBehaviour
 
     public void ProceedFurther ()
     {
-        MakeDecision(currentLevelID + 1);
+        MakeDecision(currentLevelID + 1, true);
     }
 
     public void ReloadLevel()
@@ -49,19 +49,21 @@ public class LevelLoader : MonoBehaviour
         return null;
     }
 
-
-    private void MakeDecision(int id)
+    private void MakeDecision(int id, bool completeCurrent)
     {
-        LevelTree.LevelData? levelData = levelTreeManager.TryGetLevel(id);
+        currentLevelData.completed = true;
+        levelTreeManager.Save();
+
+        LevelTree.LevelData levelData = levelTreeManager.TryGetLevel(id);
         
         if (levelData == null)
         {
             StartCoroutine(GoToMenuRoutine());
             return;
         }
-        currentLevelData = levelData.Value;
+        currentLevelData = levelData;
         currentLevelID = id;
-        StartCoroutine(LoadLevelRoutine(levelData.Value));
+        StartCoroutine(LoadLevelRoutine(levelData));
     }
 
     private IEnumerator GoToMenuRoutine ()
@@ -72,7 +74,7 @@ public class LevelLoader : MonoBehaviour
     
     private GameObject GetLevelPrefabFromFiles()
     {
-        string path = levelTreeManager.TryGetLevel(currentLevelID).Value.path;
+        string path = levelTreeManager.TryGetLevel(currentLevelID).path;
         return Resources.Load<GameObject>(path);
     }
 
@@ -121,7 +123,7 @@ public class LevelLoader : MonoBehaviour
 
         int loadLevelID = PlayerPrefs.GetInt("Level_ID_Selected_in_Menu");
         soundPlayer.StartPlaying();
-        MakeDecision(loadLevelID);
+        MakeDecision(loadLevelID, false);
     }
     private void OnDestroy() => UnsubscribeFromInput();
 }

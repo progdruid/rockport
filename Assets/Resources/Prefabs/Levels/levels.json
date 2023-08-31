@@ -12,56 +12,56 @@
       "name": "Valley of Spikes",
       "path": "Prefabs/Levels/Level_ValleyOfSpikes",
       "published": true,
-      "completed": true
+      "completed": false
     },
     {
       "id": 2,
       "name": "Among the Trees",
       "path": "Prefabs/Levels/Level_AmongTheTrees",
       "published": true,
-      "completed": true
+      "completed": false
     },
     {
       "id": 3,
       "name": "Spiky Dilemma",
       "path": "Prefabs/Levels/Level_SpikyDilemma",
       "published": true,
-      "completed": true
+      "completed": false
     },
     {
       "id": 4,
       "name": "Cannonyard",
       "path": "Prefabs/Levels/Level_CannonYard",
       "published": true,
-      "completed": true
+      "completed": false
     },
     {
       "id": 5,
       "name": "Bullet Shield",
       "path": "Prefabs/Levels/Level_BulletShield",
       "published": true,
-      "completed": true
+      "completed": false
     },
     {
       "id": 6,
       "name": "Fruits",
       "path": "Prefabs/Levels/Level_Fruits",
       "published": true,
-      "completed": true
+      "completed": false
     },
     {
       "id": 7,
       "name": "Roundabout Delivery",
       "path": "Prefabs/Levels/Level_RoundaboutDelivery",
       "published": true,
-      "completed": true
+      "completed": false
     },
     {
       "id": 8,
       "name": "Mortal Elevator",
       "path": "Prefabs/Levels/Level_MortalElevator",
       "published": true,
-      "completed": true
+      "completed": false
     },
     {
       "id": 9,
@@ -75,49 +75,49 @@
       "name": "Slicer",
       "path": "Prefabs/Levels/Level_Slicer",
       "published": true,
-      "completed": true
+      "completed": false
     },
     {
       "id": 11,
       "name": "Jump Beacon",
       "path": "Prefabs/Levels/Level_JumpBeacon",
       "published": true,
-      "completed": true
+      "completed": false
     },
     {
       "id": 12,
       "name": "Bounce Challenge",
       "path": "Prefabs/Levels/Level_BounceChallenge",
       "published": true,
-      "completed": true
+      "completed": false
     },
     {
       "id": 13,
       "name": "Blocker",
       "path": "Prefabs/Levels/Level_Blocker",
       "published": true,
-      "completed": true
+      "completed": false
     },
     {
       "id": 14,
       "name": "Locked Corridor",
       "path": "Prefabs/Levels/Level_LockedCorridor",
       "published": true,
-      "completed": true
+      "completed": false
     },
     {
       "id": 15,
       "name": "Locked Barriers",
       "path": "Prefabs/Levels/Level_LockedBarriers",
       "published": true,
-      "completed": true
+      "completed": false
     },
     {
       "id": 16,
       "name": "Phantom Pathway",
       "path": "Prefabs/Levels/Level_PhantomPathway",
       "published": true,
-      "completed": true
+      "completed": false
     },
     {
       "id": -1,

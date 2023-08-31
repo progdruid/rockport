@@ -13,7 +13,7 @@ public class LevelTreeManager : MonoBehaviour
         levelTree = LevelTree.Extract(leveltreePath);
     }
 
-    public LevelTree.LevelData? TryGetLevel (int id)
+    public LevelTree.LevelData TryGetLevel (int id)
     {
         int index = levelTree.GetLevelIndex(id);
         if (index != -1)
@@ -32,4 +32,6 @@ public class LevelTreeManager : MonoBehaviour
                 count++;
         return count;
     }
+
+    public void Save() => LevelTree.SaveToFile(levelTree, leveltreePath);
 }

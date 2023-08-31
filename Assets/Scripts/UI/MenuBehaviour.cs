@@ -29,7 +29,7 @@ public class MenuBehaviour : MonoBehaviour
         if (selectedLevelData.id == newId || newId > maxID || newId < minId)
             return;
         
-        selectedLevelData = levelTreeManager.TryGetLevel(newId).Value;
+        selectedLevelData = levelTreeManager.TryGetLevel(newId);
 
         levelTitle.text = "Level: " + selectedLevelData.name;
         levelIdText.text = selectedLevelData.id.ToString();
