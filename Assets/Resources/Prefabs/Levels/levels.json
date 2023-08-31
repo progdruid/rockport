@@ -12,14 +12,14 @@
       "name": "Valley of Spikes",
       "path": "Prefabs/Levels/Level_ValleyOfSpikes",
       "published": true,
-      "completed": false
+      "completed": true
     },
     {
       "id": 2,
       "name": "Among the Trees",
       "path": "Prefabs/Levels/Level_AmongTheTrees",
       "published": true,
-      "completed": false
+      "completed": true
     },
     {
       "id": 3,

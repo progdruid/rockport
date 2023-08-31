@@ -37,4 +37,10 @@ public struct LevelTree
         LevelTree tree = JsonUtility.FromJson<LevelTree>(json);
         return tree;
     }
+
+    public static LevelTree ExtractFromText (string text)
+    {
+        LevelTree tree = JsonUtility.FromJson<LevelTree>(text);
+        return tree;
+    }
 }
