@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D;
 
 [RequireComponent(typeof(Camera), typeof(Rigidbody2D))]
 public class CameraManager : MonoBehaviour
@@ -17,6 +18,7 @@ public class CameraManager : MonoBehaviour
     private new Camera camera;
     private Animator transition;
     private Transform target;
+    private PixelPerfectCamera pixelPerfectCam;
 
     public bool transiting { get; private set; } = true;
 
@@ -24,6 +26,10 @@ public class CameraManager : MonoBehaviour
     void Awake()
     {
         camera = GetComponent<Camera>();
+        pixelPerfectCam = GetComponent<PixelPerfectCamera>();
+        float screenRatio = (float)(Screen.width) / (float)(Screen.height);
+        pixelPerfectCam.refResolutionX = Mathf.RoundToInt(pixelPerfectCam.refResolutionY * screenRatio);
+
         transition = camera.transform.GetChild(0).GetComponent<Animator>();
     }
     private void Start()
