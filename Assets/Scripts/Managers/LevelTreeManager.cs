@@ -32,6 +32,4 @@ public class LevelTreeManager : MonoBehaviour
                 count++;
         return count;
     }
-
-    public void Save() => LevelTree.SaveToFile(levelTree, leveltreePath);
 }

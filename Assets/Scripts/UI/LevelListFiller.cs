@@ -28,13 +28,14 @@ public class LevelListFiller : MonoBehaviour
     private void CountLevels()
     {
         for (int i = 0; i < levelTree.levels.Length; i++)
-        {
-            if (!levelTree.levels[i].published)
-                continue;
-            publishedLevelCount++;
-            if (levelTree.levels[i].completed)
-                completedLevelCount++;
-        }
+            if (levelTree.levels[i].published)
+                publishedLevelCount++;
+        
+        if (PlayerPrefs.HasKey("Last_Completed_Level_ID"))
+            completedLevelCount = PlayerPrefs.GetInt("Last_Completed_Level_ID");
+        else
+            completedLevelCount = 0;
+
         OnAvailableLevelsChange.Invoke(availableLevels);
     }
     private void ClearPrevious ()

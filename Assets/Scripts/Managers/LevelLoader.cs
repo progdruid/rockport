@@ -20,9 +20,17 @@ public class LevelLoader : MonoBehaviour
         transform.SetParent(currentLevelGameObject.transform);
     }
 
+    public void SetCurrentLevelAsCompleted ()
+    {
+        int lastCompletedLevelID = PlayerPrefs.GetInt("Last_Completed_Level_ID");
+        if (lastCompletedLevelID < currentLevelID)
+            PlayerPrefs.SetInt("Last_Completed_Level_ID", lastCompletedLevelID + 1);
+    }
+
     public void ProceedFurther ()
     {
-        MakeDecision(currentLevelID + 1, true);
+        SetCurrentLevelAsCompleted ();
+        MakeDecision(currentLevelID + 1);
     }
 
     public void ReloadLevel()
@@ -49,11 +57,8 @@ public class LevelLoader : MonoBehaviour
         return null;
     }
 
-    private void MakeDecision(int id, bool completeCurrent)
+    private void MakeDecision(int id)
     {
-        currentLevelData.completed = true;
-        levelTreeManager.Save();
-
         LevelTree.LevelData levelData = levelTreeManager.TryGetLevel(id);
         
         if (levelData == null)
@@ -119,11 +124,14 @@ public class LevelLoader : MonoBehaviour
     private void Awake() => Registry.ins.lm = this;
     void Start()
     {
+        if (!PlayerPrefs.HasKey("Last_Completed_Level_ID"))
+            PlayerPrefs.SetInt("Last_Completed_Level_ID", 0);
+
         Application.targetFrameRate = 60;
 
         int loadLevelID = PlayerPrefs.GetInt("Level_ID_Selected_in_Menu");
         soundPlayer.StartPlaying();
-        MakeDecision(loadLevelID, false);
+        MakeDecision(loadLevelID);
     }
     private void OnDestroy() => UnsubscribeFromInput();
 }

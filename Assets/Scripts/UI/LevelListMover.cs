@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class LevelListMover : MonoBehaviour
 {
@@ -26,7 +27,7 @@ public class LevelListMover : MonoBehaviour
 
     public void UpdateLevelCount(int count) => heightInLevels = count;
 
-    public int GetSelectedLevel() => selectedUnit;
+    public int GetSelectedLevel() => selectedUnit + 1;
 
     public void MoveListUp ()
     {

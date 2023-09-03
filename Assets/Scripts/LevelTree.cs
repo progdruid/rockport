@@ -14,7 +14,6 @@ public struct LevelTree
         public string name;
         public string path;
         public bool published;
-        public bool completed;
     }
 
     public LevelData[] levels;
@@ -42,11 +41,5 @@ public struct LevelTree
     {
         LevelTree tree = JsonUtility.FromJson<LevelTree>(text);
         return tree;
-    }
-
-    public static void SaveToFile(LevelTree tree, string path)
-    {
-        string text = JsonUtility.ToJson(tree, true);
-        File.WriteAllText(path, text);
     }
 }
