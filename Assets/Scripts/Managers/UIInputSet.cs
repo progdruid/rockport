@@ -12,7 +12,7 @@ public class UIInputSet : InputSet
     public void HandleReloadButtonClick() => InvokeReloadActivationEvent();
 
     private bool jumpedBefore = false;
-    
+
     private void Update()
     {
         int hor = 0;
@@ -22,10 +22,11 @@ public class UIInputSet : InputSet
 
         for (int i = 0; i < Input.touches.Length; i++)
         {
-            leftActivated = RectTransformUtility.RectangleContainsScreenPoint(leftMoveRect, Input.touches[i].position, Camera.main) || leftActivated;
-            rightActivated = RectTransformUtility.RectangleContainsScreenPoint(rightMoveRect, Input.touches[i].position, Camera.main) || rightActivated;
-            jumpActivated = RectTransformUtility.RectangleContainsScreenPoint(jumpRect, Input.touches[i].position, Camera.main) || jumpActivated;
-
+            //use Camera.main instead of null if Canvas is in Camera mode
+            //null for Overlay
+            leftActivated = RectTransformUtility.RectangleContainsScreenPoint(leftMoveRect, Input.touches[i].position, null) || leftActivated;
+            rightActivated = RectTransformUtility.RectangleContainsScreenPoint(rightMoveRect, Input.touches[i].position, null) || rightActivated;
+            jumpActivated = RectTransformUtility.RectangleContainsScreenPoint(jumpRect, Input.touches[i].position, null) || jumpActivated;
         }
 
         if (leftActivated)
