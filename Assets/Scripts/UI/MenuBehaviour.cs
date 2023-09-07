@@ -11,7 +11,6 @@ public class MenuBehaviour : MonoBehaviour
     
     private void Start()
     {
-        Debug.Log(PlayerPrefs.GetInt("Last_Completed_Level_ID"));
         soundPlayer.StartPlaying();
     }
 

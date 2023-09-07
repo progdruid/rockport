@@ -4,12 +4,21 @@ using UnityEngine;
 
 public class SequentialSoundPlayer : MonoBehaviour
 {
-    [SerializeField] CustomSound[] soundSequence;
+    [System.Serializable]
+    public struct SequenceSound
+    {
+        public AudioClip clip;
+        [Range(0f, 1f)] public float volume;
+        [Min(0f)] public float crossFadeTime;
+    }
+
+    [SerializeField] SequenceSound[] soundSequence;
     [SerializeField] bool loopLast;
     [SerializeField] bool playOnStart;
     [SerializeField] float fadeOutTime;
 
-    private AudioSource source;
+    private AudioSource currentSource;
+    private AudioSource nextSource;
 
     public bool stopped { get; private set; } = false;
     private bool playRoutineRunning = false;
@@ -27,21 +36,22 @@ public class SequentialSoundPlayer : MonoBehaviour
         go.transform.parent = transform;
         go.transform.localPosition = Vector3.zero;
 
-        source = go.AddComponent<AudioSource>();
+        currentSource = go.AddComponent<AudioSource>();
+        nextSource = go.AddComponent<AudioSource>();
+
+        initialized = true;
 
         if (playOnStart)
             StartPlaying();
-
-        initialized = true;
     }
 
     public void StartPlaying()
     {
-        if (!playRoutineRunning)
-            StartCoroutine(StartPlayingRoutine());
+        if (!playRoutineRunning && soundSequence.Length > 0)
+            StartCoroutine(PlayingRoutine());
     }
 
-    private IEnumerator StartPlayingRoutine ()
+    private IEnumerator PlayingRoutine ()
     {
         if (!initialized)
             Init();
@@ -49,30 +59,44 @@ public class SequentialSoundPlayer : MonoBehaviour
         playRoutineRunning = true;
         stopped = false;
 
-        int nextClipIndex = 0;
-        source.loop = false;
+        int currentIndex = 0;
+        int nextIndex = 0;
 
-        while (nextClipIndex < soundSequence.Length - 1 && !stopped)
-        {
-            PlaySoundFromSequence(nextClipIndex);
-            nextClipIndex++;
-            yield return new WaitWhile(() => source.isPlaying && !stopped);
-        }
+        PlaySoundFromSequence(currentSource, currentIndex);
 
-        if (!stopped)
+        while (!stopped && nextIndex != -1)
         {
-            source.loop = true;
-            PlaySoundFromSequence(nextClipIndex);
+            //define next index
+            if (currentIndex + 1 < soundSequence.Length)
+                nextIndex = currentIndex + 1;
+            else if (loopLast && currentIndex + 1 >= soundSequence.Length)
+                nextIndex = currentIndex;
+            else
+                nextIndex = -1;
+
+            //wait for cross-fade time and start playing next track
+            if (currentSource.clip.length - currentSource.time > soundSequence[nextIndex].crossFadeTime)
+                yield return new WaitWhile(() => currentSource.clip.length - currentSource.time > soundSequence[nextIndex].crossFadeTime);
+            PlaySoundFromSequence(nextSource, nextIndex);
+            
+            //wait for current track to stop playing
+            //then prepare for the next iteration by moving values
+            if (currentSource.isPlaying)
+                yield return new WaitWhile(() => currentSource.isPlaying);
+            currentSource.clip = null;
+            currentIndex = nextIndex;
+            (nextSource, currentSource) = (currentSource, nextSource);
         }
 
         playRoutineRunning = false;
     }
 
-    private void PlaySoundFromSequence (int index)
+    private void PlaySoundFromSequence (AudioSource source, int index)
     {
         source.clip = soundSequence[index].clip;
-        source.time = 0;
         source.volume = soundSequence[index].volume;
+        source.time = 0;
+        source.loop = false;
 
         source.Play();
     }
@@ -81,17 +105,20 @@ public class SequentialSoundPlayer : MonoBehaviour
     {
         //fade out
         float initTime = Time.time;
-        float initVolume = source.volume;
-        while (source.volume != 0 && fadeOutTime != 0)
+        float initCurrentVolume = currentSource.volume;
+        float initNextVolume = nextSource.volume;
+        float t = 1f;
+        while (t > 0 && fadeOutTime != 0)
         {
-            float t = 1f - (Time.time - initTime) / fadeOutTime;
-            source.volume = initVolume * t;
+            t = 1f - (Time.time - initTime) / fadeOutTime;
+            currentSource.volume = initCurrentVolume * t;
+            nextSource.volume = initNextVolume * t;
             yield return new WaitForEndOfFrame();
         }
 
         //stop
-        source.Stop();
-        source.loop = false;
+        currentSource.Stop();
+        nextSource.Stop();
         stopped = true;
     }
 }

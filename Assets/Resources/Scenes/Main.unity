@@ -838,9 +838,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   soundSequence:
-  - name: GameLoop
-    clip: {fileID: 8300000, guid: a955804b32f58d24884ae62054a80e2d, type: 3}
+  - clip: {fileID: 8300000, guid: a955804b32f58d24884ae62054a80e2d, type: 3}
     volume: 1
+    crossFadeTime: 5
   loopLast: 1
   playOnStart: 0
   fadeOutTime: 0.5

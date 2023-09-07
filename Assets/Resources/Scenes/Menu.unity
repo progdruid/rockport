@@ -5378,12 +5378,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   soundSequence:
-  - name: Start
-    clip: {fileID: 8300000, guid: 2e33692d6e9fc4841a74fd21692f9aa3, type: 3}
+  - clip: {fileID: 8300000, guid: 2e33692d6e9fc4841a74fd21692f9aa3, type: 3}
     volume: 1
-  - name: Loop
-    clip: {fileID: 8300000, guid: 938c8d8141e66214baec8a34af63d19d, type: 3}
+    crossFadeTime: 0
+  - clip: {fileID: 8300000, guid: 938c8d8141e66214baec8a34af63d19d, type: 3}
     volume: 1
+    crossFadeTime: 0.5
   loopLast: 1
   playOnStart: 0
   fadeOutTime: 0.5
