@@ -11,7 +11,7 @@ public class LevelListMover : MonoBehaviour
     [SerializeField] float oscillationMinInitSpeed;
     [SerializeField] float oscillationMaxInitSpeed;
     [SerializeField] float nearThreshold;
-    [SerializeField] Sprite sampleUnitSprite;
+    [SerializeField] LevelListFiller listFiller;
 
     private int heightInLevels;
     private float unitHeight;
@@ -114,6 +114,6 @@ public class LevelListMover : MonoBehaviour
     void Start()
     {
         defaultY = transform.position.y;
-        unitHeight = sampleUnitSprite.bounds.extents.y * 2;
+        unitHeight = listFiller.GetElementHeight();
     }
 }

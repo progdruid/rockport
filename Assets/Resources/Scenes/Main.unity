@@ -795,8 +795,8 @@ MonoBehaviour:
   m_AssetsPPU: 32
   m_RefResolutionX: 760
   m_RefResolutionY: 360
-  m_UpscaleRT: 1
-  m_PixelSnapping: 0
+  m_UpscaleRT: 0
+  m_PixelSnapping: 1
   m_CropFrameX: 1
   m_CropFrameY: 1
   m_StretchFill: 0
@@ -1377,7 +1377,7 @@ Canvas:
   m_GameObject: {fileID: 1443867998}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 1191371538}
   m_PlaneDistance: 2
   m_PixelPerfect: 1
@@ -2166,6 +2166,9 @@ PrefabInstance:
       addedObject: {fileID: 1191371543}
     - targetCorrespondingSourceObject: {fileID: 654563176251057830, guid: 915d0621642943f43bf86372e3cf4f0b, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 654563177341388216}
+    - targetCorrespondingSourceObject: {fileID: 654563176251057830, guid: 915d0621642943f43bf86372e3cf4f0b, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 1191371544}
   m_SourcePrefab: {fileID: 100100000, guid: 915d0621642943f43bf86372e3cf4f0b, type: 3}
 --- !u!4 &654563177341388215 stripped
@@ -2173,6 +2176,20 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 654563176251057826, guid: 915d0621642943f43bf86372e3cf4f0b, type: 3}
   m_PrefabInstance: {fileID: 654563177341388214}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &654563177341388216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 722545811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8879f00d0a2dbc2428aed0b873f36c5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  adjustAxis: 0
+  intDivider: 8
 --- !u!1001 &8768345548597820358
 PrefabInstance:
   m_ObjectHideFlags: 0

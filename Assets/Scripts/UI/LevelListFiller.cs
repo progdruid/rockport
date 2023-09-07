@@ -25,6 +25,13 @@ public class LevelListFiller : MonoBehaviour
     private List<GameObject> levelElements;
     private RectTransform incompletePrefabRect, completedPrefabRect;
 
+    public float GetElementHeight ()
+    {
+        Vector3[] corners = new Vector3[4];
+        levelElements[0].GetComponent<RectTransform>().GetWorldCorners(corners);
+        return corners[1].y - corners[0].y;
+    }
+
     private void CountLevels()
     {
         for (int i = 0; i < levelTree.levels.Length; i++)
@@ -78,7 +85,8 @@ public class LevelListFiller : MonoBehaviour
 
     }
 
-    private void Start()
+    //must be awake because of getelementheight
+    private void Awake()
     {
         levelTree = LevelTree.ExtractFromText(levelTreeConfig.text);
         levelElements = new List<GameObject>();

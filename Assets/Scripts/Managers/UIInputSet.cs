@@ -24,9 +24,9 @@ public class UIInputSet : InputSet
         {
             //use Camera.main instead of null if Canvas is in Camera mode
             //null for Overlay
-            leftActivated = RectTransformUtility.RectangleContainsScreenPoint(leftMoveRect, Input.touches[i].position, null) || leftActivated;
-            rightActivated = RectTransformUtility.RectangleContainsScreenPoint(rightMoveRect, Input.touches[i].position, null) || rightActivated;
-            jumpActivated = RectTransformUtility.RectangleContainsScreenPoint(jumpRect, Input.touches[i].position, null) || jumpActivated;
+            leftActivated = RectTransformUtility.RectangleContainsScreenPoint(leftMoveRect, Input.touches[i].position, Camera.main) || leftActivated;
+            rightActivated = RectTransformUtility.RectangleContainsScreenPoint(rightMoveRect, Input.touches[i].position, Camera.main) || rightActivated;
+            jumpActivated = RectTransformUtility.RectangleContainsScreenPoint(jumpRect, Input.touches[i].position, Camera.main) || jumpActivated;
         }
 
         if (leftActivated)
