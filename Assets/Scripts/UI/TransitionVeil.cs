@@ -8,6 +8,7 @@ public class TransitionVeil : MonoBehaviour
     [SerializeField] bool closedAtStart;
 
     public bool closed { get; private set; }
+    public bool inTransition { get; private set; }
 
     private Animator animator;
     private CustomSoundEmitter soundEmitter;
@@ -28,15 +29,21 @@ public class TransitionVeil : MonoBehaviour
     {
         if (!closed)
         {
-            closed = true;
-            Registry.ins.inputSet.Active = false;
-            Registry.ins.deathsBar.SetActive(false);
+            inTransition = true;
+            if (Registry.ins.inputSet != null && Registry.ins.deathsBar != null)
+            {
+                Registry.ins.inputSet.Active = false;
+                Registry.ins.deathsBar.SetActive(false);
+            }
 
             yield return new WaitWhile(() => animator.GetCurrentAnimatorStateInfo(0).IsName("Start"));
             soundEmitter.EmitSound("TransiteIn");
             animator.SetBool("Closed", true);
 
             yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).IsName("Closed"));
+
+            inTransition = false;
+            closed = true;
         }
     }
 
@@ -44,15 +51,21 @@ public class TransitionVeil : MonoBehaviour
     {
         if (closed)
         {
+            inTransition = true;
+            closed = false;
+
             yield return new WaitWhile(() => animator.GetCurrentAnimatorStateInfo(0).IsName("Start"));
             soundEmitter.EmitSound("TransiteOut");
             animator.SetBool("Closed", false);
 
             yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).IsName("Open"));
 
-            Registry.ins.inputSet.Active = true;
-            Registry.ins.deathsBar.SetActive(true);
-            closed = false;
+            if (Registry.ins.inputSet != null && Registry.ins.deathsBar != null)
+            {
+                Registry.ins.inputSet.Active = true;
+                Registry.ins.deathsBar.SetActive(true);
+            }
+            inTransition = false;
         }
     }
 }

@@ -40,8 +40,7 @@ public class LevelLoader : MonoBehaviour
 
     public void QuitToMenu()
     {
-        Application.targetFrameRate = -1;
-        SceneManager.LoadScene("Menu");
+        StartCoroutine(GoToMenuRoutine());
     }
 
     //DO NOT CHANGE TO GameObject.FindGameObjectWithTag: IT DOES NOT WORK!
@@ -73,7 +72,11 @@ public class LevelLoader : MonoBehaviour
 
     private IEnumerator GoToMenuRoutine ()
     {
+        Application.targetFrameRate = -1;
+
+        StartCoroutine(Registry.ins.transitionVeil.TransiteIn());
         yield return soundPlayer.StopPlaying();
+        yield return new WaitWhile(() => Registry.ins.transitionVeil.inTransition);
         SceneManager.LoadScene("Menu");
     }
     
