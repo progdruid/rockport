@@ -191,60 +191,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &535210128
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 535210130}
-  - component: {fileID: 535210129}
-  m_Layer: 0
-  m_Name: SoundEmitter
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &535210129
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 535210128}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e984b16d942098a48a7154c76fe87e04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startSounds: []
-  sounds:
-  - name: TransiteOut
-    clip: {fileID: 8300000, guid: 5d2e4cdfd9333cb459d3de0bea8cfc70, type: 3}
-    volume: 1
-  - name: TransiteIn
-    clip: {fileID: 8300000, guid: 144f98784bd88db419f7bf972b9e7b8c, type: 3}
-    volume: 1
-  mute: 0
-  emitPeriodInCalls: 0
---- !u!4 &535210130
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 535210128}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 654563177341388215}
-  m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &549998812
 GameObject:
   m_ObjectHideFlags: 0
@@ -2042,6 +1988,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 430068671364387659, guid: 915d0621642943f43bf86372e3cf4f0b, type: 3}
+      propertyPath: closedAtStart
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 654563176251057826, guid: 915d0621642943f43bf86372e3cf4f0b, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -2133,7 +2083,7 @@ PrefabInstance:
     - target: {fileID: 654563176251057829, guid: 915d0621642943f43bf86372e3cf4f0b, type: 3}
       propertyPath: soundEmitter
       value: 
-      objectReference: {fileID: 535210129}
+      objectReference: {fileID: 0}
     - target: {fileID: 654563176251057829, guid: 915d0621642943f43bf86372e3cf4f0b, type: 3}
       propertyPath: boxTopHalfSize
       value: 2.5
@@ -2154,12 +2104,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Camera
       objectReference: {fileID: 0}
+    - target: {fileID: 4237324336464271564, guid: 915d0621642943f43bf86372e3cf4f0b, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4237324336464271564, guid: 915d0621642943f43bf86372e3cf4f0b, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4237324336464271567, guid: 915d0621642943f43bf86372e3cf4f0b, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -1631720400, guid: e9d279f9f20b04449a5c8d108fc86a94, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 654563176251057826, guid: 915d0621642943f43bf86372e3cf4f0b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 535210130}
+    m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 654563176251057830, guid: 915d0621642943f43bf86372e3cf4f0b, type: 3}
       insertIndex: -1
@@ -2171,11 +2130,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1191371544}
   m_SourcePrefab: {fileID: 100100000, guid: 915d0621642943f43bf86372e3cf4f0b, type: 3}
---- !u!4 &654563177341388215 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 654563176251057826, guid: 915d0621642943f43bf86372e3cf4f0b, type: 3}
-  m_PrefabInstance: {fileID: 654563177341388214}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &654563177341388216
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2189,7 +2143,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   adjustAxis: 0
-  intDivider: 8
 --- !u!1001 &8768345548597820358
 PrefabInstance:
   m_ObjectHideFlags: 0

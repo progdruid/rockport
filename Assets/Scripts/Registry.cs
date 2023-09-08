@@ -13,4 +13,5 @@ public class Registry
     public PlayerManager playerManager;
 
     public DeathsBarManager deathsBar;
+    public TransitionVeil transitionVeil;
 }

@@ -89,7 +89,7 @@ public class LevelLoader : MonoBehaviour
 
         if (currentLevelGameObject != null)
         {
-            yield return Registry.ins.cameraManager.TransiteIn();
+            yield return Registry.ins.transitionVeil.TransiteIn();
 
             Registry.ins.corpseManager.ClearCorpses();
             Registry.ins.playerManager.DestroyPlayer();
@@ -104,7 +104,7 @@ public class LevelLoader : MonoBehaviour
         levelInstantiationEvent();
         
         Registry.ins.playerManager.SpawnPlayer();
-        yield return Registry.ins.cameraManager.TransiteOut();
+        yield return Registry.ins.transitionVeil.TransiteOut();
 
         SubscribeToInput();
     }

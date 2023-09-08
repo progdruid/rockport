@@ -82,7 +82,7 @@ public class PlayerManager : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
         }
 
-        yield return Registry.ins.cameraManager.TransiteIn();
+        yield return Registry.ins.transitionVeil.TransiteIn();
 
         if (!shouldSpawnCorpse)
             DestroyPlayer();
@@ -90,7 +90,7 @@ public class PlayerManager : MonoBehaviour
 
         SpawnPlayer();
 
-        yield return Registry.ins.cameraManager.TransiteOut();
+        yield return Registry.ins.transitionVeil.TransiteOut();
         Registry.ins.inputSet.Active = true;
     }
 

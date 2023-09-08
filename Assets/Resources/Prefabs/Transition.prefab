@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 3736714135761548059}
   - component: {fileID: 3736714135761548056}
   - component: {fileID: 3736714135761548057}
+  - component: {fileID: 5386492273774710514}
+  - component: {fileID: 928463422710855836}
   m_Layer: 0
   m_Name: Transition
   m_TagString: Untagged
@@ -87,7 +89,7 @@ SpriteRenderer:
   m_SpriteSortPoint: 0
 --- !u!95 &3736714135761548057
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -104,4 +106,39 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+--- !u!114 &5386492273774710514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3736714135761548518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e984b16d942098a48a7154c76fe87e04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startSounds: []
+  sounds:
+  - name: TransiteOut
+    clip: {fileID: 8300000, guid: 5d2e4cdfd9333cb459d3de0bea8cfc70, type: 3}
+    volume: 1
+  - name: TransiteIn
+    clip: {fileID: 8300000, guid: 144f98784bd88db419f7bf972b9e7b8c, type: 3}
+    volume: 1
+  mute: 0
+  emitPeriodInCalls: 0
+--- !u!114 &928463422710855836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3736714135761548518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be984133329de654dadc49dd74118374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  closedAtStart: 0
