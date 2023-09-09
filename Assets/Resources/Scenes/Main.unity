@@ -873,8 +873,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DeathBar: {fileID: 921371728}
-  SkullIconPrefab: {fileID: 1933346034816213403, guid: 13557e9d120c1094e9d23d4ff50ae21c, type: 3}
-  MaxSkullIcons: 10
+  FruitIconPrefab: {fileID: 1933346034816213403, guid: 13557e9d120c1094e9d23d4ff50ae21c, type: 3}
+  MaxFruitIcons: 10
 --- !u!114 &1262337694
 MonoBehaviour:
   m_ObjectHideFlags: 0

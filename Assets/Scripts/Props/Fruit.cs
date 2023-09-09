@@ -37,7 +37,7 @@ public class Fruit : MonoBehaviour
         trigger.EnterEvent -= HandleTriggerEnter;
         animator.SetTrigger("Collect");
         OnCollect.Invoke();
-        Registry.ins.skullManager.AddSkull();
+        Registry.ins.fruitManager.AddFruit();
         yield return new WaitUntil(() => animator.GetCurrentAnimatorClipInfo(0)[0].clip.name == "None");
         GetComponent<SpriteRenderer>().enabled = false;
         Destroy(gameObject);

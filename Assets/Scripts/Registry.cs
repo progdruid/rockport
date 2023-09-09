@@ -9,7 +9,7 @@ public class Registry
     public CameraManager cameraManager;
     public InputSet inputSet;
     public CorpseManager corpseManager;
-    public SkullManager skullManager;
+    public FruitManager fruitManager;
     public PlayerManager playerManager;
 
     public DeathsBarManager deathsBar;

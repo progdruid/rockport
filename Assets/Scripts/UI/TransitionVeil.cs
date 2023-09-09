@@ -31,10 +31,8 @@ public class TransitionVeil : MonoBehaviour
         {
             inTransition = true;
             if (Registry.ins.inputSet != null && Registry.ins.deathsBar != null)
-            {
                 Registry.ins.inputSet.Active = false;
-                Registry.ins.deathsBar.SetActive(false);
-            }
+            
 
             yield return new WaitWhile(() => animator.GetCurrentAnimatorStateInfo(0).IsName("Start"));
             soundEmitter.EmitSound("TransiteIn");
@@ -61,10 +59,8 @@ public class TransitionVeil : MonoBehaviour
             yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).IsName("Open"));
 
             if (Registry.ins.inputSet != null && Registry.ins.deathsBar != null)
-            {
                 Registry.ins.inputSet.Active = true;
-                Registry.ins.deathsBar.SetActive(true);
-            }
+            
             inTransition = false;
         }
     }

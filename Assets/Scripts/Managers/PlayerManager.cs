@@ -56,7 +56,7 @@ public class PlayerManager : MonoBehaviour
         _killingPlayer = true;
         PlayerDeathEvent();
 
-        bool canSpawnCorpse = Registry.ins.skullManager.GetSkullsAmount() != 0;
+        bool canSpawnCorpse = Registry.ins.fruitManager.GetFruitsAmount() != 0;
         StartCoroutine(KillPlayerRoutine(canSpawnCorpse));
     }
 
@@ -75,7 +75,7 @@ public class PlayerManager : MonoBehaviour
 
         if (shouldSpawnCorpse) 
         {
-            Registry.ins.skullManager.DestroySkull();
+            Registry.ins.fruitManager.DestroyFruit();
             DestroyPlayer();
             Transform corpse = Registry.ins.corpseManager.SpawnCorpse(pos, vel, flipX).transform;
             Registry.ins.cameraManager.SetTarget(corpse);

@@ -6,50 +6,61 @@ public class DeathsBarManager : MonoBehaviour
 {
     [SerializeField] GameObject DeathBar;
     [Space]
-    [SerializeField] GameObject SkullIconPrefab;
-    [SerializeField] int MaxSkullIcons;
+    [SerializeField] GameObject FruitIconPrefab;
+    [SerializeField] int MaxFruitIcons;
 
-    private List<GameObject> skullIcons;
+    private List<Animator> fruitIcons;
+    private int lastFruitCount;
 
     private void Awake() => Registry.ins.deathsBar = this;
 
     private void Start()
     {
-        skullIcons = new List<GameObject>();
-        Registry.ins.skullManager.SkullUpdateEvent += UpdateBar;
+        fruitIcons = new();
+        Registry.ins.fruitManager.FruitUpdateEvent += UpdateBar;
 
-        for (int i = 0; i < MaxSkullIcons; i++)
-            CreateSkullIcon(false);
+        for (int i = 0; i < MaxFruitIcons; i++)
+            CreateFruitIcon(false);
     }
 
-    private GameObject CreateSkullIcon (bool startState)
+    private GameObject CreateFruitIcon (bool startState)
     {
-        var skull = Instantiate(SkullIconPrefab);
-        skull.transform.SetParent(DeathBar.transform);
-        skull.transform.localScale = Vector3.one;
-        skullIcons.Add(skull);
-        skull.SetActive(startState);
-        return skull;
+        var fruit = Instantiate(FruitIconPrefab);
+        fruit.transform.SetParent(DeathBar.transform);
+        fruit.transform.localScale = Vector3.one;
+        fruitIcons.Add(fruit.GetComponent<Animator>());
+        fruit.SetActive(startState);
+        return fruit;
     }
 
     private void OnDestroy()
     {
-        Registry.ins.skullManager.SkullUpdateEvent -= UpdateBar;
+        Registry.ins.fruitManager.FruitUpdateEvent -= UpdateBar;
+    }
+
+    private IEnumerator DisableFruit (int fruitIndex)
+    {
+        fruitIcons[fruitIndex].SetBool("Disappear", true);
+        yield return new WaitWhile(() => !fruitIcons[fruitIndex].GetCurrentAnimatorStateInfo(0).IsName("End"));
+        fruitIcons[fruitIndex].SetBool("Disappear", false);
+        fruitIcons[fruitIndex].gameObject.SetActive(false);
     }
 
     public void UpdateBar ()
     {
-        int skullCount = Registry.ins.skullManager.GetSkullsAmount();
-        for (int i = 0; i < skullIcons.Count; i++)
+        int fruitCount = Registry.ins.fruitManager.GetFruitsAmount();
+        for (int i = 0; i < fruitIcons.Count; i++)
         {
-            if (i < skullCount)
-                skullIcons[i].SetActive(true);
+            if (i < fruitCount)
+                fruitIcons[i].gameObject.SetActive(true);
+            else if (fruitCount >= i && i < lastFruitCount)
+                StartCoroutine(DisableFruit(i));
             else
-                skullIcons[i].SetActive(false);
+                fruitIcons[i].gameObject.SetActive(false);
         }
-        for (int i = 0; i < skullCount - skullIcons.Count; i++)
-            CreateSkullIcon(true);
-    }
+        for (int i = 0; i < fruitCount - fruitIcons.Count; i++)
+            CreateFruitIcon(true);
 
-    public void SetActive (bool active) => DeathBar.SetActive (active);
+        lastFruitCount = fruitCount;
+    }
 }

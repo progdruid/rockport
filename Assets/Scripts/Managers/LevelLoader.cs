@@ -101,7 +101,7 @@ public class LevelLoader : MonoBehaviour
 
         GameObject prefabToLoad = GetLevelPrefabFromFiles();
 
-        Registry.ins.skullManager.ClearSkulls();
+        Registry.ins.fruitManager.ClearFruits();
         currentLevelGameObject = Instantiate(prefabToLoad);
         
         levelInstantiationEvent();
