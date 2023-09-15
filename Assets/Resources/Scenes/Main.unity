@@ -566,7 +566,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -1, y: 0}
   m_SizeDelta: {x: 176, y: 48}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1011999476
@@ -785,7 +785,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soundSequence:
   - clip: {fileID: 8300000, guid: a955804b32f58d24884ae62054a80e2d, type: 3}
-    volume: 1
+    volume: 0.5
     crossFadeTime: 5
   loopLast: 1
   playOnStart: 0
