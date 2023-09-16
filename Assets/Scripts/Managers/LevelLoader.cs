@@ -130,6 +130,8 @@ public class LevelLoader : MonoBehaviour
         if (!PlayerPrefs.HasKey("Last_Completed_Level_ID"))
             PlayerPrefs.SetInt("Last_Completed_Level_ID", 0);
 
+        //PlayerPrefs.SetInt("Last_Completed_Level_ID", 16);
+
         Application.targetFrameRate = 60;
 
         int loadLevelID = PlayerPrefs.GetInt("Level_ID_Selected_in_Menu");
