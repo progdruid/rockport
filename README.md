@@ -1,4 +1,4 @@
-# Polymort game.
+# Polymort game
 
 ## Privacy Policy
 
