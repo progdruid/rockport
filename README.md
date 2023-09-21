@@ -2,7 +2,7 @@
 
 ## Privacy Policy
 
-Effective Date: 20/09/2023
+Effective Date: *20/09/2023*
 
 ### Introduction
 
