@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e984b16d942098a48a7154c76fe87e04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startSounds: []
   sounds:
   - name: LandingGrass
     clip: {fileID: 8300000, guid: 7c4deed2ca4a91c4cbeecc3467fe0644, type: 3}
@@ -272,10 +273,10 @@ PolygonCollider2D:
     m_Paths:
     - - {x: -0.34375, y: 0.46875}
       - {x: -0.40625, y: 0.40625}
-      - {x: -0.40625, y: -0.4375}
-      - {x: -0.34375, y: -0.5}
-      - {x: 0.34375, y: -0.5}
-      - {x: 0.40625, y: -0.4375}
+      - {x: -0.40625, y: -0.421875}
+      - {x: -0.34375, y: -0.484375}
+      - {x: 0.34375, y: -0.484375}
+      - {x: 0.40625, y: -0.421875}
       - {x: 0.40625, y: 0.40625}
       - {x: 0.34375, y: 0.46875}
   m_UseDelaunayMesh: 0
@@ -391,7 +392,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1645048088113507029, guid: 112d4004dc0b8b243a3016c4b6277285, type: 3}
       propertyPath: m_Offset.y
-      value: -0.5625
+      value: -0.546875
       objectReference: {fileID: 0}
     - target: {fileID: 3601947388096770522, guid: 112d4004dc0b8b243a3016c4b6277285, type: 3}
       propertyPath: m_RootOrder

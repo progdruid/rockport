@@ -91,6 +91,8 @@ public class PlayerManager : MonoBehaviour
         SpawnPlayer();
 
         yield return Registry.ins.transitionVeil.TransiteOut();
+        
+        //
         Registry.ins.inputSet.Active = true;
     }
 

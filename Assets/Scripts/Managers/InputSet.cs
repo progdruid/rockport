@@ -80,7 +80,9 @@ public class InputSet : MonoBehaviour
         }
     }
 
-    void Awake() => Registry.ins.inputSet = this;
-
-    
+    void Awake()
+    {
+        if (enabled)
+            Registry.ins.inputSet = this;
+    }
 }
