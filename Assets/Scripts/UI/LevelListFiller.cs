@@ -34,9 +34,6 @@ public class LevelListFiller : MonoBehaviour
 
     private void CountLevels()
     {
-	//only for debug test builds
-	PlayerPrefs.SetInt("Last_Completed_Level_ID", 15);
-	
         for (int i = 0; i < levelTree.levels.Length; i++)
             if (levelTree.levels[i].published)
                 publishedLevelCount++;
