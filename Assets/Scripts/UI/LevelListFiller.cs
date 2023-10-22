@@ -6,6 +6,10 @@ using UnityEngine.Events;
 
 public class LevelListFiller : MonoBehaviour
 {
+#if UNITY_EDITOR
+    [SerializeField] int debugSetLastCompletedLevelTo;
+#endif
+
     [SerializeField] Sprite[] levelSprites;
     [SerializeField] GameObject levelElementPrefab;
     [SerializeField] string incompleteLevelSignName;
@@ -102,4 +106,14 @@ public class LevelListFiller : MonoBehaviour
         }
         UpdateFill();
     }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (debugSetLastCompletedLevelTo < 0 || debugSetLastCompletedLevelTo > 16)
+            return;
+        
+        PlayerPrefs.SetInt("Last_Completed_Level_ID", debugSetLastCompletedLevelTo);
+    }
+#endif
 }
