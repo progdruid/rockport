@@ -4878,7 +4878,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7acf7c246a8a85e4c83390f4b2f82a9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugSetLastCompletedLevelTo: 15
+  debugSetLastCompletedLevelTo: -1
   levelSprites:
   - {fileID: 954127474, guid: 4336d8140f004ad499cab58432c85d23, type: 3}
   - {fileID: -580585424, guid: 4336d8140f004ad499cab58432c85d23, type: 3}
