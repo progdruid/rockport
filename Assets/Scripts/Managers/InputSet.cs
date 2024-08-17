@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class InputSet : MonoBehaviour
@@ -8,9 +9,10 @@ public class InputSet : MonoBehaviour
     public event System.Action QuitActivationEvent = delegate { }; //not to always write if null
     public event System.Action ReloadActivationEvent = delegate { }; //bit stupid, i know
     public event System.Action KillPlayerKeyPressEvent = delegate { };
-    protected void InvokeQuitActivationEvent() => QuitActivationEvent();
-    protected void InvokeReloadActivationEvent() => ReloadActivationEvent();
-    protected void InvokeKillPlayerKeyPressEvent()
+
+    public void InvokeQuitActivationEvent() => QuitActivationEvent();
+    public void InvokeReloadActivationEvent() => ReloadActivationEvent();
+    public void InvokeKillPlayerKeyPressEvent()
     {
         if (Active)
             KillPlayerKeyPressEvent();

@@ -8,9 +8,6 @@ public class UIInputSet : InputSet
     [SerializeField] RectTransform rightMoveRect;
     [SerializeField] RectTransform jumpRect;
 
-    public void HandleQuitButtonClick() => InvokeQuitActivationEvent();
-    public void HandleReloadButtonClick() => InvokeReloadActivationEvent();
-
     private bool jumpedBefore = false;
 
     private void Update()
@@ -24,9 +21,9 @@ public class UIInputSet : InputSet
         {
             //use Camera.main instead of null if Canvas is in Camera mode
             //null for Overlay
-            leftActivated = RectTransformUtility.RectangleContainsScreenPoint(leftMoveRect, Input.touches[i].position, Camera.main) || leftActivated;
-            rightActivated = RectTransformUtility.RectangleContainsScreenPoint(rightMoveRect, Input.touches[i].position, Camera.main) || rightActivated;
-            jumpActivated = RectTransformUtility.RectangleContainsScreenPoint(jumpRect, Input.touches[i].position, Camera.main) || jumpActivated;
+            leftActivated = leftActivated || RectTransformUtility.RectangleContainsScreenPoint(leftMoveRect, Input.touches[i].position, Camera.main);
+            rightActivated = rightActivated || RectTransformUtility.RectangleContainsScreenPoint(rightMoveRect, Input.touches[i].position, Camera.main);
+            jumpActivated = jumpActivated || RectTransformUtility.RectangleContainsScreenPoint(jumpRect, Input.touches[i].position, Camera.main);
         }
 
         if (leftActivated)

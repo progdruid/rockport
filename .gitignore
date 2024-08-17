@@ -22,6 +22,9 @@
 .vs/
 .vsconfig
 
+# Rider
+.idea/
+
 # Gradle cache directory
 .gradle/
 

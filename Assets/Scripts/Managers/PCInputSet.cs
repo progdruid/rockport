@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class PCInputSet : InputSet
 {
+    [SerializeField] bool restrictPlayerKillKey;
+    [SerializeField] bool restrictReloadKey;
+    [SerializeField] bool restrictQuitKey;
+
     void Update()
     {
         if (!Active)
@@ -20,11 +24,11 @@ public class PCInputSet : InputSet
         //player kill key is temporary
         //will not be in the final game
         //exists only for testing
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) && !restrictPlayerKillKey)
             InvokeKillPlayerKeyPressEvent();
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R) && !restrictReloadKey)
             InvokeReloadActivationEvent();
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q) && !restrictQuitKey)
             InvokeQuitActivationEvent();
 
     }
