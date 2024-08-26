@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08739c981dd76324aaece135bc2454f6, type: 3}
+  m_Name: DirtPlacingScript
+  m_EditorClassIdentifier: 
+  BG_Outer: {fileID: 11400000, guid: b795f89b09420864484598bab72b29e9, type: 2}
+  BG_MidStart: 2
+  BG_Mid: {fileID: 11400000, guid: 9afc97d281ae8c547928b50399ec613d, type: 2}
+  BG_InnerStart: 4
+  BG_Inner: {fileID: 11400000, guid: 434870f7fb0ce5946a563fb6571a881c, type: 2}
+  Edges_Up:
+  - {fileID: 11400000, guid: 94aa91fdc49674f40b15c67366a84673, type: 2}
+  - {fileID: 11400000, guid: fdadcd0a00a4e084bb4090301390bea8, type: 2}
+  - {fileID: 11400000, guid: faf9a77a31644534ea1c776799335143, type: 2}
+  Edges_Down:
+  - {fileID: 11400000, guid: aee0472c9fe3eb74aabf1aabd92b5baf, type: 2}
+  - {fileID: 11400000, guid: 0be0e583394f92d4ebcaac7ca007a230, type: 2}
+  - {fileID: 11400000, guid: 4b3b6558113b76f47b8220cbed95d199, type: 2}
+  Edges_Right:
+  - {fileID: 11400000, guid: 0c28de88f648e214d91ba375de375597, type: 2}
+  - {fileID: 11400000, guid: 40d004b50b4a63f4e9d15bc2f9ba9bd4, type: 2}
+  - {fileID: 11400000, guid: 81bd798f952ead344901fd9399f69880, type: 2}
+  Edges_Left:
+  - {fileID: 11400000, guid: 85e59f3a7c1eb9d4eace43cd7e315b41, type: 2}
+  - {fileID: 11400000, guid: b3ef1ded47bda1c499f60db6ed217cc7, type: 2}
+  - {fileID: 11400000, guid: c5db7e62817ce6746a3a78ef1c28d51a, type: 2}
+  Corner_UR: {fileID: 11400000, guid: 6b56ca154e126c34ea19daa6ef9c9a95, type: 2}
+  Corner_UL: {fileID: 11400000, guid: fa1d5a12ebaa043409f997a826ba17bb, type: 2}
+  Corner_DR: {fileID: 11400000, guid: 5f3ad50859503e34d859c4f68b5961ae, type: 2}
+  Corner_DL: {fileID: 11400000, guid: 0a8153f491a59f4478f91199b7f40db9, type: 2}
+  Fillings_Deep_Outer: []
+  Fillings_Deep_Mid: []
+  Fillings_Deep_Inner: []
+  Fillings_Shallow_Outer: []
+  Fillings_Shallow_Mid: []
+  Fillings_Shallow_Inner: []
