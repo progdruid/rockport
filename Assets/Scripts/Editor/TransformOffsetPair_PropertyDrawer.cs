@@ -11,10 +11,10 @@ public class TransformOffsetPair_PropertyDrawer : PropertyDrawer
         VisualElement container = new VisualElement();
 
         var transformField = new PropertyField(property.FindPropertyRelative("transform"), "Transform");
-        var offsetFiels = new PropertyField(property.FindPropertyRelative("offset"), "Offset");
+        var offsetField = new PropertyField(property.FindPropertyRelative("offset"), "Offset");
 
         container.Add(transformField);
-        container.Add(offsetFiels);
+        container.Add(offsetField);
 
         return container;
     }

@@ -6,10 +6,21 @@ using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
+[Serializable]
+public class ExampleClass
+{
+    public int Index;
+    public string Name;
+}
+
 [CreateAssetMenu(fileName = "", menuName = "Scriptables/DirtPlacingScript", order = 1)]
 public class DirtPlacingScript : BlockPlacingScript
 {
-    [SerializeField] private TileBase BG_Outer;
+    [SerializeField] public MapWrapper<int, GameObject> MyDict = new ()
+    { };
+
+
+[SerializeField] private TileBase BG_Outer;
     [SerializeField] private byte BG_MidStart;
     [SerializeField] private TileBase BG_Mid;
     [SerializeField] private byte BG_InnerStart;
@@ -36,7 +47,7 @@ public class DirtPlacingScript : BlockPlacingScript
     [SerializeField] private TileBase[] Fillings_Shallow_Outer;
     [SerializeField] private TileBase[] Fillings_Shallow_Mid;
     [SerializeField] private TileBase[] Fillings_Shallow_Inner;
-
+    
     private Func<TileBase>[] MatchingGetters;
     
     private byte ambiguityValue = 0;
