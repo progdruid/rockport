@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
@@ -16,7 +17,7 @@ public class ExampleClass
 [CreateAssetMenu(fileName = "", menuName = "Scriptables/DirtPlacingScript", order = 1)]
 public class DirtPlacingScript : BlockPlacingScript
 {
-    [SerializeField] public MapWrapper<int, GameObject> MyDict = new ()
+    [SerializeField] public SerializableMap<int, GameObject> MyDict = new ()
     { };
 
 
@@ -53,7 +54,7 @@ public class DirtPlacingScript : BlockPlacingScript
     private byte ambiguityValue = 0;
 
     private void OnValidate()
-    {
+    {   
         MatchingGetters = new Func<TileBase>[]
         {
             () => null,

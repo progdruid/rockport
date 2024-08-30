@@ -5,7 +5,7 @@ using System;
 using System.Collections;
 using UnityEngine.UIElements;
 
-[CustomPropertyDrawer(typeof(MapWrapper<,>))]
+[CustomPropertyDrawer(typeof(SerializableMap<,>))]
 public class DictionaryDrawer : PropertyDrawer
 {
     private const float ButtonWidth = 20f;
@@ -18,8 +18,7 @@ public class DictionaryDrawer : PropertyDrawer
     {
         var container = new VisualElement();
         
-        var foldout = new Foldout { text = property.displayName };
-        
+        var foldout = new Foldout () { text = property.displayName };
         container.Add(foldout);
 
         var dict = GetDictionary(property);
@@ -28,26 +27,32 @@ public class DictionaryDrawer : PropertyDrawer
         valueType = genericArgs[1];
         
         var listView = new ListView();
-        listView.makeItem = () => new DictionaryEntryView();
+        listView.makeItem = () => new MapItemView();
         listView.bindItem = (element, index) =>
         {
-            var entryView = (DictionaryEntryView)element;
-            DictionaryEntry entry;
+            var mapItemView = (MapItemView)element;
+            object key = null;
             int i = 0;
             foreach (DictionaryEntry current in dict)
             {
                 if (i == index)
                 {
-                    entry = current;
+                    key = current.Key;
                     break;
                 }
                 i++;
             }
             
-            entryView.SetEntry(entry, dict, () => RemoveItem(dict, entry.Key, property, listView));
+            if (key != null)
+                mapItemView.SetItem(key, dict, () => RemoveItem(dict, key, property, listView));
         };
         RefreshListView(listView, dict);
 
+        // foldout.RegisterValueChangedCallback((value) =>
+        // {
+        //     RefreshListView(listView, dict);
+        // });
+        
         keyToAdd = CreateInstance(keyType);
         
         var keyToAddField = new DynamicTypeField(keyType, keyToAdd, false,
@@ -130,13 +135,13 @@ public class DictionaryDrawer : PropertyDrawer
     }
 }
 
-public class DictionaryEntryView : VisualElement
+public class MapItemView : VisualElement
 {
     private DynamicTypeField keyField;
     private DynamicTypeField valueField;
     private UnityEngine.UIElements.Button removeButton;
 
-    public DictionaryEntryView()
+    public MapItemView()
     {
         removeButton = new UnityEngine.UIElements.Button() { text = "-" };
         
@@ -147,7 +152,7 @@ public class DictionaryEntryView : VisualElement
         //style.justifyContent = Justify.;
     }
 
-    public void SetEntry(DictionaryEntry entry, IDictionary dict, Action removeAction)
+    public void SetItem(object key, IDictionary dict, Action removeAction)
     {
         if (keyField != null)
             Remove(keyField);
@@ -158,12 +163,12 @@ public class DictionaryEntryView : VisualElement
         var keyType = genericArgs[0];
         var valueType = genericArgs[1];
         
-        keyField = new DynamicTypeField(keyType, entry.Key, true,
+        keyField = new DynamicTypeField(keyType, key, true,
             (newKey) => { });
-        valueField = new DynamicTypeField(valueType, entry.Value, false,
+        valueField = new DynamicTypeField(valueType, dict[key], false,
             (newValue) =>
             {
-                entry.Value = newValue;
+                dict[key] = newValue;
             });
         
         Add(keyField);

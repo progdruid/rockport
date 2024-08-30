@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using UnityEngine;
 
 [Serializable]
-public class MapWrapper<TKey, TValue> : Dictionary<TKey, TValue>, ISerializationCallbackReceiver
+public class SerializableMap<TKey, TValue> : Dictionary<TKey, TValue>, ISerializationCallbackReceiver
 {
     [Serializable]
     private struct Item
