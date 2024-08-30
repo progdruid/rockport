@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using System.Collections;
 using UnityEngine.UIElements;
+using Object = System.Object;
 
 [CustomPropertyDrawer(typeof(SerializableMap<,>))]
 public class DictionaryDrawer : PropertyDrawer
@@ -13,18 +14,24 @@ public class DictionaryDrawer : PropertyDrawer
     private object keyToAdd = null;
     private Type keyType;
     private Type valueType;
+
+    private UnityEngine.Object targetObject;
     
     public override VisualElement CreatePropertyGUI(SerializedProperty property)
     {
-        var container = new VisualElement();
-        
-        var foldout = new Foldout () { text = property.displayName };
-        container.Add(foldout);
+        targetObject = property.serializedObject.targetObject;
 
         var dict = GetDictionary(property);
         var genericArgs = dict.GetType().GetGenericArguments();
         keyType = genericArgs[0];
+        keyToAdd = CreateInstance(keyType);
         valueType = genericArgs[1];
+
+        
+        var container = new VisualElement();
+        
+        var foldout = new Foldout () { text = property.displayName };
+        container.Add(foldout);
         
         var listView = new ListView();
         listView.makeItem = () => new MapItemView();
@@ -42,18 +49,14 @@ public class DictionaryDrawer : PropertyDrawer
                 }
                 i++;
             }
-            
+
             if (key != null)
-                mapItemView.SetItem(key, dict, () => RemoveItem(dict, key, property, listView));
+                mapItemView.SetItem(key, dict,
+                    () => RemoveItem(dict, key, property, listView), 
+                    RefreshAsset);
         };
         RefreshListView(listView, dict);
-
-        // foldout.RegisterValueChangedCallback((value) =>
-        // {
-        //     RefreshListView(listView, dict);
-        // });
         
-        keyToAdd = CreateInstance(keyType);
         
         var keyToAddField = new DynamicTypeField(keyType, keyToAdd, false,
             (key) =>
@@ -95,6 +98,12 @@ public class DictionaryDrawer : PropertyDrawer
         listView.RefreshItems();
     }
 
+    private void RefreshAsset()
+    {
+        EditorUtility.SetDirty(targetObject);
+        AssetDatabase.SaveAssets();
+    }
+
     private IDictionary GetDictionary(SerializedProperty property)
     {
         object target = property.serializedObject.targetObject;
@@ -112,6 +121,7 @@ public class DictionaryDrawer : PropertyDrawer
             dict.Add(key, value);
             property.serializedObject.ApplyModifiedProperties();
             RefreshListView(listView, dict);
+            RefreshAsset();
         }
         else
         {
@@ -124,6 +134,7 @@ public class DictionaryDrawer : PropertyDrawer
         dict.Remove(key);
         property.serializedObject.ApplyModifiedProperties();
         RefreshListView(listView, dict);
+        RefreshAsset();
     }
     
     private object CreateInstance(Type t)
@@ -140,7 +151,7 @@ public class MapItemView : VisualElement
     private DynamicTypeField keyField;
     private DynamicTypeField valueField;
     private UnityEngine.UIElements.Button removeButton;
-
+    
     public MapItemView()
     {
         removeButton = new UnityEngine.UIElements.Button() { text = "-" };
@@ -152,7 +163,7 @@ public class MapItemView : VisualElement
         //style.justifyContent = Justify.;
     }
 
-    public void SetItem(object key, IDictionary dict, Action removeAction)
+    public void SetItem(object key, IDictionary dict, Action removeAction, Action itemChangedAction)
     {
         if (keyField != null)
             Remove(keyField);
@@ -169,6 +180,7 @@ public class MapItemView : VisualElement
             (newValue) =>
             {
                 dict[key] = newValue;
+                itemChangedAction();
             });
         
         Add(keyField);

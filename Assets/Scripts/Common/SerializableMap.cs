@@ -14,8 +14,23 @@ public class SerializableMap<TKey, TValue> : Dictionary<TKey, TValue>, ISerializ
         public TValue Value;
     }
 
+    [SerializeField]
     private Item[] serializedItems;
     
+    public SerializableMap () {}
+
+    protected SerializableMap(SerializationInfo info, StreamingContext context) : base(info, context)
+    {
+        serializedItems = (Item[]) info.GetValue("SerializedItems", typeof(Item[]));
+        OnAfterDeserialize();
+    }
+
+    public override void GetObjectData(SerializationInfo info, StreamingContext context)
+    {
+        OnBeforeSerialize();
+        info.AddValue("SerializedItems", serializedItems, typeof(Item[]));
+    }
+
     public void OnBeforeSerialize()
     {
         serializedItems = new Item[Count];

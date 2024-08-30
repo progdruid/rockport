@@ -7,21 +7,13 @@ using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
-[Serializable]
-public class ExampleClass
-{
-    public int Index;
-    public string Name;
-}
 
 [CreateAssetMenu(fileName = "", menuName = "Scriptables/DirtPlacingScript", order = 1)]
 public class DirtPlacingScript : BlockPlacingScript
 {
-    [SerializeField] public SerializableMap<int, GameObject> MyDict = new ()
-    { };
-
-
-[SerializeField] private TileBase BG_Outer;
+    [SerializeField] public SerializableMap<GameObject, GameObject> MyDict;
+    
+    [SerializeField] private TileBase BG_Outer;
     [SerializeField] private byte BG_MidStart;
     [SerializeField] private TileBase BG_Mid;
     [SerializeField] private byte BG_InnerStart;
