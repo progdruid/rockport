@@ -7,15 +7,15 @@ using UnityEngine.UIElements;
 using Object = System.Object;
 
 [CustomPropertyDrawer(typeof(SerializableMap<,>))]
-public class DictionaryDrawer : PropertyDrawer
+public class MapDrawer : PropertyDrawer
 {
-    private const float ButtonWidth = 20f;
-
     private object keyToAdd = null;
     private Type keyType;
     private Type valueType;
 
     private UnityEngine.Object targetObject;
+    
+    private StyleSheet styleSheet;
     
     public override VisualElement CreatePropertyGUI(SerializedProperty property)
     {
@@ -27,11 +27,15 @@ public class DictionaryDrawer : PropertyDrawer
         keyToAdd = CreateInstance(keyType);
         valueType = genericArgs[1];
 
-        
-        var container = new VisualElement();
-        
+        styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Scripts/Editor/MapDrawer.uss");
+
         var foldout = new Foldout () { text = property.displayName };
-        container.Add(foldout);
+        foldout.styleSheets.Add(styleSheet);
+        foldout.AddToClassList("map-drawer__foldout");
+
+        var listContainer = new VisualElement();
+        listContainer.AddToClassList("map-drawer__list-container");
+        foldout.Add(listContainer);
         
         var listView = new ListView();
         listView.makeItem = () => new MapItemView();
@@ -72,21 +76,23 @@ public class DictionaryDrawer : PropertyDrawer
             });
         addButton.text = "+";
         
-        foldout.Add(listView);
+        listContainer.Add(listView);
 
         var addNewItemContainer = new VisualElement();
-        addNewItemContainer.style.flexDirection = FlexDirection.Row;
-        addNewItemContainer.style.alignContent = Align.Stretch;
-        addNewItemContainer.style.justifyContent = Justify.FlexEnd;
-        
-        addNewItemContainer.Add(new Label("A new item will be added with this key:"));
+        addNewItemContainer.AddToClassList("map-drawer__add-item-container");
+
+        var addItemLabel = new Label("Add new item with key:");
+        addItemLabel.AddToClassList("map-drawer__add-item-label");
+        keyToAddField.AddToClassList("map-drawer__add-item-key-field");
+        addButton.AddToClassList("map-drawer__add-button");
+        addNewItemContainer.Add(addItemLabel);
         addNewItemContainer.Add(keyToAddField);
         addNewItemContainer.Add(addButton);
         
         
-        foldout.Add(addNewItemContainer);
+        listContainer.Add(addNewItemContainer);
         
-        return container;
+        return foldout;
     }
     
     private void RefreshListView(ListView listView, IDictionary dict)
@@ -155,12 +161,11 @@ public class MapItemView : VisualElement
     public MapItemView()
     {
         removeButton = new UnityEngine.UIElements.Button() { text = "-" };
+        removeButton.AddToClassList("map-item-view__remove-button");
         
         Add(removeButton);
 
-        style.flexDirection = FlexDirection.Row;
-        style.alignContent = Align.Stretch;
-        //style.justifyContent = Justify.;
+        AddToClassList("map-item-view");
     }
 
     public void SetItem(object key, IDictionary dict, Action removeAction, Action itemChangedAction)
@@ -182,6 +187,9 @@ public class MapItemView : VisualElement
                 dict[key] = newValue;
                 itemChangedAction();
             });
+        
+        keyField.AddToClassList("map-item-view__key-field");
+        valueField.AddToClassList("map-item-view__value-field");
         
         Add(keyField);
         Add(valueField);

@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MyDict:
     serializedItems:
-    - Key: {fileID: 6388440925167425491, guid: d6a856bee9685274fa5913c94ac9635e, type: 3}
-      Value: {fileID: 9215722690314533559, guid: 001acfe734af9ab419e091dc2ef070ef, type: 3}
-    - Key: {fileID: 4365052880456163302, guid: 6e67afa006ce0ef4d9c76e8f0f952c91, type: 3}
-      Value: {fileID: 9215722690314533559, guid: a7028d18e580d934498dcdfd6e9f354d, type: 3}
-    - Key: {fileID: 21454352661399372, guid: a39bfa46c7b596e43b90c3341836efc4, type: 3}
-      Value: {fileID: 9215722690314533559, guid: f6ccde247ca9b5a46be08afc9ed80ab3, type: 3}
+    - Key: hello
+      Value: {fileID: 0}
+    - Key: my friend
+      Value: {fileID: 0}
+    - Key: this is my fancy custom map drawer
+      Value: {fileID: 0}
   BG_Outer: {fileID: 11400000, guid: b795f89b09420864484598bab72b29e9, type: 2}
   BG_MidStart: 2
   BG_Mid: {fileID: 11400000, guid: 9afc97d281ae8c547928b50399ec613d, type: 2}
@@ -45,8 +45,7 @@ MonoBehaviour:
   Corner_UL: {fileID: 11400000, guid: fa1d5a12ebaa043409f997a826ba17bb, type: 2}
   Corner_DR: {fileID: 11400000, guid: 5f3ad50859503e34d859c4f68b5961ae, type: 2}
   Corner_DL: {fileID: 11400000, guid: 0a8153f491a59f4478f91199b7f40db9, type: 2}
-  Fillings_Deep_Outer:
-  - {fileID: 11400000, guid: 1ebf13b30234d1e4bac294ba64c69ca6, type: 2}
+  Fillings_Deep_Outer: []
   Fillings_Deep_Mid: []
   Fillings_Deep_Inner: []
   Fillings_Shallow_Outer: []

@@ -11,8 +11,6 @@ using Random = UnityEngine.Random;
 [CreateAssetMenu(fileName = "", menuName = "Scriptables/DirtPlacingScript", order = 1)]
 public class DirtPlacingScript : BlockPlacingScript
 {
-    [SerializeField] public SerializableMap<GameObject, GameObject> MyDict;
-    
     [SerializeField] private TileBase BG_Outer;
     [SerializeField] private byte BG_MidStart;
     [SerializeField] private TileBase BG_Mid;
