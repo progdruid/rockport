@@ -10,57 +10,46 @@ public class LevelHolder : MonoBehaviour
 {
     [SerializeField] private Vector2Int mapSize;
     [Space] 
-    [SerializeField] private Tilemap groundMap;
-    [SerializeField] private Tilemap matchingMap;
     [SerializeField] private Grid visualGrid;
-    [Space]
-    [SerializeField] private BlockPlacingScript dirtPlacingScript;
+    [SerializeField] private SerializableMap<string, Tilemap> associatedVisualMaps;
+    [SerializeField] private LevelPass[] passes;
     
-    
-    private BlockData[,] blockMap;
+    private Dictionary<string, Datamap> _datamaps = new ();
     
     private void Start()
     {
-        blockMap = new BlockData[mapSize.x, mapSize.y];
+        foreach (var pass in passes)
+            pass.InjectLevelHolder(this);
+    }
+
+    public Datamap ObtainDatamap<T>(string id) => ObtainDatamap<T>(id, out _);
+    public Datamap ObtainDatamap<T>(string id, out bool wasCreated)
+    {
+        wasCreated = !_datamaps.TryGetValue(id, out var datamap);
+        if (!wasCreated)
+            return datamap;
+
+        var map = new Datamap(mapSize, Activator.CreateInstance<T>());
+        _datamaps.Add(id, map);
+        return map;
+    }
+
+
+    public void ChangeVisualAt(string tilemapId, Vector2Int blockPos, TileBase tile)
+    {
+        GetVisualMap(tilemapId, out var map);
+        ChangeVisualAt(map, blockPos, tile);
     }
     
-    public void ChangeBlockAt(Vector2 pos, BlockType newType)
-    {
-        var blockPos = Vector2Int.FloorToInt(pos / visualGrid.cellSize) + mapSize / 2;
-        
-        ref var block = ref blockMap[blockPos.x, blockPos.y]; ;
-        if (block.type == newType)
-            return;
-        
-        block.pos = blockPos;
-        block.type = newType;
-        block.collisionAmbiguityValue = 0;
-        block.fillingAmbiguityValue = 0;
-
-        if (newType == BlockType.Dirt)
-        {
-            dirtPlacingScript.RepaintSingle(this, blockPos);
-            dirtPlacingScript.RepaintEnvironment(this, blockPos);
-        }
-        else if (newType == BlockType.None)
-        {
-            ChangeVisualAt(blockPos, new PlacingDecision());
-            dirtPlacingScript.RepaintEnvironment(this, blockPos);
-        }
-    }
-
-    public void ChangeVisualAt(Vector2Int blockPos, PlacingDecision decision)
+    public void ChangeVisualAt(Tilemap map, Vector2Int blockPos, TileBase tile)
     {
         var visualPos = (Vector3Int)(blockPos - mapSize / 2);
-        groundMap.SetTile(visualPos, decision.BG);
-        matchingMap.SetTile(visualPos, decision.Matching);
-    }
-
-    public Vector3 GetOrigin()
-    {
-        return groundMap.gameObject.transform.position;
+        map.SetTile(visualPos, tile);
     }
     
-    public BlockType GetBlockTypeAt(int x, int y) => blockMap[x, y].type;
+    public Vector2Int ConvertWorldToMapPos(Vector2 worldPos) => Vector2Int.FloorToInt(worldPos / visualGrid.cellSize) + mapSize / 2;
+    public bool GetVisualMap(string id, out Tilemap map) => associatedVisualMaps.TryGetValue(id, out map);
+    public Vector3 GetOrigin() => visualGrid.gameObject.transform.position;
     public Vector2Int GetMapSize() => mapSize;
+
 }

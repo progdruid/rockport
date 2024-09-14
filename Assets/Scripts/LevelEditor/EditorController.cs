@@ -8,11 +8,13 @@ public class EditorController : MonoBehaviour
     [SerializeField] private LevelHolder levelHolder;
     [SerializeField] private Camera controlCamera;
 
-    private Vector3 mapOrigin;
-
+    private Vector3 _mapOrigin;
+    private Datamap _typeDatamap;
+    
     private void Start()
     {
-        mapOrigin = levelHolder.GetOrigin();
+        _mapOrigin = levelHolder.GetOrigin();
+        _typeDatamap = levelHolder.ObtainDatamap<BlockType>("Type");
     }
 
     void Update()
@@ -26,13 +28,17 @@ public class EditorController : MonoBehaviour
         var mousePos = Input.mousePosition;
         var ray = controlCamera.ScreenPointToRay(mousePos);
 
-        var t = (mapOrigin.z - ray.origin.z) / ray.direction.z;
-        var mapPos = ray.origin + ray.direction * t - mapOrigin;
-
+        var t = (_mapOrigin.z - ray.origin.z) / ray.direction.z;
+        var mapPos = levelHolder.ConvertWorldToMapPos(ray.origin + ray.direction * t - _mapOrigin);
+        
         var blockType = BlockType.None;
         if (constructing)
             blockType = BlockType.Dirt;
+
+        if (_typeDatamap.At<BlockType>(mapPos) == blockType)
+            return;
         
-        levelHolder.ChangeBlockAt(mapPos, blockType);
+        _typeDatamap.At(mapPos) = blockType;
+        _typeDatamap.NotifyModified(mapPos);
     }
 }

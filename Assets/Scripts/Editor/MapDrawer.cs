@@ -3,8 +3,8 @@ using UnityEditor;
 using System.Collections.Generic;
 using System;
 using System.Collections;
+using System.Reflection;
 using UnityEngine.UIElements;
-using Object = System.Object;
 
 [CustomPropertyDrawer(typeof(SerializableMap<,>))]
 public class MapDrawer : PropertyDrawer
@@ -113,7 +113,10 @@ public class MapDrawer : PropertyDrawer
     private IDictionary GetDictionary(SerializedProperty property)
     {
         object target = property.serializedObject.targetObject;
-        var field = target.GetType().GetField(property.propertyPath);
+        var field = target.GetType().GetField(property.propertyPath, 
+            BindingFlags.Public | 
+            BindingFlags.NonPublic | 
+            BindingFlags.Instance);
         return (IDictionary)field.GetValue(target);
     }
 
