@@ -5,18 +5,29 @@ using UnityEngine;
 
 public class Datamap
 {
-    public object[,] Map;
-    public event Action<Vector2Int> ModificationEvent;
-    public virtual void NotifyModified(Vector2Int pos) => ModificationEvent?.Invoke(pos);
-
-    public Datamap(Vector2Int size, object defaultValue)
+    public static Datamap Create<T>(Vector2Int size, T defaultValue)
     {
-        Map = new object[size.x, size.y];
+        Datamap datamap = new() { Map = new object[size.x, size.y] };
         for (int x = 0; x < size.x; x++)
         for (int y = 0; y < size.y; y++)
-            Map[x, y] = defaultValue;
+            datamap.Map[x, y] = defaultValue;
+        return datamap;
     }
+    public static Datamap Create<T>(Vector2Int size) => Create(size, Activator.CreateInstance<T>());
 
-    public ref object At(Vector2Int pos) => ref Map[pos.x, pos.y];
-    public T At<T>(Vector2Int pos) => (T)Map[pos.x, pos.y];
+
+    public event Action<Vector2Int, object, object> ModificationEvent;
+    private object[,] Map;
+    
+    
+    public void NotifyModified(Vector2Int pos, object prev, object current) => ModificationEvent?.Invoke(pos, prev, current);
+    
+    public T GetAt<T>(Vector2Int pos) => (T)Map[pos.x, pos.y];
+    public void SetAt<T>(Vector2Int pos, T value)
+    {
+        object previous = Map[pos.x, pos.y];
+        Map[pos.x, pos.y] = value;
+        NotifyModified(pos, previous, value);
+    }
+    public void ModifyAt<T> (Vector2Int pos, Func<T, T> modifier) => SetAt(pos, modifier.Invoke(GetAt<T>(pos)));
 }

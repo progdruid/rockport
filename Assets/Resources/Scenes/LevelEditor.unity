@@ -241,19 +241,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 251374644}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7d6661fdf1d35b4bb852a500d7047f9, type: 3}
+  m_Script: {fileID: 11500000, guid: 23e2094a739944f281fcf36f106213d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapSize: {x: 100, y: 100}
-  visualGrid: {fileID: 749351119}
-  associatedVisualMaps:
-    serializedItems:
-    - Key: Ground
-      Value: {fileID: 2037677687}
-    - Key: Matching
-      Value: {fileID: 789750351}
-  passes:
-  - {fileID: 11400000, guid: c284690c11a984d4dbe8b5fc96910bda, type: 2}
+  Size: {x: 100, y: 100}
+  DirtTile: {fileID: 11400000, guid: 9afc97d281ae8c547928b50399ec613d, type: 2}
+  VisualGrid: {fileID: 749351119}
+  BaseMap: {fileID: 2037677687}
+  MatchingMap: {fileID: 789750351}
+  LowerPebbleMap: {fileID: 0}
+  UpperPebbleMap: {fileID: 0}
 --- !u!4 &251374646
 Transform:
   m_ObjectHideFlags: 0
@@ -281,8 +278,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5e9f2b6cf3ca2046a1e90e5e2f2d264, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelHolder: {fileID: 251374645}
-  controlCamera: {fileID: 202641129}
+  DirtGenerator: {fileID: 251374645}
+  ControlCamera: {fileID: 202641129}
 --- !u!1 &749351117
 GameObject:
   m_ObjectHideFlags: 0

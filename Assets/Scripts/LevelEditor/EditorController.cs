@@ -2,43 +2,64 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class EditorController : MonoBehaviour
 {
-    [SerializeField] private LevelHolder levelHolder;
-    [SerializeField] private Camera controlCamera;
+    private enum EditorMode
+    {
+        DirtPlacement,
+        DirtCarving
+    }
+    
+    [SerializeField] private Generator DirtGenerator;
+    [SerializeField] private Camera ControlCamera;
 
-    private Vector3 _mapOrigin;
-    private Datamap _typeDatamap;
+    private EditorMode _currentMode;
+    private Action<Vector2> _currentToolAction;
     
     private void Start()
     {
-        _mapOrigin = levelHolder.GetOrigin();
-        _typeDatamap = levelHolder.ObtainDatamap<BlockType>("Type");
+        _currentMode = EditorMode.DirtPlacement;
+        _currentToolAction = PerformDirtPlacement;
     }
 
     void Update()
     {
-        var constructing = Input.GetMouseButton(0);
-        var erasing = Input.GetMouseButton(1);
+        CheckModeInput();
         
-        if (!constructing && !erasing)
+        var constructive = Input.GetMouseButton(0);
+        var destructive = Input.GetMouseButton(1);
+        
+        if (constructive == destructive)
             return;
         
         var mousePos = Input.mousePosition;
-        var ray = controlCamera.ScreenPointToRay(mousePos);
+        var ray = ControlCamera.ScreenPointToRay(mousePos);
 
-        var t = (_mapOrigin.z - ray.origin.z) / ray.direction.z;
-        var mapPos = levelHolder.ConvertWorldToMapPos(ray.origin + ray.direction * t - _mapOrigin);
-        
-        var blockType = BlockType.None;
-        if (constructing)
-            blockType = BlockType.Dirt;
+        var t = (DirtGenerator.GetZ() - ray.origin.z) / ray.direction.z;
+        var worldPos = (ray.origin + ray.direction * t);
 
-        if (_typeDatamap.At<BlockType>(mapPos) == blockType)
-            return;
-        
-        _typeDatamap.At(mapPos) = blockType;
-        _typeDatamap.NotifyModified(mapPos);
+        _currentToolAction(worldPos);
     }
+
+    private void CheckModeInput()
+    {
+        var changeToPlacement = Input.GetKeyDown(KeyCode.Q);
+        var changeToCarving = Input.GetKeyDown(KeyCode.W);
+        if (_currentMode != EditorMode.DirtPlacement && changeToPlacement && !changeToCarving)
+        {
+            _currentMode = EditorMode.DirtPlacement;
+            _currentToolAction = PerformDirtPlacement;
+        }
+        else if (_currentMode != EditorMode.DirtCarving && changeToCarving && !changeToPlacement)
+        {
+            _currentMode = EditorMode.DirtCarving;
+            _currentToolAction = PerformDirtCarving;
+        }
+    }
+
+    private void PerformDirtPlacement(Vector2 pos) => DirtGenerator.PlaceDirtAt(pos);
+
+    private void PerformDirtCarving(Vector2 pos) => DirtGenerator.CarveDirtAt(pos);
 }
