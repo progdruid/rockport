@@ -22,21 +22,27 @@ public class Generator : MonoBehaviour
     
     public void PlaceDirtAt(Vector2 worldPos)
     {
-        var mapPos = ConvertWorldToMap(worldPos);
-        BaseMap.SetTile(mapPos, DirtTile);
+        var inBounds = ConvertWorldToMap(worldPos, out var mapPos);
+        if (!inBounds) return;
+        
+        _map.Set(mapPos, 1);
+        BaseMap.SetTile((Vector3Int)mapPos, DirtTile);
     }
 
     public void CarveDirtAt(Vector2 worldPos)
     {
-        var mapPos = ConvertWorldToMap(worldPos);
-        BaseMap.SetTile(mapPos, null);
+        var inBounds = ConvertWorldToMap(worldPos, out var mapPos);
+        if (!inBounds) return;
+        
+        _map.Set(mapPos, 0);
+        BaseMap.SetTile((Vector3Int)mapPos, null);
     }
 
-    private Vector3Int ConvertWorldToMap(Vector2 worldPos)
+    private bool ConvertWorldToMap(Vector2 worldPos, out Vector2Int mapPos)
     {
         var origin = VisualGrid.transform.position;
-        var mapPos = Vector2Int.FloorToInt((worldPos - (Vector2)origin) / VisualGrid.cellSize);
-        return new Vector3Int(mapPos.x, mapPos.y, Mathf.FloorToInt(origin.z));
+        mapPos = Vector2Int.FloorToInt((worldPos - (Vector2)origin) / VisualGrid.cellSize);
+        return (new Rect(0, 0, Size.x-0.1f, Size.y-0.1f)).Contains(mapPos);
     }
     
     private void Awake()
