@@ -18,7 +18,17 @@ public class Generator : MonoBehaviour
 
     private int[,] _map;
 
+    
+    
+    #region Getters and Setters
+    
     public float GetZ() => VisualGrid.transform.position.z;
+    
+    #endregion
+
+    
+    
+    #region Public Interface
     
     public void PlaceDirtAt(Vector2 worldPos)
     {
@@ -37,18 +47,26 @@ public class Generator : MonoBehaviour
         _map.Set(mapPos, 0);
         BaseMap.SetTile((Vector3Int)mapPos, null);
     }
+    
+    #endregion
+
+    
+    
+    #region Private Logic
 
     private bool ConvertWorldToMap(Vector2 worldPos, out Vector2Int mapPos)
     {
         var origin = VisualGrid.transform.position;
         mapPos = Vector2Int.FloorToInt((worldPos - (Vector2)origin) / VisualGrid.cellSize);
-        return (new Rect(0, 0, Size.x-0.1f, Size.y-0.1f)).Contains(mapPos);
+        return new Rect(0, 0, Size.x - 0.1f, Size.y - 0.1f).Contains(mapPos);
     }
-    
+
     private void Awake()
     {
         _map = new int[Size.x, Size.y];
     }
+
+    #endregion
 
     // private void ComputeDepth(HashSet<Vector2Int> posToChange)
     // {
