@@ -39,7 +39,7 @@ public class EditorController : MonoBehaviour
 
         var t = (DirtGenerator.GetZ() - ray.origin.z) / ray.direction.z;
         var worldPos = (ray.origin + ray.direction * t);
-
+        
         _currentToolAction(worldPos);
     }
 
@@ -59,7 +59,7 @@ public class EditorController : MonoBehaviour
         }
     }
 
-    private void PerformDirtPlacement(Vector2 pos) => DirtGenerator.PlaceDirtAt(pos);
+    private void PerformDirtPlacement(Vector2 pos) => DirtGenerator.ChangeTileAtWorldPos(pos, true);
 
-    private void PerformDirtCarving(Vector2 pos) => DirtGenerator.CarveDirtAt(pos);
+    private void PerformDirtCarving(Vector2 pos) => DirtGenerator.ChangeTileAtWorldPos(pos, false);
 }

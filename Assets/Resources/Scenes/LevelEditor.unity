@@ -245,7 +245,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Size: {x: 100, y: 100}
-  DirtTile: {fileID: 11400000, guid: 9afc97d281ae8c547928b50399ec613d, type: 2}
+  MaxDepth: 10
+  OuterDirtTile: {fileID: 11400000, guid: b795f89b09420864484598bab72b29e9, type: 2}
+  MidDirtTile: {fileID: 11400000, guid: 9afc97d281ae8c547928b50399ec613d, type: 2}
+  InnerDirtTile: {fileID: 11400000, guid: 434870f7fb0ce5946a563fb6571a881c, type: 2}
   VisualGrid: {fileID: 749351119}
   BaseMap: {fileID: 2037677687}
   MatchingMap: {fileID: 789750351}
