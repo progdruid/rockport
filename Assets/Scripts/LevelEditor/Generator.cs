@@ -6,6 +6,37 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 
+[Serializable]
+struct DirtLayer
+{
+    public int StartingDepth;
+    [Space]
+    public TileBase Base;
+    [Space] 
+    public TileBase MarchCornerNW;
+    public TileBase MarchCornerNE;
+    public TileBase MarchCornerSE;
+    public TileBase MarchCornerSW;
+    [Space] 
+    public TileBase[] MarchEdgeN;
+    public TileBase[] MarchEdgeE;
+    public TileBase[] MarchEdgeS;
+    public TileBase[] MarchEdgeW;
+    [Space]
+    public TileBase[] MarchBurgerNS;
+    public TileBase[] MarchBurgerWE;
+    [Space]
+    public TileBase[] MarchEndN;
+    public TileBase[] MarchEndE;
+    public TileBase[] MarchEndS;
+    public TileBase[] MarchEndW;
+    [Space] 
+    public TileBase MarchFull;
+    [Space] 
+    public TileBase[] LowerPebbles;
+    public TileBase[] UpperPebbles;
+}
+
 public class Generator : MonoBehaviour
 {
     private static readonly Vector2Int[] Directions =
@@ -18,16 +49,17 @@ public class Generator : MonoBehaviour
     [SerializeField] private Vector2Int Size;
     [SerializeField] private int MaxDepth;
     [Space]
-    [SerializeField] private TileBase OuterDirtTile;
-    [SerializeField] private TileBase MidDirtTile;
-    [SerializeField] private TileBase InnerDirtTile;
-    [Space]
     [SerializeField] private Grid VisualGrid;
     [SerializeField] private Tilemap BaseMap;
     [SerializeField] private Tilemap MatchingMap;
     [SerializeField] private Tilemap LowerPebbleMap;
     [SerializeField] private Tilemap UpperPebbleMap;
-
+    [Space]
+    [SerializeField] private TileBase OuterDirtTile;
+    [SerializeField] private TileBase MidDirtTile;
+    [SerializeField] private TileBase InnerDirtTile;
+    [Space]
+    
     private int[,] _map;
     
     
@@ -79,20 +111,15 @@ public class Generator : MonoBehaviour
         if ((oldRootDepth == 0) != place)
             return;
         
-        var updateMap = new Dictionary<Vector2Int, int>();
-        DoUpdate(rootPos, place ? 1 : 0);
+        var pending = new Dictionary<Vector2Int, int>();
+        pending[rootPos] = place ? 1 : 0;
 
-        while (updateMap.Count > 0)
+        while (pending.Count > 0)
         {
-            var pos = updateMap.Keys.Last();
-            updateMap.TryGetValue(pos, out var newDepth);
-            updateMap.Remove(pos);
-            DoUpdate(pos, newDepth);
-        }
-        return;
-
-        void DoUpdate(Vector2Int pos, int depth)
-        {
+            var pos = pending.Keys.Last();
+            pending.TryGetValue(pos, out var depth);
+            pending.Remove(pos);
+            
             _map.Set(pos, depth);
             BaseMap.SetTile((Vector3Int)pos, depth switch 
             {
@@ -104,14 +131,15 @@ public class Generator : MonoBehaviour
             
             foreach (var neighbour in RetrieveNeighbours(pos))
             {
-                var oldDepth = _map.At(neighbour);
-                var newDepth = Mathf.Min(RetrieveMinNeighbourDepth(neighbour) + 1, MaxDepth);
-                if (oldDepth == 0 || oldDepth == newDepth) 
+                var currentDepth = _map.At(neighbour);
+                var calculatedDepth = Mathf.Min(RetrieveMinNeighbourDepth(neighbour) + 1, MaxDepth);
+                if (currentDepth == 0 || currentDepth == calculatedDepth) 
                     continue;
                 
-                updateMap[neighbour] = newDepth;
+                pending[neighbour] = calculatedDepth;
             }
         }
+        
     }
     
     #endregion
