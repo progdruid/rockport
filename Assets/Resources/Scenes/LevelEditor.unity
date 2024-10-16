@@ -208,7 +208,7 @@ Transform:
   m_GameObject: {fileID: 202641127}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 6.5, y: 2.5, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -246,14 +246,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Size: {x: 100, y: 100}
   MaxDepth: 10
-  OuterDirtTile: {fileID: 11400000, guid: b795f89b09420864484598bab72b29e9, type: 2}
-  MidDirtTile: {fileID: 11400000, guid: 9afc97d281ae8c547928b50399ec613d, type: 2}
-  InnerDirtTile: {fileID: 11400000, guid: 434870f7fb0ce5946a563fb6571a881c, type: 2}
   VisualGrid: {fileID: 749351119}
   BaseMap: {fileID: 2037677687}
-  MatchingMap: {fileID: 789750351}
+  MarchingMap: {fileID: 789750351}
   LowerPebbleMap: {fileID: 0}
   UpperPebbleMap: {fileID: 0}
+  OuterDirtLayer:
+    StartingDepth: 1
+    Base: {fileID: 11400000, guid: b795f89b09420864484598bab72b29e9, type: 2}
+    Marching: {fileID: 11400000, guid: 9adf7d995332b5744baa08dc1e74a4d6, type: 2}
+    LowerPebbles: []
+    UpperPebbles: []
+  MidDirtLayer:
+    StartingDepth: 2
+    Base: {fileID: 11400000, guid: 9afc97d281ae8c547928b50399ec613d, type: 2}
+    Marching: {fileID: 0}
+    LowerPebbles: []
+    UpperPebbles: []
+  InnerDirtLayer:
+    StartingDepth: 4
+    Base: {fileID: 11400000, guid: 434870f7fb0ce5946a563fb6571a881c, type: 2}
+    Marching: {fileID: 0}
+    LowerPebbles: []
+    UpperPebbles: []
 --- !u!4 &251374646
 Transform:
   m_ObjectHideFlags: 0
@@ -356,7 +371,7 @@ Transform:
   m_GameObject: {fileID: 789750348}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.01}
+  m_LocalPosition: {x: 0, y: 0, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
