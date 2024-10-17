@@ -1,23 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
-using Random = UnityEngine.Random;
 
 namespace LevelEditor
 {
-    [Serializable]
-    struct DirtLayer
-    {
-        public int StartingDepth;
-        [Space]
-        public TileBase Base;
-        public MarchingTileset Marching;
-        public TileBase[] LowerPebbles;
-        public TileBase[] UpperPebbles;
-    }
 
     public class Generator : MonoBehaviour
     {
@@ -30,9 +18,7 @@ namespace LevelEditor
         [SerializeField] private Tilemap LowerPebbleMap;
         [SerializeField] private Tilemap UpperPebbleMap;
         [Space] 
-        [SerializeField] private DirtLayer OuterDirtLayer;
-        [SerializeField] private DirtLayer MidDirtLayer;
-        [SerializeField] private DirtLayer InnerDirtLayer;
+        [SerializeField] private DirtLayer[] Layers;
     
         private int[,] _depthMap;
     
@@ -50,9 +36,7 @@ namespace LevelEditor
         {
             _depthMap = new int[Size.x, Size.y];
             
-            OuterDirtLayer.Marching.ParseTiles();
-            MidDirtLayer.Marching.ParseTiles();
-            InnerDirtLayer.Marching.ParseTiles();
+            foreach (var layer in Layers) layer.ParseTiles();
         }
 
         public bool ConvertWorldToMap(Vector2 worldPos, out Vector2Int mapPos)
@@ -87,41 +71,73 @@ namespace LevelEditor
         {
             var depth = _depthMap.At(pos);
             
-            DirtLayer? layer = null;
-            if (depth >= InnerDirtLayer.StartingDepth)
-                layer = InnerDirtLayer;
-            else if (depth >= MidDirtLayer.StartingDepth)
-                layer = MidDirtLayer;
-            else if (depth == OuterDirtLayer.StartingDepth)
-                layer = OuterDirtLayer;
+            DirtLayer layer = null;
+            var lastLayerEndDepth = 0;
+            foreach (var current in Layers)
+            { 
+                if (depth <= lastLayerEndDepth + current.GetThickness())
+                {
+                    layer = current;
+                    break;
+                }
+                lastLayerEndDepth += current.GetThickness();
+            }
 
-            BaseMap.SetTile((Vector3Int)pos, layer?.Base);
 
-            if (layer == null)
+            if (!layer || depth == 0)
             {
+                BaseMap.SetTile((Vector3Int)pos, null);
                 MarchingMap.SetTile((Vector3Int)pos, null);
+                LowerPebbleMap.SetTile((Vector3Int)pos, null);
+                UpperPebbleMap.SetTile((Vector3Int)pos, null);
                 return;
             }
             
+            // base
+            BaseMap.SetTile((Vector3Int)pos, layer.GetBaseTile());
+            
+            
+            // marching
             var fullQuery = new MarchingTileQuery( new bool[PolyUtil.FullNeighbourOffsets.Length] );
             for (var i = 0; i < PolyUtil.FullNeighbourOffsets.Length; i++)
             {
                 var n = pos + PolyUtil.FullNeighbourOffsets[i];
                 fullQuery.Neighbours[i] = !PolyUtil.IsInBounds(n, Vector2Int.zero, Size) ||
-                                          _depthMap.At(n) >= layer.Value.StartingDepth;
+                                          _depthMap.At(n) > lastLayerEndDepth;
             }
 
-            var marching = layer.Value.Marching;
             TileBase marchingTile = null;
-            if (marching && 
-                (marching.TryGetTile(fullQuery, out var variants) || 
-                 marching.TryGetTile(new(fullQuery.Neighbours[..(fullQuery.Neighbours.Length / 2)]), out variants)))
+            if (layer && 
+                (layer.TryGetTile(fullQuery, out var variants) || 
+                 layer.TryGetTile(new(fullQuery.Neighbours[..(fullQuery.Neighbours.Length / 2)]), out variants)))
             {
-                marchingTile = variants[Random.Range(0, variants.Length)];
+                marchingTile = variants[UnityEngine.Random.Range(0, variants.Length)];
             }
 
             MarchingMap.SetTile((Vector3Int)pos, marchingTile);
+            
+            
+            //pebbles
+            Random.InitState(pos.x * 100 + pos.y);
+            var rndLower = Random.Range(0, 10000);
+            var shouldPlaceLower = rndLower <= layer.GetLowerPebbleDensity() * 10000f;
+            var lowerPebbles = layer.GetLowerPebbles();
+            var lowerPebble = (shouldPlaceLower && lowerPebbles?.Length > 0)
+                ? lowerPebbles[rndLower % lowerPebbles.Length]
+                : null;
+            LowerPebbleMap.SetTile((Vector3Int)pos, lowerPebble);
+            
+            
+            Random.InitState(rndLower);
+            var rndUpper = Random.Range(0, 10000);
+            var shouldPlaceUpper = rndUpper <= layer.GetUpperPebbleDensity() * 10000f;
+            var upperPebbles = layer.GetUpperPebbles();
+            var upperPebble = (shouldPlaceUpper && upperPebbles?.Length > 0)
+                ? upperPebbles[rndUpper % upperPebbles.Length]
+                : null;
+            UpperPebbleMap.SetTile((Vector3Int)pos, upperPebble);
         }
+        
         
         private void ChangeDepthAt(Vector2Int rootPos, bool place)
         {
