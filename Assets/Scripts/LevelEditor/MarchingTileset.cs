@@ -11,7 +11,9 @@ namespace LevelEditor
     public struct MarchingTileQuery
     {
         public bool[] Neighbours;
-        
+
+        public MarchingTileQuery(bool[] neighbours) => Neighbours = neighbours;
+
         public override int GetHashCode()
         {
             var hash = new HashCode();
@@ -32,7 +34,8 @@ namespace LevelEditor
     public class MarchingTileset : ScriptableObject
     {
         [SerializeField] private int TileSize;
-        [SerializeField] private Texture2D TilesetTexture;
+        [SerializeField] private Texture2D SimpleTexture;
+        [SerializeField] private Texture2D CornerIncludingTexture;
         [SerializeField] private int PPU;
         
         private Dictionary<MarchingTileQuery, List<TileBase>> _tiles;
@@ -54,8 +57,16 @@ namespace LevelEditor
             else
                 _tiles.Clear();
             
-            var widthInTiles = TilesetTexture.width / TileSize;
-            var heightInTiles = TilesetTexture.height / TileSize;
+            if (SimpleTexture)
+                ParseTexture(SimpleTexture, PolyUtil.FullNeighbourOffsets.Length / 2);
+            if (CornerIncludingTexture) 
+                ParseTexture(CornerIncludingTexture, PolyUtil.FullNeighbourOffsets.Length);
+        }
+        
+        private void ParseTexture(Texture2D texture, int lookupOffsetsNumber)
+        {
+            var widthInTiles = texture.width / TileSize;
+            var heightInTiles = texture.height / TileSize;
 
             //ceiling
             var reservedWidthInTiles = (widthInTiles + TileSize - 1) / TileSize;
@@ -64,8 +75,8 @@ namespace LevelEditor
             var includeMap = new bool[widthInTiles, heightInTiles];
             var groundMap = new bool[widthInTiles, heightInTiles];
             
-            var includeColors = TilesetTexture.GetPixels(0, 0, widthInTiles, heightInTiles);
-            var groundColors = TilesetTexture.GetPixels(0, heightInTiles, widthInTiles, heightInTiles);
+            var includeColors = texture.GetPixels(0, 0, widthInTiles, heightInTiles);
+            var groundColors = texture.GetPixels(0, heightInTiles, widthInTiles, heightInTiles);
             for (var x = 0; x < widthInTiles; x++)
             for (var y = 0; y < heightInTiles; y++)
             {
@@ -82,18 +93,19 @@ namespace LevelEditor
 
                 var rect = new RectInt(x * TileSize, y * TileSize, TileSize, TileSize);
                 var tex = new Texture2D(TileSize, TileSize);
-                tex.SetPixels(TilesetTexture.GetPixels(rect.x, rect.y, rect.width, rect.height));
+                tex.SetPixels(texture.GetPixels(rect.x, rect.y, rect.width, rect.height));
+                tex.wrapMode = TextureWrapMode.Clamp;
+                tex.filterMode = FilterMode.Point;
                 tex.Apply();
                 
                 var tileSprite = Sprite.Create(tex, new Rect(0, 0, TileSize, TileSize), new Vector2(0.5f, 0.5f), PPU);
                 var tile = ScriptableObject.CreateInstance<Tile>();
                 tile.sprite = tileSprite;
 
-                var query = new MarchingTileQuery();
-                query.Neighbours = new bool[PolyUtil.NeighbourOffsets.Length];
-                for (var i = 0; i < PolyUtil.NeighbourOffsets.Length; i++)
+                var query = new MarchingTileQuery(neighbours: new bool[lookupOffsetsNumber]);
+                for (var i = 0; i < lookupOffsetsNumber; i++)
                 {
-                    var n = new Vector2Int(x, y) + PolyUtil.NeighbourOffsets[i];
+                    var n = new Vector2Int(x, y) + PolyUtil.FullNeighbourOffsets[i];
                     query.Neighbours[i] = n.x >= 0 && n.x < widthInTiles && n.y >= 0 && n.y < heightInTiles &&
                                           groundMap.At(n);
                 }

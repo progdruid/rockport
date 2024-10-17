@@ -64,7 +64,7 @@ namespace LevelEditor
 
         private IEnumerable<Vector2Int> RetrieveNeighbours(Vector2Int pos)
         {
-            foreach(var direction in PolyUtil.NeighbourOffsets)
+            foreach(var direction in PolyUtil.FullNeighbourOffsets)
             {
                 var neighbour = pos + direction;
                 if (neighbour.x >= 0 && neighbour.x < Size.x && neighbour.y >= 0 && neighbour.y < Size.y)
@@ -97,27 +97,30 @@ namespace LevelEditor
 
             BaseMap.SetTile((Vector3Int)pos, layer?.Base);
 
-            if (layer != null)
-            {
-                var query = new MarchingTileQuery();
-                query.Neighbours = new bool[PolyUtil.NeighbourOffsets.Length];
-                for (var i = 0; i < PolyUtil.NeighbourOffsets.Length; i++)
-                {
-                    var n = pos + PolyUtil.NeighbourOffsets[i];
-                    query.Neighbours[i] = !PolyUtil.IsInBounds(n, Vector2Int.zero, Size) ||
-                                          _depthMap.At(n) >= layer.Value.StartingDepth;
-                }
-
-                TileBase marchingTile = null;
-                if (layer.Value.Marching && layer.Value.Marching.TryGetTile(query, out var marchingVariants))
-                    marchingTile = marchingVariants[Random.Range(0, marchingVariants.Length)];
-                
-                MarchingMap.SetTile((Vector3Int)pos, marchingTile);
-            }
-            else
+            if (layer == null)
             {
                 MarchingMap.SetTile((Vector3Int)pos, null);
+                return;
             }
+            
+            var fullQuery = new MarchingTileQuery( new bool[PolyUtil.FullNeighbourOffsets.Length] );
+            for (var i = 0; i < PolyUtil.FullNeighbourOffsets.Length; i++)
+            {
+                var n = pos + PolyUtil.FullNeighbourOffsets[i];
+                fullQuery.Neighbours[i] = !PolyUtil.IsInBounds(n, Vector2Int.zero, Size) ||
+                                          _depthMap.At(n) >= layer.Value.StartingDepth;
+            }
+
+            var marching = layer.Value.Marching;
+            TileBase marchingTile = null;
+            if (marching && 
+                (marching.TryGetTile(fullQuery, out var variants) || 
+                 marching.TryGetTile(new(fullQuery.Neighbours[..(fullQuery.Neighbours.Length / 2)]), out variants)))
+            {
+                marchingTile = variants[Random.Range(0, variants.Length)];
+            }
+
+            MarchingMap.SetTile((Vector3Int)pos, marchingTile);
         }
         
         private void ChangeDepthAt(Vector2Int rootPos, bool place)

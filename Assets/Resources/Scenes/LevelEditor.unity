@@ -260,13 +260,13 @@ MonoBehaviour:
   MidDirtLayer:
     StartingDepth: 2
     Base: {fileID: 11400000, guid: 9afc97d281ae8c547928b50399ec613d, type: 2}
-    Marching: {fileID: 0}
+    Marching: {fileID: 11400000, guid: a855feb3040ac914ea8264d10224a4a2, type: 2}
     LowerPebbles: []
     UpperPebbles: []
   InnerDirtLayer:
     StartingDepth: 4
     Base: {fileID: 11400000, guid: 434870f7fb0ce5946a563fb6571a881c, type: 2}
-    Marching: {fileID: 0}
+    Marching: {fileID: 11400000, guid: 8b0f2e1fe9f3b7c44a986b87c0b73606, type: 2}
     LowerPebbles: []
     UpperPebbles: []
 --- !u!4 &251374646
