@@ -13,7 +13,7 @@ namespace LevelEditor
         public bool[] Neighbours;
 
         public MarchingTileQuery(bool[] neighbours) => Neighbours = neighbours;
-
+        
         public override int GetHashCode()
         {
             var hash = new HashCode();
@@ -31,40 +31,15 @@ namespace LevelEditor
              Neighbours.SequenceEqual(other.Neighbours));
     }
 
-    [CreateAssetMenu(menuName = "Polymort/Dirt Layer")]
-    public class DirtLayer : ScriptableObject
+    [CreateAssetMenu(menuName = "Polymort/Tile Marching Set")]
+    public class TileMarchingSet : ScriptableObject
     {
-        [SerializeField] private int Thickness;
-        [Space] [SerializeField] private TileBase Base;
-
-        [FormerlySerializedAs("LowerPebbleRarity")] [Space] [Range(0f, 1f)] [SerializeField]
-        private float LowerPebbleDensity;
-
-        [SerializeField] private TileBase[] LowerPebbles;
-
-        [Range(0f, 1f)] [SerializeField] private float UpperPebbleDensity;
-        [SerializeField] private TileBase[] UpperPebbles;
-
-        [Space] [SerializeField] private int TileSize;
-
-        [FormerlySerializedAs("SimpleTexture")] [SerializeField]
-        private Texture2D SimpleMarchingTexture;
-
-        [FormerlySerializedAs("CornerIncludingTexture")] [SerializeField]
-        private Texture2D FullMarchingTexture;
-
+        [SerializeField] private int TileSize;
         [SerializeField] private int PPU;
+        [SerializeField] private Texture2D SimpleMarchingTexture;
+        [SerializeField] private Texture2D FullMarchingTexture;
 
         private Dictionary<MarchingTileQuery, List<TileBase>> _tiles;
-
-
-        
-        public int GetThickness() => Thickness;
-        public TileBase GetBaseTile() => Base;
-        public float GetLowerPebbleDensity() => LowerPebbleDensity;
-        public TileBase[] GetLowerPebbles() => LowerPebbles;
-        public float GetUpperPebbleDensity() => UpperPebbleDensity;
-        public TileBase[] GetUpperPebbles() => UpperPebbles;
 
         public bool TryGetTile(MarchingTileQuery query, out TileBase[] tiles)
         {

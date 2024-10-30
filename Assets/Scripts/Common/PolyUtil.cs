@@ -2,6 +2,11 @@
 
 public static class PolyUtil
 {
+    public static readonly Vector2Int[] HalfNeighbourOffsets =
+    {
+        new( 0, 1), new(1, 0), new(0, -1), new(-1,  0)
+    };
+    
     public static readonly Vector2Int[] FullNeighbourOffsets =
     {
         new( 0, 1), new(1, 0), new(0, -1), new(-1,  0),
