@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 
@@ -10,43 +10,49 @@ namespace LevelEditor
     [System.Serializable]
     public struct DirtLayer
     {
-        [SerializeField] public int Thickness;
-        [Space] [SerializeField] public TileBase Base;
+        [SerializeField] public int thickness;
+        
+        [Space] 
+        [SerializeField] public TileBase baseTile;
 
-        [Space] [Range(0f, 1f)] [SerializeField]
-        public float LowerPebbleDensity;
+        
+        [Space] [Range(0f, 1f)] 
+        [SerializeField] public float lowerPebbleDensity;
 
-        [SerializeField] public TileBase[] LowerPebbles;
+        [SerializeField] public TileBase[] lowerPebbles;
 
-        [Range(0f, 1f)] [SerializeField] public float UpperPebbleDensity;
-        [SerializeField] public TileBase[] UpperPebbles;
+        
+        [Range(0f, 1f)] 
+        [SerializeField] public float upperPebbleDensity;
+        [SerializeField] public TileBase[] upperPebbles;
 
-        [SerializeField] public TileMarchingSet MarchingSet;
+        [SerializeField] public TileMarchingSet marchingSet;
     }
 
-    public class Generator : MonoBehaviour
+    public class DirtManipulator : MonoBehaviour
     {
-        [SerializeField] private Vector2Int Size;
-        [SerializeField] private int MaxDepth;
+        [SerializeField] private LevelSpaceHolder holder;
+        
+        [Space]
+        [SerializeField] private int maxDepth;
+        
         [Space] 
-        [SerializeField] private Grid VisualGrid;
-        [SerializeField] private Tilemap BaseMap;
+        [SerializeField] private Tilemap baseMap;
+        [SerializeField] private Tilemap marchingMap;
 
-        [FormerlySerializedAs("MatchingMap")] 
-        [SerializeField] private Tilemap MarchingMap;
-
-        [SerializeField] private Tilemap LowerPebbleMap;
-        [SerializeField] private Tilemap UpperPebbleMap;
+        [SerializeField] private Tilemap lowerPebbleMap;
+        [SerializeField] private Tilemap upperPebbleMap;
+        
         [Space] 
-        [SerializeField] private TileMarchingSet OutlineMarchingSet;
-        [SerializeField] private DirtLayer[] Layers;
+        [SerializeField] private TileMarchingSet outlineMarchingSet;
+        [SerializeField] private DirtLayer[] layers;
         
         private int[,] _depthMap;
 
 
         #region Getters and Setters
 
-        public float GetZ() => VisualGrid.transform.position.z;
+        public float GetZ() => holder.VisualGrid.transform.position.z;
 
         #endregion
 
@@ -55,36 +61,21 @@ namespace LevelEditor
 
         private void Awake()
         {
-            _depthMap = new int[Size.x, Size.y];
+            Assert.IsNotNull(holder);
 
-            OutlineMarchingSet.ParseTiles();
-            ;
-            foreach (var layer in Layers)
-                if (layer.MarchingSet)
-                    layer.MarchingSet.ParseTiles();
-        }
+            _depthMap = new int[holder.Size.x, holder.Size.y];
 
-        public bool ConvertWorldToMap(Vector2 worldPos, out Vector2Int mapPos)
-        {
-            var origin = VisualGrid.transform.position;
-            mapPos = Vector2Int.FloorToInt((worldPos - (Vector2)origin) / VisualGrid.cellSize);
-            return new Rect(0, 0, Size.x - 0.1f, Size.y - 0.1f).Contains(mapPos);
-        }
-
-        private IEnumerable<Vector2Int> RetrieveNeighbours(Vector2Int pos)
-        {
-            foreach (var direction in PolyUtil.FullNeighbourOffsets)
-            {
-                var neighbour = pos + direction;
-                if (neighbour.x >= 0 && neighbour.x < Size.x && neighbour.y >= 0 && neighbour.y < Size.y)
-                    yield return neighbour;
-            }
+            outlineMarchingSet.ParseTiles();
+            
+            foreach (var layer in layers)
+                if (layer.marchingSet)
+                    layer.marchingSet.ParseTiles();
         }
 
         private int RetrieveMinNeighbourDepth(Vector2Int pos)
         {
-            var minDepth = MaxDepth;
-            foreach (var neighbour in RetrieveNeighbours(pos))
+            var minDepth = maxDepth;
+            foreach (var neighbour in holder.RetrievePositions(pos, PolyUtil.FullNeighbourOffsets))
             {
                 var depth = _depthMap.At(neighbour);
                 if (depth < minDepth) minDepth = depth;
@@ -101,9 +92,9 @@ namespace LevelEditor
             DirtLayer? foundLayer = null;
             var lastLayerEndDepth = 0;
             if (depth != 0)
-                foreach (var current in Layers)
+                foreach (var current in layers)
                 {   
-                    var currentLayerEndDepth = lastLayerEndDepth + current.Thickness;
+                    var currentLayerEndDepth = lastLayerEndDepth + current.thickness;
                     if (depth <= currentLayerEndDepth)
                     {
                         foundLayer = current;
@@ -119,7 +110,7 @@ namespace LevelEditor
             for (var i = 0; i < PolyUtil.FullNeighbourOffsets.Length; i++)
             {
                 var n = pos + PolyUtil.FullNeighbourOffsets[i];
-                var inBounds = PolyUtil.IsInBounds(n, Vector2Int.zero, Size);
+                var inBounds = holder.IsInBounds(n);
                 var present = inBounds && _depthMap.At(n) > lastLayerEndDepth;
                 var check = (!inBounds && depth != 0) || present;
                 fullQuery.Neighbours[i] = check;
@@ -128,48 +119,48 @@ namespace LevelEditor
             }
 
             //march
-            var marchingSet = depth != 0 ? foundLayer?.MarchingSet : OutlineMarchingSet;
+            var marchingSet = depth != 0 ? foundLayer?.marchingSet : outlineMarchingSet;
             var marchingTile
                 = (marchingSet &&
                    (marchingSet.TryGetTile(fullQuery, out var variants) ||
                     marchingSet.TryGetTile(halfQuery, out variants)))
                     ? variants[UnityEngine.Random.Range(0, variants.Length)]
                     : null;
-            MarchingMap.SetTile((Vector3Int)pos, marchingTile);
+            marchingMap.SetTile((Vector3Int)pos, marchingTile);
             
             
             if (foundLayer == null)
             {
-                BaseMap.SetTile((Vector3Int)pos, null);
-                LowerPebbleMap.SetTile((Vector3Int)pos, null);
-                UpperPebbleMap.SetTile((Vector3Int)pos, null);
+                baseMap.SetTile((Vector3Int)pos, null);
+                lowerPebbleMap.SetTile((Vector3Int)pos, null);
+                upperPebbleMap.SetTile((Vector3Int)pos, null);
                 return;
             }
             
             var layer = foundLayer.Value;
 
             // base
-            BaseMap.SetTile((Vector3Int)pos, layer.Base);
+            baseMap.SetTile((Vector3Int)pos, layer.baseTile);
 
             //pebbles
             Random.InitState(pos.x * 100 + pos.y);
             var rndLower = Random.Range(0, 10000);
-            var shouldPlaceLower = rndLower <= layer.LowerPebbleDensity * 10000f;
-            var lowerPebbles = layer.LowerPebbles;
+            var shouldPlaceLower = rndLower <= layer.lowerPebbleDensity * 10000f;
+            var lowerPebbles = layer.lowerPebbles;
             var lowerPebble = (shouldPlaceLower && lowerPebbles?.Length > 0)
                 ? lowerPebbles[rndLower % lowerPebbles.Length]
                 : null;
-            LowerPebbleMap.SetTile((Vector3Int)pos, lowerPebble);
+            lowerPebbleMap.SetTile((Vector3Int)pos, lowerPebble);
 
 
             Random.InitState(rndLower);
             var rndUpper = Random.Range(0, 10000);
-            var shouldPlaceUpper = rndUpper <= layer.UpperPebbleDensity * 10000f;
-            var upperPebbles = layer.UpperPebbles;
+            var shouldPlaceUpper = rndUpper <= layer.upperPebbleDensity * 10000f;
+            var upperPebbles = layer.upperPebbles;
             var upperPebble = (shouldPlaceUpper && upperPebbles?.Length > 0)
                 ? upperPebbles[rndUpper % upperPebbles.Length]
                 : null;
-            UpperPebbleMap.SetTile((Vector3Int)pos, upperPebble);
+            upperPebbleMap.SetTile((Vector3Int)pos, upperPebble);
         }
 
 
@@ -189,10 +180,10 @@ namespace LevelEditor
                 pending.Remove(pos);
 
                 _depthMap.Set(pos, depth);
-                foreach (var neighbour in RetrieveNeighbours(pos))
+                foreach (var neighbour in holder.RetrievePositions(pos, PolyUtil.FullNeighbourOffsets))
                 {
                     var currentDepth = _depthMap.At(neighbour);
-                    var calculatedDepth = Mathf.Min(RetrieveMinNeighbourDepth(neighbour) + 1, MaxDepth);
+                    var calculatedDepth = Mathf.Min(RetrieveMinNeighbourDepth(neighbour) + 1, maxDepth);
                     if (currentDepth == 0 || currentDepth == calculatedDepth)
                     {
                         UpdateVisualAt(neighbour); //this is temporary
@@ -213,7 +204,7 @@ namespace LevelEditor
 
         public void ChangeTileAtWorldPos(Vector2 worldPos, bool place)
         {
-            var inBounds = ConvertWorldToMap(worldPos, out var mapPos);
+            var inBounds = holder.ConvertWorldToMap(worldPos, out var mapPos);
             if (!inBounds) return;
 
             ChangeDepthAt(mapPos, place);

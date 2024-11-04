@@ -224,8 +224,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 251374646}
-  - component: {fileID: 251374645}
   - component: {fileID: 251374647}
+  - component: {fileID: 251374649}
+  - component: {fileID: 251374645}
+  - component: {fileID: 251374648}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -245,73 +247,72 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23e2094a739944f281fcf36f106213d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Size: {x: 55, y: 24}
-  MaxDepth: 15
-  VisualGrid: {fileID: 749351119}
-  BaseMap: {fileID: 2037677687}
-  MarchingMap: {fileID: 789750351}
-  LowerPebbleMap: {fileID: 252507601}
-  UpperPebbleMap: {fileID: 1818466277}
-  OutlineMarchingSet: {fileID: 11400000, guid: 2ceb0cc2d7393554cb4c125c4f315659, type: 2}
-  Layers:
-  - Thickness: 1
-    Base: {fileID: 11400000, guid: b795f89b09420864484598bab72b29e9, type: 2}
-    LowerPebbleDensity: 0
-    LowerPebbles: []
-    UpperPebbleDensity: 0
-    UpperPebbles: []
-    MarchingSet: {fileID: 11400000, guid: 45eb9f1ea9146e74ba238f650e021486, type: 2}
-  - Thickness: 2
-    Base: {fileID: 11400000, guid: 9afc97d281ae8c547928b50399ec613d, type: 2}
-    LowerPebbleDensity: 1
-    LowerPebbles:
+  holder: {fileID: 251374649}
+  maxDepth: 15
+  baseMap: {fileID: 2037677687}
+  marchingMap: {fileID: 789750351}
+  lowerPebbleMap: {fileID: 252507601}
+  upperPebbleMap: {fileID: 1818466277}
+  outlineMarchingSet: {fileID: 11400000, guid: 2ceb0cc2d7393554cb4c125c4f315659, type: 2}
+  layers:
+  - thickness: 1
+    baseTile: {fileID: 11400000, guid: b795f89b09420864484598bab72b29e9, type: 2}
+    lowerPebbleDensity: 0
+    lowerPebbles: []
+    upperPebbleDensity: 0
+    upperPebbles: []
+    marchingSet: {fileID: 11400000, guid: 45eb9f1ea9146e74ba238f650e021486, type: 2}
+  - thickness: 2
+    baseTile: {fileID: 11400000, guid: 9afc97d281ae8c547928b50399ec613d, type: 2}
+    lowerPebbleDensity: 1
+    lowerPebbles:
     - {fileID: 11400000, guid: bb5a8716af560e74bb12537d311aa35b, type: 2}
     - {fileID: 11400000, guid: b705eb462a1c171468a6592a1e056035, type: 2}
     - {fileID: 11400000, guid: c7e1c95f3a947104a827a2e42e4b6b02, type: 2}
     - {fileID: 11400000, guid: 56f7e117636e3a24f9ef1b5f5f9e23f5, type: 2}
     - {fileID: 11400000, guid: 0bd20490854c5c3449ac89265e6476f4, type: 2}
-    UpperPebbleDensity: 1
-    UpperPebbles:
+    upperPebbleDensity: 1
+    upperPebbles:
     - {fileID: 11400000, guid: c80782a8987f91a4f9d4590ffe20cc32, type: 2}
     - {fileID: 11400000, guid: 74139d8889ec96147831126895bdb798, type: 2}
     - {fileID: 11400000, guid: ca21b115522bc8d4089ab88dd8a25143, type: 2}
     - {fileID: 11400000, guid: da98af54b0020e44dab8d43f08baf75c, type: 2}
     - {fileID: 11400000, guid: 0fe802547669782479d040103a0eea9e, type: 2}
-    MarchingSet: {fileID: 11400000, guid: 2e41f99bb26c1f640a1cfd822c2a4641, type: 2}
-  - Thickness: 3
-    Base: {fileID: 11400000, guid: 434870f7fb0ce5946a563fb6571a881c, type: 2}
-    LowerPebbleDensity: 1
-    LowerPebbles:
+    marchingSet: {fileID: 11400000, guid: 2e41f99bb26c1f640a1cfd822c2a4641, type: 2}
+  - thickness: 3
+    baseTile: {fileID: 11400000, guid: 434870f7fb0ce5946a563fb6571a881c, type: 2}
+    lowerPebbleDensity: 1
+    lowerPebbles:
     - {fileID: 11400000, guid: 5c55b31582f9ea045b858036b08fde5d, type: 2}
     - {fileID: 11400000, guid: cb59f204ebd78964c92372aad8224bc9, type: 2}
     - {fileID: 11400000, guid: dddde3e690d456e40a06f7c512c0bbd8, type: 2}
     - {fileID: 11400000, guid: 562c24c40c944f24ebecc164d388c459, type: 2}
     - {fileID: 11400000, guid: f8c0eea1e17480143be7dc0ec775e793, type: 2}
-    UpperPebbleDensity: 1
-    UpperPebbles:
+    upperPebbleDensity: 1
+    upperPebbles:
     - {fileID: 11400000, guid: 3284f7f20d8ee4a4bbb1ec38261e23ef, type: 2}
     - {fileID: 11400000, guid: ec578b1e995852a419c8d60d84966efa, type: 2}
     - {fileID: 11400000, guid: a7344d91eaeb5154aa78dbdfdca73271, type: 2}
     - {fileID: 11400000, guid: 2c0d06814facc1543a9fae2a0db51df2, type: 2}
     - {fileID: 11400000, guid: d29260a7e7797db41bd0e49f9f35fb87, type: 2}
-    MarchingSet: {fileID: 11400000, guid: 989dde80cab73574ca61cefb84351312, type: 2}
-  - Thickness: 100000
-    Base: {fileID: 11400000, guid: 434870f7fb0ce5946a563fb6571a881c, type: 2}
-    LowerPebbleDensity: 0.9
-    LowerPebbles:
+    marchingSet: {fileID: 11400000, guid: 989dde80cab73574ca61cefb84351312, type: 2}
+  - thickness: 100000
+    baseTile: {fileID: 11400000, guid: 434870f7fb0ce5946a563fb6571a881c, type: 2}
+    lowerPebbleDensity: 0.9
+    lowerPebbles:
     - {fileID: 11400000, guid: 7b36b84ca0a3a6c41a2d9d7a883f22ca, type: 2}
     - {fileID: 11400000, guid: abd52b049f74b7a4fa5cd2977d87ea2d, type: 2}
     - {fileID: 11400000, guid: 5de357456fdff4e4eb596f3e547c26a4, type: 2}
     - {fileID: 11400000, guid: f8c0eea1e17480143be7dc0ec775e793, type: 2}
     - {fileID: 11400000, guid: 562c24c40c944f24ebecc164d388c459, type: 2}
-    UpperPebbleDensity: 0.9
-    UpperPebbles:
+    upperPebbleDensity: 0.9
+    upperPebbles:
     - {fileID: 11400000, guid: e73f7d9e6cae2e24fbbd94bf21ba164e, type: 2}
     - {fileID: 11400000, guid: 6d33774c1d4b6f1459dfcf1f2af7a9b7, type: 2}
     - {fileID: 11400000, guid: 0995361cd4f88c24b81fb00e7e44c326, type: 2}
     - {fileID: 11400000, guid: d29260a7e7797db41bd0e49f9f35fb87, type: 2}
     - {fileID: 11400000, guid: ec578b1e995852a419c8d60d84966efa, type: 2}
-    MarchingSet: {fileID: 0}
+    marchingSet: {fileID: 0}
 --- !u!4 &251374646
 Transform:
   m_ObjectHideFlags: 0
@@ -339,8 +340,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5e9f2b6cf3ca2046a1e90e5e2f2d264, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DirtGenerator: {fileID: 251374645}
-  ControlCamera: {fileID: 202641129}
+  dirtManipulator: {fileID: 251374645}
+  treeManipulator: {fileID: 251374648}
+  controlCamera: {fileID: 202641129}
+--- !u!114 &251374648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 251374644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13709ec2dc6752748aa689e6095bd617, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  holder: {fileID: 251374649}
+  basePlaceholderTile: {fileID: 11400000, guid: 9afc97d281ae8c547928b50399ec613d, type: 2}
+  treeBaseMaterial: {fileID: 2100000, guid: 8c22239b3ef1af34ca3f3dd510dbe019, type: 2}
+  inlineMarching: {fileID: 11400000, guid: 5331ea820bb6bba4481cbacd28a54a88, type: 2}
+--- !u!114 &251374649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 251374644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f4e9b1b89c843741845647a389b3d48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  size: {x: 100, y: 100}
+  visualGrid: {fileID: 749351119}
 --- !u!1 &252507598
 GameObject:
   m_ObjectHideFlags: 0

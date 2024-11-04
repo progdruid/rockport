@@ -1,5 +1,8 @@
 using System;
+using UnityEditor.VersionControl;
 using UnityEngine;
+using UnityEngine.Assertions;
+using UnityEngine.Serialization;
 
 namespace LevelEditor
 {
@@ -7,20 +10,27 @@ namespace LevelEditor
     {
         private enum EditorMode
         {
-            DirtPlacement,
-            DirtCarving
+            Dirt,
+            Tree
         }
     
-        [SerializeField] private Generator DirtGenerator;
-        [SerializeField] private Camera ControlCamera;
+        [SerializeField] private DirtManipulator dirtManipulator;
+        [SerializeField] private TreeManipulator treeManipulator;
+        [SerializeField] private Camera controlCamera;
 
         private EditorMode _currentMode;
-        private Action<Vector2> _currentToolAction;
-    
+        private Action<Vector2, bool> _currentToolAction;
+
+        private void Awake()
+        {
+            Assert.IsNotNull(dirtManipulator);
+            Assert.IsNotNull(treeManipulator);
+        }
+
         private void Start()
         {
-            _currentMode = EditorMode.DirtPlacement;
-            _currentToolAction = PerformDirtPlacement;
+            _currentMode = EditorMode.Dirt;
+            _currentToolAction = PerformDirtAction;
         }
 
         void Update()
@@ -34,32 +44,34 @@ namespace LevelEditor
                 return;
         
             var mousePos = Input.mousePosition;
-            var ray = ControlCamera.ScreenPointToRay(mousePos);
+            var ray = controlCamera.ScreenPointToRay(mousePos);
 
-            var t = (DirtGenerator.GetZ() - ray.origin.z) / ray.direction.z;
+            var t = (dirtManipulator.GetZ() - ray.origin.z) / ray.direction.z;
             var worldPos = (ray.origin + ray.direction * t);
         
-            _currentToolAction(worldPos);
+            _currentToolAction(worldPos, constructive && !destructive);
         }
 
         private void CheckModeInput()
         {
-            var changeToPlacement = Input.GetKeyDown(KeyCode.Q);
-            var changeToCarving = Input.GetKeyDown(KeyCode.W);
-            if (_currentMode != EditorMode.DirtPlacement && changeToPlacement && !changeToCarving)
+            var changeToDirt = Input.GetKeyDown(KeyCode.D);
+            var changeToTree = Input.GetKeyDown(KeyCode.T);
+            if (_currentMode != EditorMode.Dirt && changeToDirt && !changeToTree)
             {
-                _currentMode = EditorMode.DirtPlacement;
-                _currentToolAction = PerformDirtPlacement;
+                _currentMode = EditorMode.Dirt;
+                _currentToolAction = PerformDirtAction;
             }
-            else if (_currentMode != EditorMode.DirtCarving && changeToCarving && !changeToPlacement)
+            else if (_currentMode != EditorMode.Tree && changeToTree && !changeToDirt)
             {
-                _currentMode = EditorMode.DirtCarving;
-                _currentToolAction = PerformDirtCarving;
+                _currentMode = EditorMode.Tree;
+                _currentToolAction = PerformTreeAction;
             }
         }
 
-        private void PerformDirtPlacement(Vector2 pos) => DirtGenerator.ChangeTileAtWorldPos(pos, true);
+        private void PerformDirtAction(Vector2 pos, bool constructiveNotDestructive) =>
+            dirtManipulator.ChangeTileAtWorldPos(pos, constructiveNotDestructive);
 
-        private void PerformDirtCarving(Vector2 pos) => DirtGenerator.ChangeTileAtWorldPos(pos, false);
+        private void PerformTreeAction(Vector2 pos, bool constructiveNotDestructive) =>
+            treeManipulator.ChangeTileAtWorldPos(pos, constructiveNotDestructive);
     }
 }
