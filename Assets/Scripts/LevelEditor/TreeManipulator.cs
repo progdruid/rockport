@@ -13,6 +13,7 @@ public class TreeManipulator : MonoBehaviour
     [SerializeField] private TileBase basePlaceholderTile;
     [SerializeField] private Material treeBaseMaterial;
     [SerializeField] private TileMarchingSet inlineMarching;
+    [SerializeField] private TileMarchingSet outlineMarching;
     
     private Tilemap _baseMap;
     private Tilemap _marchingMap;
@@ -26,6 +27,7 @@ public class TreeManipulator : MonoBehaviour
         Assert.IsNotNull(basePlaceholderTile);
         Assert.IsNotNull(treeBaseMaterial);
         Assert.IsNotNull(inlineMarching);
+        Assert.IsNotNull(outlineMarching);
         
         inlineMarching.ParseTiles();
     }
@@ -39,7 +41,7 @@ public class TreeManipulator : MonoBehaviour
         basemapRenderer.sharedMaterial = treeBaseMaterial;
         
         _marchingMap = holder.CreateTilemap(-1, "Tree Marching Tilemap");
-        var marchmapRenderer = _marchingMap.gameObject.AddComponent<TilemapRenderer>();
+        _marchingMap.gameObject.AddComponent<TilemapRenderer>();
     }
 
     #endregion
@@ -48,29 +50,23 @@ public class TreeManipulator : MonoBehaviour
 
     private void UpdateMarchingFor(Vector2Int pos)
     {
-        if (!_placed.At(pos))
-        {
-            _marchingMap.SetTile((Vector3Int)pos, null);
-            return;
-        }
+        var placedHere = _placed.At(pos); 
+        var usedSet = placedHere ? inlineMarching : outlineMarching;
         
         var fullQuery = new MarchingTileQuery(new bool[PolyUtil.FullNeighbourOffsets.Length]);
         var halfQuery = new MarchingTileQuery(new bool[PolyUtil.HalfNeighbourOffsets.Length]);
         for (var i = 0; i < PolyUtil.FullNeighbourOffsets.Length; i++)
         {
             var n = pos + PolyUtil.FullNeighbourOffsets[i];
-            var check = !holder.IsInBounds(n) || _placed.At(n);
+            var bounded = holder.IsInBounds(n);
+            var check = (!bounded && placedHere) || (bounded && _placed.At(n));
             fullQuery.Neighbours[i] = check;
             if (i < PolyUtil.HalfNeighbourOffsets.Length)
                 halfQuery.Neighbours[i] = check;
         }
 
-        var marchingTile =
-            (inlineMarching.TryGetTile(fullQuery, out var variants) ||
-             inlineMarching.TryGetTile(halfQuery, out variants))
-                ? variants[UnityEngine.Random.Range(0, variants.Length)]
-                : null;
-        
+        var gotTile = usedSet.TryGetTile(fullQuery, out var variants) || usedSet.TryGetTile(halfQuery, out variants);
+        var marchingTile = gotTile ? variants[UnityEngine.Random.Range(0, variants.Length)] : null;
         _marchingMap.SetTile((Vector3Int)pos, marchingTile);
     }
     

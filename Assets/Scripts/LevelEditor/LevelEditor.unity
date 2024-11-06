@@ -359,6 +359,7 @@ MonoBehaviour:
   basePlaceholderTile: {fileID: 11400000, guid: 9afc97d281ae8c547928b50399ec613d, type: 2}
   treeBaseMaterial: {fileID: 2100000, guid: 8c22239b3ef1af34ca3f3dd510dbe019, type: 2}
   inlineMarching: {fileID: 11400000, guid: 5331ea820bb6bba4481cbacd28a54a88, type: 2}
+  outlineMarching: {fileID: 11400000, guid: 2ceb0cc2d7393554cb4c125c4f315659, type: 2}
 --- !u!114 &251374649
 MonoBehaviour:
   m_ObjectHideFlags: 0
