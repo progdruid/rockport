@@ -5,18 +5,18 @@ using LevelEditor;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 
 public class TreeManipulator : MonoBehaviour
 {
     [SerializeField] private LevelSpaceHolder holder;
-    [SerializeField] private TileBase basePlaceholderTile;
     [SerializeField] private Material treeBaseMaterial;
-    [SerializeField] private TileMarchingSet inlineMarching;
+    [FormerlySerializedAs("inlineMarching")] [SerializeField] private TileMarchingSet treeMarching;
     [SerializeField] private TileMarchingSet outlineMarching;
     
-    private Tilemap _baseMap;
-    private Tilemap _marchingMap;
+    private Tilemap _treeMap;
+    private Tilemap _outlineMap;
     private bool[,] _placed;
     
     #region Engine
@@ -24,34 +24,33 @@ public class TreeManipulator : MonoBehaviour
     private void Awake()
     {
         Assert.IsNotNull(holder);
-        Assert.IsNotNull(basePlaceholderTile);
         Assert.IsNotNull(treeBaseMaterial);
-        Assert.IsNotNull(inlineMarching);
+        Assert.IsNotNull(treeMarching);
         Assert.IsNotNull(outlineMarching);
         
-        inlineMarching.ParseTiles();
+        treeMarching.ParseTiles();
+        outlineMarching.ParseTiles();
     }
 
     private void Start()
     {
         _placed = new bool[holder.Size.x, holder.Size.y];
         
-        _baseMap = holder.CreateTilemap(-2, "Tree Base Tilemap");
-        var basemapRenderer = _baseMap.gameObject.AddComponent<TilemapRenderer>();
-        basemapRenderer.sharedMaterial = treeBaseMaterial;
-        
-        _marchingMap = holder.CreateTilemap(-1, "Tree Marching Tilemap");
-        _marchingMap.gameObject.AddComponent<TilemapRenderer>();
+        _treeMap = holder.CreateTilemap(-1, "Tree Tilemap");
+        var marchMapRenderer = _treeMap.gameObject.AddComponent<TilemapRenderer>();
+        marchMapRenderer.sharedMaterial = treeBaseMaterial;
+
+        _outlineMap = holder.CreateTilemap(-1, "Tree Outline Tilemap");
+        _outlineMap.gameObject.AddComponent<TilemapRenderer>();
     }
 
     #endregion
     
     #region Private Logic
 
-    private void UpdateMarchingFor(Vector2Int pos)
+    private void UpdateVisualsFor(Vector2Int pos)
     {
         var placedHere = _placed.At(pos); 
-        var usedSet = placedHere ? inlineMarching : outlineMarching;
         
         var fullQuery = new MarchingTileQuery(new bool[PolyUtil.FullNeighbourOffsets.Length]);
         var halfQuery = new MarchingTileQuery(new bool[PolyUtil.HalfNeighbourOffsets.Length]);
@@ -65,9 +64,13 @@ public class TreeManipulator : MonoBehaviour
                 halfQuery.Neighbours[i] = check;
         }
 
+        var usedSet = placedHere ? treeMarching : outlineMarching;
+        var (usedMap, otherMap) = placedHere ? (_treeMap, _outlineMap) : (_outlineMap, _treeMap);
+        
         var gotTile = usedSet.TryGetTile(fullQuery, out var variants) || usedSet.TryGetTile(halfQuery, out variants);
         var marchingTile = gotTile ? variants[UnityEngine.Random.Range(0, variants.Length)] : null;
-        _marchingMap.SetTile((Vector3Int)pos, marchingTile);
+        usedMap.SetTile((Vector3Int)pos, marchingTile);
+        otherMap.SetTile((Vector3Int)pos, null);
     }
     
     private void ChangeTreeTile(Vector2Int pos, bool place)
@@ -76,10 +79,9 @@ public class TreeManipulator : MonoBehaviour
             return;
 
         _placed.Set(pos, place);
-        _baseMap.SetTile((Vector3Int)pos, place ? basePlaceholderTile : null);
-
+        
         foreach (var subPos in holder.RetrievePositions(pos, PolyUtil.FullAreaOffsets)) 
-            UpdateMarchingFor(subPos);
+            UpdateVisualsFor(subPos);
     }
     
     #endregion
