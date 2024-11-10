@@ -40,7 +40,6 @@ namespace LevelEditor
         [SerializeField] private Texture2D FullMarchingTexture;
 
         private Dictionary<MarchingTileQuery, List<TileBase>> _tiles;
-        private bool _parsed = false;
         
         public bool TryGetTile(MarchingTileQuery query, out TileBase[] tiles)
         {
@@ -54,8 +53,6 @@ namespace LevelEditor
 
         public void ParseTiles()
         {
-            if (_parsed) return;
-            
             if (_tiles == null) _tiles = new();
             else _tiles.Clear();
 
@@ -63,8 +60,6 @@ namespace LevelEditor
                 ParseTexture(SimpleMarchingTexture, PolyUtil.FullNeighbourOffsets.Length / 2);
             if (FullMarchingTexture)
                 ParseTexture(FullMarchingTexture, PolyUtil.FullNeighbourOffsets.Length);
-            
-            _parsed = true;
         }
 
         private void ParseTexture(Texture2D texture, int lookupOffsetsNumber)

@@ -12,7 +12,6 @@ public class LevelSpaceHolder : MonoBehaviour
     [SerializeField] private Grid visualGrid;
     
     public Vector2Int Size => size;
-    public Grid VisualGrid => visualGrid;
     
     private void Awake()
     {
@@ -41,11 +40,11 @@ public class LevelSpaceHolder : MonoBehaviour
     public bool IsInBounds(Vector2Int pos) 
         => pos.x >= 0 && pos.x < Size.x && pos.y >= 0 && pos.y < Size.y;
 
-    public Tilemap CreateTilemap(int priority, string mapName)
+    public Tilemap CreateTilemap(int layer, int offset, string mapName)
     {
         var go = new GameObject(mapName);
         go.transform.SetParent(visualGrid.transform, false);
-        go.transform.localPosition = Vector3.back * 0.1f * priority;
+        go.transform.localPosition = Vector3.back * (layer + 0.01f * offset);
         var map = go.AddComponent<Tilemap>();
         map.tileAnchor = new Vector3(0.5f, 0.5f, 0f);
         map.orientation = Tilemap.Orientation.XY;

@@ -7,25 +7,39 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
+using Random = UnityEngine.Random;
 
 public class TreeManipulator : MonoBehaviour
 {
+    private static readonly int WorldTextureShaderPropertyID = Shader.PropertyToID("_WorldTex");
+    
     [SerializeField] private LevelSpaceHolder holder;
-    [SerializeField] private Material treeBaseMaterial;
-    [FormerlySerializedAs("inlineMarching")] [SerializeField] private TileMarchingSet treeMarching;
+    [SerializeField] private int layer;
+    [Space]
+    [SerializeField] private Texture2D treeTexture;
+    [SerializeField] private Material worldTextureCutoutMaterial;
+    [Space]
+    [SerializeField] private bool useMarching = true;
+    [SerializeField] private TileMarchingSet treeMarching;
+    [SerializeField] private TileBase cutoutTile;
+    [Space]
     [SerializeField] private TileMarchingSet outlineMarching;
     
     private Tilemap _treeMap;
     private Tilemap _outlineMap;
     private bool[,] _placed;
     
+    public float GetZForInteraction() => _treeMap.transform.position.z;
+    
     #region Engine
 
     private void Awake()
     {
         Assert.IsNotNull(holder);
-        Assert.IsNotNull(treeBaseMaterial);
-        Assert.IsNotNull(treeMarching);
+        Assert.IsNotNull(treeTexture);
+        Assert.IsNotNull(worldTextureCutoutMaterial);
+        if (useMarching) Assert.IsNotNull(treeMarching);
+        else Assert.IsNotNull(cutoutTile);
         Assert.IsNotNull(outlineMarching);
         
         treeMarching.ParseTiles();
@@ -36,11 +50,13 @@ public class TreeManipulator : MonoBehaviour
     {
         _placed = new bool[holder.Size.x, holder.Size.y];
         
-        _treeMap = holder.CreateTilemap(-1, "Tree Tilemap");
+        _treeMap = holder.CreateTilemap(layer, 0, "Tree Tilemap");
         var marchMapRenderer = _treeMap.gameObject.AddComponent<TilemapRenderer>();
-        marchMapRenderer.sharedMaterial = treeBaseMaterial;
+        var mat = new Material(worldTextureCutoutMaterial);
+        mat.SetTexture(WorldTextureShaderPropertyID, treeTexture);
+        marchMapRenderer.sharedMaterial = mat;
 
-        _outlineMap = holder.CreateTilemap(-1, "Tree Outline Tilemap");
+        _outlineMap = holder.CreateTilemap(layer, 1, "Tree Outline Tilemap");
         _outlineMap.gameObject.AddComponent<TilemapRenderer>();
     }
 
@@ -50,26 +66,32 @@ public class TreeManipulator : MonoBehaviour
 
     private void UpdateVisualsFor(Vector2Int pos)
     {
-        var placedHere = _placed.At(pos); 
+        var placedHere = _placed.At(pos);
         
-        var fullQuery = new MarchingTileQuery(new bool[PolyUtil.FullNeighbourOffsets.Length]);
-        var halfQuery = new MarchingTileQuery(new bool[PolyUtil.HalfNeighbourOffsets.Length]);
-        for (var i = 0; i < PolyUtil.FullNeighbourOffsets.Length; i++)
-        {
-            var n = pos + PolyUtil.FullNeighbourOffsets[i];
-            var bounded = holder.IsInBounds(n);
-            var check = (!bounded && placedHere) || (bounded && _placed.At(n));
-            fullQuery.Neighbours[i] = check;
-            if (i < PolyUtil.HalfNeighbourOffsets.Length)
-                halfQuery.Neighbours[i] = check;
-        }
-
         var usedSet = placedHere ? treeMarching : outlineMarching;
         var (usedMap, otherMap) = placedHere ? (_treeMap, _outlineMap) : (_outlineMap, _treeMap);
+
+        var treeTile = cutoutTile;
         
-        var gotTile = usedSet.TryGetTile(fullQuery, out var variants) || usedSet.TryGetTile(halfQuery, out variants);
-        var marchingTile = gotTile ? variants[UnityEngine.Random.Range(0, variants.Length)] : null;
-        usedMap.SetTile((Vector3Int)pos, marchingTile);
+        if (useMarching || !placedHere)
+        {
+            var fullQuery = new MarchingTileQuery(new bool[PolyUtil.FullNeighbourOffsets.Length]);
+            var halfQuery = new MarchingTileQuery(new bool[PolyUtil.HalfNeighbourOffsets.Length]);
+            for (var i = 0; i < PolyUtil.FullNeighbourOffsets.Length; i++)
+            {
+                var n = pos + PolyUtil.FullNeighbourOffsets[i];
+                var bounded = holder.IsInBounds(n);
+                var check = (!bounded && placedHere) || (bounded && _placed.At(n));
+                fullQuery.Neighbours[i] = check;
+                if (i < PolyUtil.HalfNeighbourOffsets.Length)
+                    halfQuery.Neighbours[i] = check;
+            }
+            
+            var gotTile = usedSet.TryGetTile(fullQuery, out var variants) || usedSet.TryGetTile(halfQuery, out variants);
+            treeTile = gotTile ? variants[Random.Range(0, variants.Length)] : null;
+        }
+        
+        usedMap.SetTile((Vector3Int)pos, treeTile);
         otherMap.SetTile((Vector3Int)pos, null);
     }
     

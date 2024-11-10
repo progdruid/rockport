@@ -77,6 +77,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -89,6 +90,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -101,6 +103,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -113,6 +116,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -125,6 +129,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -3856,7 +3861,7 @@ TextureImporter:
         width: 16
         height: 16
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -3864,6 +3869,27 @@ TextureImporter:
       bones: []
       spriteID: 3c602b4b02cb1f543b9bc5fbfbd81687
       internalID: -75579713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Empty
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 64
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f794af1ba0f9b4c44ba7b4c6111d210c
+      internalID: -102435892
       vertices: []
       indices: 
       edges: []
@@ -3879,193 +3905,193 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      GroundTileset_135: -700324615
-      GroundTileset_153: 303804505
+      Empty: 1459706428
       GroundTileset_0: -1757568154
-      GroundTileset_107: -1617878724
-      GroundTileset_2: -532344230
-      GroundTileset_152: 64187150
-      GroundTileset_167: -2088382707
-      GroundTileset_21: 338976644
-      GroundTileset_64: 1042243330
-      GroundTileset_20: 722318481
-      GroundTileset_140: -384546246
-      GroundTileset_145: -717852729
-      GroundTileset_100: 1260212257
-      GroundTileset_103: 234056712
-      GroundTileset_61: 829084600
-      GroundTileset_120: 1100341744
-      GroundTileset_17: -1608361861
-      GroundTileset_18: -797112622
-      GroundTileset_154: -1024214822
-      GroundTileset_132: 866471560
-      GroundTileset_34: -452408577
-      GroundTileset_37: -316356918
-      GroundTileset_92: -994632793
-      GroundTileset_186: -1554658654
-      GroundTileset_164: 349650341
-      GroundTileset_13: -993533131
-      GroundTileset_49: 1399470630
-      GroundTileset_54: -1474311683
-      GroundTileset_99: 736291675
-      GroundTileset_15: -380113160
-      GroundTileset_39: -1023213035
-      GroundTileset_159: -422380370
-      GroundTileset_165: 1609634884
-      GroundTileset_56: -1096017536
-      GroundTileset_113: 349629050
-      GroundTileset_59: -1646463302
-      GroundTileset_46: -1602407110
-      GroundTileset_26: -1981327820
-      GroundTileset_170: 976953873
-      GroundTileset_71: 708491713
-      GroundTileset_44: 1429771287
-      GroundTileset_150: -961096098
-      GroundTileset_31: 56721829
-      GroundTileset_38: 1936783084
-      GroundTileset_147: -1457736917
-      GroundTileset_84: -1993859672
-      GroundTileset_87: -254283855
-      GroundTileset_175: -1949945193
-      GroundTileset_122: 1955685439
-      GroundTileset_43: -341799803
-      GroundTileset_110: -1613766741
-      GroundTileset_158: 814678731
-      GroundTileset_173: -1042338586
-      GroundTileset_12: 1628313367
-      GroundTileset_106: -64653170
-      GroundTileset_156: 458392073
-      GroundTileset_96: -2073012770
-      GroundTileset_137: 1885514427
-      GroundTileset_98: -307605639
-      GroundTileset_89: -37782700
-      GroundTileset_41: -503562379
-      GroundTileset_130: -2039792852
-      GroundTileset_121: 1309234378
-      GroundTileset_138: -1193076940
-      GroundTileset_90: 397940371
-      GroundTileset_118: 1261231940
-      GroundTileset_24: 1169376593
-      GroundTileset_72: 1405826748
-      GroundTileset_184: 385271784
-      GroundTileset_6: -458234681
-      GroundTileset_136: -1503700529
-      GroundTileset_30: -110235279
-      GroundTileset_115: 1978860438
-      GroundTileset_23: 1371047159
-      GroundTileset_57: -866770266
-      GroundTileset_149: 1459706428
-      GroundTileset_94: 390520965
-      GroundTileset_172: 125194411
-      GroundTileset_5: -59746752
-      GroundTileset_32: -916190823
-      GroundTileset_128: 1521473336
-      GroundTileset_183: -852114366
-      GroundTileset_114: 133858169
       GroundTileset_1: 1488757449
-      GroundTileset_105: 700605884
-      GroundTileset_129: -1305269404
-      GroundTileset_28: -2077894685
-      GroundTileset_95: 649725756
-      GroundTileset_70: 886083807
-      GroundTileset_35: -1109476235
-      GroundTileset_116: 974829319
-      GroundTileset_185: 1039457829
-      GroundTileset_77: -936306235
-      GroundTileset_52: 676044449
-      GroundTileset_65: -578081165
-      GroundTileset_127: -2068866113
-      GroundTileset_134: 1982108469
-      GroundTileset_148: -75579713
-      GroundTileset_22: -719399167
-      GroundTileset_11: 1831568338
       GroundTileset_10: -814194565
-      GroundTileset_171: -13750869
-      GroundTileset_76: -154582673
-      GroundTileset_40: -1330286877
-      GroundTileset_133: -1989227617
-      GroundTileset_16: 71756233
-      GroundTileset_108: -730058646
-      GroundTileset_74: 693089069
-      GroundTileset_69: 1669138227
-      GroundTileset_8: 1910846890
-      GroundTileset_177: 622868743
-      GroundTileset_62: -1295211328
-      GroundTileset_66: 1333770128
-      GroundTileset_55: -1166834481
-      GroundTileset_50: -1219728168
-      GroundTileset_3: 286933444
-      GroundTileset_47: 1918362326
-      GroundTileset_157: 1784706498
-      GroundTileset_146: 720442260
-      GroundTileset_180: -110346095
-      GroundTileset_83: 979337612
-      GroundTileset_27: -1276755017
-      GroundTileset_126: -883643120
-      GroundTileset_58: 1813512572
-      GroundTileset_63: 1744963047
-      GroundTileset_166: 1451049513
-      GroundTileset_111: 699280361
+      GroundTileset_100: 1260212257
       GroundTileset_101: -333661846
-      GroundTileset_160: -1511949343
-      GroundTileset_68: -475659797
-      GroundTileset_109: 1943225366
-      GroundTileset_60: 1255652182
-      GroundTileset_131: -19728199
-      GroundTileset_182: -1396197055
-      GroundTileset_161: -350777532
-      GroundTileset_123: 971337157
-      GroundTileset_42: 323042977
-      GroundTileset_82: 1915791531
-      GroundTileset_19: -127166432
-      GroundTileset_9: 189996070
-      GroundTileset_91: -1983219591
-      GroundTileset_48: -956288026
-      GroundTileset_143: -903933352
-      GroundTileset_53: 2139446152
-      GroundTileset_93: -1979362413
-      GroundTileset_36: 980463608
-      GroundTileset_174: 1456576826
-      GroundTileset_79: 1027666164
-      GroundTileset_81: -811032838
-      GroundTileset_86: 1437848059
-      GroundTileset_117: -1205584009
-      GroundTileset_163: 1147601424
-      GroundTileset_179: 834176673
-      GroundTileset_97: -120558691
-      GroundTileset_88: -359487357
-      GroundTileset_151: -1438408665
-      GroundTileset_14: -694596626
-      GroundTileset_45: -721289943
-      GroundTileset_67: -433251836
-      GroundTileset_141: -1514009881
-      GroundTileset_162: -1437090075
-      GroundTileset_4: -278148979
-      GroundTileset_25: -848678326
-      GroundTileset_29: 2084805191
-      GroundTileset_119: 89547442
-      GroundTileset_75: -468354680
-      GroundTileset_139: 1090431570
-      GroundTileset_78: -1272745314
-      GroundTileset_104: 1106601432
-      GroundTileset_51: 1688801355
-      GroundTileset_125: -798870159
-      GroundTileset_33: -483326508
-      GroundTileset_178: -898742066
       GroundTileset_102: 125299153
-      GroundTileset_85: -657518924
-      GroundTileset_168: -585719529
-      GroundTileset_155: -345848415
-      GroundTileset_80: 869520584
-      GroundTileset_169: 418053702
-      GroundTileset_142: -1413417363
-      GroundTileset_73: -847927207
+      GroundTileset_103: 234056712
+      GroundTileset_104: 1106601432
+      GroundTileset_105: 700605884
+      GroundTileset_106: -64653170
+      GroundTileset_107: -1617878724
+      GroundTileset_108: -730058646
+      GroundTileset_109: 1943225366
+      GroundTileset_11: 1831568338
+      GroundTileset_110: -1613766741
+      GroundTileset_111: 699280361
       GroundTileset_112: -1545422964
+      GroundTileset_113: 349629050
+      GroundTileset_114: 133858169
+      GroundTileset_115: 1978860438
+      GroundTileset_116: 974829319
+      GroundTileset_117: -1205584009
+      GroundTileset_118: 1261231940
+      GroundTileset_119: 89547442
+      GroundTileset_12: 1628313367
+      GroundTileset_120: 1100341744
+      GroundTileset_121: 1309234378
+      GroundTileset_122: 1955685439
+      GroundTileset_123: 971337157
       GroundTileset_124: -2139073344
-      GroundTileset_7: 1537832276
-      GroundTileset_176: -749498982
+      GroundTileset_125: -798870159
+      GroundTileset_126: -883643120
+      GroundTileset_127: -2068866113
+      GroundTileset_128: 1521473336
+      GroundTileset_129: -1305269404
+      GroundTileset_13: -993533131
+      GroundTileset_130: -2039792852
+      GroundTileset_131: -19728199
+      GroundTileset_132: 866471560
+      GroundTileset_133: -1989227617
+      GroundTileset_134: 1982108469
+      GroundTileset_135: -700324615
+      GroundTileset_136: -1503700529
+      GroundTileset_137: 1885514427
+      GroundTileset_138: -1193076940
+      GroundTileset_139: 1090431570
+      GroundTileset_14: -694596626
+      GroundTileset_140: -384546246
+      GroundTileset_141: -1514009881
+      GroundTileset_142: -1413417363
+      GroundTileset_143: -903933352
       GroundTileset_144: -749064491
+      GroundTileset_145: -717852729
+      GroundTileset_146: 720442260
+      GroundTileset_147: -1457736917
+      GroundTileset_148: -75579713
+      GroundTileset_15: -380113160
+      GroundTileset_150: -961096098
+      GroundTileset_151: -1438408665
+      GroundTileset_152: 64187150
+      GroundTileset_153: 303804505
+      GroundTileset_154: -1024214822
+      GroundTileset_155: -345848415
+      GroundTileset_156: 458392073
+      GroundTileset_157: 1784706498
+      GroundTileset_158: 814678731
+      GroundTileset_159: -422380370
+      GroundTileset_16: 71756233
+      GroundTileset_160: -1511949343
+      GroundTileset_161: -350777532
+      GroundTileset_162: -1437090075
+      GroundTileset_163: 1147601424
+      GroundTileset_164: 349650341
+      GroundTileset_165: 1609634884
+      GroundTileset_166: 1451049513
+      GroundTileset_167: -2088382707
+      GroundTileset_168: -585719529
+      GroundTileset_169: 418053702
+      GroundTileset_17: -1608361861
+      GroundTileset_170: 976953873
+      GroundTileset_171: -13750869
+      GroundTileset_172: 125194411
+      GroundTileset_173: -1042338586
+      GroundTileset_174: 1456576826
+      GroundTileset_175: -1949945193
+      GroundTileset_176: -749498982
+      GroundTileset_177: 622868743
+      GroundTileset_178: -898742066
+      GroundTileset_179: 834176673
+      GroundTileset_18: -797112622
+      GroundTileset_180: -110346095
       GroundTileset_181: 1412318691
+      GroundTileset_182: -1396197055
+      GroundTileset_183: -852114366
+      GroundTileset_184: 385271784
+      GroundTileset_185: 1039457829
+      GroundTileset_186: -1554658654
+      GroundTileset_19: -127166432
+      GroundTileset_2: -532344230
+      GroundTileset_20: 722318481
+      GroundTileset_21: 338976644
+      GroundTileset_22: -719399167
+      GroundTileset_23: 1371047159
+      GroundTileset_24: 1169376593
+      GroundTileset_25: -848678326
+      GroundTileset_26: -1981327820
+      GroundTileset_27: -1276755017
+      GroundTileset_28: -2077894685
+      GroundTileset_29: 2084805191
+      GroundTileset_3: 286933444
+      GroundTileset_30: -110235279
+      GroundTileset_31: 56721829
+      GroundTileset_32: -916190823
+      GroundTileset_33: -483326508
+      GroundTileset_34: -452408577
+      GroundTileset_35: -1109476235
+      GroundTileset_36: 980463608
+      GroundTileset_37: -316356918
+      GroundTileset_38: 1936783084
+      GroundTileset_39: -1023213035
+      GroundTileset_4: -278148979
+      GroundTileset_40: -1330286877
+      GroundTileset_41: -503562379
+      GroundTileset_42: 323042977
+      GroundTileset_43: -341799803
+      GroundTileset_44: 1429771287
+      GroundTileset_45: -721289943
+      GroundTileset_46: -1602407110
+      GroundTileset_47: 1918362326
+      GroundTileset_48: -956288026
+      GroundTileset_49: 1399470630
+      GroundTileset_5: -59746752
+      GroundTileset_50: -1219728168
+      GroundTileset_51: 1688801355
+      GroundTileset_52: 676044449
+      GroundTileset_53: 2139446152
+      GroundTileset_54: -1474311683
+      GroundTileset_55: -1166834481
+      GroundTileset_56: -1096017536
+      GroundTileset_57: -866770266
+      GroundTileset_58: 1813512572
+      GroundTileset_59: -1646463302
+      GroundTileset_6: -458234681
+      GroundTileset_60: 1255652182
+      GroundTileset_61: 829084600
+      GroundTileset_62: -1295211328
+      GroundTileset_63: 1744963047
+      GroundTileset_64: 1042243330
+      GroundTileset_65: -578081165
+      GroundTileset_66: 1333770128
+      GroundTileset_67: -433251836
+      GroundTileset_68: -475659797
+      GroundTileset_69: 1669138227
+      GroundTileset_7: 1537832276
+      GroundTileset_70: 886083807
+      GroundTileset_71: 708491713
+      GroundTileset_72: 1405826748
+      GroundTileset_73: -847927207
+      GroundTileset_74: 693089069
+      GroundTileset_75: -468354680
+      GroundTileset_76: -154582673
+      GroundTileset_77: -936306235
+      GroundTileset_78: -1272745314
+      GroundTileset_79: 1027666164
+      GroundTileset_8: 1910846890
+      GroundTileset_80: 869520584
+      GroundTileset_81: -811032838
+      GroundTileset_82: 1915791531
+      GroundTileset_83: 979337612
+      GroundTileset_84: -1993859672
+      GroundTileset_85: -657518924
+      GroundTileset_86: 1437848059
+      GroundTileset_87: -254283855
+      GroundTileset_88: -359487357
+      GroundTileset_89: -37782700
+      GroundTileset_9: 189996070
+      GroundTileset_90: 397940371
+      GroundTileset_91: -1983219591
+      GroundTileset_92: -994632793
+      GroundTileset_93: -1979362413
+      GroundTileset_94: 390520965
+      GroundTileset_95: 649725756
+      GroundTileset_96: -2073012770
+      GroundTileset_97: -120558691
+      GroundTileset_98: -307605639
+      GroundTileset_99: 736291675
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
