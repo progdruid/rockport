@@ -417,7 +417,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   holder: {fileID: 251374649}
-  layer: -1
+  layer: 0
   treeTexture: {fileID: 2800000, guid: 78354000784664c4989b906f0b41b434, type: 3}
   worldTextureCutoutMaterial: {fileID: 2100000, guid: 8c22239b3ef1af34ca3f3dd510dbe019, type: 2}
   useMarching: 0
@@ -513,7 +513,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   holder: {fileID: 251374649}
-  layer: 1
+  layer: 2
   treeTexture: {fileID: 2800000, guid: c2e9f2a62a415e144bcd164b9bbb8ddc, type: 3}
   worldTextureCutoutMaterial: {fileID: 2100000, guid: 8c22239b3ef1af34ca3f3dd510dbe019, type: 2}
   useMarching: 1

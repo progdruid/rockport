@@ -13,11 +13,15 @@ public class LevelSpaceHolder : MonoBehaviour
     
     public Vector2Int Size => size;
     
+    private List<Transform> _layeredObjects;
+    
     private void Awake()
     {
         Assert.IsNotNull(visualGrid);
         Assert.IsTrue(size.x > 0);
         Assert.IsTrue(size.y > 0);
+        
+        _layeredObjects = new();
     }
     
     public bool ConvertWorldToMap(Vector2 worldPos, out Vector2Int mapPos)
@@ -40,14 +44,71 @@ public class LevelSpaceHolder : MonoBehaviour
     public bool IsInBounds(Vector2Int pos) 
         => pos.x >= 0 && pos.x < Size.x && pos.y >= 0 && pos.y < Size.y;
 
-    public Tilemap CreateTilemap(int layer, int offset, string mapName)
+    public Tilemap CreateTilemap(Transform parent, int offset, string mapName)
     {
         var go = new GameObject(mapName);
-        go.transform.SetParent(visualGrid.transform, false);
-        go.transform.localPosition = Vector3.back * (layer + 0.01f * offset);
+        go.transform.SetParent(parent, false);
+        go.transform.localPosition = Vector3.back * 0.01f * offset;
         var map = go.AddComponent<Tilemap>();
         map.tileAnchor = new Vector3(0.5f, 0.5f, 0f);
         map.orientation = Tilemap.Orientation.XY;
         return map;
+    }
+    
+    public bool RegisterObject(Transform t, out int layer)
+    {
+        layer = -1;
+        if (_layeredObjects.Contains(t))
+            return false;
+        
+        _layeredObjects.Add(t);
+        layer = _layeredObjects.Count - 1;
+        
+        t.SetParent(visualGrid.transform);
+        UpdateZ(layer);
+        
+        return true;
+    }
+
+    public bool RegisterAt(Transform t, int layer)
+    {
+        var to = Mathf.Clamp(layer, 0, _layeredObjects.Count);
+        var registered = RegisterObject(t, out var from);
+        if (registered)
+            MoveFromTo(from, to);
+        return registered;
+    }
+
+    public bool UnregisterObject(Transform t)
+    {
+        var layer = _layeredObjects.BinarySearch(t);
+        if (layer < 0) return false;
+        
+        _layeredObjects[layer].SetParent(null);
+        _layeredObjects.RemoveAt(layer);
+        for (var i = layer; i < _layeredObjects.Count - 1; i++)
+            UpdateZ(i);
+        return true;
+    }
+
+    public void MoveFromTo(int layerFrom, int layerTo)
+    {
+        layerTo = Mathf.Clamp(layerTo, 0, _layeredObjects.Count - 1);
+        if (layerFrom < 0 || layerFrom >= _layeredObjects.Count || layerFrom == layerTo) return;
+        
+        var movedObject = _layeredObjects[layerFrom];
+        _layeredObjects.RemoveAt(layerFrom);
+        _layeredObjects.Insert(layerTo, movedObject);
+        
+        var step = layerTo > layerFrom ? 1 : -1;
+        for (var i = layerFrom; i != layerTo+step; i += step) 
+            UpdateZ(i);
+    }
+
+    private void UpdateZ(int layer)
+    {
+        var t = _layeredObjects[layer];
+        var local = t.localPosition;
+        t.localPosition = new Vector3(local.x, local.y, -1 * layer);
     }
 }

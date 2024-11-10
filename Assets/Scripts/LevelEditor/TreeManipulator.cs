@@ -50,13 +50,16 @@ public class TreeManipulator : MonoBehaviour
     {
         _placed = new bool[holder.Size.x, holder.Size.y];
         
-        _treeMap = holder.CreateTilemap(layer, 0, "Tree Tilemap");
+        var parent = (new GameObject("Tree")).transform;
+        holder.RegisterAt(parent, layer);
+        
+        _treeMap = holder.CreateTilemap(parent, 0, "Tree Tilemap");
         var marchMapRenderer = _treeMap.gameObject.AddComponent<TilemapRenderer>();
         var mat = new Material(worldTextureCutoutMaterial);
         mat.SetTexture(WorldTextureShaderPropertyID, treeTexture);
         marchMapRenderer.sharedMaterial = mat;
 
-        _outlineMap = holder.CreateTilemap(layer, 1, "Tree Outline Tilemap");
+        _outlineMap = holder.CreateTilemap(parent, 1, "Tree Outline Tilemap");
         _outlineMap.gameObject.AddComponent<TilemapRenderer>();
     }
 

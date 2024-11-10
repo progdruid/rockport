@@ -69,16 +69,19 @@ namespace LevelEditor
         {
             _depthMap = new int[holder.Size.x, holder.Size.y];
             
-            _baseMap = holder.CreateTilemap(0, 0, "Dirt Base Tilemap");
+            var parent = (new GameObject("Dirt")).transform;
+            holder.RegisterAt(parent, 1);
+            
+            _baseMap = holder.CreateTilemap(parent, 0, "Dirt Base Tilemap");
             _baseMap.gameObject.AddComponent<TilemapRenderer>();
             
-            _lowerPebbleMap = holder.CreateTilemap(0, 1, "Dirt Lower Pebble Tilemap");
+            _lowerPebbleMap = holder.CreateTilemap(parent, 1, "Dirt Lower Pebble Tilemap");
             _lowerPebbleMap.gameObject.AddComponent<TilemapRenderer>();
             
-            _upperPebbleMap = holder.CreateTilemap(0, 2, "Dirt Upper Pebble Tilemap");
+            _upperPebbleMap = holder.CreateTilemap(parent, 2, "Dirt Upper Pebble Tilemap");
             _upperPebbleMap.gameObject.AddComponent<TilemapRenderer>();
             
-            _marchingMap = holder.CreateTilemap(0, 3, "Dirt Marching Tilemap");
+            _marchingMap = holder.CreateTilemap(parent, 3, "Dirt Marching Tilemap");
             _marchingMap.gameObject.AddComponent<TilemapRenderer>();
         }
 
