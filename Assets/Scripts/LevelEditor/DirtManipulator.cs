@@ -29,9 +29,8 @@ namespace LevelEditor
         [SerializeField] public TileMarchingSet marchingSet;
     }
 
-    public class DirtManipulator : MonoBehaviour
+    public class DirtManipulator : ManipulatorBase, IPlaceRemoveHandler
     {
-        [SerializeField] private LevelSpaceHolder holder;
         [SerializeField] private int maxDepth;
         [SerializeField] private TileMarchingSet outlineMarchingSet;
         [SerializeField] private DirtLayer[] layers;
@@ -42,15 +41,7 @@ namespace LevelEditor
         private Tilemap _upperPebbleMap;
         private Tilemap _marchingMap;
 
-
-        #region Getters and Setters
-
-        public float GetZForInteraction() => _baseMap.transform.position.z;
-
-        #endregion
-
-
-        #region Private Logic
+        private EditorController _controller;
 
         private void Awake()
         {
@@ -69,21 +60,21 @@ namespace LevelEditor
         {
             _depthMap = new int[holder.Size.x, holder.Size.y];
             
-            var parent = (new GameObject("Dirt")).transform;
-            holder.RegisterAt(parent, 1);
+            holder.RegisterAt(this, 1);
             
-            _baseMap = holder.CreateTilemap(parent, 0, "Dirt Base Tilemap");
+            _baseMap = CreateTilemap(0, "Dirt Base Tilemap");
             _baseMap.gameObject.AddComponent<TilemapRenderer>();
             
-            _lowerPebbleMap = holder.CreateTilemap(parent, 1, "Dirt Lower Pebble Tilemap");
+            _lowerPebbleMap = CreateTilemap(1, "Dirt Lower Pebble Tilemap");
             _lowerPebbleMap.gameObject.AddComponent<TilemapRenderer>();
             
-            _upperPebbleMap = holder.CreateTilemap(parent, 2, "Dirt Upper Pebble Tilemap");
+            _upperPebbleMap = CreateTilemap(2, "Dirt Upper Pebble Tilemap");
             _upperPebbleMap.gameObject.AddComponent<TilemapRenderer>();
             
-            _marchingMap = holder.CreateTilemap(parent, 3, "Dirt Marching Tilemap");
+            _marchingMap = CreateTilemap(3, "Dirt Marching Tilemap");
             _marchingMap.gameObject.AddComponent<TilemapRenderer>();
         }
+        
 
         private int RetrieveMinNeighbourDepth(Vector2Int pos)
         {
@@ -177,14 +168,14 @@ namespace LevelEditor
         }
 
 
-        private void ChangeDepthAt(Vector2Int rootPos, bool place)
+        public void ChangeAt(Vector2Int rootPos, bool shouldPlaceNotRemove)
         {
             var oldRootDepth = _depthMap.At(rootPos);
-            if ((oldRootDepth == 0) != place)
+            if ((oldRootDepth == 0) != shouldPlaceNotRemove)
                 return;
 
-            var pending = new Dictionary<Vector2Int, int>();
-            pending[rootPos] = place ? 1 : 0;
+            var pending = new Dictionary<Vector2Int, int>
+            { [rootPos] = shouldPlaceNotRemove ? 1 : 0 };
 
             while (pending.Count > 0)
             {
@@ -210,19 +201,21 @@ namespace LevelEditor
             }
         }
 
-        #endregion
 
-
-        #region Public Interface
-
-        public void ChangeTileAtWorldPos(Vector2 worldPos, bool place)
+        public override void SubscribeInput(EditorController controller)
         {
-            var inBounds = holder.ConvertWorldToMap(worldPos, out var mapPos);
-            if (!inBounds) return;
-
-            ChangeDepthAt(mapPos, place);
+            _controller = controller;
+            controller.SetPlaceRemoveHandler(this);
         }
 
-        #endregion
+        public override void UnsubscribeInput()
+        {
+            if (!_controller) return;
+            _controller.UnsetPlaceRemoveHandler();
+            _controller = null;
+        }
+
+        public float GetZForInteraction() => _baseMap.transform.position.z;
+        
     }
 }

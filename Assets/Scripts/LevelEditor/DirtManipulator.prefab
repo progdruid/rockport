@@ -1,0 +1,109 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6644706919620923965
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5585420924436873903}
+  - component: {fileID: 228163013616379759}
+  m_Layer: 0
+  m_Name: DirtManipulator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5585420924436873903
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6644706919620923965}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &228163013616379759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6644706919620923965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23e2094a739944f281fcf36f106213d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 5585420924436873903}
+  holder: {fileID: 0}
+  maxDepth: 15
+  outlineMarchingSet: {fileID: 11400000, guid: 2ceb0cc2d7393554cb4c125c4f315659, type: 2}
+  layers:
+  - thickness: 1
+    baseTile: {fileID: 11400000, guid: b795f89b09420864484598bab72b29e9, type: 2}
+    lowerPebbleDensity: 0
+    lowerPebbles: []
+    upperPebbleDensity: 0
+    upperPebbles: []
+    marchingSet: {fileID: 11400000, guid: 45eb9f1ea9146e74ba238f650e021486, type: 2}
+  - thickness: 2
+    baseTile: {fileID: 11400000, guid: 9afc97d281ae8c547928b50399ec613d, type: 2}
+    lowerPebbleDensity: 1
+    lowerPebbles:
+    - {fileID: 11400000, guid: bb5a8716af560e74bb12537d311aa35b, type: 2}
+    - {fileID: 11400000, guid: b705eb462a1c171468a6592a1e056035, type: 2}
+    - {fileID: 11400000, guid: c7e1c95f3a947104a827a2e42e4b6b02, type: 2}
+    - {fileID: 11400000, guid: 56f7e117636e3a24f9ef1b5f5f9e23f5, type: 2}
+    - {fileID: 11400000, guid: 0bd20490854c5c3449ac89265e6476f4, type: 2}
+    upperPebbleDensity: 1
+    upperPebbles:
+    - {fileID: 11400000, guid: c80782a8987f91a4f9d4590ffe20cc32, type: 2}
+    - {fileID: 11400000, guid: 74139d8889ec96147831126895bdb798, type: 2}
+    - {fileID: 11400000, guid: ca21b115522bc8d4089ab88dd8a25143, type: 2}
+    - {fileID: 11400000, guid: da98af54b0020e44dab8d43f08baf75c, type: 2}
+    - {fileID: 11400000, guid: 0fe802547669782479d040103a0eea9e, type: 2}
+    marchingSet: {fileID: 11400000, guid: 2e41f99bb26c1f640a1cfd822c2a4641, type: 2}
+  - thickness: 3
+    baseTile: {fileID: 11400000, guid: 434870f7fb0ce5946a563fb6571a881c, type: 2}
+    lowerPebbleDensity: 1
+    lowerPebbles:
+    - {fileID: 11400000, guid: 5c55b31582f9ea045b858036b08fde5d, type: 2}
+    - {fileID: 11400000, guid: cb59f204ebd78964c92372aad8224bc9, type: 2}
+    - {fileID: 11400000, guid: dddde3e690d456e40a06f7c512c0bbd8, type: 2}
+    - {fileID: 11400000, guid: 562c24c40c944f24ebecc164d388c459, type: 2}
+    - {fileID: 11400000, guid: f8c0eea1e17480143be7dc0ec775e793, type: 2}
+    upperPebbleDensity: 1
+    upperPebbles:
+    - {fileID: 11400000, guid: 3284f7f20d8ee4a4bbb1ec38261e23ef, type: 2}
+    - {fileID: 11400000, guid: ec578b1e995852a419c8d60d84966efa, type: 2}
+    - {fileID: 11400000, guid: a7344d91eaeb5154aa78dbdfdca73271, type: 2}
+    - {fileID: 11400000, guid: 2c0d06814facc1543a9fae2a0db51df2, type: 2}
+    - {fileID: 11400000, guid: d29260a7e7797db41bd0e49f9f35fb87, type: 2}
+    marchingSet: {fileID: 11400000, guid: 989dde80cab73574ca61cefb84351312, type: 2}
+  - thickness: 100000
+    baseTile: {fileID: 11400000, guid: 434870f7fb0ce5946a563fb6571a881c, type: 2}
+    lowerPebbleDensity: 0.9
+    lowerPebbles:
+    - {fileID: 11400000, guid: 7b36b84ca0a3a6c41a2d9d7a883f22ca, type: 2}
+    - {fileID: 11400000, guid: abd52b049f74b7a4fa5cd2977d87ea2d, type: 2}
+    - {fileID: 11400000, guid: 5de357456fdff4e4eb596f3e547c26a4, type: 2}
+    - {fileID: 11400000, guid: f8c0eea1e17480143be7dc0ec775e793, type: 2}
+    - {fileID: 11400000, guid: 562c24c40c944f24ebecc164d388c459, type: 2}
+    upperPebbleDensity: 0.9
+    upperPebbles:
+    - {fileID: 11400000, guid: e73f7d9e6cae2e24fbbd94bf21ba164e, type: 2}
+    - {fileID: 11400000, guid: 6d33774c1d4b6f1459dfcf1f2af7a9b7, type: 2}
+    - {fileID: 11400000, guid: 0995361cd4f88c24b81fb00e7e44c326, type: 2}
+    - {fileID: 11400000, guid: d29260a7e7797db41bd0e49f9f35fb87, type: 2}
+    - {fileID: 11400000, guid: ec578b1e995852a419c8d60d84966efa, type: 2}
+    marchingSet: {fileID: 0}

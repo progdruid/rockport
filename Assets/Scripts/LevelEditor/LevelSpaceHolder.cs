@@ -12,8 +12,10 @@ public class LevelSpaceHolder : MonoBehaviour
     [SerializeField] private Grid visualGrid;
     
     public Vector2Int Size => size;
+
+    public int ManipulatorsCount => _manipulators.Count;
     
-    private List<Transform> _layeredObjects;
+    private List<ManipulatorBase> _manipulators;
     
     private void Awake()
     {
@@ -21,7 +23,68 @@ public class LevelSpaceHolder : MonoBehaviour
         Assert.IsTrue(size.x > 0);
         Assert.IsTrue(size.y > 0);
         
-        _layeredObjects = new();
+        _manipulators = new();
+    }
+    
+    public ManipulatorBase GetManipulator(int layer) => _manipulators[layer];
+    
+    public bool RegisterObject(ManipulatorBase manipulator, out int layer)
+    {
+        layer = -1;
+        if (_manipulators.Contains(manipulator))
+            return false;
+        
+        _manipulators.Add(manipulator);
+        layer = _manipulators.Count - 1;
+        manipulator.InjectHolder(this);
+        
+        manipulator.Target.SetParent(visualGrid.transform);
+        UpdateZ(layer);
+        
+        return true;
+    }
+
+    public bool RegisterAt(ManipulatorBase manipulator, int layer)
+    {
+        var to = Mathf.Clamp(layer, 0, _manipulators.Count);
+        var registered = RegisterObject(manipulator, out var from);
+        if (registered)
+            MoveRegister(from, to);
+        return registered;
+    }
+
+    public bool UnregisterObject(ManipulatorBase manipulator)
+    {
+        var layer = _manipulators.BinarySearch(manipulator);
+        if (layer < 0) return false;
+
+        manipulator.InjectHolder(null);
+        manipulator.Target.SetParent(null);
+        _manipulators.RemoveAt(layer);
+        for (var i = layer; i < _manipulators.Count - 1; i++)
+            UpdateZ(i);
+        return true;
+    }
+
+    public void MoveRegister(int layerFrom, int layerTo)
+    {
+        layerTo = Mathf.Clamp(layerTo, 0, _manipulators.Count - 1);
+        if (layerFrom < 0 || layerFrom >= _manipulators.Count || layerFrom == layerTo) return;
+        
+        var movedObject = _manipulators[layerFrom];
+        _manipulators.RemoveAt(layerFrom);
+        _manipulators.Insert(layerTo, movedObject);
+        
+        var step = layerTo > layerFrom ? 1 : -1;
+        for (var i = layerFrom; i != layerTo+step; i += step) 
+            UpdateZ(i);
+    }
+
+    private void UpdateZ(int layer)
+    {
+        var manipulator = _manipulators[layer];
+        var local = manipulator.Target.localPosition;
+        manipulator.Target.localPosition = new Vector3(local.x, local.y, -1 * layer);
     }
     
     public bool ConvertWorldToMap(Vector2 worldPos, out Vector2Int mapPos)
@@ -53,62 +116,5 @@ public class LevelSpaceHolder : MonoBehaviour
         map.tileAnchor = new Vector3(0.5f, 0.5f, 0f);
         map.orientation = Tilemap.Orientation.XY;
         return map;
-    }
-    
-    public bool RegisterObject(Transform t, out int layer)
-    {
-        layer = -1;
-        if (_layeredObjects.Contains(t))
-            return false;
-        
-        _layeredObjects.Add(t);
-        layer = _layeredObjects.Count - 1;
-        
-        t.SetParent(visualGrid.transform);
-        UpdateZ(layer);
-        
-        return true;
-    }
-
-    public bool RegisterAt(Transform t, int layer)
-    {
-        var to = Mathf.Clamp(layer, 0, _layeredObjects.Count);
-        var registered = RegisterObject(t, out var from);
-        if (registered)
-            MoveFromTo(from, to);
-        return registered;
-    }
-
-    public bool UnregisterObject(Transform t)
-    {
-        var layer = _layeredObjects.BinarySearch(t);
-        if (layer < 0) return false;
-        
-        _layeredObjects[layer].SetParent(null);
-        _layeredObjects.RemoveAt(layer);
-        for (var i = layer; i < _layeredObjects.Count - 1; i++)
-            UpdateZ(i);
-        return true;
-    }
-
-    public void MoveFromTo(int layerFrom, int layerTo)
-    {
-        layerTo = Mathf.Clamp(layerTo, 0, _layeredObjects.Count - 1);
-        if (layerFrom < 0 || layerFrom >= _layeredObjects.Count || layerFrom == layerTo) return;
-        
-        var movedObject = _layeredObjects[layerFrom];
-        _layeredObjects.RemoveAt(layerFrom);
-        _layeredObjects.Insert(layerTo, movedObject);
-        
-        var step = layerTo > layerFrom ? 1 : -1;
-        for (var i = layerFrom; i != layerTo+step; i += step) 
-            UpdateZ(i);
-    }
-
-    private void UpdateZ(int layer)
-    {
-        var t = _layeredObjects[layer];
-        var local = t.localPosition;
-        t.localPosition = new Vector3(local.x, local.y, -1 * layer);
     }
 }

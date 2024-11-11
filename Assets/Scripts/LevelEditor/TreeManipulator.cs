@@ -9,11 +9,10 @@ using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
-public class TreeManipulator : MonoBehaviour
+public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
 {
     private static readonly int WorldTextureShaderPropertyID = Shader.PropertyToID("_WorldTex");
     
-    [SerializeField] private LevelSpaceHolder holder;
     [SerializeField] private int layer;
     [Space]
     [SerializeField] private Texture2D treeTexture;
@@ -28,11 +27,9 @@ public class TreeManipulator : MonoBehaviour
     private Tilemap _treeMap;
     private Tilemap _outlineMap;
     private bool[,] _placed;
-    
-    public float GetZForInteraction() => _treeMap.transform.position.z;
-    
-    #region Engine
 
+    private EditorController _controller;
+    
     private void Awake()
     {
         Assert.IsNotNull(holder);
@@ -51,22 +48,45 @@ public class TreeManipulator : MonoBehaviour
         _placed = new bool[holder.Size.x, holder.Size.y];
         
         var parent = (new GameObject("Tree")).transform;
-        holder.RegisterAt(parent, layer);
+        holder.RegisterAt(this, layer);
         
-        _treeMap = holder.CreateTilemap(parent, 0, "Tree Tilemap");
+        _treeMap = CreateTilemap(0, "Tree Tilemap");
         var marchMapRenderer = _treeMap.gameObject.AddComponent<TilemapRenderer>();
         var mat = new Material(worldTextureCutoutMaterial);
         mat.SetTexture(WorldTextureShaderPropertyID, treeTexture);
         marchMapRenderer.sharedMaterial = mat;
 
-        _outlineMap = holder.CreateTilemap(parent, 1, "Tree Outline Tilemap");
+        _outlineMap = CreateTilemap(1, "Tree Outline Tilemap");
         _outlineMap.gameObject.AddComponent<TilemapRenderer>();
     }
 
-    #endregion
     
-    #region Private Logic
+    public void ChangeAt(Vector2Int pos, bool shouldPlaceNotRemove)
+    {
+        if (shouldPlaceNotRemove == _placed.At(pos))
+            return;
 
+        _placed.Set(pos, shouldPlaceNotRemove);
+        
+        foreach (var subPos in holder.RetrievePositions(pos, PolyUtil.FullAreaOffsets)) 
+            UpdateVisualsFor(subPos);
+    }
+
+    public float GetZForInteraction() => _treeMap.transform.position.z;
+    
+    public override void SubscribeInput(EditorController controller)
+    {
+        _controller = controller;
+        controller.SetPlaceRemoveHandler(this);
+    }
+
+    public override void UnsubscribeInput()
+    {
+        if (!_controller) return;
+        _controller.UnsetPlaceRemoveHandler();
+        _controller = null;
+    }
+    
     private void UpdateVisualsFor(Vector2Int pos)
     {
         var placedHere = _placed.At(pos);
@@ -97,29 +117,4 @@ public class TreeManipulator : MonoBehaviour
         usedMap.SetTile((Vector3Int)pos, treeTile);
         otherMap.SetTile((Vector3Int)pos, null);
     }
-    
-    private void ChangeTreeTile(Vector2Int pos, bool place)
-    {
-        if (place == _placed.At(pos))
-            return;
-
-        _placed.Set(pos, place);
-        
-        foreach (var subPos in holder.RetrievePositions(pos, PolyUtil.FullAreaOffsets)) 
-            UpdateVisualsFor(subPos);
-    }
-    
-    #endregion
-    
-    #region Public Interface
-
-    public void ChangeTileAtWorldPos(Vector2 worldPos, bool place)
-    {
-        var inBounds = holder.ConvertWorldToMap(worldPos, out var mapPos);
-        if (!inBounds) return;
-
-        ChangeTreeTile(mapPos, place);
-    }
-
-    #endregion
 }
