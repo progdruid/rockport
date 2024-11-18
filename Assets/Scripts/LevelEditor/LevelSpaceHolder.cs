@@ -87,13 +87,15 @@ public class LevelSpaceHolder : MonoBehaviour
         manipulator.Target.localPosition = new Vector3(local.x, local.y, -1 * layer);
     }
     
-    public bool ConvertWorldToMap(Vector2 worldPos, out Vector2Int mapPos)
+    public bool SnapWorldToMap(Vector2 worldPos, out Vector2Int mapPos)
     {
-        var origin = visualGrid.transform.position;
-        mapPos = Vector2Int.FloorToInt((worldPos - (Vector2)origin) / visualGrid.cellSize);
+        mapPos = Vector2Int.FloorToInt((worldPos - (Vector2)visualGrid.transform.position) / visualGrid.cellSize);
         return new Rect(0, 0, size.x - 0.1f, size.y - 0.1f).Contains(mapPos);
     }
-    
+
+    public Vector2 ConvertMapToWorld(Vector2Int mapPos) 
+        => (Vector2)visualGrid.transform.position + mapPos * (Vector2)visualGrid.cellSize;
+
     public IEnumerable<Vector2Int> RetrievePositions(Vector2Int pos, IEnumerable<Vector2Int> offsets)
     {
         foreach (var direction in offsets)

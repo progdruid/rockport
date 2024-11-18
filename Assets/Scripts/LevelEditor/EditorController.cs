@@ -58,8 +58,7 @@ namespace LevelEditor
             var t = (_placeRemoveHandler.GetZForInteraction() - ray.origin.z) / ray.direction.z;
             var worldPos = (ray.origin + ray.direction * t);
 
-            if (holder.ConvertWorldToMap(worldPos, out var snappedPos))
-                _placeRemoveHandler.ChangeAt(snappedPos, constructive && !destructive);
+            _placeRemoveHandler.ChangeAt(worldPos, constructive && !destructive);
         }
         
         public void SetPlaceRemoveHandler (IPlaceRemoveHandler handler) => _placeRemoveHandler = handler;

@@ -32,7 +32,6 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
     
     private void Awake()
     {
-        Assert.IsNotNull(holder);
         Assert.IsNotNull(treeTexture);
         Assert.IsNotNull(worldTextureCutoutMaterial);
         if (useMarching) Assert.IsNotNull(treeMarching);
@@ -41,15 +40,7 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
         
         treeMarching.ParseTiles();
         outlineMarching.ParseTiles();
-    }
-
-    private void Start()
-    {
-        _placed = new bool[holder.Size.x, holder.Size.y];
-        
-        var parent = (new GameObject("Tree")).transform;
-        holder.RegisterAt(this, layer);
-        
+                
         _treeMap = CreateTilemap(0, "Tree Tilemap");
         var marchMapRenderer = _treeMap.gameObject.AddComponent<TilemapRenderer>();
         var mat = new Material(worldTextureCutoutMaterial);
@@ -60,15 +51,21 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
         _outlineMap.gameObject.AddComponent<TilemapRenderer>();
     }
 
-    
-    public void ChangeAt(Vector2Int pos, bool shouldPlaceNotRemove)
+    private void Start()
     {
-        if (shouldPlaceNotRemove == _placed.At(pos))
-            return;
+        _placed = new bool[holder.Size.x, holder.Size.y];
+        holder.RegisterAt(this, layer);
+    }
 
-        _placed.Set(pos, shouldPlaceNotRemove);
+    
+    public void ChangeAt(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
+    {
+        if (!holder.SnapWorldToMap(rootWorldPos, out var rootPos) 
+            || shouldPlaceNotRemove == _placed.At(rootPos)) return;
+
+        _placed.Set(rootPos, shouldPlaceNotRemove);
         
-        foreach (var subPos in holder.RetrievePositions(pos, PolyUtil.FullAreaOffsets)) 
+        foreach (var subPos in holder.RetrievePositions(rootPos, PolyUtil.FullAreaOffsets)) 
             UpdateVisualsFor(subPos);
     }
 

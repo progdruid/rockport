@@ -45,7 +45,6 @@ namespace LevelEditor
 
         private void Awake()
         {
-            Assert.IsNotNull(holder);
             Assert.IsNotNull(outlineMarchingSet);
             Assert.IsNotNull(layers);
 
@@ -54,13 +53,6 @@ namespace LevelEditor
             foreach (var layer in layers)
                 if (layer.marchingSet)
                     layer.marchingSet.ParseTiles();
-        }
-
-        private void Start()
-        {
-            _depthMap = new int[holder.Size.x, holder.Size.y];
-            
-            holder.RegisterAt(this, 1);
             
             _baseMap = CreateTilemap(0, "Dirt Base Tilemap");
             _baseMap.gameObject.AddComponent<TilemapRenderer>();
@@ -73,6 +65,12 @@ namespace LevelEditor
             
             _marchingMap = CreateTilemap(3, "Dirt Marching Tilemap");
             _marchingMap.gameObject.AddComponent<TilemapRenderer>();
+        }
+
+        private void Start()
+        {
+            _depthMap = new int[holder.Size.x, holder.Size.y];
+            holder.RegisterAt(this, 1);
         }
         
 
@@ -168,8 +166,10 @@ namespace LevelEditor
         }
 
 
-        public void ChangeAt(Vector2Int rootPos, bool shouldPlaceNotRemove)
+        public void ChangeAt(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
         {
+            if (!holder.SnapWorldToMap(rootWorldPos, out var rootPos)) return;
+            
             var oldRootDepth = _depthMap.At(rootPos);
             if ((oldRootDepth == 0) != shouldPlaceNotRemove)
                 return;

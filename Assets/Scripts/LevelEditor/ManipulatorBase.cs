@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using LevelEditor;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Tilemaps;
 
 public abstract class ManipulatorBase : MonoBehaviour
@@ -25,5 +27,11 @@ public abstract class ManipulatorBase : MonoBehaviour
         map.tileAnchor = new Vector3(0.5f, 0.5f, 0f);
         map.orientation = Tilemap.Orientation.XY;
         return map;
+    }
+
+    private void Awake()
+    {
+        Assert.IsNotNull(target);
+        Assert.IsNotNull(holder);
     }
 }
