@@ -8,9 +8,11 @@ using UnityEngine.Tilemaps;
 
 public abstract class ManipulatorBase : MonoBehaviour
 {
+    [SerializeField] private string manipulatorName;
     [SerializeField] private Transform target;
     [SerializeField] protected LevelSpaceHolder holder;
     
+    public string ManipulatorName => manipulatorName;
     public Transform Target => target;
     
     public abstract void SubscribeInput(EditorController controller);

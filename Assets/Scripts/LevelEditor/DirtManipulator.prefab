@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23e2094a739944f281fcf36f106213d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  manipulatorName: Dirt Manipulator
   target: {fileID: 5585420924436873903}
   holder: {fileID: 0}
   maxDepth: 15

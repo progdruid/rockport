@@ -8,8 +8,13 @@ namespace LevelEditor
     {
         [SerializeField] private LevelSpaceHolder holder;
         [SerializeField] private Camera controlCamera;
-
-        private int selectedManipulatorIndex;
+        [Space]
+        [SerializeField] private GameObject treeBackgroundPrefab;
+        [SerializeField] private GameObject treePrefab;
+        [SerializeField] private GameObject dirtPrefab;
+        [SerializeField] private GameObject objectPrefab;
+        
+        private int _selectedLayer = -1;
         private IPlaceRemoveHandler _placeRemoveHandler = null;
 
         private void Awake()
@@ -17,31 +22,57 @@ namespace LevelEditor
             Assert.IsNotNull(holder);
         }
 
-        private void Start()
-        {
-            selectedManipulatorIndex = 0;
-            holder.GetManipulator(selectedManipulatorIndex).SubscribeInput(this);
-        }
-
         private void Update()
         {
-            CheckSelection();
-            
+            CheckLayerCreation();
+            if (holder.HasLayer(_selectedLayer))
+                CheckSelection();
             if (_placeRemoveHandler != null)
                 CheckPlaceRemove();
+        }
+
+        private void CheckLayerCreation()
+        {
+            if (Input.GetKeyDown(KeyCode.B))
+                CreateLayer(treeBackgroundPrefab);
+            else if (Input.GetKeyDown(KeyCode.T))
+                CreateLayer(treePrefab);
+            else if (Input.GetKeyDown(KeyCode.D))
+                CreateLayer(dirtPrefab);
+            else if (Input.GetKeyDown(KeyCode.O)) 
+                CreateLayer(objectPrefab);
+        }
+
+        private void CreateLayer(GameObject prefab)
+        {
+            if (holder.HasLayer(_selectedLayer))
+                holder.GetManipulator(_selectedLayer).UnsubscribeInput();
+            
+            var go = Instantiate(prefab);
+            var manipulator = go.GetComponent<ManipulatorBase>();
+            _selectedLayer++;
+            holder.RegisterAt(manipulator, _selectedLayer);
+            
+            manipulator.SubscribeInput(this);
+            
+            Debug.Log($"Created {manipulator.ManipulatorName} at index {_selectedLayer}");
         }
 
         private void CheckSelection()
         {
             var dir = (Input.GetKeyDown(KeyCode.UpArrow) ? 1 : 0) + (Input.GetKeyDown(KeyCode.DownArrow) ? -1 : 0);
-            var newIndex = Mathf.Clamp(selectedManipulatorIndex + dir, 0, holder.ManipulatorsCount-1);
-            if (newIndex == selectedManipulatorIndex)
+            var newLayer = Mathf.Clamp(_selectedLayer + dir, 0, holder.ManipulatorsCount-1);
+            if (newLayer == _selectedLayer)
                 return;
             
-            holder.GetManipulator(selectedManipulatorIndex).UnsubscribeInput();
-            holder.GetManipulator(newIndex).SubscribeInput(this);
+            holder.GetManipulator(_selectedLayer).UnsubscribeInput();
             
-            selectedManipulatorIndex = newIndex;
+            var manipulator = holder.GetManipulator(newLayer);
+            manipulator.SubscribeInput(this);
+            
+            _selectedLayer = newLayer;
+
+            Debug.Log($"Selected {manipulator.ManipulatorName} at index {_selectedLayer}");
         }
         
         private void CheckPlaceRemove()

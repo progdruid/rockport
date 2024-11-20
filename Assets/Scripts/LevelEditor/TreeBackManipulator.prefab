@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13709ec2dc6752748aa689e6095bd617, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  manipulatorName: Tree Background Manipulator
   target: {fileID: 3272225832976953077}
   holder: {fileID: 0}
   layer: 0

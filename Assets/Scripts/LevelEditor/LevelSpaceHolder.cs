@@ -25,8 +25,9 @@ public class LevelSpaceHolder : MonoBehaviour
         
         _manipulators = new();
     }
-    
+
     public ManipulatorBase GetManipulator(int layer) => _manipulators[layer];
+    public bool HasLayer(int layer) => layer >= 0 && layer < ManipulatorsCount;
     
     public bool RegisterObject(ManipulatorBase manipulator, out int layer)
     {
