@@ -28,6 +28,7 @@ public class LevelSpaceHolder : MonoBehaviour
 
     public ManipulatorBase GetManipulator(int layer) => _manipulators[layer];
     public bool HasLayer(int layer) => layer >= 0 && layer < ManipulatorsCount;
+    public int ClampLayer(int layer) => Mathf.Clamp(layer, 0, ManipulatorsCount - 1);
     
     public bool RegisterObject(ManipulatorBase manipulator, out int layer)
     {
@@ -56,9 +57,14 @@ public class LevelSpaceHolder : MonoBehaviour
 
     public bool UnregisterObject(ManipulatorBase manipulator)
     {
-        var layer = _manipulators.BinarySearch(manipulator);
-        if (layer < 0) return false;
+        var layer = _manipulators.FindIndex(m => m == manipulator);
+        return UnregisterAt(layer);
+    }
 
+    public bool UnregisterAt(int layer)
+    {
+        if (!HasLayer(layer)) return false;
+        var manipulator = GetManipulator(layer);
         manipulator.InjectHolder(null);
         manipulator.Target.SetParent(null);
         _manipulators.RemoveAt(layer);

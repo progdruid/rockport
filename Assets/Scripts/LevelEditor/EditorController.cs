@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -8,6 +9,8 @@ namespace LevelEditor
     {
         [SerializeField] private LevelSpaceHolder holder;
         [SerializeField] private Camera controlCamera;
+        [Space] 
+        [SerializeField] private TMP_Text currentLayerStateText;
         [Space]
         [SerializeField] private GameObject treeBackgroundPrefab;
         [SerializeField] private GameObject treePrefab;
@@ -20,11 +23,20 @@ namespace LevelEditor
         private void Awake()
         {
             Assert.IsNotNull(holder);
+            Assert.IsNotNull(controlCamera);
+            Assert.IsNotNull(currentLayerStateText);
+            Assert.IsNotNull(treeBackgroundPrefab);
+            Assert.IsNotNull(treePrefab);
+            Assert.IsNotNull(dirtPrefab);
+            Assert.IsNotNull(objectPrefab);
+            UpdateLayerStateText();
         }
 
         private void Update()
         {
             CheckLayerCreation();
+            if (holder.HasLayer(_selectedLayer))
+                CheckLayerDeletion();
             if (holder.HasLayer(_selectedLayer))
                 CheckSelection();
             if (_placeRemoveHandler != null)
@@ -43,6 +55,24 @@ namespace LevelEditor
                 CreateLayer(objectPrefab);
         }
 
+        private void CheckLayerDeletion()
+        {
+            if (!Input.GetKeyDown(KeyCode.Delete))
+                return;
+            
+            var dead = holder.GetManipulator(_selectedLayer);
+            dead.UnsubscribeInput();
+            holder.UnregisterAt(_selectedLayer);
+            Destroy(dead.Target.gameObject);
+            _selectedLayer = holder.ClampLayer(_selectedLayer);
+            if (holder.HasLayer(_selectedLayer))
+                holder.GetManipulator(_selectedLayer).SubscribeInput(this);
+            else
+                _selectedLayer = -1;
+            
+            UpdateLayerStateText();
+        }
+
         private void CreateLayer(GameObject prefab)
         {
             if (holder.HasLayer(_selectedLayer))
@@ -55,13 +85,13 @@ namespace LevelEditor
             
             manipulator.SubscribeInput(this);
             
-            Debug.Log($"Created {manipulator.ManipulatorName} at index {_selectedLayer}");
+            UpdateLayerStateText();
         }
 
         private void CheckSelection()
         {
-            var dir = (Input.GetKeyDown(KeyCode.UpArrow) ? 1 : 0) + (Input.GetKeyDown(KeyCode.DownArrow) ? -1 : 0);
-            var newLayer = Mathf.Clamp(_selectedLayer + dir, 0, holder.ManipulatorsCount-1);
+            var dir = (Input.GetKeyDown(KeyCode.RightArrow) ? 1 : 0) + (Input.GetKeyDown(KeyCode.LeftArrow) ? -1 : 0);
+            var newLayer = holder.ClampLayer(_selectedLayer + dir);
             if (newLayer == _selectedLayer)
                 return;
             
@@ -72,7 +102,7 @@ namespace LevelEditor
             
             _selectedLayer = newLayer;
 
-            Debug.Log($"Selected {manipulator.ManipulatorName} at index {_selectedLayer}");
+            UpdateLayerStateText();
         }
         
         private void CheckPlaceRemove()
@@ -94,6 +124,12 @@ namespace LevelEditor
         
         public void SetPlaceRemoveHandler (IPlaceRemoveHandler handler) => _placeRemoveHandler = handler;
         public void UnsetPlaceRemoveHandler () => _placeRemoveHandler = null;
-        
+
+        public void UpdateLayerStateText()
+        {
+            currentLayerStateText.text = _selectedLayer >= 0
+                ? $"{_selectedLayer}: {holder.GetManipulator(_selectedLayer).ManipulatorName}"
+                : "No layer selected";
+        }
     }
 }
