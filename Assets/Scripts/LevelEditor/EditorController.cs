@@ -2,15 +2,16 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Serialization;
 
 namespace LevelEditor
 {
     public class EditorController : MonoBehaviour
     {
+        //fields////////////////////////////////////////////////////////////////////////////////////////////////////////
         [SerializeField] private LevelSpaceHolder holder;
         [SerializeField] private Camera controlCamera;
-        [Space] 
-        [SerializeField] private TMP_Text currentLayerStateText;
+        [SerializeField] private ManipulatorUIPanel manipulatorUIPanel;
         [Space]
         [SerializeField] private GameObject treeBackgroundPrefab;
         [SerializeField] private GameObject treePrefab;
@@ -20,20 +21,35 @@ namespace LevelEditor
         private int _selectedLayer = -1;
         private IPlaceRemoveHandler _placeRemoveHandler = null;
 
+        private bool _canEdit = true;
+        
+        //initialisation////////////////////////////////////////////////////////////////////////////////////////////////
         private void Awake()
         {
             Assert.IsNotNull(holder);
             Assert.IsNotNull(controlCamera);
-            Assert.IsNotNull(currentLayerStateText);
+            Assert.IsNotNull(manipulatorUIPanel);
             Assert.IsNotNull(treeBackgroundPrefab);
             Assert.IsNotNull(treePrefab);
             Assert.IsNotNull(dirtPrefab);
             Assert.IsNotNull(objectPrefab);
-            UpdateLayerStateText();
-        }
 
+            manipulatorUIPanel.EditingStateChangeEvent += fieldSelected => _canEdit = !fieldSelected;
+        }
+        
+        //public interface//////////////////////////////////////////////////////////////////////////////////////////////
+        public void SetPlaceRemoveHandler (IPlaceRemoveHandler handler) => _placeRemoveHandler = handler;
+        public void UnsetPlaceRemoveHandler () => _placeRemoveHandler = null;
+
+        public void SetPropertyHolder(IPropertyHolder propertyHolder) =>
+            manipulatorUIPanel.CreateUIFields(propertyHolder.GetProperties());
+        public void UnsetPropertyHolder () => manipulatorUIPanel.ClearProperties();
+
+        //game loop/////////////////////////////////////////////////////////////////////////////////////////////////////
         private void Update()
         {
+            if (!_canEdit) return;
+            
             CheckLayerCreation();
             if (holder.HasLayer(_selectedLayer))
                 CheckLayerDeletion();
@@ -43,6 +59,7 @@ namespace LevelEditor
                 CheckPlaceRemove();
         }
 
+        //private logic/////////////////////////////////////////////////////////////////////////////////////////////////
         private void CheckLayerCreation()
         {
             if (Input.GetKeyDown(KeyCode.B))
@@ -55,6 +72,19 @@ namespace LevelEditor
                 CreateLayer(objectPrefab);
         }
 
+        private void CreateLayer(GameObject prefab)
+        {
+            if (holder.HasLayer(_selectedLayer)) 
+                holder.GetManipulator(_selectedLayer).UnsubscribeInput();
+            
+            var go = Instantiate(prefab);
+            var manipulator = go.GetComponent<ManipulatorBase>();
+            _selectedLayer++;
+            holder.RegisterAt(manipulator, _selectedLayer);
+            
+            manipulator.SubscribeInput(this);
+        }
+        
         private void CheckLayerDeletion()
         {
             if (!Input.GetKeyDown(KeyCode.Delete))
@@ -69,23 +99,6 @@ namespace LevelEditor
                 holder.GetManipulator(_selectedLayer).SubscribeInput(this);
             else
                 _selectedLayer = -1;
-            
-            UpdateLayerStateText();
-        }
-
-        private void CreateLayer(GameObject prefab)
-        {
-            if (holder.HasLayer(_selectedLayer))
-                holder.GetManipulator(_selectedLayer).UnsubscribeInput();
-            
-            var go = Instantiate(prefab);
-            var manipulator = go.GetComponent<ManipulatorBase>();
-            _selectedLayer++;
-            holder.RegisterAt(manipulator, _selectedLayer);
-            
-            manipulator.SubscribeInput(this);
-            
-            UpdateLayerStateText();
         }
 
         private void CheckSelection()
@@ -94,17 +107,15 @@ namespace LevelEditor
             var newLayer = holder.ClampLayer(_selectedLayer + dir);
             if (newLayer == _selectedLayer)
                 return;
-            
+
             holder.GetManipulator(_selectedLayer).UnsubscribeInput();
             
             var manipulator = holder.GetManipulator(newLayer);
             manipulator.SubscribeInput(this);
             
             _selectedLayer = newLayer;
-
-            UpdateLayerStateText();
         }
-        
+
         private void CheckPlaceRemove()
         {
             var constructive = Input.GetMouseButton(0);
@@ -120,16 +131,6 @@ namespace LevelEditor
             var worldPos = (ray.origin + ray.direction * t);
 
             _placeRemoveHandler.ChangeAt(worldPos, constructive && !destructive);
-        }
-        
-        public void SetPlaceRemoveHandler (IPlaceRemoveHandler handler) => _placeRemoveHandler = handler;
-        public void UnsetPlaceRemoveHandler () => _placeRemoveHandler = null;
-
-        public void UpdateLayerStateText()
-        {
-            currentLayerStateText.text = _selectedLayer >= 0
-                ? $"{_selectedLayer}: {holder.GetManipulator(_selectedLayer).ManipulatorName}"
-                : "No layer selected";
         }
     }
 }

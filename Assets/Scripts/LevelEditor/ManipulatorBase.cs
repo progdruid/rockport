@@ -4,22 +4,47 @@ using System.Collections.Generic;
 using LevelEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Events;
 using UnityEngine.Tilemaps;
 
-public abstract class ManipulatorBase : MonoBehaviour
+public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder
 {
+    //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private string manipulatorName;
     [SerializeField] private Transform target;
     [SerializeField] protected LevelSpaceHolder holder;
     
-    public string ManipulatorName => manipulatorName;
-    public Transform Target => target;
+    //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
+    private void Awake()
+    {
+        Assert.IsNotNull(target);
+        Assert.IsNotNull(holder);
+    }
     
+    //abstract functionality////////////////////////////////////////////////////////////////////////////////////////////
     public abstract void SubscribeInput(EditorController controller);
     public abstract void UnsubscribeInput();
-
+    
+    //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
+    public string ManipulatorName => manipulatorName;
+    public Transform Target => target;
     public void InjectHolder (LevelSpaceHolder injected) => holder = injected;
     
+    public virtual IEnumerator<PropertyHandle> GetProperties()
+    {
+        var handle = new PropertyHandle()
+        {
+            PropertyName = "Name",
+            PropertyDefaultValue = manipulatorName,
+            PropertyType = PropertyType.Text,
+            ChangeEvent = new UnityEvent<object>(),
+            Setter = (object input) => manipulatorName = (string)input
+        };
+        yield return handle;
+    }
+    
+    
+    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     protected Tilemap CreateTilemap(int offset, string mapName)
     {
         var go = new GameObject(mapName);
@@ -29,11 +54,5 @@ public abstract class ManipulatorBase : MonoBehaviour
         map.tileAnchor = new Vector3(0.5f, 0.5f, 0f);
         map.orientation = Tilemap.Orientation.XY;
         return map;
-    }
-
-    private void Awake()
-    {
-        Assert.IsNotNull(target);
-        Assert.IsNotNull(holder);
     }
 }

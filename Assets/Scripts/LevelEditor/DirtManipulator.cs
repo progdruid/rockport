@@ -31,6 +31,7 @@ namespace LevelEditor
 
     public class DirtManipulator : ManipulatorBase, IPlaceRemoveHandler
     {
+        //fields////////////////////////////////////////////////////////////////////////////////////////////////////////
         [SerializeField] private int maxDepth;
         [SerializeField] private TileMarchingSet outlineMarchingSet;
         [SerializeField] private DirtLayer[] layers;
@@ -42,7 +43,8 @@ namespace LevelEditor
         private Tilemap _marchingMap;
 
         private EditorController _controller;
-
+        
+        //initialisation////////////////////////////////////////////////////////////////////////////////////////////////
         private void Awake()
         {
             Assert.IsNotNull(outlineMarchingSet);
@@ -73,19 +75,68 @@ namespace LevelEditor
             holder.RegisterAt(this, 1);
         }
         
-
-        private int RetrieveMinNeighbourDepth(Vector2Int pos)
+        
+        //public interface//////////////////////////////////////////////////////////////////////////////////////////////
+        public override void SubscribeInput(EditorController controller)
         {
-            var minDepth = maxDepth;
-            foreach (var neighbour in holder.RetrievePositions(pos, PolyUtil.FullNeighbourOffsets))
-            {
-                var depth = _depthMap.At(neighbour);
-                if (depth < minDepth) minDepth = depth;
-            }
-
-            return minDepth;
+            _controller = controller;
+            controller.SetPlaceRemoveHandler(this);
+            controller.SetPropertyHolder(this);
         }
 
+        public override void UnsubscribeInput()
+        {
+            if (!_controller) return;
+            _controller.UnsetPlaceRemoveHandler();
+            _controller.UnsetPropertyHolder();
+            _controller = null;
+        }
+
+        public override IEnumerator<PropertyHandle> GetProperties()
+        {
+            var iter = base.GetProperties();
+            while(iter.MoveNext())
+                yield return iter.Current;
+        }
+
+        public float GetZForInteraction() => _baseMap.transform.position.z;
+        
+        public void ChangeAt(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
+        {
+            if (!holder.SnapWorldToMap(rootWorldPos, out var rootPos)) return;
+            
+            var oldRootDepth = _depthMap.At(rootPos);
+            if ((oldRootDepth == 0) != shouldPlaceNotRemove)
+                return;
+
+            var pending = new Dictionary<Vector2Int, int>
+            { [rootPos] = shouldPlaceNotRemove ? 1 : 0 };
+
+            while (pending.Count > 0)
+            {
+                var pos = pending.Keys.Last();
+                pending.TryGetValue(pos, out var depth);
+                pending.Remove(pos);
+
+                _depthMap.Set(pos, depth);
+                foreach (var neighbour in holder.RetrievePositions(pos, PolyUtil.FullNeighbourOffsets))
+                {
+                    var currentDepth = _depthMap.At(neighbour);
+                    var calculatedDepth = Mathf.Min(RetrieveMinNeighbourDepth(neighbour) + 1, maxDepth);
+                    if (currentDepth == 0 || currentDepth == calculatedDepth)
+                    {
+                        UpdateVisualAt(neighbour); //this is temporary
+                        continue;
+                    }
+
+                    pending[neighbour] = calculatedDepth;
+                }
+
+                UpdateVisualAt(pos);
+            }
+        }
+        
+        //private logic/////////////////////////////////////////////////////////////////////////////////////////////////
         private void UpdateVisualAt(Vector2Int pos)
         {
             var depth = _depthMap.At(pos);
@@ -164,58 +215,17 @@ namespace LevelEditor
                 : null;
             _upperPebbleMap.SetTile((Vector3Int)pos, upperPebble);
         }
-
-
-        public void ChangeAt(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
-        {
-            if (!holder.SnapWorldToMap(rootWorldPos, out var rootPos)) return;
-            
-            var oldRootDepth = _depthMap.At(rootPos);
-            if ((oldRootDepth == 0) != shouldPlaceNotRemove)
-                return;
-
-            var pending = new Dictionary<Vector2Int, int>
-            { [rootPos] = shouldPlaceNotRemove ? 1 : 0 };
-
-            while (pending.Count > 0)
-            {
-                var pos = pending.Keys.Last();
-                pending.TryGetValue(pos, out var depth);
-                pending.Remove(pos);
-
-                _depthMap.Set(pos, depth);
-                foreach (var neighbour in holder.RetrievePositions(pos, PolyUtil.FullNeighbourOffsets))
-                {
-                    var currentDepth = _depthMap.At(neighbour);
-                    var calculatedDepth = Mathf.Min(RetrieveMinNeighbourDepth(neighbour) + 1, maxDepth);
-                    if (currentDepth == 0 || currentDepth == calculatedDepth)
-                    {
-                        UpdateVisualAt(neighbour); //this is temporary
-                        continue;
-                    }
-
-                    pending[neighbour] = calculatedDepth;
-                }
-
-                UpdateVisualAt(pos);
-            }
-        }
-
-
-        public override void SubscribeInput(EditorController controller)
-        {
-            _controller = controller;
-            controller.SetPlaceRemoveHandler(this);
-        }
-
-        public override void UnsubscribeInput()
-        {
-            if (!_controller) return;
-            _controller.UnsetPlaceRemoveHandler();
-            _controller = null;
-        }
-
-        public float GetZForInteraction() => _baseMap.transform.position.z;
         
+        private int RetrieveMinNeighbourDepth(Vector2Int pos)
+        {
+            var minDepth = maxDepth;
+            foreach (var neighbour in holder.RetrievePositions(pos, PolyUtil.FullNeighbourOffsets))
+            {
+                var depth = _depthMap.At(neighbour);
+                if (depth < minDepth) minDepth = depth;
+            }
+
+            return minDepth;
+        }
     }
 }

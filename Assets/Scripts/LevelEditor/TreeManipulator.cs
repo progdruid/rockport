@@ -11,8 +11,10 @@ using Random = UnityEngine.Random;
 
 public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
 {
+    //static part///////////////////////////////////////////////////////////////////////////////////////////////////////
     private static readonly int WorldTextureShaderPropertyID = Shader.PropertyToID("_WorldTex");
     
+    //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private int layer;
     [Space]
     [SerializeField] private Texture2D treeTexture;
@@ -30,6 +32,7 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
 
     private EditorController _controller;
     
+    //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
     {
         Assert.IsNotNull(treeTexture);
@@ -57,6 +60,30 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
         holder.RegisterAt(this, layer);
     }
 
+    //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
+    public float GetZForInteraction() => _treeMap.transform.position.z;
+    
+    public override void SubscribeInput(EditorController controller)
+    {
+        _controller = controller;
+        controller.SetPlaceRemoveHandler(this);
+        controller.SetPropertyHolder(this);
+    }
+
+    public override void UnsubscribeInput()
+    {
+        if (!_controller) return;
+        _controller.UnsetPropertyHolder();
+        _controller.UnsetPlaceRemoveHandler();
+        _controller = null;
+    }
+    
+    public override IEnumerator<PropertyHandle> GetProperties()
+    {
+        var iter = base.GetProperties();
+        while(iter.MoveNext())
+            yield return iter.Current;
+    }
     
     public void ChangeAt(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
     {
@@ -68,22 +95,8 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
         foreach (var subPos in holder.RetrievePositions(rootPos, PolyUtil.FullAreaOffsets)) 
             UpdateVisualsFor(subPos);
     }
-
-    public float GetZForInteraction() => _treeMap.transform.position.z;
     
-    public override void SubscribeInput(EditorController controller)
-    {
-        _controller = controller;
-        controller.SetPlaceRemoveHandler(this);
-    }
-
-    public override void UnsubscribeInput()
-    {
-        if (!_controller) return;
-        _controller.UnsetPlaceRemoveHandler();
-        _controller = null;
-    }
-    
+    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     private void UpdateVisualsFor(Vector2Int pos)
     {
         var placedHere = _placed.At(pos);

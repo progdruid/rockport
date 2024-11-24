@@ -8,7 +8,7 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
 {
     [SerializeField] private GameObject prefabToUse;
     
-    private EditorController _editorController;
+    private EditorController _controller;
     private Transform _manipulatedTransform;
     
     private void Awake()
@@ -31,10 +31,17 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
 
     public float GetZForInteraction() => Target.position.z;
     
-    public override void UnsubscribeInput() => _editorController.UnsetPlaceRemoveHandler();
+    public override void UnsubscribeInput()
+    {
+        _controller.UnsetPropertyHolder();
+        _controller.UnsetPlaceRemoveHandler();
+        _controller = null;
+    }
+
     public override void SubscribeInput(EditorController controller)
     {
         controller.SetPlaceRemoveHandler(this);
-        _editorController = controller;
+        controller.SetPropertyHolder(this);
+        _controller = controller;
     }
 }
