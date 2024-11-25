@@ -35,9 +35,8 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder
         var handle = new PropertyHandle()
         {
             PropertyName = "Name",
-            PropertyDefaultValue = manipulatorName,
             PropertyType = PropertyType.Text,
-            ChangeEvent = new UnityEvent<object>(),
+            Getter = () => manipulatorName,
             Setter = (object input) => manipulatorName = (string)input
         };
         yield return handle;

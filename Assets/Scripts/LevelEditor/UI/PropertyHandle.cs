@@ -1,4 +1,5 @@
-﻿using UnityEngine.Events;
+﻿using System;
+using UnityEngine.Events;
 
 public enum PropertyType
 {
@@ -10,9 +11,8 @@ public enum PropertyType
 public struct PropertyHandle
 {
     public string PropertyName;
-    public string PropertyDefaultValue;
     public PropertyType PropertyType;
     
-    public UnityAction<object> Setter;
-    public UnityEvent<object> ChangeEvent;
+    public Action<object> Setter;
+    public Func<object> Getter;
 }

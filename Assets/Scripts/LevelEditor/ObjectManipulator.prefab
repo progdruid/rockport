@@ -47,4 +47,4 @@ MonoBehaviour:
   manipulatorName: Object Manipulator
   target: {fileID: 7191712843620258554}
   holder: {fileID: 0}
-  prefabToUse: {fileID: 2487675744656186509, guid: 181b873f89b6894428651b825b52fa28, type: 3}
+  prefabToUse: {fileID: 21454352661399372, guid: a39bfa46c7b596e43b90c3341836efc4, type: 3}

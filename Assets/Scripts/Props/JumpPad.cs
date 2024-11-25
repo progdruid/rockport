@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(Animator))]
-public class JumpPad : MonoBehaviour
+public class JumpPad : MonoBehaviour, IPropertyHolder
 {
     public float Impulse;
     public float TimeOffset;
@@ -65,5 +65,17 @@ public class JumpPad : MonoBehaviour
         animator.SetBool("Pressed", false);
 	
         pressingBody.jumper.MakeUltraJump(Impulse);
+    }
+
+    public IEnumerator<PropertyHandle> GetProperties()
+    {
+        var handle = new PropertyHandle()
+        {
+            PropertyName = "Impulse",
+            PropertyType = PropertyType.Decimal,
+            Getter = () => Impulse,
+            Setter = (object input) => Impulse = (float)input
+        };
+        yield return handle;
     }
 }

@@ -30,7 +30,7 @@ public class TextPropertyUIField : MonoBehaviour
         if (inputField.transform is RectTransform inputRect)
             inputRect.anchoredPosition = new Vector2(textField.preferredWidth, textField.rectTransform.anchoredPosition.y);
         
-        inputField.text = handle.PropertyDefaultValue;
+        inputField.text = handle.Getter.Invoke().ToString();
         inputField.contentType = handle.PropertyType switch
         {
             PropertyType.Decimal => TMP_InputField.ContentType.DecimalNumber,
@@ -48,9 +48,9 @@ public class TextPropertyUIField : MonoBehaviour
                 PropertyType.Text => s,
                 _ => throw new ArgumentOutOfRangeException()
             };
-            handle.Setter.Invoke(s);
+            handle.Setter.Invoke(val);
             EditingStateChangeEvent?.Invoke(false);
+            inputField.text = handle.Getter.Invoke().ToString();
         });
-        handle.ChangeEvent.AddListener(text => inputField.text = text.ToString());
     }
 }

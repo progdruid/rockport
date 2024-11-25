@@ -1,16 +1,20 @@
 ﻿
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using LevelEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
 {
+    //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private GameObject prefabToUse;
     
     private EditorController _controller;
     private Transform _manipulatedTransform;
     
+    //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
     {
         Assert.IsNotNull(prefabToUse);
@@ -22,6 +26,7 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
         holder.RegisterAt(this, 3);
     }
 
+    //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public void ChangeAt(Vector2 worldPos, bool shouldPlaceNotRemove)
     {
         if (!holder.SnapWorldToMap(worldPos, out var mapPos)) return;
@@ -43,5 +48,19 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
         controller.SetPlaceRemoveHandler(this);
         controller.SetPropertyHolder(this);
         _controller = controller;
+    }
+    
+    public override IEnumerator<PropertyHandle> GetProperties()
+    {
+        var iter = base.GetProperties();
+        while(iter.MoveNext())
+            yield return iter.Current;
+
+        foreach (var propertyHolder in _manipulatedTransform.GetComponents<Component>().OfType<IPropertyHolder>())
+        {
+            var pIter = propertyHolder.GetProperties();
+            while (pIter.MoveNext())
+                yield return pIter.Current;
+        }
     }
 }
