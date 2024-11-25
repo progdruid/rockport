@@ -42,8 +42,8 @@ namespace LevelEditor
         public void UnsetPlaceRemoveHandler () => _placeRemoveHandler = null;
 
         public void SetPropertyHolder(IPropertyHolder propertyHolder) =>
-            manipulatorUIPanel.CreateUIFields(propertyHolder.GetProperties());
-        public void UnsetPropertyHolder () => manipulatorUIPanel.ClearProperties();
+            manipulatorUIPanel.SetPropertyHolder(propertyHolder);
+        public void UnsetPropertyHolder () => manipulatorUIPanel.UnsetPropertyHolder();
 
         //game loop/////////////////////////////////////////////////////////////////////////////////////////////////////
         private void Update()

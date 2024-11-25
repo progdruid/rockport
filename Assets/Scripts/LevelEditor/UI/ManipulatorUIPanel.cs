@@ -9,9 +9,8 @@ public class ManipulatorUIPanel : MonoBehaviour
     [SerializeField] private Canvas canvas;
     [SerializeField] private GameObject propertyFieldPrefab;
 
-    private readonly List<RectTransform> _uiFieldRects = new ();
-    
-    public event Action<bool> EditingStateChangeEvent;
+    private readonly List<TextPropertyUIField> _uiFields = new ();
+    private IPropertyHolder _propertyHolder = null;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
@@ -21,43 +20,58 @@ public class ManipulatorUIPanel : MonoBehaviour
     }
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    public void CreateUIFields(IEnumerator<PropertyHandle> handles)
+    public event Action<bool> EditingStateChangeEvent;
+    public void SetPropertyHolder (IPropertyHolder propertyHolder)
+    {
+        _propertyHolder = propertyHolder;
+        _propertyHolder.PropertiesChangeEvent += CreateUIFields;
+        CreateUIFields();
+    }
+
+    public void UnsetPropertyHolder ()
+    {
+         ClearProperties();
+        _propertyHolder.PropertiesChangeEvent -= CreateUIFields;
+        _propertyHolder = null;
+    }
+
+    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
+    private void CreateUIFields()
     {
         ClearProperties();
         
+        Assert.IsNotNull(_propertyHolder);
+        var handles = _propertyHolder.GetProperties();
         while (handles.MoveNext())
         {
-            var handle = handles.Current;
-            var rect = CreateField(handle);
-            _uiFieldRects.Add(rect);
+            var field = Instantiate(propertyFieldPrefab, canvas.transform).GetComponent<TextPropertyUIField>();
+            Assert.IsNotNull(field);
+            
+            field.SetProperty(handles.Current);
+            field.EditingStateChangeEvent += InvokeEditingStateChangeEvent;
+            
+            _uiFields.Add(field);
         }
 
         float yOffset = 0;
-        for (var i = _uiFieldRects.Count - 1; i >= 0; i--)
+        for (var i = _uiFields.Count - 1; i >= 0; i--)
         {
-            var rect = _uiFieldRects[i];
+            var rect = _uiFields[i].Target;
             rect.anchoredPosition = new Vector2(0, yOffset);
             yOffset += rect.sizeDelta.y;
         }
     }
 
-    public void ClearProperties()
+    private void ClearProperties()
     {
-        foreach (var rect in _uiFieldRects) 
-            Destroy(rect.gameObject);
-        _uiFieldRects.Clear();
-    }
-
-    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
-    private RectTransform CreateField(PropertyHandle handle)
-    {
-        var fieldObject = Instantiate(propertyFieldPrefab, canvas.transform);
-        var field = fieldObject.GetComponent<TextPropertyUIField>();
-        Assert.IsNotNull(field);
-        field.SetProperty(handle);
-        if (EditingStateChangeEvent != null) 
-            field.EditingStateChangeEvent += EditingStateChangeEvent.Invoke;
-        return field.Target;
+        foreach (var field in _uiFields)
+        {
+            field.EditingStateChangeEvent -= InvokeEditingStateChangeEvent;
+            Destroy(field.Target.gameObject);
+        }
+        InvokeEditingStateChangeEvent(false);
+        _uiFields.Clear();
     }
     
+    private void InvokeEditingStateChangeEvent (bool state) => EditingStateChangeEvent?.Invoke(state);
 }

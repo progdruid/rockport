@@ -34,12 +34,17 @@ public class SerializableMap<TKey, TValue> : Dictionary<TKey, TValue>, ISerializ
     public void OnBeforeSerialize()
     {
         serializedItems = new Item[Count];
-        int index = 0;
+        var index = 0;
         foreach (var pair in this)
         {
             serializedItems[index] = new Item() { Key = pair.Key, Value = pair.Value };
             index++;
         }
+
+        //var message = "OnBeforeSerialize called:";
+        //foreach (var item in serializedItems)
+        //    message += $"\n* {item.Key}: {item.Value}";
+        //Debug.Log(message);
     }
 
     public void OnAfterDeserialize()
@@ -47,7 +52,13 @@ public class SerializableMap<TKey, TValue> : Dictionary<TKey, TValue>, ISerializ
         if (serializedItems == null)
             return;
         
+        Clear();
         foreach (var item in serializedItems)
             TryAdd(item.Key, item.Value);
+        
+        //var message = "OnAfterDeserialize called:";
+        //foreach (var (key, value) in this)
+        //    message += $"\n* {key}: {value!=null}";
+        //Debug.Log(message);
     }
 }

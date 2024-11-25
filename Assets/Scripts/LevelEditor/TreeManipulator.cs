@@ -33,8 +33,10 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
     private EditorController _controller;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+        
         Assert.IsNotNull(treeTexture);
         Assert.IsNotNull(worldTextureCutoutMaterial);
         if (useMarching) Assert.IsNotNull(treeMarching);

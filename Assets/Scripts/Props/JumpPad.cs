@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -66,6 +67,11 @@ public class JumpPad : MonoBehaviour, IPropertyHolder
 	
         pressingBody.jumper.MakeUltraJump(Impulse);
     }
+
+    
+    
+    
+    public event Action PropertiesChangeEvent;
 
     public IEnumerator<PropertyHandle> GetProperties()
     {

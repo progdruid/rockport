@@ -13,6 +13,6 @@ public struct PropertyHandle
     public string PropertyName;
     public PropertyType PropertyType;
     
-    public Action<object> Setter;
+    public Action<object> Setter;   
     public Func<object> Getter;
 }

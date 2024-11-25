@@ -15,10 +15,9 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder
     [SerializeField] protected LevelSpaceHolder holder;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
-    private void Awake()
+    protected virtual void Awake()
     {
         Assert.IsNotNull(target);
-        Assert.IsNotNull(holder);
     }
     
     //abstract functionality////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,10 +25,13 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder
     public abstract void UnsubscribeInput();
     
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
+    public event Action PropertiesChangeEvent;
+    
     public string ManipulatorName => manipulatorName;
     public Transform Target => target;
     public void InjectHolder (LevelSpaceHolder injected) => holder = injected;
-    
+
+
     public virtual IEnumerator<PropertyHandle> GetProperties()
     {
         var handle = new PropertyHandle()
@@ -44,6 +46,7 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder
     
     
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected void InvokePropertiesChangeEvent() => PropertiesChangeEvent?.Invoke();
     protected Tilemap CreateTilemap(int offset, string mapName)
     {
         var go = new GameObject(mapName);

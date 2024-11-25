@@ -45,8 +45,10 @@ namespace LevelEditor
         private EditorController _controller;
         
         //initialisation////////////////////////////////////////////////////////////////////////////////////////////////
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+            
             Assert.IsNotNull(outlineMarchingSet);
             Assert.IsNotNull(layers);
 
