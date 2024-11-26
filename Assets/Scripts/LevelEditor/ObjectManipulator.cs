@@ -1,4 +1,4 @@
-
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,9 +77,15 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
     {
         if (_manipulatedTransform)
             Destroy(_manipulatedTransform.gameObject);
-        
-        _manipulatedTransform = prefabs.TryGetValue(prefabName, out var prefab)
-            ? Instantiate(prefab, Target, false).transform : null;
+
+        _manipulatedTransform = null;
+        if (prefabs.TryGetValue(prefabName, out var prefab))
+        {
+            _manipulatedTransform = Instantiate(prefab, Target, false).transform;
+            ManipulatorName = prefabName;
+        }
+        else
+            _manipulatedTransform = null;
 
         InvokePropertiesChangeEvent();
     }

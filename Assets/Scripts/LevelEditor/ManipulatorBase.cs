@@ -26,8 +26,13 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder
     
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public event Action PropertiesChangeEvent;
-    
-    public string ManipulatorName => manipulatorName;
+
+    public string ManipulatorName
+    {
+        get => manipulatorName;
+        protected set => manipulatorName = value;
+    }
+
     public Transform Target => target;
     public void InjectHolder (LevelSpaceHolder injected) => holder = injected;
 
