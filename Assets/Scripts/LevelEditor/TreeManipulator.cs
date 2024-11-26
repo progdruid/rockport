@@ -69,13 +69,11 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
     {
         _controller = controller;
         controller.SetPlaceRemoveHandler(this);
-        controller.SetPropertyHolder(this);
     }
 
     public override void UnsubscribeInput()
     {
         if (!_controller) return;
-        _controller.UnsetPropertyHolder();
         _controller.UnsetPlaceRemoveHandler();
         _controller = null;
     }

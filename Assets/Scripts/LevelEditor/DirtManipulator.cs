@@ -83,14 +83,12 @@ namespace LevelEditor
         {
             _controller = controller;
             controller.SetPlaceRemoveHandler(this);
-            controller.SetPropertyHolder(this);
         }
 
         public override void UnsubscribeInput()
         {
             if (!_controller) return;
             _controller.UnsetPlaceRemoveHandler();
-            _controller.UnsetPropertyHolder();
             _controller = null;
         }
 

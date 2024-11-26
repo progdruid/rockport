@@ -20,7 +20,7 @@ public class ManipulatorUIPanel : MonoBehaviour
     }
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    public event Action<bool> EditingStateChangeEvent;
+    public event Action<bool> ConsumeInputChangeEvent;
     public void SetPropertyHolder (IPropertyHolder propertyHolder)
     {
         _propertyHolder = propertyHolder;
@@ -73,5 +73,5 @@ public class ManipulatorUIPanel : MonoBehaviour
         _uiFields.Clear();
     }
     
-    private void InvokeEditingStateChangeEvent (bool state) => EditingStateChangeEvent?.Invoke(state);
+    private void InvokeEditingStateChangeEvent (bool state) => ConsumeInputChangeEvent?.Invoke(state);
 }

@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,6 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
     
     public override void UnsubscribeInput()
     {
-        _controller.UnsetPropertyHolder();
         _controller.UnsetPlaceRemoveHandler();
         _controller = null;
     }
@@ -41,7 +40,6 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
     public override void SubscribeInput(EditorController controller)
     {
         controller.SetPlaceRemoveHandler(this);
-        controller.SetPropertyHolder(this);
         _controller = controller;
     }
     

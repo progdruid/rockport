@@ -73,10 +73,10 @@ public class LevelSpaceHolder : MonoBehaviour
         return true;
     }
 
-    public void MoveRegister(int layerFrom, int layerTo)
+    public bool MoveRegister(int layerFrom, int layerTo)
     {
-        layerTo = Mathf.Clamp(layerTo, 0, _manipulators.Count - 1);
-        if (layerFrom < 0 || layerFrom >= _manipulators.Count || layerFrom == layerTo) return;
+        layerTo = ClampLayer(layerTo);
+        if (!HasLayer(layerFrom) || layerFrom == layerTo) return false;
         
         var movedObject = _manipulators[layerFrom];
         _manipulators.RemoveAt(layerFrom);
@@ -85,6 +85,8 @@ public class LevelSpaceHolder : MonoBehaviour
         var step = layerTo > layerFrom ? 1 : -1;
         for (var i = layerFrom; i != layerTo+step; i += step) 
             UpdateZ(i);
+
+        return true;
     }
 
     private void UpdateZ(int layer)
