@@ -29,7 +29,7 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
         _manipulatedTransform.localPosition = snappedWorldPos;
     }
 
-    public float GetZForInteraction() => Target.position.z;
+    public override float GetReferenceZ() => Target.position.z;
     
     public override void UnsubscribeInput()
     {

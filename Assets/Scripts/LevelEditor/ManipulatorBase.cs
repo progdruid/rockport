@@ -23,6 +23,7 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder
     //abstract functionality////////////////////////////////////////////////////////////////////////////////////////////
     public abstract void SubscribeInput(EditorController controller);
     public abstract void UnsubscribeInput();
+    public abstract float GetReferenceZ();
     
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public event Action PropertiesChangeEvent;
@@ -32,10 +33,9 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder
         get => manipulatorName;
         protected set => manipulatorName = value;
     }
-
     public Transform Target => target;
-    public void InjectHolder (LevelSpaceHolder injected) => holder = injected;
 
+    public void InjectHolder (LevelSpaceHolder injected) => holder = injected;
 
     public virtual IEnumerator<PropertyHandle> GetProperties()
     {
@@ -48,7 +48,6 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder
         };
         yield return handle;
     }
-    
     
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     protected void InvokePropertiesChangeEvent() => PropertiesChangeEvent?.Invoke();

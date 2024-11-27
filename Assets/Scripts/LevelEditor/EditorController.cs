@@ -98,6 +98,10 @@ public class EditorController : MonoBehaviour
         holder.RegisterAt(manipulator, layer);
         
         SelectLayer(layer);
+        
+        //updating camera position, so it is always behind the topmost layer
+        var z = holder.GetManipulator(holder.ClampLayer(int.MaxValue)).GetReferenceZ() - 1;
+        cam.transform.position = new Vector3(cam.transform.position.x, cam.transform.position.y, z);
     }
 
     private void DeleteLayer()
@@ -162,10 +166,10 @@ public class EditorController : MonoBehaviour
         var mousePos = Input.mousePosition;
         var ray = cam.ScreenPointToRay(mousePos);
 
-        var t = (_placeRemoveHandler.GetZForInteraction() - ray.origin.z) / ray.direction.z;
+        var t = (holder.GetManipulator(_selectedLayer).GetReferenceZ() - ray.origin.z) / ray.direction.z;
         var worldPos = (ray.origin + ray.direction * t);
 
-        _placeRemoveHandler.ChangeAt(worldPos, constructive && !destructive);
+        _placeRemoveHandler.ChangeAt(worldPos, constructive);
     }
 
     private void CheckCameraMovement()

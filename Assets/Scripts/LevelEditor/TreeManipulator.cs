@@ -63,7 +63,7 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
     }
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    public float GetZForInteraction() => _treeMap.transform.position.z;
+    public override float GetReferenceZ() => _treeMap.transform.position.z;
     
     public override void SubscribeInput(EditorController controller)
     {

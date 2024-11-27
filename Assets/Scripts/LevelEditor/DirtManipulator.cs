@@ -99,7 +99,7 @@ namespace LevelEditor
                 yield return iter.Current;
         }
 
-        public float GetZForInteraction() => _baseMap.transform.position.z;
+        public override float GetReferenceZ() => _baseMap.transform.position.z;
         
         public void ChangeAt(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
         {
