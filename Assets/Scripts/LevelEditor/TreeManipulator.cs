@@ -58,7 +58,7 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
 
     private void Start()
     {
-        _placed = new bool[holder.Size.x, holder.Size.y];
+        _placed = new bool[holder.TileSize.x, holder.TileSize.y];
         holder.RegisterAt(this, layer);
     }
 

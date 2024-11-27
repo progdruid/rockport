@@ -8,10 +8,12 @@ using UnityEngine.Tilemaps;
 
 public class LevelSpaceHolder : MonoBehaviour
 {
-    [SerializeField] private Vector2Int size;
+    [FormerlySerializedAs("size")] [SerializeField] private Vector2Int tileSize;
     [SerializeField] private Grid visualGrid;
     
-    public Vector2Int Size => size;
+    public Vector2Int TileSize => tileSize;
+    public Vector2 WorldSize => tileSize * (Vector2)visualGrid.cellSize;
+    public Vector2 WorldStart => visualGrid.transform.position;
 
     public int ManipulatorsCount => _manipulators.Count;
     
@@ -20,8 +22,8 @@ public class LevelSpaceHolder : MonoBehaviour
     private void Awake()
     {
         Assert.IsNotNull(visualGrid);
-        Assert.IsTrue(size.x > 0);
-        Assert.IsTrue(size.y > 0);
+        Assert.IsTrue(tileSize.x > 0);
+        Assert.IsTrue(tileSize.y > 0);
         
         _manipulators = new();
     }
@@ -99,7 +101,7 @@ public class LevelSpaceHolder : MonoBehaviour
     public bool SnapWorldToMap(Vector2 worldPos, out Vector2Int mapPos)
     {
         mapPos = Vector2Int.FloorToInt((worldPos - (Vector2)visualGrid.transform.position) / visualGrid.cellSize);
-        return new Rect(0, 0, size.x - 0.1f, size.y - 0.1f).Contains(mapPos);
+        return new Rect(0, 0, tileSize.x - 0.1f, tileSize.y - 0.1f).Contains(mapPos);
     }
 
     public Vector2 ConvertMapToWorld(Vector2Int mapPos) 
@@ -110,13 +112,13 @@ public class LevelSpaceHolder : MonoBehaviour
         foreach (var direction in offsets)
         {
             var neighbour = pos + direction;
-            if (neighbour.x >= 0 && neighbour.x < Size.x && neighbour.y >= 0 && neighbour.y < Size.y)
+            if (neighbour.x >= 0 && neighbour.x < TileSize.x && neighbour.y >= 0 && neighbour.y < TileSize.y)
                 yield return neighbour;
         }
     }
 
     public bool IsInBounds(Vector2Int pos) 
-        => pos.x >= 0 && pos.x < Size.x && pos.y >= 0 && pos.y < Size.y;
+        => pos.x >= 0 && pos.x < TileSize.x && pos.y >= 0 && pos.y < TileSize.y;
 
     public Tilemap CreateTilemap(Transform parent, int offset, string mapName)
     {

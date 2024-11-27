@@ -73,7 +73,7 @@ namespace LevelEditor
 
         private void Start()
         {
-            _depthMap = new int[holder.Size.x, holder.Size.y];
+            _depthMap = new int[holder.TileSize.x, holder.TileSize.y];
             holder.RegisterAt(this, 1);
         }
         
