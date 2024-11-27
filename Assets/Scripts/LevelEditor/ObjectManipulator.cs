@@ -71,21 +71,16 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
         }
     }
     
+    
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
-
     private void UpdatePrefab(string prefabName)
     {
         if (_manipulatedTransform)
             Destroy(_manipulatedTransform.gameObject);
 
-        _manipulatedTransform = null;
-        if (prefabs.TryGetValue(prefabName, out var prefab))
-        {
-            _manipulatedTransform = Instantiate(prefab, Target, false).transform;
-            ManipulatorName = prefabName;
-        }
-        else
-            _manipulatedTransform = null;
+        _manipulatedTransform = prefabs.TryGetValue(prefabName, out var prefab)
+            ? Instantiate(prefab, Target, false).transform
+            : null;
 
         InvokePropertiesChangeEvent();
     }

@@ -30,7 +30,7 @@ public class BodySoundController : MonoBehaviour
 
     protected virtual void HandleLanding (Collider2D other, TriggeredType type)
     {
-        bool valid = standingType == TriggeredType.None && (lastLandingTime == 0 || Time.time - lastLandingTime >= landingCooldown) && rb.velocity.y <= 0;
+        bool valid = standingType == TriggeredType.None && (lastLandingTime == 0 || Time.time - lastLandingTime >= landingCooldown) && rb.linearVelocity.y <= 0;
 
         if (valid && type == TriggeredType.Dirt)
             soundEmitter.EmitSound("LandingGrass");

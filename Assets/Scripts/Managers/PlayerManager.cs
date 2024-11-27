@@ -62,7 +62,7 @@ public class PlayerManager : MonoBehaviour
 
     private IEnumerator KillPlayerRoutine(bool shouldSpawnCorpse)
     {
-        Vector2 vel = _rb.velocity;
+        Vector2 vel = _rb.linearVelocity;
         Vector3 pos = player.transform.position;
         bool flipX = player.GetComponent<SpriteRenderer>().flipX;
 

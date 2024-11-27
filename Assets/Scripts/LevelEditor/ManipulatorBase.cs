@@ -41,7 +41,7 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder
     {
         var handle = new PropertyHandle()
         {
-            PropertyName = "Name",
+            PropertyName = "Title",
             PropertyType = PropertyType.Text,
             Getter = () => manipulatorName,
             Setter = (object input) => manipulatorName = (string)input

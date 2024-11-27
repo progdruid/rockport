@@ -9,12 +9,12 @@ public class EditorController : MonoBehaviour
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private LevelSpaceHolder holder;
     [SerializeField] private ManipulatorUIPanel manipulatorUIPanel;
+    [SerializeField] private TMP_Text layerText;
     [Space] 
-    [SerializeField] private GameObject treeBackgroundPrefab;
-    [SerializeField] private GameObject treePrefab;
     [SerializeField] private GameObject dirtPrefab;
+    [SerializeField] private GameObject treePrefab;
+    [SerializeField] private GameObject treeBackgroundPrefab;
     [SerializeField] private GameObject objectPrefab;
-    [FormerlySerializedAs("controlCamera")]
     [Space]
     [SerializeField] private Camera cam;
     [SerializeField] private float cameraMoveSpeed;
@@ -31,13 +31,17 @@ public class EditorController : MonoBehaviour
     private void Awake()
     {
         Assert.IsNotNull(holder);
-        Assert.IsNotNull(cam);
         Assert.IsNotNull(manipulatorUIPanel);
-        Assert.IsNotNull(treeBackgroundPrefab);
-        Assert.IsNotNull(treePrefab);
+        Assert.IsNotNull(layerText);
+        
         Assert.IsNotNull(dirtPrefab);
+        Assert.IsNotNull(treePrefab);
+        Assert.IsNotNull(treeBackgroundPrefab);
         Assert.IsNotNull(objectPrefab);
+        
+        Assert.IsNotNull(cam);
 
+        UpdateLayerText();
         manipulatorUIPanel.ConsumeInputChangeEvent += consumesInput => _canEdit = !consumesInput;
     }
 
@@ -117,6 +121,7 @@ public class EditorController : MonoBehaviour
         if (!holder.MoveRegister(_selectedLayer, layerTo)) 
             return;
         _selectedLayer = layerTo;
+        UpdateLayerText();
     }
 
     private void SelectLayer(int layer)
@@ -125,6 +130,7 @@ public class EditorController : MonoBehaviour
             return;
         
         _selectedLayer = layer;
+        UpdateLayerText();
         var manipulator = holder.GetManipulator(layer);
         manipulator.SubscribeInput(this);
         manipulatorUIPanel.SetPropertyHolder(manipulator);
@@ -139,8 +145,12 @@ public class EditorController : MonoBehaviour
         manipulator.UnsubscribeInput();
         manipulatorUIPanel.UnsetPropertyHolder();
         _selectedLayer = -1;
+        UpdateLayerText();
     }
-    
+
+    private void UpdateLayerText() =>
+        layerText.text = _selectedLayer != -1 ? "Layer: " + _selectedLayer : "No layer selected";
+
     private void CheckPlaceRemove()
     {
         var constructive = Input.GetMouseButton(0);

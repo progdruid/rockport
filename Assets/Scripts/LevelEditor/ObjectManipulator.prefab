@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6c430a152904126bab1bb647d062313, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  manipulatorName: Object Manipulator
+  manipulatorName: Object
   target: {fileID: 7191712843620258554}
   holder: {fileID: 0}
   prefabs:

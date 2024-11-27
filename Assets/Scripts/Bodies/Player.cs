@@ -77,7 +77,7 @@ public class Player : MonoBehaviour, IUltraJumper
         ComputeHorizontalVelocity();
 
         animator.SetBool("Grounded", bottomTrigger.triggered);
-        animator.SetBool("Running", rb.velocity.x != 0f && bottomTrigger.triggered);
+        animator.SetBool("Running", rb.linearVelocity.x != 0f && bottomTrigger.triggered);
         if (animJumpDisableCDTime >= AnimationJumpDisableCooldown && animator.GetBool("Jumped"))
             animator.SetBool("Jumped", !bottomTrigger.triggered);
     }
@@ -108,15 +108,15 @@ public class Player : MonoBehaviour, IUltraJumper
 
     private void SuppressJump ()
     {
-        if (rb.velocity.y >= 0 && !ultraJumped)
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * SuppressMultiplier);
+        if (rb.linearVelocity.y >= 0 && !ultraJumped)
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * SuppressMultiplier);
     }
 
     private void ApplyVerticalVelocity(float initJumpVelocity)
     {
-        float newVel = rb.velocity.y + initJumpVelocity;
+        float newVel = rb.linearVelocity.y + initJumpVelocity;
         newVel = Mathf.Clamp(newVel, -100, initJumpVelocity * MaxJumpImpulseMultiplier);
-        rb.velocity = new Vector2(rb.velocity.x, newVel);
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, newVel);
         animator.SetBool("Jumped", true);
         animJumpDisableCDTime = 0f;
     }
@@ -131,25 +131,25 @@ public class Player : MonoBehaviour, IUltraJumper
         if (value != 0f)  //acceleration
         {
             float addvel = acc * Time.deltaTime * value * (wallFree ? 1f : 0.1f);
-            float newvel = rb.velocity.x + addvel;
+            float newvel = rb.linearVelocity.x + addvel;
 
             if (Mathf.Abs(newvel) > speed)
                 newvel = speed * Mathf.Sign(newvel);
 
-            rb.velocity = new Vector2(newvel, rb.velocity.y);
+            rb.linearVelocity = new Vector2(newvel, rb.linearVelocity.y);
             if (leftTrigger.corpseTriggered && newvel < 0f)
-                leftTrigger.body.velocity = new Vector2(newvel * 0.9f, leftTrigger.body.velocity.y);
+                leftTrigger.body.linearVelocity = new Vector2(newvel * 0.9f, leftTrigger.body.linearVelocity.y);
             else if (rightTrigger.corpseTriggered && newvel > 0f)
-                rightTrigger.body.velocity = new Vector2(newvel * 0.9f, rightTrigger.body.velocity.y);
+                rightTrigger.body.linearVelocity = new Vector2(newvel * 0.9f, rightTrigger.body.linearVelocity.y);
         }
-        else if (value == 0f && rb.velocity.x != 0f) //deceleration
+        else if (value == 0f && rb.linearVelocity.x != 0f) //deceleration
         {
-            float sign = Mathf.Sign(rb.velocity.x);
-            float newvel = rb.velocity.x - dec * Time.deltaTime * sign;
+            float sign = Mathf.Sign(rb.linearVelocity.x);
+            float newvel = rb.linearVelocity.x - dec * Time.deltaTime * sign;
             if (newvel * sign < 0f)
                 newvel = 0f;
 
-            rb.velocity = new Vector2(newvel, rb.velocity.y);
+            rb.linearVelocity = new Vector2(newvel, rb.linearVelocity.y);
         }
     }
 

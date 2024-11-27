@@ -31,7 +31,7 @@ public class PlayerSoundController : BodySoundController
 
     private void Update()
     {
-        bool isRunning = bottomTrigger.triggered && rb.velocity.x != 0;
+        bool isRunning = bottomTrigger.triggered && rb.linearVelocity.x != 0;
         if (isRunning && !wasRunningLastFrame)
             soundPlayer.PlayAll();
         else if (!isRunning && wasRunningLastFrame)

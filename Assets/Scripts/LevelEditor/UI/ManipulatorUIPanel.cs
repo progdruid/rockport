@@ -8,6 +8,7 @@ public class ManipulatorUIPanel : MonoBehaviour
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private Canvas canvas;
     [SerializeField] private GameObject propertyFieldPrefab;
+    [SerializeField] private RectTransform layerTextPanel;
 
     private readonly List<TextPropertyUIField> _uiFields = new ();
     private IPropertyHolder _propertyHolder = null;
@@ -60,6 +61,7 @@ public class ManipulatorUIPanel : MonoBehaviour
             rect.anchoredPosition = new Vector2(0, yOffset);
             yOffset += rect.sizeDelta.y;
         }
+        layerTextPanel.anchoredPosition = new Vector2(0, yOffset);
     }
 
     private void ClearProperties()
@@ -71,6 +73,8 @@ public class ManipulatorUIPanel : MonoBehaviour
         }
         InvokeEditingStateChangeEvent(false);
         _uiFields.Clear();
+        
+        layerTextPanel.anchoredPosition = new Vector2(0, 0);
     }
     
     private void InvokeEditingStateChangeEvent (bool state) => ConsumeInputChangeEvent?.Invoke(state);

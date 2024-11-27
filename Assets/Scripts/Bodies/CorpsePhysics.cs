@@ -28,7 +28,7 @@ public class CorpsePhysics : MonoBehaviour, IUltraJumper
         ultraJumpCooldown += ultraJumpCooldown < UltraJumpCooldown ? Time.deltaTime : 0f;
 
         if (!kickedMode)
-            rb.velocity = new Vector2(rb.velocity.x * (1f - drag * Time.deltaTime), rb.velocity.y);
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x * (1f - drag * Time.deltaTime), rb.linearVelocity.y);
         else
             kickedMode = !bottomTrigger.triggered;
     }
@@ -42,9 +42,9 @@ public class CorpsePhysics : MonoBehaviour, IUltraJumper
             ultraJumped = true;
             ultraJumpCooldown = 0f;
 
-            float newVel = rb.velocity.y + initJumpVelocity;
+            float newVel = rb.linearVelocity.y + initJumpVelocity;
             newVel = Mathf.Clamp(newVel, -100, initJumpVelocity * MaxJumpImpulseMultiplier);
-            rb.velocity = new Vector2(rb.velocity.x, newVel);
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, newVel);
         }
     }
 }
