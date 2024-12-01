@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using LevelEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Serialization;
@@ -119,15 +121,4 @@ public class LevelSpaceHolder : MonoBehaviour
 
     public bool IsInBounds(Vector2Int pos) 
         => pos.x >= 0 && pos.x < TileSize.x && pos.y >= 0 && pos.y < TileSize.y;
-
-    public Tilemap CreateTilemap(Transform parent, int offset, string mapName)
-    {
-        var go = new GameObject(mapName);
-        go.transform.SetParent(parent, false);
-        go.transform.localPosition = Vector3.back * 0.01f * offset;
-        var map = go.AddComponent<Tilemap>();
-        map.tileAnchor = new Vector3(0.5f, 0.5f, 0f);
-        map.orientation = Tilemap.Orientation.XY;
-        return map;
-    }
 }

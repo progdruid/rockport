@@ -4,42 +4,46 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Serialization;
 
-public class EditorController : MonoBehaviour
+public class EditorController : MonoBehaviour, IPolySerializable
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private LevelSpaceHolder holder;
+    [SerializeField] private LayerFactory layerFactory;
     [SerializeField] private ManipulatorUIPanel manipulatorUIPanel;
     [SerializeField] private TMP_Text layerText;
-    [Space] 
-    [SerializeField] private GameObject dirtPrefab;
-    [SerializeField] private GameObject treePrefab;
-    [SerializeField] private GameObject treeBackgroundPrefab;
-    [SerializeField] private GameObject objectPrefab;
     [Space]
     [SerializeField] private Camera cam;
     [SerializeField] private float cameraMoveSpeed;
     [SerializeField] private float cameraZoomSpeed;
     [SerializeField] private float cameraMinSize;
+    [Space] 
+    [SerializeField] private string alpha1LayerTitle;
+    [SerializeField] private string alpha2LayerTitle;
+    [SerializeField] private string alpha3LayerTitle;
+    [SerializeField] private string alpha4LayerTitle;
     
+    private bool _canEdit = true;
     private int _selectedLayer = -1;
     private IPlaceRemoveHandler _placeRemoveHandler = null;
-
-    private bool _canEdit = true;
-
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
     {
         Assert.IsNotNull(holder);
+        Assert.IsNotNull(layerFactory);
         Assert.IsNotNull(manipulatorUIPanel);
         Assert.IsNotNull(layerText);
         
-        Assert.IsNotNull(dirtPrefab);
-        Assert.IsNotNull(treePrefab);
-        Assert.IsNotNull(treeBackgroundPrefab);
-        Assert.IsNotNull(objectPrefab);
-        
         Assert.IsNotNull(cam);
+        
+        Assert.IsNotNull(alpha1LayerTitle);
+        Assert.IsNotNull(alpha2LayerTitle);
+        Assert.IsNotNull(alpha3LayerTitle);
+        Assert.IsNotNull(alpha4LayerTitle);
+        Assert.IsFalse(alpha1LayerTitle.Length == 0);
+        Assert.IsFalse(alpha2LayerTitle.Length == 0);
+        Assert.IsFalse(alpha3LayerTitle.Length == 0);
+        Assert.IsFalse(alpha4LayerTitle.Length == 0);
 
         UpdateLayerText();
         manipulatorUIPanel.ConsumeInputChangeEvent += consumesInput => _canEdit = !consumesInput;
@@ -50,11 +54,50 @@ public class EditorController : MonoBehaviour
     public void SetPlaceRemoveHandler(IPlaceRemoveHandler handler) => _placeRemoveHandler = handler;
     public void UnsetPlaceRemoveHandler() => _placeRemoveHandler = null;
     
+    public string SerializeData()
+    {
+        var names = new string[holder.ManipulatorsCount];
+        var innerData = new string[holder.ManipulatorsCount];
+        for (var i = 0; i < holder.ManipulatorsCount; i++)
+        {
+            var manipulator = holder.GetManipulator(i);
+            names[i] = manipulator.ManipulatorName;
+            innerData[i] = manipulator.SerializeData();
+        }
+        var json = JsonUtility.ToJson((names, innerData));
+        return json;
+    }
+
+    public void DeserializeData(string data)
+    {
+        var (names, innerData) = JsonUtility.FromJson<(string[], string[])>(data);
+        
+        UnselectLayer();
+        while (holder.ManipulatorsCount > 0)
+        {
+            var dead = holder.GetManipulator(0);
+            holder.UnregisterAt(0);
+            Destroy(dead.Target.gameObject);
+        }
+        
+        for (var i = 0; i < names.Length; i++)
+        {
+            var manipulator = layerFactory.CreateManipulator(names[i]);
+            holder.RegisterAt(manipulator, i);
+            manipulator.DeserializeData(innerData[i]);
+        }
+    }
     
     //game loop/////////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Update()
     {
         if (!_canEdit) return;
+        
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            var data = SerializeData();
+            DeserializeData(data);
+        }
 
         CheckLayerLogic();
         CheckCameraMovement();
@@ -69,13 +112,13 @@ public class EditorController : MonoBehaviour
     private void CheckLayerLogic()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
-            CreateLayer(dirtPrefab);
+            CreateLayer(alpha1LayerTitle);
         else if (Input.GetKeyDown(KeyCode.Alpha2))
-            CreateLayer(treePrefab);
+            CreateLayer(alpha2LayerTitle);
         else if (Input.GetKeyDown(KeyCode.Alpha3))
-            CreateLayer(treeBackgroundPrefab);
+            CreateLayer(alpha3LayerTitle);
         else if (Input.GetKeyDown(KeyCode.Alpha4))
-            CreateLayer(objectPrefab);
+            CreateLayer(alpha4LayerTitle);
 
         if (Input.GetKeyDown(KeyCode.Delete))
             DeleteLayer();
@@ -88,15 +131,11 @@ public class EditorController : MonoBehaviour
             SelectLayer(holder.ClampLayer(_selectedLayer + selectDirection));
     }
 
-    private void CreateLayer(GameObject prefab)
+    private void CreateLayer(string layerTitle)
     {
         var layer = _selectedLayer + 1;
         UnselectLayer();
-        
-        var go = Instantiate(prefab);
-        var manipulator = go.GetComponent<ManipulatorBase>();
-        holder.RegisterAt(manipulator, layer);
-        
+        holder.RegisterAt(layerFactory.CreateManipulator(layerTitle), layer);
         SelectLayer(layer);
         
         //updating camera position, so it is always behind the topmost layer
@@ -146,8 +185,8 @@ public class EditorController : MonoBehaviour
             return;
         
         var manipulator = holder.GetManipulator(_selectedLayer);
-        manipulator.UnsubscribeInput();
         manipulatorUIPanel.UnsetPropertyHolder();
+        manipulator.UnsubscribeInput();
         _selectedLayer = -1;
         UpdateLayerText();
     }

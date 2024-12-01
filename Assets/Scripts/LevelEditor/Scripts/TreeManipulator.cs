@@ -1,11 +1,7 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using LevelEditor;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
@@ -15,8 +11,6 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
     private static readonly int WorldTextureShaderPropertyID = Shader.PropertyToID("_WorldTex");
     
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    [SerializeField] private int layer;
-    [Space]
     [SerializeField] private Texture2D treeTexture;
     [SerializeField] private Material worldTextureCutoutMaterial;
     [Space]
@@ -28,7 +22,7 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
     
     private Tilemap _treeMap;
     private Tilemap _outlineMap;
-    private bool[,] _placed;
+    private Datamap<bool> _placed;
 
     private EditorController _controller;
     
@@ -56,15 +50,24 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
         _outlineMap.gameObject.AddComponent<TilemapRenderer>();
     }
 
-    private void Start()
+    protected override void Initialise()
     {
-        _placed = new bool[holder.TileSize.x, holder.TileSize.y];
-        holder.RegisterAt(this, layer);
+        _placed = new Datamap<bool>(holder.TileSize, false);
     }
+    
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public override float GetReferenceZ() => _treeMap.transform.position.z;
-    
+    public override string SerializeData() => _placed.SerializeData();
+    public override void DeserializeData(string data)
+    {
+        RequestInitialise();
+        _placed.DeserializeData(data);
+        for (var x = 0; x < _placed.Width; x++)
+        for (var y = 0; y < _placed.Height; y++)
+            UpdateVisualsAt(new Vector2Int(x, y));
+    }
+
     public override void SubscribeInput(EditorController controller)
     {
         _controller = controller;
@@ -90,14 +93,14 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
         if (!holder.SnapWorldToMap(rootWorldPos, out var rootPos) 
             || shouldPlaceNotRemove == _placed.At(rootPos)) return;
 
-        _placed.Set(rootPos, shouldPlaceNotRemove);
+        _placed.At(rootPos) = shouldPlaceNotRemove;
         
         foreach (var subPos in holder.RetrievePositions(rootPos, PolyUtil.FullAreaOffsets)) 
-            UpdateVisualsFor(subPos);
+            UpdateVisualsAt(subPos);
     }
     
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
-    private void UpdateVisualsFor(Vector2Int pos)
+    private void UpdateVisualsAt(Vector2Int pos)
     {
         var placedHere = _placed.At(pos);
         

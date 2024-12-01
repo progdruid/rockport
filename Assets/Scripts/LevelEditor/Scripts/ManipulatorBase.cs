@@ -7,36 +7,34 @@ using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.Tilemaps;
 
-public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder
+public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder, IPolySerializable
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private string manipulatorName;
     [SerializeField] private Transform target;
     [SerializeField] protected LevelSpaceHolder holder;
+
+    private bool _initialised = false;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected virtual void Awake()
+    protected virtual void Awake() => Assert.IsNotNull(target);
+    protected void Start() => RequestInitialise();
+    protected abstract void Initialise();
+    protected void RequestInitialise()
     {
-        Assert.IsNotNull(target);
+        if (_initialised) return;
+        _initialised = true;
+        Initialise();
     }
-    
-    //abstract functionality////////////////////////////////////////////////////////////////////////////////////////////
-    public abstract void SubscribeInput(EditorController controller);
-    public abstract void UnsubscribeInput();
-    public abstract float GetReferenceZ();
     
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public event Action PropertiesChangeEvent;
 
-    public string ManipulatorName
-    {
-        get => manipulatorName;
-        protected set => manipulatorName = value;
-    }
+    public string ManipulatorName => manipulatorName;
     public Transform Target => target;
 
     public void InjectHolder (LevelSpaceHolder injected) => holder = injected;
-
+    
     public virtual IEnumerator<PropertyHandle> GetProperties()
     {
         var handle = new PropertyHandle()
@@ -48,6 +46,12 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder
         };
         yield return handle;
     }
+    
+    public abstract float GetReferenceZ();
+    public abstract void SubscribeInput(EditorController controller);
+    public abstract void UnsubscribeInput();
+    public abstract string SerializeData();
+    public abstract void DeserializeData(string data);
     
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     protected void InvokePropertiesChangeEvent() => PropertiesChangeEvent?.Invoke();

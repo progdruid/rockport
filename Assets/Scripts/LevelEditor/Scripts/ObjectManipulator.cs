@@ -15,12 +15,11 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
     private Transform _manipulatedTransform;
     private string _usedPrefabName = "";
     
+    
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
-    private void Start()
-    {
-        holder.RegisterAt(this, 3);
-    }
+    protected override void Initialise() { }
 
+    
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public void ChangeAt(Vector2 worldPos, bool shouldPlaceNotRemove)
     {
@@ -30,7 +29,20 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
     }
 
     public override float GetReferenceZ() => Target.position.z;
-    
+    public override string SerializeData()
+    {
+        var pos = _manipulatedTransform.localPosition;
+        return $"{_usedPrefabName} {pos.x} {pos.y}";
+    }
+
+    public override void DeserializeData(string data)
+    {
+        RequestInitialise();
+        var split = data.Split(' ');
+        UpdateObjectToName(split[0]);
+        _manipulatedTransform.localPosition = new Vector3(float.Parse(split[1]), float.Parse(split[2]), 0f);
+    }
+
     public override void UnsubscribeInput()
     {
         _controller.UnsetPlaceRemoveHandler();
@@ -54,11 +66,7 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
             PropertyName = "Used Prefab",
             PropertyType = PropertyType.Text,
             Getter = () => _usedPrefabName,
-            Setter = (object val) =>
-            {
-                _usedPrefabName = val.ToString();
-                UpdatePrefab(_usedPrefabName);
-            }
+            Setter = (object val) => UpdateObjectToName(val.ToString())
         };
         yield return usedPrefabNameHandle;
 
@@ -73,15 +81,21 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
     
     
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
-    private void UpdatePrefab(string prefabName)
+    private void UpdateObjectToName(string prefabName)
     {
+        if (prefabName == _usedPrefabName) return;
+        
         if (_manipulatedTransform)
             Destroy(_manipulatedTransform.gameObject);
 
-        _manipulatedTransform = prefabs.TryGetValue(prefabName, out var prefab)
-            ? Instantiate(prefab, Target, false).transform
-            : null;
-
+        _manipulatedTransform = null;
+        _usedPrefabName = "";
+        if (prefabs.TryGetValue(prefabName, out var prefab))
+        {
+            _manipulatedTransform = Instantiate(prefab, Target, false).transform;
+            _usedPrefabName = prefabName;
+        }
+        
         InvokePropertiesChangeEvent();
     }
 }

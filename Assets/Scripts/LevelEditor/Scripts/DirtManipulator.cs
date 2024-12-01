@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Serialization;
@@ -35,8 +36,8 @@ namespace LevelEditor
         [SerializeField] private int maxDepth;
         [SerializeField] private TileMarchingSet outlineMarchingSet;
         [SerializeField] private DirtLayer[] layers;
-        
-        private int[,] _depthMap;
+
+        private Datamap<int> _depthMap;
         private Tilemap _baseMap;
         private Tilemap _lowerPebbleMap;
         private Tilemap _upperPebbleMap;
@@ -71,10 +72,9 @@ namespace LevelEditor
             _marchingMap.gameObject.AddComponent<TilemapRenderer>();
         }
 
-        private void Start()
+        protected override void Initialise()
         {
-            _depthMap = new int[holder.TileSize.x, holder.TileSize.y];
-            holder.RegisterAt(this, 1);
+            _depthMap = new Datamap<int>(holder.TileSize, 0);
         }
         
         
@@ -100,14 +100,20 @@ namespace LevelEditor
         }
 
         public override float GetReferenceZ() => _baseMap.transform.position.z;
-        
+        public override string SerializeData() => _depthMap.SerializeData();
+        public override void DeserializeData(string data)
+        {
+            RequestInitialise();
+            _depthMap.DeserializeData(data);
+            for (var x = 0; x < _depthMap.Width; x++)
+            for (var y = 0; y < _depthMap.Height; y++)
+                UpdateVisualsAt(new Vector2Int(x, y));        
+        }
+
         public void ChangeAt(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
         {
-            if (!holder.SnapWorldToMap(rootWorldPos, out var rootPos)) return;
-            
-            var oldRootDepth = _depthMap.At(rootPos);
-            if ((oldRootDepth == 0) != shouldPlaceNotRemove)
-                return;
+            if (!holder.SnapWorldToMap(rootWorldPos, out var rootPos) || 
+                (_depthMap.At(rootPos) == 0) != shouldPlaceNotRemove) return;
 
             var pending = new Dictionary<Vector2Int, int>
             { [rootPos] = shouldPlaceNotRemove ? 1 : 0 };
@@ -118,26 +124,26 @@ namespace LevelEditor
                 pending.TryGetValue(pos, out var depth);
                 pending.Remove(pos);
 
-                _depthMap.Set(pos, depth);
+                _depthMap.At(pos) = depth;
                 foreach (var neighbour in holder.RetrievePositions(pos, PolyUtil.FullNeighbourOffsets))
                 {
                     var currentDepth = _depthMap.At(neighbour);
                     var calculatedDepth = Mathf.Min(RetrieveMinNeighbourDepth(neighbour) + 1, maxDepth);
                     if (currentDepth == 0 || currentDepth == calculatedDepth)
                     {
-                        UpdateVisualAt(neighbour); //this is temporary
+                        UpdateVisualsAt(neighbour);
                         continue;
                     }
 
                     pending[neighbour] = calculatedDepth;
                 }
 
-                UpdateVisualAt(pos);
+                UpdateVisualsAt(pos);
             }
         }
         
         //private logic/////////////////////////////////////////////////////////////////////////////////////////////////
-        private void UpdateVisualAt(Vector2Int pos)
+        private void UpdateVisualsAt(Vector2Int pos)
         {
             var depth = _depthMap.At(pos);
 

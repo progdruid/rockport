@@ -358,6 +358,7 @@ GameObject:
   - component: {fileID: 251374646}
   - component: {fileID: 251374647}
   - component: {fileID: 251374649}
+  - component: {fileID: 251374650}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -393,16 +394,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   holder: {fileID: 251374649}
+  layerFactory: {fileID: 251374650}
   manipulatorUIPanel: {fileID: 2144953193}
   layerText: {fileID: 206225641}
-  dirtPrefab: {fileID: 6644706919620923965, guid: 10ee6b12ebc90df4f87d1ea8d66116f4, type: 3}
-  treePrefab: {fileID: 10922405712489145, guid: 634d26baec2cca8458109ebce0912820, type: 3}
-  treeBackgroundPrefab: {fileID: 8795244301488319462, guid: 8ef7658a601da5d4f912339a1effadda, type: 3}
-  objectPrefab: {fileID: 6873028971324371480, guid: e3da5d91556cb7e4190cabace07fbfe1, type: 3}
   cam: {fileID: 202641129}
   cameraMoveSpeed: 1
   cameraZoomSpeed: 1
   cameraMinSize: 1
+  alpha1LayerTitle: Dirt
+  alpha2LayerTitle: Tree
+  alpha3LayerTitle: Tree Background
+  alpha4LayerTitle: Object
 --- !u!114 &251374649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -417,6 +419,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileSize: {x: 100, y: 100}
   visualGrid: {fileID: 749351119}
+--- !u!114 &251374650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 251374644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5be262a3e362411a9c249838b166bd80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabs:
+  - {fileID: 6644706919620923965, guid: 10ee6b12ebc90df4f87d1ea8d66116f4, type: 3}
+  - {fileID: 10922405712489145, guid: 634d26baec2cca8458109ebce0912820, type: 3}
+  - {fileID: 8795244301488319462, guid: 8ef7658a601da5d4f912339a1effadda, type: 3}
+  - {fileID: 6873028971324371480, guid: e3da5d91556cb7e4190cabace07fbfe1, type: 3}
 --- !u!1 &661802287
 GameObject:
   m_ObjectHideFlags: 0
@@ -636,7 +655,7 @@ Canvas:
   serializedVersion: 3
   m_RenderMode: 1
   m_Camera: {fileID: 202641129}
-  m_PlaneDistance: 1
+  m_PlaneDistance: 0.5
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
