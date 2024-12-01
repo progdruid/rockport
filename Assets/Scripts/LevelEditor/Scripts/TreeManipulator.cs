@@ -58,11 +58,11 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public override float GetReferenceZ() => _treeMap.transform.position.z;
-    public override string SerializeData() => _placed.SerializeData();
-    public override void DeserializeData(string data)
+    public override string Serialize() => _placed.Serialize();
+    public override void Deserialize(string data)
     {
         RequestInitialise();
-        _placed.DeserializeData(data);
+        _placed.Deserialize(data);
         for (var x = 0; x < _placed.Width; x++)
         for (var y = 0; y < _placed.Height; y++)
             UpdateVisualsAt(new Vector2Int(x, y));

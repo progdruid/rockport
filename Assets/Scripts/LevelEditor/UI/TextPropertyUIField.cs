@@ -11,8 +11,6 @@ public class TextPropertyUIField : MonoBehaviour
     [SerializeField] private TMP_InputField inputField;
     [SerializeField] private RectTransform target;
 
-    public event Action<bool> EditingStateChangeEvent;
-    
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
     {
@@ -38,7 +36,7 @@ public class TextPropertyUIField : MonoBehaviour
             PropertyType.Text => TMP_InputField.ContentType.Standard,
             _ => throw new ArgumentOutOfRangeException()
         };
-        inputField.onSelect.AddListener((s) => EditingStateChangeEvent?.Invoke(true));
+        inputField.onSelect.AddListener((s) => EditorController.CanEdit = false);
         inputField.onEndEdit.AddListener((s) =>
         {
             object val = handle.PropertyType switch
@@ -49,7 +47,7 @@ public class TextPropertyUIField : MonoBehaviour
                 _ => throw new ArgumentOutOfRangeException()
             };
             handle.Setter.Invoke(val);
-            EditingStateChangeEvent?.Invoke(false);
+            EditorController.CanEdit = true;
             inputField.text = handle.Getter.Invoke().ToString();
         });
     }

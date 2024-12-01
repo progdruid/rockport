@@ -6,6 +6,9 @@ using UnityEngine.Serialization;
 
 public class EditorController : MonoBehaviour, IPolySerializable
 {
+    /// TODO: should be extracted to a separate UI system
+    public static bool CanEdit = true;
+    
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private LevelSpaceHolder holder;
     [SerializeField] private LayerFactory layerFactory;
@@ -22,7 +25,6 @@ public class EditorController : MonoBehaviour, IPolySerializable
     [SerializeField] private string alpha3LayerTitle;
     [SerializeField] private string alpha4LayerTitle;
     
-    private bool _canEdit = true;
     private int _selectedLayer = -1;
     private IPlaceRemoveHandler _placeRemoveHandler = null;
     
@@ -46,7 +48,6 @@ public class EditorController : MonoBehaviour, IPolySerializable
         Assert.IsFalse(alpha4LayerTitle.Length == 0);
 
         UpdateLayerText();
-        manipulatorUIPanel.ConsumeInputChangeEvent += consumesInput => _canEdit = !consumesInput;
     }
 
     
@@ -54,7 +55,7 @@ public class EditorController : MonoBehaviour, IPolySerializable
     public void SetPlaceRemoveHandler(IPlaceRemoveHandler handler) => _placeRemoveHandler = handler;
     public void UnsetPlaceRemoveHandler() => _placeRemoveHandler = null;
     
-    public string SerializeData()
+    public string Serialize()
     {
         var names = new string[holder.ManipulatorsCount];
         var innerData = new string[holder.ManipulatorsCount];
@@ -62,13 +63,13 @@ public class EditorController : MonoBehaviour, IPolySerializable
         {
             var manipulator = holder.GetManipulator(i);
             names[i] = manipulator.ManipulatorName;
-            innerData[i] = manipulator.SerializeData();
+            innerData[i] = manipulator.Serialize();
         }
         var json = JsonUtility.ToJson((names, innerData));
         return json;
     }
 
-    public void DeserializeData(string data)
+    public void Deserialize(string data)
     {
         var (names, innerData) = JsonUtility.FromJson<(string[], string[])>(data);
         
@@ -84,19 +85,19 @@ public class EditorController : MonoBehaviour, IPolySerializable
         {
             var manipulator = layerFactory.CreateManipulator(names[i]);
             holder.RegisterAt(manipulator, i);
-            manipulator.DeserializeData(innerData[i]);
+            manipulator.Deserialize(innerData[i]);
         }
     }
     
     //game loop/////////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Update()
     {
-        if (!_canEdit) return;
+        if (!CanEdit) return;
         
         if (Input.GetKeyDown(KeyCode.P))
         {
-            var data = SerializeData();
-            DeserializeData(data);
+            var data = Serialize();
+            Deserialize(data);
         }
 
         CheckLayerLogic();
@@ -127,8 +128,10 @@ public class EditorController : MonoBehaviour, IPolySerializable
                               (Input.GetKeyDown(KeyCode.RightArrow) ? 1 : 0);
         if (selectDirection != 0 && Input.GetKey(KeyCode.LeftControl))
             MoveLayer(selectDirection);
-        else if (selectDirection != 0)
+        else if (selectDirection != 0 && _selectedLayer + selectDirection >= 0)
             SelectLayer(holder.ClampLayer(_selectedLayer + selectDirection));
+        else if (selectDirection != 0 && _selectedLayer + selectDirection < 0)
+            UnselectLayer();
     }
 
     private void CreateLayer(string layerTitle)

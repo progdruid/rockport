@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -21,7 +20,6 @@ public class ManipulatorUIPanel : MonoBehaviour
     }
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    public event Action<bool> ConsumeInputChangeEvent;
     public void SetPropertyHolder (IPropertyHolder propertyHolder)
     {
         _propertyHolder = propertyHolder;
@@ -49,8 +47,7 @@ public class ManipulatorUIPanel : MonoBehaviour
             Assert.IsNotNull(field);
             
             field.SetProperty(handles.Current);
-            field.EditingStateChangeEvent += InvokeEditingStateChangeEvent;
-            
+
             _uiFields.Add(field);
         }
 
@@ -68,14 +65,12 @@ public class ManipulatorUIPanel : MonoBehaviour
     {
         foreach (var field in _uiFields)
         {
-            field.EditingStateChangeEvent -= InvokeEditingStateChangeEvent;
             Destroy(field.Target.gameObject);
         }
-        InvokeEditingStateChangeEvent(false);
+
+        EditorController.CanEdit = true;
         _uiFields.Clear();
         
         layerTextPanel.anchoredPosition = new Vector2(0, 0);
     }
-    
-    private void InvokeEditingStateChangeEvent (bool state) => ConsumeInputChangeEvent?.Invoke(state);
 }

@@ -100,11 +100,11 @@ namespace LevelEditor
         }
 
         public override float GetReferenceZ() => _baseMap.transform.position.z;
-        public override string SerializeData() => _depthMap.SerializeData();
-        public override void DeserializeData(string data)
+        public override string Serialize() => _depthMap.Serialize();
+        public override void Deserialize(string data)
         {
             RequestInitialise();
-            _depthMap.DeserializeData(data);
+            _depthMap.Deserialize(data);
             for (var x = 0; x < _depthMap.Width; x++)
             for (var y = 0; y < _depthMap.Height; y++)
                 UpdateVisualsAt(new Vector2Int(x, y));        

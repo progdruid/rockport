@@ -29,13 +29,13 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
     }
 
     public override float GetReferenceZ() => Target.position.z;
-    public override string SerializeData()
+    public override string Serialize()
     {
         var pos = _manipulatedTransform.localPosition;
         return $"{_usedPrefabName} {pos.x} {pos.y}";
     }
 
-    public override void DeserializeData(string data)
+    public override void Deserialize(string data)
     {
         RequestInitialise();
         var split = data.Split(' ');

@@ -24,7 +24,7 @@ public struct Datamap<T> : IPolySerializable
     public int Height => _size.y;
     public int Count => _buffer.Length;
     
-    public string SerializeData()
+    public string Serialize()
     {
         using var ms = new MemoryStream();
         var bf = new BinaryFormatter();
@@ -32,7 +32,7 @@ public struct Datamap<T> : IPolySerializable
         return Convert.ToBase64String(ms.ToArray());
     }
 
-    public void DeserializeData(string data)
+    public void Deserialize(string data)
     {
         var bytes = Convert.FromBase64String(data);
         using var ms = new MemoryStream(bytes);

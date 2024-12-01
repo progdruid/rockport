@@ -50,8 +50,8 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder, IPolySer
     public abstract float GetReferenceZ();
     public abstract void SubscribeInput(EditorController controller);
     public abstract void UnsubscribeInput();
-    public abstract string SerializeData();
-    public abstract void DeserializeData(string data);
+    public abstract string Serialize();
+    public abstract void Deserialize(string data);
     
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     protected void InvokePropertiesChangeEvent() => PropertiesChangeEvent?.Invoke();
