@@ -2,7 +2,7 @@ Shader "Unlit/WorldTextureCutout"
 {
     Properties
     {
-        
+        _Color ("Color", Color) = (1, 1, 1, 1)
         [HideInInspector] _MainTex ("Main Texture", 2D) = "clear" {}
         _WorldTex ("World Texture", 2D) = "white" {}
         _PPU ("World Texture PPU", Float) = 32
@@ -32,6 +32,7 @@ Shader "Unlit/WorldTextureCutout"
                 float2 worldTexUV : TEXCOORD1;
             };
 
+            half4 _Color;
             sampler2D _MainTex;
             sampler2D _WorldTex;
             float4 _WorldTex_TexelSize;
@@ -55,7 +56,7 @@ Shader "Unlit/WorldTextureCutout"
             {
                 fixed4 col = tex2D(_MainTex, lerpData.localTexUV);
                 fixed4 worldTexColor = tex2D(_WorldTex, frac(lerpData.worldTexUV));
-                col = lerp(worldTexColor, col, col.a);
+                col = lerp(worldTexColor, col, col.a) * _Color;
                 return col;
             }
             ENDCG
