@@ -12,12 +12,12 @@ public class DeathsBarManager : MonoBehaviour
     private List<Animator> fruitIcons;
     private int lastFruitCount;
 
-    private void Awake() => Registry.ins.deathsBar = this;
+    private void Awake() => GameSystems.ins.deathsBar = this;
 
     private void Start()
     {
         fruitIcons = new();
-        Registry.ins.fruitManager.FruitUpdateEvent += UpdateBar;
+        GameSystems.ins.fruitManager.FruitUpdateEvent += UpdateBar;
 
         for (int i = 0; i < MaxFruitIcons; i++)
             CreateFruitIcon(false);
@@ -35,7 +35,7 @@ public class DeathsBarManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        Registry.ins.fruitManager.FruitUpdateEvent -= UpdateBar;
+        GameSystems.ins.fruitManager.FruitUpdateEvent -= UpdateBar;
     }
 
     private IEnumerator DisableFruit (int fruitIndex)
@@ -48,7 +48,7 @@ public class DeathsBarManager : MonoBehaviour
 
     public void UpdateBar ()
     {
-        int fruitCount = Registry.ins.fruitManager.GetFruitsAmount();
+        int fruitCount = GameSystems.ins.fruitManager.GetFruitsAmount();
         for (int i = 0; i < fruitIcons.Count; i++)
         {
             if (i < fruitCount)
