@@ -16,7 +16,7 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder, IPackabl
     private bool _initialised = false;
     private bool _generatePhysics;
 
-    protected MapSpaceRegistry Registry { get; private set; }
+    protected MapSpaceHolder Holder { get; private set; }
 
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     protected virtual void Awake() => Assert.IsNotNull(target);
@@ -36,7 +36,7 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder, IPackabl
     public string ManipulatorName => manipulatorName;
     public Transform Target => target;
 
-    public void InjectRegistry(MapSpaceRegistry injected) => Registry = injected;
+    public void InjectHolder(MapSpaceHolder injected) => Holder = injected;
 
     public virtual IEnumerator<PropertyHandle> GetProperties()
     {

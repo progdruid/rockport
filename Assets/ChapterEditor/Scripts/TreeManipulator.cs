@@ -54,7 +54,7 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
 
     protected override void Initialise()
     {
-        _placed = new Datamap<bool>(Registry.MapSize, false);
+        _placed = new Datamap<bool>(Holder.MapSize, false);
     }
 
 
@@ -90,12 +90,12 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
 
     public void ChangeAt(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
     {
-        if (!Registry.SnapWorldToMap(rootWorldPos, out var rootPos)
+        if (!Holder.SnapWorldToMap(rootWorldPos, out var rootPos)
             || shouldPlaceNotRemove == _placed.At(rootPos)) return;
 
         _placed.At(rootPos) = shouldPlaceNotRemove;
 
-        foreach (var subPos in Registry.RetrievePositions(rootPos, PolyUtil.FullAreaOffsets))
+        foreach (var subPos in Holder.RetrievePositions(rootPos, PolyUtil.FullAreaOffsets))
             UpdateVisualsAt(subPos);
     }
 
@@ -103,6 +103,7 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
     protected override void GeneratePhysics()
     {
         _treeMap.gameObject.AddComponent<TilemapCollider2D>();
+        _treeMap.gameObject.layer = 8;
     }
     
     private void UpdateVisualsAt(Vector2Int pos)
@@ -121,7 +122,7 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
             for (var i = 0; i < PolyUtil.FullNeighbourOffsets.Length; i++)
             {
                 var n = pos + PolyUtil.FullNeighbourOffsets[i];
-                var bounded = Registry.IsInBounds(n);
+                var bounded = Holder.IsInBounds(n);
                 var check = (!bounded && placedHere) || (bounded && _placed.At(n));
                 fullQuery.Neighbours[i] = check;
                 if (i < PolyUtil.HalfNeighbourOffsets.Length)

@@ -56,7 +56,7 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
     }
     public override string Pack()
     {
-        Registry.SnapWorldToMap(_manipulatedTransform.position, out var map);
+        Holder.SnapWorldToMap(_manipulatedTransform.position, out var map);
         return JsonUtility.ToJson((base.Pack(), _usedPrefabName, map));
     }
 
@@ -67,7 +67,7 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
         RequestInitialise();
         base.Unpack(basePacked);
         UpdateObjectToName(usedName);
-        _manipulatedTransform.localPosition = Registry.ConvertMapToWorld(mapPos);
+        _manipulatedTransform.localPosition = Holder.ConvertMapToWorld(mapPos);
     }
 
     public override void KillDrop()
@@ -80,8 +80,8 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
 
     public void ChangeAt(Vector2 worldPos, bool shouldPlaceNotRemove)
     {
-        if (!Registry.SnapWorldToMap(worldPos, out var mapPos) || !_manipulatedTransform) return;
-        var snappedWorldPos = Registry.ConvertMapToWorld(mapPos);
+        if (!Holder.SnapWorldToMap(worldPos, out var mapPos) || !_manipulatedTransform) return;
+        var snappedWorldPos = Holder.ConvertMapToWorld(mapPos);
         _manipulatedTransform.localPosition = snappedWorldPos;
     }
 
@@ -113,10 +113,10 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
 
     private void TogglePhysicsInObject(Transform obj, bool value)
     {
-        var bodies = GetComponents<Rigidbody2D>()
-            .Concat(GetComponentsInChildren<Rigidbody2D>(true));
-        var colliders = GetComponents<Collider2D>()
-            .Concat(GetComponentsInChildren<Collider2D>(true));
+        var bodies = obj.GetComponents<Rigidbody2D>()
+            .Concat(obj.GetComponentsInChildren<Rigidbody2D>(true));
+        var colliders = obj.GetComponents<Collider2D>()
+            .Concat(obj.GetComponentsInChildren<Collider2D>(true));
         
         foreach (var col in colliders) col.enabled = value;
         foreach (var body in bodies)

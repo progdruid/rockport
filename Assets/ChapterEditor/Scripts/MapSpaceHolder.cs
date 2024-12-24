@@ -5,7 +5,7 @@ using UnityEngine.Assertions;
 namespace ChapterEditor
 {
 
-public class MapSpaceRegistry
+public class MapSpaceHolder
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private Vector2Int _mapSize;
@@ -13,7 +13,7 @@ public class MapSpaceRegistry
     private readonly List<ManipulatorBase> _manipulators;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////    
-    public MapSpaceRegistry(Vector2Int size)
+    public MapSpaceHolder(Vector2Int size)
     {
         Assert.IsTrue(size.x > 0);
         Assert.IsTrue(size.y > 0);
@@ -66,7 +66,7 @@ public class MapSpaceRegistry
 
         _manipulators.Add(manipulator);
         layer = _manipulators.Count - 1;
-        manipulator.InjectRegistry(this);
+        manipulator.InjectHolder(this);
 
         manipulator.Target.SetParent(_visualGrid.transform);
         UpdateZ(layer);
@@ -91,7 +91,7 @@ public class MapSpaceRegistry
     {
         if (!HasLayer(layer)) return false;
         var manipulator = GetManipulator(layer);
-        manipulator.InjectRegistry(null);
+        manipulator.InjectHolder(null);
         manipulator.Target.SetParent(null);
         _manipulators.RemoveAt(layer);
         for (var i = layer; i < _manipulators.Count - 1; i++)

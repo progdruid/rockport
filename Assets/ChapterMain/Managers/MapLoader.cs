@@ -111,7 +111,8 @@ public class MapLoader : MonoBehaviour
         }
         GameSystems.ins.fruitManager.ClearFruits();
 
-        var registry = new MapSpaceRegistry(data.SpaceSize);
+        var registry = new MapSpaceHolder(data.SpaceSize);
+        
         for (var i = 0; i < data.LayerNames.Length; i++)
         {
             var manipulator = layerFactory.CreateManipulator(data.LayerNames[i]);
@@ -125,6 +126,7 @@ public class MapLoader : MonoBehaviour
             manipulator.KillDrop();
         }
         
+        GameSystems.ins.playerManager.SetSpawnPoint(registry.ConvertMapToWorld(data.SpawnPoint));
         
         LevelInstantiationEvent?.Invoke();
         

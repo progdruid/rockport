@@ -71,7 +71,7 @@ public class DirtManipulator : ManipulatorBase, IPlaceRemoveHandler
 
     protected override void Initialise()
     {
-        _depthMap = new Datamap<int>(Registry.MapSize, 0);
+        _depthMap = new Datamap<int>(Holder.MapSize, 0);
     }
 
 
@@ -114,7 +114,7 @@ public class DirtManipulator : ManipulatorBase, IPlaceRemoveHandler
 
     public void ChangeAt(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
     {
-        if (!Registry.SnapWorldToMap(rootWorldPos, out var rootPos) ||
+        if (!Holder.SnapWorldToMap(rootWorldPos, out var rootPos) ||
             (_depthMap.At(rootPos) == 0) != shouldPlaceNotRemove) return;
 
         var pending = new Dictionary<Vector2Int, int>
@@ -127,7 +127,7 @@ public class DirtManipulator : ManipulatorBase, IPlaceRemoveHandler
             pending.Remove(pos);
 
             _depthMap.At(pos) = depth;
-            foreach (var neighbour in Registry.RetrievePositions(pos, PolyUtil.FullNeighbourOffsets))
+            foreach (var neighbour in Holder.RetrievePositions(pos, PolyUtil.FullNeighbourOffsets))
             {
                 var currentDepth = _depthMap.At(neighbour);
                 var calculatedDepth = Mathf.Min(RetrieveMinNeighbourDepth(neighbour) + 1, maxDepth);
@@ -148,6 +148,7 @@ public class DirtManipulator : ManipulatorBase, IPlaceRemoveHandler
     protected override void GeneratePhysics()
     {
         _baseMap.gameObject.AddComponent<TilemapCollider2D>();
+        _baseMap.gameObject.layer = 8;
     }
     
     private void UpdateVisualsAt(Vector2Int pos)
@@ -177,7 +178,7 @@ public class DirtManipulator : ManipulatorBase, IPlaceRemoveHandler
         for (var i = 0; i < PolyUtil.FullNeighbourOffsets.Length; i++)
         {
             var n = pos + PolyUtil.FullNeighbourOffsets[i];
-            var inBounds = Registry.IsInBounds(n);
+            var inBounds = Holder.IsInBounds(n);
             var present = inBounds && _depthMap.At(n) > lastLayerEndDepth;
             var check = (!inBounds && depth != 0) || present;
             fullQuery.Neighbours[i] = check;
@@ -233,7 +234,7 @@ public class DirtManipulator : ManipulatorBase, IPlaceRemoveHandler
     private int RetrieveMinNeighbourDepth(Vector2Int pos)
     {
         var minDepth = maxDepth;
-        foreach (var neighbour in Registry.RetrievePositions(pos, PolyUtil.FullNeighbourOffsets))
+        foreach (var neighbour in Holder.RetrievePositions(pos, PolyUtil.FullNeighbourOffsets))
         {
             var depth = _depthMap.At(neighbour);
             if (depth < minDepth) minDepth = depth;
