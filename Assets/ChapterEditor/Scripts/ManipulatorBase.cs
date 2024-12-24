@@ -14,8 +14,9 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder, IPackabl
     [SerializeField] private Transform target;
 
     private bool _initialised = false;
-    
-    protected ChapterSpaceRegistry Registry { get; private set; }
+    private bool _generatePhysics;
+
+    protected MapSpaceRegistry Registry { get; private set; }
 
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     protected virtual void Awake() => Assert.IsNotNull(target);
@@ -35,26 +36,47 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder, IPackabl
     public string ManipulatorName => manipulatorName;
     public Transform Target => target;
 
-    public void InjectRegistry(ChapterSpaceRegistry injected) => Registry = injected;
+    public void InjectRegistry(MapSpaceRegistry injected) => Registry = injected;
 
     public virtual IEnumerator<PropertyHandle> GetProperties()
     {
-        var handle = new PropertyHandle()
+        var titleHandle = new PropertyHandle()
         {
             PropertyName = "Title",
             PropertyType = PropertyType.Text,
             Getter = () => manipulatorName,
             Setter = (object input) => manipulatorName = (string)input
         };
-        yield return handle;
+        yield return titleHandle;
+        
+        var physicsHandle = new PropertyHandle()
+        {
+            PropertyName = "Generate Physics",
+            PropertyType = PropertyType.Text,
+            Getter = () => _generatePhysics ? "true" : "false",
+            Setter = (object input) => _generatePhysics = (string)input == "true"
+        };
+        yield return physicsHandle;
+        
     }
 
     public abstract float GetReferenceZ();
     public abstract void SubscribeInput(EditorController controller);
     public abstract void UnsubscribeInput();
-    public abstract string Pack();
-    public abstract void Unpack(string data);
-    public virtual void KillDrop() => Destroy(this);
+    public virtual string Pack() => _generatePhysics ? "true" : "false";
+    public virtual void Unpack(string data)
+    {
+        _generatePhysics = data == "true";
+        InvokePropertiesChangeEvent();
+    }
+
+    public virtual void KillDrop()
+    {
+        if (_generatePhysics)
+            GeneratePhysics();
+        Destroy(this);
+    }
+
     public void KillClean()
     {
         var targetObject = target.gameObject;
@@ -63,6 +85,7 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder, IPackabl
     }
 
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected abstract void GeneratePhysics();
     protected void InvokePropertiesChangeEvent() => PropertiesChangeEvent?.Invoke();
 
     protected Tilemap CreateTilemap(int offset, string mapName)

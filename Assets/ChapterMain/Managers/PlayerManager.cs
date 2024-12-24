@@ -20,7 +20,7 @@ public class PlayerManager : MonoBehaviour
     {
         GameSystems.ins.playerManager = this;
         //this is an exception, this event will be invoked on Start, so there is no other option than finding it manually
-        GetComponent<ChapterLoader>().LevelInstantiationEvent += TryFindAndSetSpawnPoint;
+        GetComponent<MapLoader>().LevelInstantiationEvent += TryFindAndSetSpawnPoint;
     }
 
     private void Start() 
@@ -110,7 +110,7 @@ public class PlayerManager : MonoBehaviour
 
     private void TryFindAndSetSpawnPoint ()
     {
-        GameObject foundObject = GetComponent<ChapterLoader>().TryFindObjectWithTag("SpawnPoint");
+        GameObject foundObject = GetComponent<MapLoader>().TryFindObjectWithTag("SpawnPoint");
 
         if (foundObject != null)
             SetSpawnPoint(foundObject.transform.position);

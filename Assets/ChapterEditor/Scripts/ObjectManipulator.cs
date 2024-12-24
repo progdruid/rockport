@@ -57,20 +57,25 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
     public override string Pack()
     {
         Registry.SnapWorldToMap(_manipulatedTransform.position, out var map);
-        return JsonUtility.ToJson((_usedPrefabName, map));
+        return JsonUtility.ToJson((base.Pack(), _usedPrefabName, map));
     }
 
     public override void Unpack(string data)
     {
+        var (basePacked, usedName, mapPos) = JsonUtility.FromJson<(string, string, Vector2Int)>(data);
+        
         RequestInitialise();
-        var (usedName, mapPos) = JsonUtility.FromJson<(string, Vector2Int)>(data);
+        base.Unpack(basePacked);
         UpdateObjectToName(usedName);
         _manipulatedTransform.localPosition = Registry.ConvertMapToWorld(mapPos);
     }
+
     public override void KillDrop()
     {
         _manipulatedTransform.SetParent(Target.parent, true);
+        var thisObject = gameObject;
         base.KillDrop();
+        Destroy(thisObject);
     }
 
     public void ChangeAt(Vector2 worldPos, bool shouldPlaceNotRemove)
@@ -82,6 +87,11 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
 
 
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected override void GeneratePhysics()
+    {
+        TogglePhysicsInObject(_manipulatedTransform, true);
+    }
+    
     private void UpdateObjectToName(string prefabName)
     {
         if (prefabName == _usedPrefabName) return;
@@ -94,10 +104,26 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
         if (prefabs.TryGetValue(prefabName, out var prefab))
         {
             _manipulatedTransform = Instantiate(prefab, Target, false).transform;
+            TogglePhysicsInObject(_manipulatedTransform, false);
             _usedPrefabName = prefabName;
         }
 
         InvokePropertiesChangeEvent();
+    }
+
+    private void TogglePhysicsInObject(Transform obj, bool value)
+    {
+        var bodies = GetComponents<Rigidbody2D>()
+            .Concat(GetComponentsInChildren<Rigidbody2D>(true));
+        var colliders = GetComponents<Collider2D>()
+            .Concat(GetComponentsInChildren<Collider2D>(true));
+        
+        foreach (var col in colliders) col.enabled = value;
+        foreach (var body in bodies)
+        {
+            if (value) body.WakeUp();
+            else body.Sleep();
+        }
     }
 }
 

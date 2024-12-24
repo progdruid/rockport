@@ -1,17 +1,15 @@
-﻿
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace ChapterEditor
 {
-
 [Serializable]
-public struct ChapterData : IPackable
+public struct MapData : IPackable
 {
     public Vector2Int SpaceSize;
     public string[] LayerNames;
     public string[] LayerData;
-    
+
     public string Pack()
     {
         return JsonUtility.ToJson(this);
@@ -19,7 +17,7 @@ public struct ChapterData : IPackable
 
     public void Unpack(string data)
     {
-        this = JsonUtility.FromJson<ChapterData>(data);
+        this = JsonUtility.FromJson<MapData>(data);
     }
 }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 
-public class ChapterLoader : MonoBehaviour
+public class MapLoader : MonoBehaviour
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private SequentialSoundPlayer soundPlayer;
@@ -14,7 +14,7 @@ public class ChapterLoader : MonoBehaviour
     [SerializeField] private LayerFactory layerFactory;
     
     private GameObject _chapterObject;
-    private ChapterData _currentChapterData;
+    private MapData _currentMapData;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
@@ -68,7 +68,7 @@ public class ChapterLoader : MonoBehaviour
 
     private void ReloadLevel()
     {
-        StartCoroutine(LoadLevelRoutine(_currentChapterData));
+        StartCoroutine(LoadLevelRoutine(_currentMapData));
     }
 
     private void QuitToMenu()
@@ -82,9 +82,9 @@ public class ChapterLoader : MonoBehaviour
         Assert.IsTrue(loaded);
         Assert.IsNotNull(contents);
         
-        _currentChapterData = new ChapterData();
-        _currentChapterData.Unpack(contents);
-        StartCoroutine(LoadLevelRoutine(_currentChapterData));
+        _currentMapData = new MapData();
+        _currentMapData.Unpack(contents);
+        StartCoroutine(LoadLevelRoutine(_currentMapData));
     }
 
     private IEnumerator GoToMenuRoutine ()
@@ -97,7 +97,7 @@ public class ChapterLoader : MonoBehaviour
         SceneManager.LoadScene("Menu");
     }
 
-    private IEnumerator LoadLevelRoutine (ChapterData data)
+    private IEnumerator LoadLevelRoutine (MapData data)
     {
         UnsubscribeFromInput();
 
@@ -111,7 +111,7 @@ public class ChapterLoader : MonoBehaviour
         }
         GameSystems.ins.fruitManager.ClearFruits();
 
-        var registry = new ChapterSpaceRegistry(data.SpaceSize);
+        var registry = new MapSpaceRegistry(data.SpaceSize);
         for (var i = 0; i < data.LayerNames.Length; i++)
         {
             var manipulator = layerFactory.CreateManipulator(data.LayerNames[i]);
@@ -124,7 +124,6 @@ public class ChapterLoader : MonoBehaviour
             var manipulator = registry.GetManipulator(i);
             manipulator.KillDrop();
         }
-        registry.Kill();
         
         
         LevelInstantiationEvent?.Invoke();

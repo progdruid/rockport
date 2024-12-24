@@ -5,7 +5,7 @@ using UnityEngine.Assertions;
 namespace ChapterEditor
 {
 
-public class ChapterSpaceRegistry
+public class MapSpaceRegistry
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private Vector2Int _mapSize;
@@ -13,7 +13,7 @@ public class ChapterSpaceRegistry
     private readonly List<ManipulatorBase> _manipulators;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////    
-    public ChapterSpaceRegistry(Vector2Int size)
+    public MapSpaceRegistry(Vector2Int size)
     {
         Assert.IsTrue(size.x > 0);
         Assert.IsTrue(size.y > 0);

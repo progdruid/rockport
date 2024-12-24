@@ -27,7 +27,7 @@ public class EditorController : MonoBehaviour, IPackable
     [SerializeField] private string alpha3LayerTitle;
     [SerializeField] private string alpha4LayerTitle;
 
-    private ChapterSpaceRegistry _registry;
+    private MapSpaceRegistry _registry;
     
     private int _selectedLayer = -1;
     private IPlaceRemoveHandler _placeRemoveHandler = null;
@@ -50,7 +50,7 @@ public class EditorController : MonoBehaviour, IPackable
         Assert.IsFalse(alpha3LayerTitle.Length == 0);
         Assert.IsFalse(alpha4LayerTitle.Length == 0);
 
-        _registry = new ChapterSpaceRegistry(new Vector2Int(100, 100));
+        _registry = new MapSpaceRegistry(new Vector2Int(100, 100));
         
         UpdateLayerText();
     }
@@ -62,7 +62,7 @@ public class EditorController : MonoBehaviour, IPackable
 
     public string Pack()
     {
-        var chapterData = new ChapterData()
+        var chapterData = new MapData()
         {
             SpaceSize = _registry.MapSize,
             LayerNames = new string[_registry.ManipulatorsCount],
@@ -81,7 +81,7 @@ public class EditorController : MonoBehaviour, IPackable
 
     public void Unpack(string data)
     {
-        var chapterData = new ChapterData();
+        var chapterData = new MapData();
         chapterData.Unpack(data);
 
         UnselectLayer();
@@ -93,7 +93,7 @@ public class EditorController : MonoBehaviour, IPackable
         }
         
         _registry.Kill();
-        _registry = new ChapterSpaceRegistry(chapterData.SpaceSize);
+        _registry = new MapSpaceRegistry(chapterData.SpaceSize);
 
         for (var i = 0; i < chapterData.LayerNames.Length; i++)
         {

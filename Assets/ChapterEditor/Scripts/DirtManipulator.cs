@@ -29,7 +29,7 @@ public struct DirtStratum
 
 public class DirtManipulator : ManipulatorBase, IPlaceRemoveHandler
 {
-    //fields////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private int maxDepth;
     [SerializeField] private TileMarchingSet outlineMarchingSet;
     [SerializeField] private DirtStratum[] strata;
@@ -42,7 +42,7 @@ public class DirtManipulator : ManipulatorBase, IPlaceRemoveHandler
 
     private EditorController _controller;
 
-    //initialisation////////////////////////////////////////////////////////////////////////////////////////////////
+    //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     protected override void Awake()
     {
         base.Awake();
@@ -75,7 +75,7 @@ public class DirtManipulator : ManipulatorBase, IPlaceRemoveHandler
     }
 
 
-    //public interface//////////////////////////////////////////////////////////////////////////////////////////////
+    //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public override void SubscribeInput(EditorController controller)
     {
         _controller = controller;
@@ -97,12 +97,16 @@ public class DirtManipulator : ManipulatorBase, IPlaceRemoveHandler
     }
 
     public override float GetReferenceZ() => _baseMap.transform.position.z;
-    public override string Pack() => _depthMap.Pack();
+    public override string Pack() => JsonUtility.ToJson((base.Pack(), _depthMap.Pack()));
 
     public override void Unpack(string data)
     {
+        var (basePacked, depthPacked) = JsonUtility.FromJson<(string, string)>(data);
+        
         RequestInitialise();
-        _depthMap.Unpack(data);
+        base.Unpack(basePacked);
+        _depthMap.Unpack(depthPacked);
+        
         for (var x = 0; x < _depthMap.Width; x++)
         for (var y = 0; y < _depthMap.Height; y++)
             UpdateVisualsAt(new Vector2Int(x, y));
@@ -140,7 +144,12 @@ public class DirtManipulator : ManipulatorBase, IPlaceRemoveHandler
         }
     }
 
-    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////
+    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected override void GeneratePhysics()
+    {
+        _baseMap.gameObject.AddComponent<TilemapCollider2D>();
+    }
+    
     private void UpdateVisualsAt(Vector2Int pos)
     {
         var depth = _depthMap.At(pos);

@@ -8,7 +8,7 @@ public class ParallaxBackground : MonoBehaviour
     [SerializeField] Sprite sampleSprite;
     [SerializeField] Vector2 cycleMovementSpeed;
 
-    private ChapterLoader _chapterLoader;
+    private MapLoader _mapLoader;
     private Vector2 equatorialLinePoint;
     private Transform targetTransform;
     private float halfWidth;
@@ -17,23 +17,23 @@ public class ParallaxBackground : MonoBehaviour
     {
         GameObject gc = GameObject.FindGameObjectWithTag("GameController");
         if (gc != null)
-            _chapterLoader = gc.GetComponent<ChapterLoader>();
-        if (_chapterLoader != null)
-            _chapterLoader.LevelInstantiationEvent += Init;
+            _mapLoader = gc.GetComponent<MapLoader>();
+        if (_mapLoader != null)
+            _mapLoader.LevelInstantiationEvent += Init;
 
         halfWidth = sampleSprite.bounds.extents.x;
     }
 
     private void Start()
     {
-        if (_chapterLoader == null)
+        if (_mapLoader == null)
             Init();
     }
 
     private void OnDestroy()
     {
-        if (_chapterLoader != null)
-            _chapterLoader.GetComponent<ChapterLoader>().LevelInstantiationEvent -= Init;
+        if (_mapLoader != null)
+            _mapLoader.GetComponent<MapLoader>().LevelInstantiationEvent -= Init;
     }
 
     private void Init()
@@ -41,8 +41,8 @@ public class ParallaxBackground : MonoBehaviour
         targetTransform = Camera.main.gameObject.transform;
 
         GameObject foundObject;
-        if (_chapterLoader != null)
-            foundObject = _chapterLoader.TryFindObjectWithTag("EquatorialLineObject");
+        if (_mapLoader != null)
+            foundObject = _mapLoader.TryFindObjectWithTag("EquatorialLineObject");
         else
             foundObject = GameObject.FindGameObjectWithTag("EquatorialLineObject");
 

@@ -71,16 +71,22 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
         _controller.UnsetPlaceRemoveHandler();
         _controller = null;
     }
-    public override string Pack() => _placed.Pack();
+    
+    public override string Pack() => JsonUtility.ToJson((base.Pack(), _placed.Pack()));
+
     public override void Unpack(string data)
     {
+        var (basePacked, placedPacked) = JsonUtility.FromJson<(string, string)>(data);
+        
         RequestInitialise();
-        _placed.Unpack(data);
+        base.Unpack(basePacked);
+        _placed.Unpack(placedPacked);
+        
         for (var x = 0; x < _placed.Width; x++)
         for (var y = 0; y < _placed.Height; y++)
             UpdateVisualsAt(new Vector2Int(x, y));
     }
-    
+
 
     public void ChangeAt(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
     {
@@ -94,6 +100,11 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
     }
 
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected override void GeneratePhysics()
+    {
+        _treeMap.gameObject.AddComponent<TilemapCollider2D>();
+    }
+    
     private void UpdateVisualsAt(Vector2Int pos)
     {
         var placedHere = _placed.At(pos);
