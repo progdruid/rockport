@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Common;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Tilemaps;
@@ -9,12 +10,8 @@ namespace ChapterEditor
 
 public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
 {
-    //static part///////////////////////////////////////////////////////////////////////////////////////////////////////
-    private static readonly int WorldTextureShaderPropertyID = Shader.PropertyToID("_WorldTex");
-
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private Texture2D treeTexture;
-    [SerializeField] private Material worldTextureCutoutMaterial;
     [Space] 
     [SerializeField] private bool useMarching = true;
     [SerializeField] private TileMarchingSet treeMarching;
@@ -26,6 +23,10 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
     private Tilemap _outlineMap;
     private Datamap<bool> _placed;
 
+    private Material _baseMaterial;
+    private Material _worldMaterial;
+    private float _fogScale = 0f;
+    
     private EditorController _controller;
 
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -34,7 +35,6 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
         base.Awake();
 
         Assert.IsNotNull(treeTexture);
-        Assert.IsNotNull(worldTextureCutoutMaterial);
         if (useMarching) Assert.IsNotNull(treeMarching);
         else Assert.IsNotNull(cutoutTile);
         Assert.IsNotNull(outlineMarching);
@@ -42,14 +42,18 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
         treeMarching.ParseTiles();
         outlineMarching.ParseTiles();
 
+        _baseMaterial = new Material(GlobalConfig.Ins.StandardMaterial);
+        _baseMaterial.SetFloat(Lytil.FogIntensityID, _fogScale);
+        
+        _worldMaterial = new Material(GlobalConfig.Ins.WorldTextureMaskMaterial);
+        _worldMaterial.SetFloat(Lytil.FogIntensityID, _fogScale);
+        _worldMaterial.SetTexture(Lytil.WorldTextureID, treeTexture);
+        
         _treeMap = CreateTilemap(0, "Tree Tilemap");
-        var marchMapRenderer = _treeMap.gameObject.AddComponent<TilemapRenderer>();
-        var mat = new Material(worldTextureCutoutMaterial);
-        mat.SetTexture(WorldTextureShaderPropertyID, treeTexture);
-        marchMapRenderer.sharedMaterial = mat;
-
         _outlineMap = CreateTilemap(1, "Tree Outline Tilemap");
-        _outlineMap.gameObject.AddComponent<TilemapRenderer>();
+        
+        _treeMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _worldMaterial;
+        _outlineMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _baseMaterial;
     }
 
     protected override void Initialise()
@@ -60,6 +64,25 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public override float GetReferenceZ() => _treeMap.transform.position.z;
+    public override IEnumerator<PropertyHandle> GetProperties()
+    {
+        var iter = base.GetProperties();
+        while (iter.MoveNext())
+            yield return iter.Current;
+
+        yield return new PropertyHandle()
+        {
+            PropertyName = "Fog Intensity %",
+            PropertyType = PropertyType.Decimal,
+            Getter = () => _fogScale * 100f,
+            Setter = (value) =>
+            {
+                _fogScale = (float)value / 100f;
+                _baseMaterial.SetFloat(Lytil.FogIntensityID, _fogScale);
+                _worldMaterial.SetFloat(Lytil.FogIntensityID, _fogScale);
+            }
+        };
+    }
     public override void SubscribeInput(EditorController controller)
     {
         _controller = controller;
@@ -95,7 +118,7 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
 
         _placed.At(rootPos) = shouldPlaceNotRemove;
 
-        foreach (var subPos in Holder.RetrievePositions(rootPos, PolyUtil.FullAreaOffsets))
+        foreach (var subPos in Holder.RetrievePositions(rootPos, Lytil.FullAreaOffsets))
             UpdateVisualsAt(subPos);
     }
 
@@ -117,15 +140,15 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
 
         if (useMarching || !placedHere)
         {
-            var fullQuery = new MarchingTileQuery(new bool[PolyUtil.FullNeighbourOffsets.Length]);
-            var halfQuery = new MarchingTileQuery(new bool[PolyUtil.HalfNeighbourOffsets.Length]);
-            for (var i = 0; i < PolyUtil.FullNeighbourOffsets.Length; i++)
+            var fullQuery = new MarchingTileQuery(new bool[Lytil.FullNeighbourOffsets.Length]);
+            var halfQuery = new MarchingTileQuery(new bool[Lytil.HalfNeighbourOffsets.Length]);
+            for (var i = 0; i < Lytil.FullNeighbourOffsets.Length; i++)
             {
-                var n = pos + PolyUtil.FullNeighbourOffsets[i];
+                var n = pos + Lytil.FullNeighbourOffsets[i];
                 var bounded = Holder.IsInBounds(n);
                 var check = (!bounded && placedHere) || (bounded && _placed.At(n));
                 fullQuery.Neighbours[i] = check;
-                if (i < PolyUtil.HalfNeighbourOffsets.Length)
+                if (i < Lytil.HalfNeighbourOffsets.Length)
                     halfQuery.Neighbours[i] = check;
             }
 

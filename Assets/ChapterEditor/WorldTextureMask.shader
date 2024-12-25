@@ -1,4 +1,4 @@
-Shader "Unlit/WorldTextureCutout"
+Shader "Lyport/WorldTextureCutout"
 {
     Properties
     {
@@ -6,6 +6,8 @@ Shader "Unlit/WorldTextureCutout"
         [HideInInspector] _MainTex ("Main Texture", 2D) = "clear" {}
         _WorldTex ("World Texture", 2D) = "white" {}
         _PPU ("World Texture PPU", Float) = 32
+        _FogColor ("Fog Color", Color) = (1, 1, 1, 1)
+        _FogIntensity ("Fog Intensity", Range(0,1)) = 0.5
     }
     SubShader
     {
@@ -36,6 +38,10 @@ Shader "Unlit/WorldTextureCutout"
             sampler2D _MainTex;
             sampler2D _WorldTex;
             float4 _WorldTex_TexelSize;
+            
+            float4 _FogColor;
+            float _FogIntensity;
+
 
             float _PPU;
             
@@ -57,6 +63,7 @@ Shader "Unlit/WorldTextureCutout"
                 fixed4 col = tex2D(_MainTex, lerpData.localTexUV);
                 fixed4 worldTexColor = tex2D(_WorldTex, frac(lerpData.worldTexUV));
                 col = lerp(worldTexColor, col, col.a) * _Color;
+                col.rgb = lerp(col.rgb, _FogColor.rgb, _FogIntensity);
                 return col;
             }
             ENDCG

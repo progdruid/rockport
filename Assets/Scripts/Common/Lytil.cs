@@ -1,7 +1,11 @@
 ﻿using UnityEngine;
 
-public static class PolyUtil
+public static class Lytil
 {
+    public static readonly int FogColorID = Shader.PropertyToID("_FogColor");
+    public static readonly int FogIntensityID = Shader.PropertyToID("_FogIntensity");
+    public static readonly int WorldTextureID = Shader.PropertyToID("_WorldTex");
+    
     public static readonly Vector2Int[] HalfNeighbourOffsets =
     {
         new( 0, 1), new(1, 0), new(0, -1), new(-1,  0)

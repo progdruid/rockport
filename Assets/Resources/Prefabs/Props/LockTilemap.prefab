@@ -28,13 +28,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1505520888987423389}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1839735485 &3460590976382019773
 Tilemap:
@@ -91,6 +91,9 @@ TilemapRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -131,6 +134,7 @@ TilemapCollider2D:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1505520888987423389}
   m_Enabled: 1
+  serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -154,7 +158,8 @@ TilemapCollider2D:
     m_Bits: 4294967295
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_UsedByComposite: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0.00001
@@ -241,6 +246,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e984b16d942098a48a7154c76fe87e04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startSounds: []
   sounds:
   - name: Lock
     clip: {fileID: 8300000, guid: 4767653a98d72354ba14c84ac7d730f6, type: 3}
@@ -249,4 +255,4 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 9e8bba71f02abcf4e96a0a492ba5cf90, type: 3}
     volume: 1
   mute: 0
-  emitPeriodInCalls: 0
+  emitPeriodInCalls: 1

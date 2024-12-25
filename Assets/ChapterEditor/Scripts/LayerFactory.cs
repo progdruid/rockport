@@ -6,7 +6,7 @@ using UnityEngine.Assertions;
 namespace ChapterEditor
 {
 
-[CreateAssetMenu(menuName = "Polymort/Layer Factory")]
+[CreateAssetMenu(menuName = "Lyport/Layer Factory")]
 public class LayerFactory : ScriptableObject
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////

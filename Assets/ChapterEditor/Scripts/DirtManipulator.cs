@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Common;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Serialization;
@@ -40,6 +41,9 @@ public class DirtManipulator : ManipulatorBase, IPlaceRemoveHandler
     private Tilemap _upperPebbleMap;
     private Tilemap _marchingMap;
 
+    private Material _material;
+    private float _fogScale = 0f;
+    
     private EditorController _controller;
 
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,17 +60,19 @@ public class DirtManipulator : ManipulatorBase, IPlaceRemoveHandler
             if (layer.marchingSet)
                 layer.marchingSet.ParseTiles();
 
+        
         _baseMap = CreateTilemap(0, "Dirt Base Tilemap");
-        _baseMap.gameObject.AddComponent<TilemapRenderer>();
-
         _lowerPebbleMap = CreateTilemap(1, "Dirt Lower Pebble Tilemap");
-        _lowerPebbleMap.gameObject.AddComponent<TilemapRenderer>();
-
         _upperPebbleMap = CreateTilemap(2, "Dirt Upper Pebble Tilemap");
-        _upperPebbleMap.gameObject.AddComponent<TilemapRenderer>();
-
         _marchingMap = CreateTilemap(3, "Dirt Marching Tilemap");
-        _marchingMap.gameObject.AddComponent<TilemapRenderer>();
+
+        _material = new Material(GlobalConfig.Ins.StandardMaterial);
+        _material.SetFloat(Lytil.FogIntensityID, _fogScale);
+        
+        _baseMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _material;
+        _lowerPebbleMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _material;
+        _upperPebbleMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _material;
+        _marchingMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _material;
     }
 
     protected override void Initialise()
@@ -94,6 +100,18 @@ public class DirtManipulator : ManipulatorBase, IPlaceRemoveHandler
         var iter = base.GetProperties();
         while (iter.MoveNext())
             yield return iter.Current;
+
+        yield return new PropertyHandle()
+        {
+            PropertyName = "Fog Intensity %",
+            PropertyType = PropertyType.Decimal,
+            Getter = () => _fogScale * 100f,
+            Setter = (value) =>
+            {
+                _fogScale = (float)value / 100f;
+                _material.SetFloat(Lytil.FogIntensityID, _fogScale);
+            }
+        };
     }
 
     public override float GetReferenceZ() => _baseMap.transform.position.z;
@@ -127,7 +145,7 @@ public class DirtManipulator : ManipulatorBase, IPlaceRemoveHandler
             pending.Remove(pos);
 
             _depthMap.At(pos) = depth;
-            foreach (var neighbour in Holder.RetrievePositions(pos, PolyUtil.FullNeighbourOffsets))
+            foreach (var neighbour in Holder.RetrievePositions(pos, Lytil.FullNeighbourOffsets))
             {
                 var currentDepth = _depthMap.At(neighbour);
                 var calculatedDepth = Mathf.Min(RetrieveMinNeighbourDepth(neighbour) + 1, maxDepth);
@@ -173,16 +191,16 @@ public class DirtManipulator : ManipulatorBase, IPlaceRemoveHandler
 
 
         // marching query
-        var fullQuery = new MarchingTileQuery(new bool[PolyUtil.FullNeighbourOffsets.Length]);
-        var halfQuery = new MarchingTileQuery(new bool[PolyUtil.HalfNeighbourOffsets.Length]);
-        for (var i = 0; i < PolyUtil.FullNeighbourOffsets.Length; i++)
+        var fullQuery = new MarchingTileQuery(new bool[Lytil.FullNeighbourOffsets.Length]);
+        var halfQuery = new MarchingTileQuery(new bool[Lytil.HalfNeighbourOffsets.Length]);
+        for (var i = 0; i < Lytil.FullNeighbourOffsets.Length; i++)
         {
-            var n = pos + PolyUtil.FullNeighbourOffsets[i];
+            var n = pos + Lytil.FullNeighbourOffsets[i];
             var inBounds = Holder.IsInBounds(n);
             var present = inBounds && _depthMap.At(n) > lastLayerEndDepth;
             var check = (!inBounds && depth != 0) || present;
             fullQuery.Neighbours[i] = check;
-            if (i < PolyUtil.HalfNeighbourOffsets.Length)
+            if (i < Lytil.HalfNeighbourOffsets.Length)
                 halfQuery.Neighbours[i] = check;
         }
 
@@ -234,7 +252,7 @@ public class DirtManipulator : ManipulatorBase, IPlaceRemoveHandler
     private int RetrieveMinNeighbourDepth(Vector2Int pos)
     {
         var minDepth = maxDepth;
-        foreach (var neighbour in Holder.RetrievePositions(pos, PolyUtil.FullNeighbourOffsets))
+        foreach (var neighbour in Holder.RetrievePositions(pos, Lytil.FullNeighbourOffsets))
         {
             var depth = _depthMap.At(neighbour);
             if (depth < minDepth) minDepth = depth;

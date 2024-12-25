@@ -32,7 +32,7 @@ public struct MarchingTileQuery
          Neighbours.SequenceEqual(other.Neighbours));
 }
 
-[CreateAssetMenu(menuName = "Polymort/Tile Marching Set")]
+[CreateAssetMenu(menuName = "Lyport/Tile Marching Set")]
 public class TileMarchingSet : ScriptableObject
 {
     [SerializeField] private int TileSize;
@@ -58,9 +58,9 @@ public class TileMarchingSet : ScriptableObject
         else _tiles.Clear();
 
         if (SimpleMarchingTexture)
-            ParseTexture(SimpleMarchingTexture, PolyUtil.FullNeighbourOffsets.Length / 2);
+            ParseTexture(SimpleMarchingTexture, Lytil.FullNeighbourOffsets.Length / 2);
         if (FullMarchingTexture)
-            ParseTexture(FullMarchingTexture, PolyUtil.FullNeighbourOffsets.Length);
+            ParseTexture(FullMarchingTexture, Lytil.FullNeighbourOffsets.Length);
     }
 
     private void ParseTexture(Texture2D texture, int lookupOffsetsNumber)
@@ -105,7 +105,7 @@ public class TileMarchingSet : ScriptableObject
             var query = new MarchingTileQuery(neighbours: new bool[lookupOffsetsNumber]);
             for (var i = 0; i < lookupOffsetsNumber; i++)
             {
-                var n = new Vector2Int(x, y) + PolyUtil.FullNeighbourOffsets[i];
+                var n = new Vector2Int(x, y) + Lytil.FullNeighbourOffsets[i];
                 query.Neighbours[i] = n.x >= 0 && n.x < widthInTiles && n.y >= 0 && n.y < heightInTiles &&
                                       groundMap.At(n);
             }
