@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace ChapterEditor
 {
@@ -8,6 +9,7 @@ public struct MapData : IPackable
 {
     public Vector2Int SpaceSize;
     public Vector2Int SpawnPoint;
+    [FormerlySerializedAs("SpawnLayer")] public float SpawnZ;
     public string[] LayerNames;
     public string[] LayerData;
 

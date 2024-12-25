@@ -32,6 +32,7 @@ public class EditorController : MonoBehaviour, IPackable
     private IPlaceRemoveHandler _placeRemoveHandler = null;
 
     private Vector2Int _spawnPoint;
+    private float _spawnZ;
 
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
@@ -67,6 +68,7 @@ public class EditorController : MonoBehaviour, IPackable
         {
             SpaceSize = _holder.MapSize,
             SpawnPoint = _spawnPoint,
+            SpawnZ = _spawnZ,
             LayerNames = new string[_holder.ManipulatorsCount],
             LayerData = new string[_holder.ManipulatorsCount]
         };
@@ -96,6 +98,8 @@ public class EditorController : MonoBehaviour, IPackable
         
         _holder.Kill();
         _holder = new MapSpaceHolder(chapterData.SpaceSize);
+        _spawnPoint = chapterData.SpawnPoint;
+        _spawnZ = chapterData.SpawnZ;
 
         for (var i = 0; i < chapterData.LayerNames.Length; i++)
         {
@@ -177,7 +181,8 @@ public class EditorController : MonoBehaviour, IPackable
         if (Input.GetKeyDown(KeyCode.Space))
         {
             _holder.SnapWorldToMap(worldPos, out _spawnPoint);
-            Debug.Log($"Spawn point set at: {_spawnPoint}");
+            _spawnZ = _holder.GetManipulator(_selectedLayer).GetReferenceZ();
+            Debug.Log($"Spawn point set at: {_spawnPoint}, z: {_spawnZ}");
         }
         
         // place/remove

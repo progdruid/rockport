@@ -124,6 +124,7 @@ public class MapLoader : MonoBehaviour
         }
         
         GameSystems.Ins.PlayerManager.SetSpawnPoint(holder.ConvertMapToWorld(data.SpawnPoint));
+        GameSystems.Ins.PlayerManager.SetSpawnZ(data.SpawnZ);
         
         LevelInstantiationEvent?.Invoke();
         

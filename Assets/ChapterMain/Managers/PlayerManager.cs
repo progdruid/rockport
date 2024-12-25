@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class PlayerManager : MonoBehaviour
     private Player _player;
     
     private Vector2 _spawnPoint = Vector2.zero;
+    private float _spawnZ = -1;
     private bool _killingPlayer;
 
     private void Awake()
@@ -30,19 +32,13 @@ public class PlayerManager : MonoBehaviour
         GameSystems.Ins.InputSet.KillPlayerKeyPressEvent -= KillPlayer;
     }
     public void SetSpawnPoint (Vector2 pos) => _spawnPoint = pos;
+    public void SetSpawnZ(float z) => _spawnZ = z;
     
     public void SpawnPlayer ()
     {
-        if (_player != null)
-        {
-            #if UNITY_EDITOR 
-            Debug.LogError("There is already one instance of player.");
-            #endif
-            
-            return;
-        }
+        Assert.IsNull(_player);
 
-        _player = Instantiate(playerPrefab, new Vector3(_spawnPoint.x, _spawnPoint.y, -1f), Quaternion.identity).GetComponent<Player>();
+        _player = Instantiate(playerPrefab, new Vector3(_spawnPoint.x, _spawnPoint.y, _spawnZ), Quaternion.identity).GetComponent<Player>();
         PlayerSpawnEvent(_player.gameObject);
     }
 
