@@ -43,6 +43,6 @@ public class Cannon : MonoBehaviour
         CannonProjectile proj = projTransform.GetComponent<CannonProjectile>();
         proj.SetDirection(new Vector2(-Mathf.Sin(angle), Mathf.Cos(angle))); 
 
-        GameSystems.ins.lm.AttachToLevelAsChild(projTransform);
+        GameSystems.Ins.Loader.AttachToLevelAsChild(projTransform);
     }
 }

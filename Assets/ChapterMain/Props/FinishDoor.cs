@@ -25,6 +25,6 @@ public class FinishDoor : MonoBehaviour
         if (type != TriggeredType.Player)
             return;
 
-        GameSystems.ins.lm.ProceedFurther();
+        GameSystems.Ins.Loader.ProceedFurther();
     }
 }

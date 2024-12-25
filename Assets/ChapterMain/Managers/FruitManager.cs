@@ -8,7 +8,7 @@ public class FruitManager : MonoBehaviour
 
     private int availableFruits;
 
-    private void Awake() => GameSystems.ins.fruitManager = this;
+    private void Awake() => GameSystems.Ins.FruitManager = this;
 
     public void ClearFruits ()
     {

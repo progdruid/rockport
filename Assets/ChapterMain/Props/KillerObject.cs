@@ -22,9 +22,9 @@ public class KillerObject : MonoBehaviour
 
     private void HandleTriggerEnter (Collider2D col, TriggeredType type)
     {
-        if (type != TriggeredType.Player || !GameSystems.ins.inputSet.Active)
+        if (type != TriggeredType.Player || !GameSystems.Ins.InputSet.Active)
             return;
 
-        GameSystems.ins.playerManager.KillPlayer();
+        GameSystems.Ins.PlayerManager.KillPlayer();
     }
 }

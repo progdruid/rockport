@@ -14,8 +14,8 @@ public class PlatformTrigger : MonoBehaviour
 
     private void Awake ()
     {
-        GameSystems.ins.corpseManager.NewCorpseEvent += HandleNewBody;
-        GameSystems.ins.playerManager.PlayerSpawnEvent += HandleNewBody;
+        GameSystems.Ins.CorpseManager.NewCorpseEvent += HandleNewBody;
+        GameSystems.Ins.PlayerManager.PlayerSpawnEvent += HandleNewBody;
     }
 
     private void Start()
@@ -31,8 +31,8 @@ public class PlatformTrigger : MonoBehaviour
         trigger.EnterEvent -= HandleTriggerEnter;
         trigger.ExitEvent -= HandleTriggerExit;
 
-        GameSystems.ins.corpseManager.NewCorpseEvent -= HandleNewBody;
-        GameSystems.ins.playerManager.PlayerSpawnEvent -= HandleNewBody;
+        GameSystems.Ins.CorpseManager.NewCorpseEvent -= HandleNewBody;
+        GameSystems.Ins.PlayerManager.PlayerSpawnEvent -= HandleNewBody;
     }
     #endregion
     

@@ -5,45 +5,57 @@ using UnityEngine;
 [RequireComponent(typeof(Camera), typeof(Rigidbody2D))]
 public class CameraManager : MonoBehaviour
 {
-    [SerializeField] float boxSize;
+    //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    [SerializeField] private float boxSize;
 
-    [SerializeField] float boxTopHalfSize;
-    [SerializeField] float boxBottomHalfSize;
-    [SerializeField] float boxRightHalfSize;
-    [SerializeField] float boxLeftHalfSize;
+    [SerializeField] private float boxTopHalfSize;
+    [SerializeField] private float boxBottomHalfSize;
+    [SerializeField] private float boxRightHalfSize;
+    [SerializeField] private float boxLeftHalfSize;
 
-    private Transform target;
-
-    private void OnEnable() => GameSystems.ins.cameraManager = this;
+    private Transform _target;
+    
+    //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
+    private void Awake()
+    {
+        ObservationHeight = transform.position.z;
+    }
+    private void OnEnable() => GameSystems.Ins.CameraManager = this;
     private void Start()
     {
-        GameSystems.ins.playerManager.PlayerSpawnEvent += HandlePlayerSpawn;
+        GameSystems.Ins.PlayerManager.PlayerSpawnEvent += HandlePlayerSpawn;
     }
 
     private void OnDestroy()
     {
-        GameSystems.ins.playerManager.PlayerSpawnEvent -= HandlePlayerSpawn;
+        GameSystems.Ins.PlayerManager.PlayerSpawnEvent -= HandlePlayerSpawn;
     }
 
-    void Update()
-    {
-        if (GameSystems.ins.transitionVeil.closed || target == null)
-            return;
-        
-        float newPosX = Mathf.Clamp(transform.position.x, target.position.x - boxLeftHalfSize, target.position.x + boxRightHalfSize);
-        float newPosY = Mathf.Clamp(transform.position.y, target.position.y - boxBottomHalfSize, target.position.y + boxTopHalfSize);
-
-        transform.position = new Vector3(newPosX, newPosY, transform.position.z);
-    }
+    //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
+    public float ObservationHeight { get; set; }
 
     public void SetTarget (Transform target)
     {
-        this.target = target;
+        this._target = target;
+    }
+    
+    
+    //game loop/////////////////////////////////////////////////////////////////////////////////////////////////////////
+    void Update()
+    {
+        if (GameSystems.Ins.TransitionVeil.closed || _target == null)
+            return;
+        
+        var newPosX = Mathf.Clamp(transform.position.x, _target.position.x - boxLeftHalfSize, _target.position.x + boxRightHalfSize);
+        var newPosY = Mathf.Clamp(transform.position.y, _target.position.y - boxBottomHalfSize, _target.position.y + boxTopHalfSize);
+
+        transform.position = new Vector3(newPosX, newPosY, ObservationHeight-2);
     }
 
-    public void SetAndMoveToTarget (Transform target)
+    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
+    private void SetAndMoveToTarget (Transform target)
     {
-        this.target = target;
+        this._target = target;
         transform.position = new Vector3(target.position.x, target.position.y, transform.position.z);
     }
 

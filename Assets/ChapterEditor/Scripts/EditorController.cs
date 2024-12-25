@@ -201,7 +201,7 @@ public class EditorController : MonoBehaviour, IPackable
         SelectLayer(layer);
 
         //updating camera position, so it is always behind the topmost layer
-        var z = _holder.GetManipulator(_holder.ClampLayer(int.MaxValue)).GetReferenceZ() - 1;
+        var z = _holder.GetTopmostManipulator().GetReferenceZ() - 1;
         cam.transform.position = new Vector3(cam.transform.position.x, cam.transform.position.y, z);
     }
 
@@ -223,7 +223,7 @@ public class EditorController : MonoBehaviour, IPackable
     private void MoveLayer(int dir)
     {
         var layerTo = _selectedLayer + dir;
-        if (!_holder.MoveRegister(_selectedLayer, layerTo))
+        if (!_holder.MoveLayer(_selectedLayer, layerTo))
             return;
         _selectedLayer = layerTo;
         UpdateLayerText();

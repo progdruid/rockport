@@ -84,6 +84,6 @@ public class InputSet : MonoBehaviour
     void Awake()
     {
         if (enabled)
-            GameSystems.ins.inputSet = this;
+            GameSystems.Ins.InputSet = this;
     }
 }

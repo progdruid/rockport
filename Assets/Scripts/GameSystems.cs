@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 public class GameSystems 
 {
-    public static GameSystems ins { get; private set; } = new GameSystems();
+    public static GameSystems Ins { get; private set; } = new GameSystems();
 
-    public MapLoader lm;
-    public CameraManager cameraManager;
-    public InputSet inputSet;
-    public CorpseManager corpseManager;
-    public FruitManager fruitManager;
-    public PlayerManager playerManager;
+    public MapLoader Loader;
+    public CameraManager CameraManager;
+    public InputSet InputSet;
+    public CorpseManager CorpseManager;
+    public FruitManager FruitManager;
+    public PlayerManager PlayerManager;
 
-    public DeathsBarManager deathsBar;
-    public TransitionVeil transitionVeil;
+    public DeathsBarManager DeathsBar;
+    public TransitionVeil TransitionVeil;
 }

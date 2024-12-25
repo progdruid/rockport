@@ -44,7 +44,7 @@ public class JumpPad : MonoBehaviour, IPropertyHolder
         bodiesInside.RemoveAll((x) => x.col == other);
 
         if (other.tag == "Player")
-            GameSystems.ins.inputSet.CanJump = true;
+            GameSystems.Ins.InputSet.CanJump = true;
     }
     
     private void Update ()

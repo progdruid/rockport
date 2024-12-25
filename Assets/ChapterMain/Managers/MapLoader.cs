@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using ChapterEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -23,7 +22,7 @@ public class MapLoader : MonoBehaviour
         Assert.IsNotNull(spawnPointPrefab);
         Assert.IsNotNull(layerFactory);
         
-        GameSystems.ins.lm = this;
+        GameSystems.Ins.Loader = this;
         
         if (!PlayerPrefs.HasKey("Last_Completed_Level_ID"))
             PlayerPrefs.SetInt("Last_Completed_Level_ID", 0);
@@ -43,21 +42,17 @@ public class MapLoader : MonoBehaviour
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public event System.Action LevelInstantiationEvent;
 
-    public void AttachToLevelAsChild (Transform transform)
-    {
-        transform.SetParent(_chapterObject.transform);
-    }
-
+    public void AttachToLevelAsChild (Transform transform) => transform.SetParent(_chapterObject.transform);
     public void ProceedFurther () => MakeDecision();
 
     //DO NOT CHANGE TO GameObject.FindGameObjectWithTag: IT DOES NOT WORK!
     public GameObject TryFindObjectWithTag(string tag)
     {
-        if (_chapterObject == null)
+        if (!_chapterObject)
             return null;
 
-        for (int i = 0; i < _chapterObject.transform.childCount; i++)
-            if (_chapterObject.transform.GetChild(i).tag == tag)
+        for (var i = 0; i < _chapterObject.transform.childCount; i++)
+            if (_chapterObject.transform.GetChild(i).CompareTag(tag))
                 return _chapterObject.transform.GetChild(i).gameObject;
         
         return null;
@@ -91,9 +86,9 @@ public class MapLoader : MonoBehaviour
     {
         Application.targetFrameRate = -1;
 
-        StartCoroutine(GameSystems.ins.transitionVeil.TransiteIn());
+        StartCoroutine(GameSystems.Ins.TransitionVeil.TransiteIn());
         yield return soundPlayer.StopPlaying();
-        yield return new WaitWhile(() => GameSystems.ins.transitionVeil.inTransition);
+        yield return new WaitWhile(() => GameSystems.Ins.TransitionVeil.inTransition);
         SceneManager.LoadScene("Menu");
     }
 
@@ -103,48 +98,50 @@ public class MapLoader : MonoBehaviour
 
         if (_chapterObject)
         {
-            yield return GameSystems.ins.transitionVeil.TransiteIn();
+            yield return GameSystems.Ins.TransitionVeil.TransiteIn();
 
-            GameSystems.ins.corpseManager.ClearCorpses();
-            GameSystems.ins.playerManager.DestroyPlayer();
+            GameSystems.Ins.CorpseManager.ClearCorpses();
+            GameSystems.Ins.PlayerManager.DestroyPlayer();
             Destroy(_chapterObject);
         }
-        GameSystems.ins.fruitManager.ClearFruits();
+        GameSystems.Ins.FruitManager.ClearFruits();
 
-        var registry = new MapSpaceHolder(data.SpaceSize);
+        var holder = new MapSpaceHolder(data.SpaceSize);
         
         for (var i = 0; i < data.LayerNames.Length; i++)
         {
             var manipulator = layerFactory.CreateManipulator(data.LayerNames[i]);
-            registry.RegisterObject(manipulator, out _);
+            holder.RegisterObject(manipulator, out _);
             manipulator.Unpack(data.LayerData[i]);
         }
 
-        for (var i = 0; registry.HasLayer(i); i++)
+        GameSystems.Ins.CameraManager.ObservationHeight = holder.GetTopmostManipulator().GetReferenceZ();
+
+        for (var i = 0; holder.HasLayer(i); i++)
         {
-            var manipulator = registry.GetManipulator(i);
+            var manipulator = holder.GetManipulator(i);
             manipulator.KillDrop();
         }
         
-        GameSystems.ins.playerManager.SetSpawnPoint(registry.ConvertMapToWorld(data.SpawnPoint));
+        GameSystems.Ins.PlayerManager.SetSpawnPoint(holder.ConvertMapToWorld(data.SpawnPoint));
         
         LevelInstantiationEvent?.Invoke();
         
-        GameSystems.ins.playerManager.SpawnPlayer();
-        yield return GameSystems.ins.transitionVeil.TransiteOut();
+        GameSystems.Ins.PlayerManager.SpawnPlayer();
+        yield return GameSystems.Ins.TransitionVeil.TransiteOut();
 
         SubscribeToInput();
     }
     
     private void SubscribeToInput()
     {
-        GameSystems.ins.inputSet.QuitActivationEvent += QuitToMenu;
-        GameSystems.ins.inputSet.ReloadActivationEvent += ReloadLevel;
+        GameSystems.Ins.InputSet.QuitActivationEvent += QuitToMenu;
+        GameSystems.Ins.InputSet.ReloadActivationEvent += ReloadLevel;
     }
 
     private void UnsubscribeFromInput()
     {
-        GameSystems.ins.inputSet.QuitActivationEvent -= QuitToMenu;
-        GameSystems.ins.inputSet.ReloadActivationEvent -= ReloadLevel;
+        GameSystems.Ins.InputSet.QuitActivationEvent -= QuitToMenu;
+        GameSystems.Ins.InputSet.ReloadActivationEvent -= ReloadLevel;
     }
 }

@@ -15,8 +15,8 @@ public class TransitionVeil : MonoBehaviour
 
     void Awake()
     {
-        if (GameSystems.ins != null)
-            GameSystems.ins.transitionVeil = this;
+        if (GameSystems.Ins != null)
+            GameSystems.Ins.TransitionVeil = this;
 
         animator = GetComponent<Animator>();
         soundEmitter = GetComponent<CustomSoundEmitter>();
@@ -30,8 +30,8 @@ public class TransitionVeil : MonoBehaviour
         if (!closed)
         {
             inTransition = true;
-            if (GameSystems.ins.inputSet != null && GameSystems.ins.deathsBar != null)
-                GameSystems.ins.inputSet.Active = false;
+            if (GameSystems.Ins.InputSet != null && GameSystems.Ins.DeathsBar != null)
+                GameSystems.Ins.InputSet.Active = false;
             
 
             yield return new WaitWhile(() => animator.GetCurrentAnimatorStateInfo(0).IsName("Start"));
@@ -58,8 +58,8 @@ public class TransitionVeil : MonoBehaviour
 
             yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).IsName("Open"));
 
-            if (GameSystems.ins.inputSet != null && GameSystems.ins.deathsBar != null)
-                GameSystems.ins.inputSet.Active = true;
+            if (GameSystems.Ins.InputSet != null && GameSystems.Ins.DeathsBar != null)
+                GameSystems.Ins.InputSet.Active = true;
             
             inTransition = false;
         }

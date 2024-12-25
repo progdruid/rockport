@@ -37,7 +37,7 @@ public class CannonProjectile : MonoBehaviour
     private void HandleTriggerEnter (Collider2D other, TriggeredType type)
     {
         if (type == TriggeredType.Player)
-            GameSystems.ins.playerManager.KillPlayer();
+            GameSystems.Ins.PlayerManager.KillPlayer();
 
         if (!other.isTrigger)
             StartCoroutine(CollisionRoutine(other));

@@ -33,7 +33,7 @@ public class Checkpoint : MonoBehaviour
             return;
 
         activated = true;
-        GameSystems.ins.playerManager.SetSpawnPoint(transform.position);
+        GameSystems.Ins.PlayerManager.SetSpawnPoint(transform.position);
         OnIgnition.Invoke();
         animator.SetTrigger("Burned");
     }

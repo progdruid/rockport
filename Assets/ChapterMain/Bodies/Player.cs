@@ -48,10 +48,10 @@ public class Player : MonoBehaviour, IUltraJumper
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
 
-        GameSystems.ins.inputSet.JumpKeyPressEvent += MakeRegularJump;
-        GameSystems.ins.inputSet.JumpKeyReleaseEvent += SuppressJump;
+        GameSystems.Ins.InputSet.JumpKeyPressEvent += MakeRegularJump;
+        GameSystems.Ins.InputSet.JumpKeyReleaseEvent += SuppressJump;
 
-        GameSystems.ins.playerManager.PlayerDeathEvent += HandleDeath;
+        GameSystems.Ins.PlayerManager.PlayerDeathEvent += HandleDeath;
 
         InitValues();
     }
@@ -123,7 +123,7 @@ public class Player : MonoBehaviour, IUltraJumper
 
     private void ComputeHorizontalVelocity ()
     {
-        float value = GameSystems.ins.inputSet.HorizontalValue;
+        float value = GameSystems.Ins.InputSet.HorizontalValue;
         spriteRenderer.flipX = value != 0f ? value < 0f : spriteRenderer.flipX;
 
         bool wallFree = !(leftTrigger.wallTriggered && value < 0f) && !(rightTrigger.wallTriggered && value > 0f);
@@ -161,9 +161,9 @@ public class Player : MonoBehaviour, IUltraJumper
 
     private void OnDestroy()
     {
-        GameSystems.ins.inputSet.JumpKeyPressEvent -= MakeRegularJump;
-        GameSystems.ins.inputSet.JumpKeyReleaseEvent -= SuppressJump;
+        GameSystems.Ins.InputSet.JumpKeyPressEvent -= MakeRegularJump;
+        GameSystems.Ins.InputSet.JumpKeyReleaseEvent -= SuppressJump;
 
-        GameSystems.ins.playerManager.PlayerDeathEvent -= HandleDeath;
+        GameSystems.Ins.PlayerManager.PlayerDeathEvent -= HandleDeath;
     }
 }

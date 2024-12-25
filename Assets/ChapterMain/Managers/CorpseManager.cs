@@ -9,7 +9,7 @@ public class CorpseManager : MonoBehaviour
     public GameObject corpsePrefab;
     private List<GameObject> corpses = new List<GameObject>();
 
-    private void Awake() => GameSystems.ins.corpseManager = this;
+    private void Awake() => GameSystems.Ins.CorpseManager = this;
     private void Start() => CorpseUpdateEvent();
 
     public GameObject SpawnCorpse (Vector2 pos, Vector2 startVel, bool flipX)

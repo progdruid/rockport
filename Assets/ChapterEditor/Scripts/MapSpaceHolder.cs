@@ -32,16 +32,15 @@ public class MapSpaceHolder
     public Vector2 WorldStart => _visualGrid.transform.position;
     public int ManipulatorsCount => _manipulators.Count;
     
-    
+    //grid operations
     public bool SnapWorldToMap(Vector2 worldPos, out Vector2Int mapPos)
     {
         mapPos = Vector2Int.FloorToInt((worldPos - (Vector2)_visualGrid.transform.position) / _visualGrid.cellSize);
         return new Rect(0, 0, _mapSize.x - 0.1f, _mapSize.y - 0.1f).Contains(mapPos);
     }
-    public Vector2 ConvertMapToWorld(Vector2Int mapPos)
+    public Vector2 ConvertMapToWorld(Vector2Int mapPos) 
         => (Vector2)_visualGrid.transform.position + mapPos * (Vector2)_visualGrid.cellSize;
-    public bool IsInBounds(Vector2Int pos)
-        => pos.x >= 0 && pos.x < MapSize.x && pos.y >= 0 && pos.y < MapSize.y;
+    public bool IsInBounds(Vector2Int pos) => pos.x >= 0 && pos.x < MapSize.x && pos.y >= 0 && pos.y < MapSize.y;
     public IEnumerable<Vector2Int> RetrievePositions(Vector2Int pos, IEnumerable<Vector2Int> offsets)
     {
         foreach (var direction in offsets)
@@ -52,12 +51,29 @@ public class MapSpaceHolder
         }
     }
     
-    
+    //layer operations
     public ManipulatorBase GetManipulator(int layer) => _manipulators[layer];
+    public ManipulatorBase GetTopmostManipulator() => _manipulators[^1];
     public bool HasLayer(int layer) => layer >= 0 && layer < ManipulatorsCount;
     public int ClampLayer(int layer) => Mathf.Clamp(layer, 0, ManipulatorsCount - 1);
+    public bool MoveLayer(int layerFrom, int layerTo)
+    {
+        layerTo = ClampLayer(layerTo);
+        if (!HasLayer(layerFrom) || layerFrom == layerTo) return false;
+
+        var movedObject = _manipulators[layerFrom];
+        _manipulators.RemoveAt(layerFrom);
+        _manipulators.Insert(layerTo, movedObject);
+
+        var step = layerTo > layerFrom ? 1 : -1;
+        for (var i = layerFrom; i != layerTo + step; i += step)
+            UpdateZ(i);
+
+        return true;
+    }
     
     
+    //registration
     public bool RegisterObject(ManipulatorBase manipulator, out int layer)
     {
         layer = -1;
@@ -78,7 +94,7 @@ public class MapSpaceHolder
         var to = Mathf.Clamp(layer, 0, _manipulators.Count);
         var registered = RegisterObject(manipulator, out var from);
         if (registered)
-            MoveRegister(from, to);
+            MoveLayer(from, to);
         return registered;
     }
 
@@ -98,22 +114,8 @@ public class MapSpaceHolder
             UpdateZ(i);
         return true;
     }
-    public bool MoveRegister(int layerFrom, int layerTo)
-    {
-        layerTo = ClampLayer(layerTo);
-        if (!HasLayer(layerFrom) || layerFrom == layerTo) return false;
 
-        var movedObject = _manipulators[layerFrom];
-        _manipulators.RemoveAt(layerFrom);
-        _manipulators.Insert(layerTo, movedObject);
-
-        var step = layerTo > layerFrom ? 1 : -1;
-        for (var i = layerFrom; i != layerTo + step; i += step)
-            UpdateZ(i);
-
-        return true;
-    }
-
+    
     public void Kill()
     {
         GameObject.Destroy(_visualGrid.gameObject);
