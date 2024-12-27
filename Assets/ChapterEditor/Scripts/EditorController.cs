@@ -20,12 +20,15 @@ public class EditorController : MonoBehaviour, IPackable
     [SerializeField] private float cameraMoveSpeed;
     [SerializeField] private float cameraZoomSpeed;
     [SerializeField] private float cameraMinSize;
+    [SerializeField] private float cameraRelativeClearance;
+    [Space] 
+    [SerializeField] private Vector2Int initMapSize;
     [Space] 
     [SerializeField] private string alpha1LayerTitle;
     [SerializeField] private string alpha2LayerTitle;
     [SerializeField] private string alpha3LayerTitle;
     [SerializeField] private string alpha4LayerTitle;
-
+    
     private MapSpaceHolder _holder;
     
     private int _selectedLayer = -1;
@@ -52,7 +55,7 @@ public class EditorController : MonoBehaviour, IPackable
         Assert.IsFalse(alpha3LayerTitle.Length == 0);
         Assert.IsFalse(alpha4LayerTitle.Length == 0);
 
-        _holder = new MapSpaceHolder(new Vector2Int(100, 100));
+        _holder = new MapSpaceHolder(initMapSize);
         
         UpdateLayerText();
     }
@@ -117,14 +120,21 @@ public class EditorController : MonoBehaviour, IPackable
         // camera
         var horizontal = (Input.GetKey(KeyCode.A) ? -1 : 0) + (Input.GetKey(KeyCode.D) ? 1 : 0);
         var vertical = (Input.GetKey(KeyCode.S) ? -1 : 0) + (Input.GetKey(KeyCode.W) ? 1 : 0);
-        var zoom = (Input.GetKey(KeyCode.E) ? -1 : 0) + (Input.GetKey(KeyCode.Q) ? 1 : 0);
+        var zoom = -Input.mouseScrollDelta.y;
+
+        var worldSize = _holder.WorldSize;
+        
+        var prevMouseWorldPos = cam.ScreenToWorldPoint(Input.mousePosition);
 
         cam.orthographicSize += zoom * cameraZoomSpeed * cam.orthographicSize * Time.deltaTime;
         cam.orthographicSize = Mathf.Max(cam.orthographicSize, cameraMinSize);
 
-        var worldSize = _holder.WorldSize;
-        cam.orthographicSize = Mathf.Min(cam.orthographicSize, worldSize.y * 0.5f);
-        cam.orthographicSize = Mathf.Min(cam.orthographicSize * cam.aspect, worldSize.x * 0.5f) / cam.aspect;
+        cam.orthographicSize = Mathf.Min(cam.orthographicSize, worldSize.y * 0.5f / (1f - cameraRelativeClearance));
+        cam.orthographicSize = Mathf.Min(cam.orthographicSize, worldSize.x * 0.5f / (cam.aspect - cameraRelativeClearance));
+
+        var newMouseWorldPos = cam.ScreenToWorldPoint(Input.mousePosition);
+        var worldOffset = prevMouseWorldPos - newMouseWorldPos;
+        cam.transform.position += worldOffset;
 
         var halfHeight = cam.orthographicSize;
         var halfWidth = halfHeight * cam.aspect;
@@ -132,17 +142,17 @@ public class EditorController : MonoBehaviour, IPackable
         var worldStart = _holder.WorldStart;
         var worldEnd = worldStart + worldSize;
 
+        var clearance = halfHeight * cameraRelativeClearance;
         var x = cam.transform.position.x + horizontal * halfHeight * cameraMoveSpeed * Time.deltaTime;
-        x = Mathf.Max(x - halfWidth, worldStart.x) + halfWidth;
-        x = Mathf.Min(x + halfWidth, worldEnd.x) - halfWidth;
+        x = Mathf.Max(x - halfWidth, worldStart.x - clearance) + halfWidth;
+        x = Mathf.Min(x + halfWidth, worldEnd.x + clearance) - halfWidth;
 
         var y = cam.transform.position.y + vertical * halfHeight * cameraMoveSpeed * Time.deltaTime;
-        y = Mathf.Max(y - halfHeight, worldStart.y) + halfHeight;
-        y = Mathf.Min(y + halfHeight, worldEnd.y) - halfHeight;
+        y = Mathf.Max(y - halfHeight, worldStart.y - clearance) + halfHeight;
+        y = Mathf.Min(y + halfHeight, worldEnd.y + clearance) - halfHeight;
 
         cam.transform.position = new Vector3(x, y, cam.transform.position.z);
-        
-        
+
         //layer creation
         if (Input.GetKeyDown(KeyCode.Alpha1))
             CreateLayer(alpha1LayerTitle);
@@ -186,14 +196,12 @@ public class EditorController : MonoBehaviour, IPackable
         }
         
         // place/remove
-        if (_placeRemoveHandler != null)
-        {
-            var constructive = Input.GetMouseButton(0);
-            var destructive = Input.GetMouseButton(1);
+        if (_placeRemoveHandler == null) return;
+        var constructive = Input.GetMouseButton(0);
+        var destructive = Input.GetMouseButton(1);
             
-            if (constructive != destructive)
-                _placeRemoveHandler.ChangeAt(worldPos, constructive);
-        }
+        if (constructive != destructive)
+            _placeRemoveHandler.ChangeAt(worldPos, constructive);
     }
 
 
