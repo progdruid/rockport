@@ -38,6 +38,7 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder, IPackabl
 
     public void InjectHolder(MapSpaceHolder injected) => Holder = injected;
 
+    
     public virtual IEnumerator<PropertyHandle> GetProperties()
     {
         var titleHandle = new PropertyHandle()
@@ -61,6 +62,8 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder, IPackabl
     }
 
     public abstract float GetReferenceZ();
+    public virtual bool CheckOverlap (Vector2 pos) => false;
+    
     public abstract void SubscribeInput(EditorController controller);
     public abstract void UnsubscribeInput();
     public virtual string Pack() => _generatePhysics ? "true" : "false";

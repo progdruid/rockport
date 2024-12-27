@@ -82,6 +82,12 @@ public class DirtManipulator : ManipulatorBase, IPlaceRemoveHandler
 
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
+    public override bool CheckOverlap(Vector2 pos)
+    {
+        if (!Holder.SnapWorldToMap(pos, out var mapPos)) return false;
+        return _depthMap.At(mapPos) > 0;
+    }
+
     public override void SubscribeInput(EditorController controller)
     {
         _controller = controller;

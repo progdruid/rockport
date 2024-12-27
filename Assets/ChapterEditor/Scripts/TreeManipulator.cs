@@ -64,6 +64,12 @@ public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public override float GetReferenceZ() => _treeMap.transform.position.z;
+    public override bool CheckOverlap(Vector2 pos)
+    {
+        if (!Holder.SnapWorldToMap(pos, out var mapPos)) return false;
+        return _placed.At(mapPos);
+    }
+
     public override IEnumerator<PropertyHandle> GetProperties()
     {
         var iter = base.GetProperties();

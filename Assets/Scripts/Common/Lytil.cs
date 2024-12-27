@@ -27,4 +27,7 @@ public static class Lytil
     
     public static bool IsInBounds(Vector2Int point, Vector2Int start, Vector2Int end) =>
         point.x >= start.x && point.x < end.x && point.y >= start.y && point.y < end.y;
+    
+    public static bool IsInBounds(Vector2 point, Vector2 start, Vector2 end) =>
+        point.x >= start.x && point.x < end.x && point.y >= start.y && point.y < end.y;
 }

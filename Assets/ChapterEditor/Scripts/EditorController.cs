@@ -177,18 +177,29 @@ public class EditorController : MonoBehaviour, IPackable
         else if (selectDirection != 0 && _selectedLayer + selectDirection < 0)
             UnselectLayer();
 
-        if (_selectedLayer < 0)
-            return;
-        
         // mouse pos in world
         var mousePos = Input.mousePosition;
         var ray = cam.ScreenPointToRay(mousePos);
 
-        var t = (_holder.GetManipulator(_selectedLayer).GetReferenceZ() - ray.origin.z) / ray.direction.z;
+        var t = - ray.origin.z / ray.direction.z;
         var worldPos = (ray.origin + ray.direction * t);
 
+        if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButtonDown(0))
+        {
+            UnselectLayer();
+            for (var i = _holder.ManipulatorsCount - 1; i >= 0; i--)
+                if (_holder.GetManipulator(i).CheckOverlap(worldPos))
+                {
+                    SelectLayer(i);
+                    break;
+                }
+        }
+        
+        if (_selectedLayer < 0)
+            return;
+        
         // spawn point change
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.P))
         {
             _holder.SnapWorldToMap(worldPos, out _spawnPoint);
             _spawnZ = _holder.GetManipulator(_selectedLayer).GetReferenceZ();
@@ -196,7 +207,7 @@ public class EditorController : MonoBehaviour, IPackable
         }
         
         // place/remove
-        if (_placeRemoveHandler == null) return;
+        if (_placeRemoveHandler == null || Input.GetKey(KeyCode.LeftShift)) return;
         var constructive = Input.GetMouseButton(0);
         var destructive = Input.GetMouseButton(1);
             

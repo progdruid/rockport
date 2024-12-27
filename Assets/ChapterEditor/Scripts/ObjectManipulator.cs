@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Common;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace ChapterEditor
 {
@@ -65,6 +67,14 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
         }
     }
     public override float GetReferenceZ() => Target.position.z;
+    public override bool CheckOverlap(Vector2 pos)
+    {
+        if (!_manipulatedTransform) return false;
+        var renderers = _manipulatedTransform.GetComponentsInChildren<SpriteRenderer>();
+        return renderers.Any(spriteRenderer =>
+            Lytil.IsInBounds(pos, spriteRenderer.bounds.min, spriteRenderer.bounds.max));
+    }
+
     public override void SubscribeInput(EditorController controller)
     {
         controller.SetPlaceRemoveHandler(this);
@@ -126,10 +136,9 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
         {
             _manipulatedTransform = Instantiate(prefab, Target, false).transform;
             TogglePhysicsInObject(_manipulatedTransform, false);
-            
-            var renderers = _manipulatedTransform.GetComponents<Renderer>()
-                .Concat(_manipulatedTransform.GetComponentsInChildren<Renderer>(true));
-            foreach (var rend in renderers) rend.sharedMaterial = _material;
+
+            foreach (var rend in _manipulatedTransform.GetComponentsInChildren<Renderer>(true)) 
+                rend.sharedMaterial = _material;
 
             _usedPrefabName = prefabName;
         }
@@ -139,11 +148,10 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
 
     private void TogglePhysicsInObject(Transform obj, bool value)
     {
-        var bodies = obj.GetComponents<Rigidbody2D>().Concat(obj.GetComponentsInChildren<Rigidbody2D>(true));
-        var colliders = obj.GetComponents<Collider2D>().Concat(obj.GetComponentsInChildren<Collider2D>(true));
+        foreach (var col in obj.GetComponentsInChildren<Collider2D>(true)) 
+            col.enabled = value;
         
-        foreach (var col in colliders) col.enabled = value;
-        foreach (var body in bodies)
+        foreach (var body in obj.GetComponentsInChildren<Rigidbody2D>(true))
         {
             if (value) body.WakeUp();
             else body.Sleep();
