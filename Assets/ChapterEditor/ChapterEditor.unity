@@ -555,7 +555,8 @@ MonoBehaviour:
   cameraMoveSpeed: 1
   cameraZoomSpeed: 20
   cameraMinSize: 1
-  cameraRelativeClearance: 0
+  cameraRelativeClearance: 0.2
+  initMapSize: {x: 200, y: 100}
   alpha1LayerTitle: Dirt
   alpha2LayerTitle: Tree
   alpha3LayerTitle: Tree Background

@@ -1,5 +1,6 @@
 using System.Collections;
 using ChapterEditor;
+using Common;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
@@ -117,14 +118,21 @@ public class MapLoader : MonoBehaviour
 
         GameSystems.Ins.CameraManager.ObservationHeight = holder.GetTopmostManipulator().GetReferenceZ();
 
+        holder.FindManipulator(GlobalConfig.Ins.spawnPointManipulatorName, out var foundManipulator);
+        Assert.IsNotNull(foundManipulator);
+        var spawnManipulator = foundManipulator as PointManipulator;
+        Assert.IsNotNull(spawnManipulator);
+        var spawnPoint = spawnManipulator.Point;
+        var spawnZ = spawnManipulator.GetReferenceZ();
+        
         for (var i = 0; holder.HasLayer(i); i++)
         {
             var manipulator = holder.GetManipulator(i);
             manipulator.KillDrop();
         }
         
-        GameSystems.Ins.PlayerManager.SetSpawnPoint(holder.ConvertMapToWorld(data.SpawnPoint));
-        GameSystems.Ins.PlayerManager.SetSpawnZ(data.SpawnZ);
+        GameSystems.Ins.PlayerManager.SetSpawnPoint(holder.ConvertMapToWorld(spawnPoint));
+        GameSystems.Ins.PlayerManager.SetSpawnZ(spawnZ);
         
         LevelInstantiationEvent?.Invoke();
         

@@ -28,7 +28,7 @@ public struct DirtStratum
     [SerializeField] public TileMarchingSet marchingSet;
 }
 
-public class DirtManipulator : ManipulatorBase, IPlaceRemoveHandler
+public class DirtManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private int maxDepth;

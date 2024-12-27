@@ -8,7 +8,7 @@ using UnityEngine.UI;
 namespace ChapterEditor
 {
 
-public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
+public class ObjectManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private SerializableMap<string, GameObject> prefabs = new();
@@ -27,9 +27,6 @@ public class ObjectManipulator : ManipulatorBase, IPlaceRemoveHandler
         _material = new Material(GlobalConfig.Ins.StandardMaterial);
         _material.SetFloat(Lytil.FogIntensityID, _fogScale);
     }
-
-    protected override void Initialise() { }
-
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public override IEnumerator<PropertyHandle> GetProperties()

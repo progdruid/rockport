@@ -33,7 +33,9 @@ public class GlobalConfig : ScriptableObject
     [SerializeField] public Color fogColor;
     [SerializeField] private Material standardMaterial;
     [SerializeField] private Material worldTextureMaskMaterial;
-
+    
+    [SerializeField] public string spawnPointManipulatorName;
+    
     public Material StandardMaterial { get; private set; }
     public Material WorldTextureMaskMaterial { get; private set; }
 }

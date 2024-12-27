@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 namespace ChapterEditor
 {
 
-public class TreeManipulator : ManipulatorBase, IPlaceRemoveHandler
+public class TreeManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private Texture2D treeTexture;

@@ -71,6 +71,19 @@ public class MapSpaceHolder
 
         return true;
     }
+
+    public int FindManipulator(string targetName, out ManipulatorBase result)
+    {
+        for (var layer = 0; layer < _manipulators.Count; layer++)
+        {
+            if (_manipulators[layer].ManipulatorName != targetName) continue;
+            result = _manipulators[layer];
+            return layer;
+        }
+        
+        result = null;
+        return -1;
+    }
     
     
     //registration

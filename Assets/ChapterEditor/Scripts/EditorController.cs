@@ -1,4 +1,5 @@
 
+using Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -34,9 +35,6 @@ public class EditorController : MonoBehaviour, IPackable
     private int _selectedLayer = -1;
     private IPlaceRemoveHandler _placeRemoveHandler = null;
 
-    private Vector2Int _spawnPoint;
-    private float _spawnZ;
-
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
     {
@@ -70,8 +68,6 @@ public class EditorController : MonoBehaviour, IPackable
         var chapterData = new MapData()
         {
             SpaceSize = _holder.MapSize,
-            SpawnPoint = _spawnPoint,
-            SpawnZ = _spawnZ,
             LayerNames = new string[_holder.ManipulatorsCount],
             LayerData = new string[_holder.ManipulatorsCount]
         };
@@ -101,8 +97,6 @@ public class EditorController : MonoBehaviour, IPackable
         
         _holder.Kill();
         _holder = new MapSpaceHolder(chapterData.SpaceSize);
-        _spawnPoint = chapterData.SpawnPoint;
-        _spawnZ = chapterData.SpawnZ;
 
         for (var i = 0; i < chapterData.LayerNames.Length; i++)
         {
@@ -153,6 +147,15 @@ public class EditorController : MonoBehaviour, IPackable
 
         cam.transform.position = new Vector3(x, y, cam.transform.position.z);
 
+        
+        // mouse pos in world
+        var mousePos = Input.mousePosition;
+        var ray = cam.ScreenPointToRay(mousePos);
+
+        var t = - ray.origin.z / ray.direction.z;
+        var worldPos = (ray.origin + ray.direction * t);
+        
+        
         //layer creation
         if (Input.GetKeyDown(KeyCode.Alpha1))
             CreateLayer(alpha1LayerTitle);
@@ -162,11 +165,19 @@ public class EditorController : MonoBehaviour, IPackable
             CreateLayer(alpha3LayerTitle);
         else if (Input.GetKeyDown(KeyCode.Alpha4))
             CreateLayer(alpha4LayerTitle);
-
+        
         //layer deletion
         if (Input.GetKeyDown(KeyCode.Delete))
             DeleteLayer();
 
+        // spawn point management
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            var layer = _holder.FindManipulator(GlobalConfig.Ins.spawnPointManipulatorName, out _);
+            if (layer < 0) CreateLayer(GlobalConfig.Ins.spawnPointManipulatorName);
+            else SelectLayer(layer);
+        }
+        
         //moving and changing layers
         var selectDirection = (Input.GetKeyDown(KeyCode.LeftArrow) ? -1 : 0) +
                               (Input.GetKeyDown(KeyCode.RightArrow) ? 1 : 0);
@@ -177,13 +188,7 @@ public class EditorController : MonoBehaviour, IPackable
         else if (selectDirection != 0 && _selectedLayer + selectDirection < 0)
             UnselectLayer();
 
-        // mouse pos in world
-        var mousePos = Input.mousePosition;
-        var ray = cam.ScreenPointToRay(mousePos);
-
-        var t = - ray.origin.z / ray.direction.z;
-        var worldPos = (ray.origin + ray.direction * t);
-
+        //mouse select
         if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButtonDown(0))
         {
             UnselectLayer();
@@ -197,14 +202,6 @@ public class EditorController : MonoBehaviour, IPackable
         
         if (_selectedLayer < 0)
             return;
-        
-        // spawn point change
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            _holder.SnapWorldToMap(worldPos, out _spawnPoint);
-            _spawnZ = _holder.GetManipulator(_selectedLayer).GetReferenceZ();
-            Debug.Log($"Spawn point set at: {_spawnPoint}, z: {_spawnZ}");
-        }
         
         // place/remove
         if (_placeRemoveHandler == null || Input.GetKey(KeyCode.LeftShift)) return;
@@ -278,6 +275,7 @@ public class EditorController : MonoBehaviour, IPackable
     }
 
     private void UpdateLayerText() =>
-        layerText.text = _selectedLayer != -1 ? "Layer: " + _selectedLayer : "No layer selected"; }
+        layerText.text = _selectedLayer != -1 ? "Layer: " + _selectedLayer : "No layer selected"; 
+}
 
 }
