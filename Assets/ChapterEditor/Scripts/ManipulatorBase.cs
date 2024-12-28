@@ -14,9 +14,9 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder, IPackabl
     [SerializeField] private Transform target;
 
     private bool _initialised = false;
-
     protected MapSpaceHolder Holder { get; private set; }
 
+    
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     protected virtual void Awake() => Assert.IsNotNull(target);
     protected void Start() => RequestInitialise();
@@ -30,10 +30,10 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder, IPackabl
     }
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    public event Action PropertiesChangeEvent;
-
     public string ManipulatorName => manipulatorName;
     public Transform Target => target;
+
+    public event Action PropertiesChangeEvent;
 
     public void InjectHolder(MapSpaceHolder injected) => Holder = injected;
 
@@ -52,33 +52,27 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder, IPackabl
     public abstract float GetReferenceZ();
     public virtual bool CheckOverlap (Vector2 pos) => false;
     
-    public abstract void SubscribeInput(EditorController controller);
-    public abstract void UnsubscribeInput();
-    
     public abstract string Pack();
     public abstract void Unpack(string data);
-    
-    public abstract void KillDrop();
-    public void KillClean()
+
+    public void Release()
+    {
+        HandleRelease();
+        Destroy(this);
+    }
+    public void Clear()
     {
         var targetObject = target.gameObject;
         Destroy(this);
         Destroy(targetObject);
     }
 
+    public abstract void ChangeAt(Vector2 worldPos, bool shouldPlaceNotRemove);
+
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     protected void InvokePropertiesChangeEvent() => PropertiesChangeEvent?.Invoke();
-    
-    protected Tilemap CreateTilemap(int offset, string mapName)
-    {
-        var go = new GameObject(mapName);
-        go.transform.SetParent(target, false);
-        go.transform.localPosition = Vector3.back * 0.01f * offset;
-        var map = go.AddComponent<Tilemap>();
-        map.tileAnchor = new Vector3(0.5f, 0.5f, 0f);
-        map.orientation = Tilemap.Orientation.XY;
-        return map;
-    }
+
+    protected virtual void HandleRelease() { }
 }
 
 }

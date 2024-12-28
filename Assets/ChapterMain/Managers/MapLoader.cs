@@ -128,7 +128,7 @@ public class MapLoader : MonoBehaviour
         for (var i = 0; holder.HasLayer(i); i++)
         {
             var manipulator = holder.GetManipulator(i);
-            manipulator.KillDrop();
+            manipulator.Release();
         }
         
         GameSystems.Ins.PlayerManager.SetSpawnPoint(holder.ConvertMapToWorld(spawnPoint));

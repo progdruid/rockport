@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 namespace ChapterEditor
 {
 
-public class TreeManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
+public class TreeManipulator : ManipulatorBase
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private Texture2D treeTexture;
@@ -26,8 +26,8 @@ public class TreeManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
     private Material _baseMaterial;
     private Material _worldMaterial;
     private float _fogScale = 0f;
-    
-    private EditorController _controller;
+
+    private PhysicalManipulatorTrait _physicalTrait;
 
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     protected override void Awake()
@@ -49,11 +49,15 @@ public class TreeManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
         _worldMaterial.SetFloat(Lytil.FogIntensityID, _fogScale);
         _worldMaterial.SetTexture(Lytil.WorldTextureID, treeTexture);
         
-        _treeMap = CreateTilemap(0, "Tree Tilemap");
-        _outlineMap = CreateTilemap(1, "Tree Outline Tilemap");
+        _treeMap = Lytil.CreateTilemap(Target, 0, "Tree Tilemap");
+        _outlineMap = Lytil.CreateTilemap(Target, 1, "Tree Outline Tilemap");
         
         _treeMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _worldMaterial;
         _outlineMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _baseMaterial;
+        
+        _physicalTrait = new PhysicalManipulatorTrait();
+        _physicalTrait.AddTilemap(_treeMap);
+        _physicalTrait.PropertiesChangeEvent += InvokePropertiesChangeEvent;
     }
 
     protected override void Initialise()
@@ -76,6 +80,10 @@ public class TreeManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
         while (iter.MoveNext())
             yield return iter.Current;
 
+        var physicalTraitIter = _physicalTrait.GetProperties();
+        while (physicalTraitIter.MoveNext())
+            yield return physicalTraitIter.Current;
+        
         yield return new PropertyHandle()
         {
             PropertyName = "Fog Intensity %",
@@ -89,26 +97,15 @@ public class TreeManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
             }
         };
     }
-    public override void SubscribeInput(EditorController controller)
-    {
-        _controller = controller;
-        controller.SetPlaceRemoveHandler(this);
-    }
-    public override void UnsubscribeInput()
-    {
-        if (!_controller) return;
-        _controller.UnsetPlaceRemoveHandler();
-        _controller = null;
-    }
     
-    public override string Pack() => JsonUtility.ToJson((base.Pack(), _placed.Pack()));
+    public override string Pack() => JsonUtility.ToJson((_physicalTrait.Pack(), _placed.Pack()));
 
     public override void Unpack(string data)
     {
-        var (basePacked, placedPacked) = JsonUtility.FromJson<(string, string)>(data);
+        var (physicalPacked, placedPacked) = JsonUtility.FromJson<(string, string)>(data);
         
         RequestInitialise();
-        base.Unpack(basePacked);
+        _physicalTrait.Unpack(physicalPacked);
         _placed.Unpack(placedPacked);
         
         for (var x = 0; x < _placed.Width; x++)
@@ -117,7 +114,7 @@ public class TreeManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
     }
 
 
-    public void ChangeAt(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
+    public override void ChangeAt(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
     {
         if (!Holder.SnapWorldToMap(rootWorldPos, out var rootPos)
             || shouldPlaceNotRemove == _placed.At(rootPos)) return;
@@ -129,12 +126,8 @@ public class TreeManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
     }
 
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected override void GeneratePhysics()
-    {
-        _treeMap.gameObject.AddComponent<TilemapCollider2D>();
-        _treeMap.gameObject.layer = 8;
-    }
-    
+    protected override void HandleRelease() => _physicalTrait.RequestGeneratePhysics();
+
     private void UpdateVisualsAt(Vector2Int pos)
     {
         var placedHere = _placed.At(pos);

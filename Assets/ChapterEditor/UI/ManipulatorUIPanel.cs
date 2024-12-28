@@ -72,7 +72,7 @@ public class ManipulatorUIPanel : MonoBehaviour
             Destroy(field.Target.gameObject);
         }
 
-        EditorController.CanEdit = true;
+        EditorController.s_CanEdit = true;
         _uiFields.Clear();
 
         layerTextPanel.anchoredPosition = new Vector2(0, 0);

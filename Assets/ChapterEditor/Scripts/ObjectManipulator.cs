@@ -8,17 +8,18 @@ using UnityEngine.UI;
 namespace ChapterEditor
 {
 
-public class ObjectManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
+public class ObjectManipulator : ManipulatorBase
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private SerializableMap<string, GameObject> prefabs = new();
 
-    private EditorController _controller;
     private Transform _manipulatedTransform;
     private string _usedPrefabName = "";
 
     private Material _material;
     private float _fogScale = 0f;
+    
+    private PhysicalManipulatorTrait _physicalTrait;
 
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     protected override void Awake()
@@ -26,6 +27,9 @@ public class ObjectManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
         base.Awake();
         _material = new Material(GlobalConfig.Ins.StandardMaterial);
         _material.SetFloat(Lytil.FogIntensityID, _fogScale);
+
+        _physicalTrait = new PhysicalManipulatorTrait();
+        _physicalTrait.PropertiesChangeEvent += InvokePropertiesChangeEvent;
     }
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,6 +39,10 @@ public class ObjectManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
         while (iter.MoveNext())
             yield return iter.Current;
 
+        var physicalTraitIter = _physicalTrait.GetProperties();
+        while (physicalTraitIter.MoveNext())
+            yield return physicalTraitIter.Current;
+        
         yield return new PropertyHandle()
         {
             PropertyName = "Object",
@@ -72,41 +80,23 @@ public class ObjectManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
             Lytil.IsInBounds(pos, spriteRenderer.bounds.min, spriteRenderer.bounds.max));
     }
 
-    public override void SubscribeInput(EditorController controller)
-    {
-        controller.SetPlaceRemoveHandler(this);
-        _controller = controller;
-    }
-    public override void UnsubscribeInput()
-    {
-        _controller.UnsetPlaceRemoveHandler();
-        _controller = null;
-    }
     public override string Pack()
     {
         Holder.SnapWorldToMap(_manipulatedTransform.position, out var map);
-        return JsonUtility.ToJson((base.Pack(), _usedPrefabName, map));
+        return JsonUtility.ToJson((_physicalTrait.Pack(), _usedPrefabName, map));
     }
 
     public override void Unpack(string data)
     {
-        var (basePacked, usedName, mapPos) = JsonUtility.FromJson<(string, string, Vector2Int)>(data);
+        var (physicalPacked, usedName, mapPos) = JsonUtility.FromJson<(string, string, Vector2Int)>(data);
         
         RequestInitialise();
-        base.Unpack(basePacked);
+        _physicalTrait.Unpack(physicalPacked);
         UpdateObjectToName(usedName);
         _manipulatedTransform.localPosition = Holder.ConvertMapToWorld(mapPos);
     }
 
-    public override void KillDrop()
-    {
-        _manipulatedTransform.SetParent(Target.parent, true);
-        var thisObject = gameObject;
-        base.KillDrop();
-        Destroy(thisObject);
-    }
-
-    public void ChangeAt(Vector2 worldPos, bool shouldPlaceNotRemove)
+    public override void ChangeAt(Vector2 worldPos, bool shouldPlaceNotRemove)
     {
         if (!Holder.SnapWorldToMap(worldPos, out var mapPos) || !_manipulatedTransform) return;
         var snappedWorldPos = Holder.ConvertMapToWorld(mapPos);
@@ -115,24 +105,24 @@ public class ObjectManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
 
 
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected override void GeneratePhysics()
-    {
-        TogglePhysicsInObject(_manipulatedTransform, true);
-    }
-    
+    protected override void HandleRelease() => _physicalTrait.RequestGeneratePhysics();
+
     private void UpdateObjectToName(string prefabName)
     {
         if (prefabName == _usedPrefabName) return;
 
         if (_manipulatedTransform)
+        {
+            _physicalTrait.RemoveObject(_manipulatedTransform.gameObject);
             Destroy(_manipulatedTransform.gameObject);
+        }
 
         _manipulatedTransform = null;
         _usedPrefabName = "";
         if (prefabs.TryGetValue(prefabName, out var prefab))
         {
             _manipulatedTransform = Instantiate(prefab, Target, false).transform;
-            TogglePhysicsInObject(_manipulatedTransform, false);
+            _physicalTrait.AddObject(_manipulatedTransform.gameObject);
 
             foreach (var rend in _manipulatedTransform.GetComponentsInChildren<Renderer>(true)) 
                 rend.sharedMaterial = _material;
@@ -141,18 +131,6 @@ public class ObjectManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
         }
 
         InvokePropertiesChangeEvent();
-    }
-
-    private void TogglePhysicsInObject(Transform obj, bool value)
-    {
-        foreach (var col in obj.GetComponentsInChildren<Collider2D>(true)) 
-            col.enabled = value;
-        
-        foreach (var body in obj.GetComponentsInChildren<Rigidbody2D>(true))
-        {
-            if (value) body.WakeUp();
-            else body.Sleep();
-        }
     }
 }
 

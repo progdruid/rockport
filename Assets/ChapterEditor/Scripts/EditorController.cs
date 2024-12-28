@@ -10,7 +10,7 @@ namespace ChapterEditor
 public class EditorController : MonoBehaviour, IPackable
 {
     /// TODO: should be extracted to a separate UI system
-    public static bool CanEdit = true;
+    public static bool s_CanEdit = true;
 
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private LayerFactory layerFactory;
@@ -33,7 +33,7 @@ public class EditorController : MonoBehaviour, IPackable
     private MapSpaceHolder _holder;
     
     private int _selectedLayer = -1;
-    private IPlaceRemoveHandler _placeRemoveHandler = null;
+    private ManipulatorBase _selectedManipulator = null;
 
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
@@ -60,8 +60,6 @@ public class EditorController : MonoBehaviour, IPackable
 
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    public void SetPlaceRemoveHandler(IPlaceRemoveHandler handler) => _placeRemoveHandler = handler;
-    public void UnsetPlaceRemoveHandler() => _placeRemoveHandler = null;
 
     public string Pack()
     {
@@ -92,7 +90,7 @@ public class EditorController : MonoBehaviour, IPackable
         {
             var dead = _holder.GetManipulator(0);
             _holder.UnregisterAt(0);
-            dead.KillClean();
+            dead.Clear();
         }
         
         _holder.Kill();
@@ -109,7 +107,7 @@ public class EditorController : MonoBehaviour, IPackable
     //game loop/////////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Update()
     {
-        if (!CanEdit) return;
+        if (!s_CanEdit) return;
         
         // camera
         var horizontal = (Input.GetKey(KeyCode.A) ? -1 : 0) + (Input.GetKey(KeyCode.D) ? 1 : 0);
@@ -200,16 +198,15 @@ public class EditorController : MonoBehaviour, IPackable
                 }
         }
         
-        if (_selectedLayer < 0)
+        if (!_selectedManipulator || Input.GetKey(KeyCode.LeftShift))
             return;
         
         // place/remove
-        if (_placeRemoveHandler == null || Input.GetKey(KeyCode.LeftShift)) return;
         var constructive = Input.GetMouseButton(0);
         var destructive = Input.GetMouseButton(1);
             
         if (constructive != destructive)
-            _placeRemoveHandler.ChangeAt(worldPos, constructive);
+            _selectedManipulator.ChangeAt(worldPos, constructive);
     }
 
 
@@ -235,7 +232,7 @@ public class EditorController : MonoBehaviour, IPackable
         UnselectLayer();
         var dead = _holder.GetManipulator(layer);
         _holder.UnregisterAt(layer);
-        dead.KillClean();
+        dead.Clear();
 
         SelectLayer(_holder.ClampLayer(layer));
     }
@@ -257,9 +254,8 @@ public class EditorController : MonoBehaviour, IPackable
 
         _selectedLayer = layer;
         UpdateLayerText();
-        var manipulator = _holder.GetManipulator(layer);
-        manipulator.SubscribeInput(this);
-        manipulatorUIPanel.SetPropertyHolder(manipulator);
+        _selectedManipulator = _holder.GetManipulator(layer);
+        manipulatorUIPanel.SetPropertyHolder(_selectedManipulator);
     }
 
     private void UnselectLayer()
@@ -267,9 +263,8 @@ public class EditorController : MonoBehaviour, IPackable
         if (_selectedLayer == -1)
             return;
 
-        var manipulator = _holder.GetManipulator(_selectedLayer);
         manipulatorUIPanel.UnsetPropertyHolder();
-        manipulator.UnsubscribeInput();
+        _selectedManipulator = null;
         _selectedLayer = -1;
         UpdateLayerText();
     }

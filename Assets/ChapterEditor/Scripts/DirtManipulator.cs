@@ -28,7 +28,7 @@ public struct DirtStratum
     [SerializeField] public TileMarchingSet marchingSet;
 }
 
-public class DirtManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
+public class DirtManipulator : ManipulatorBase
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private int maxDepth;
@@ -43,9 +43,9 @@ public class DirtManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
 
     private Material _material;
     private float _fogScale = 0f;
-    
-    private EditorController _controller;
 
+    private PhysicalManipulatorTrait _physicalTrait;
+    
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     protected override void Awake()
     {
@@ -56,15 +56,15 @@ public class DirtManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
 
         outlineMarchingSet.ParseTiles();
 
-        foreach (var layer in strata)
-            if (layer.marchingSet)
-                layer.marchingSet.ParseTiles();
+        foreach (var stratum in strata)
+            if (stratum.marchingSet)
+                stratum.marchingSet.ParseTiles();
 
         
-        _baseMap = CreateTilemap(0, "Dirt Base Tilemap");
-        _lowerPebbleMap = CreateTilemap(1, "Dirt Lower Pebble Tilemap");
-        _upperPebbleMap = CreateTilemap(2, "Dirt Upper Pebble Tilemap");
-        _marchingMap = CreateTilemap(3, "Dirt Marching Tilemap");
+        _baseMap = Lytil.CreateTilemap(Target, 0, "Dirt Base Tilemap");
+        _lowerPebbleMap = Lytil.CreateTilemap(Target,1, "Dirt Lower Pebble Tilemap");
+        _upperPebbleMap = Lytil.CreateTilemap(Target,2, "Dirt Upper Pebble Tilemap");
+        _marchingMap = Lytil.CreateTilemap(Target,3, "Dirt Marching Tilemap");
 
         _material = new Material(GlobalConfig.Ins.StandardMaterial);
         _material.SetFloat(Lytil.FogIntensityID, _fogScale);
@@ -73,6 +73,10 @@ public class DirtManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
         _lowerPebbleMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _material;
         _upperPebbleMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _material;
         _marchingMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _material;
+        
+        _physicalTrait = new PhysicalManipulatorTrait();
+        _physicalTrait.AddTilemap(_baseMap);
+        _physicalTrait.PropertiesChangeEvent += InvokePropertiesChangeEvent;
     }
 
     protected override void Initialise()
@@ -88,25 +92,16 @@ public class DirtManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
         return _depthMap.At(mapPos) > 0;
     }
 
-    public override void SubscribeInput(EditorController controller)
-    {
-        _controller = controller;
-        controller.SetPlaceRemoveHandler(this);
-    }
-
-    public override void UnsubscribeInput()
-    {
-        if (!_controller) return;
-        _controller.UnsetPlaceRemoveHandler();
-        _controller = null;
-    }
-
     public override IEnumerator<PropertyHandle> GetProperties()
     {
         var iter = base.GetProperties();
         while (iter.MoveNext())
             yield return iter.Current;
 
+        var physicalTraitIter = _physicalTrait.GetProperties();
+        while (physicalTraitIter.MoveNext())
+            yield return physicalTraitIter.Current;
+        
         yield return new PropertyHandle()
         {
             PropertyName = "Fog Intensity %",
@@ -121,14 +116,14 @@ public class DirtManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
     }
 
     public override float GetReferenceZ() => _baseMap.transform.position.z;
-    public override string Pack() => JsonUtility.ToJson((base.Pack(), _depthMap.Pack()));
+    public override string Pack() => JsonUtility.ToJson((_physicalTrait.Pack(), _depthMap.Pack()));
 
     public override void Unpack(string data)
     {
-        var (basePacked, depthPacked) = JsonUtility.FromJson<(string, string)>(data);
+        var (physicalPacked, depthPacked) = JsonUtility.FromJson<(string, string)>(data);
         
         RequestInitialise();
-        base.Unpack(basePacked);
+        _physicalTrait.Unpack(physicalPacked);
         _depthMap.Unpack(depthPacked);
         
         for (var x = 0; x < _depthMap.Width; x++)
@@ -136,7 +131,7 @@ public class DirtManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
             UpdateVisualsAt(new Vector2Int(x, y));
     }
 
-    public void ChangeAt(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
+    public override void ChangeAt(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
     {
         if (!Holder.SnapWorldToMap(rootWorldPos, out var rootPos) ||
             (_depthMap.At(rootPos) == 0) != shouldPlaceNotRemove) return;
@@ -168,31 +163,28 @@ public class DirtManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
         }
     }
 
-    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected override void GeneratePhysics()
-    {
-        _baseMap.gameObject.AddComponent<TilemapCollider2D>();
-        _baseMap.gameObject.layer = 8;
-    }
     
+    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected override void HandleRelease() => _physicalTrait.RequestGeneratePhysics();
+
     private void UpdateVisualsAt(Vector2Int pos)
     {
         var depth = _depthMap.At(pos);
 
-        //layer determining
-        DirtStratum? foundLayer = null;
-        var lastLayerEndDepth = 0;
+        //stratum determining
+        DirtStratum? foundStratum = null;
+        var lastStratumEndDepth = 0;
         if (depth != 0)
             foreach (var current in strata)
             {
-                var currentLayerEndDepth = lastLayerEndDepth + current.thickness;
-                if (depth <= currentLayerEndDepth)
+                var currentStratumEndDepth = lastStratumEndDepth + current.thickness;
+                if (depth <= currentStratumEndDepth)
                 {
-                    foundLayer = current;
+                    foundStratum = current;
                     break;
                 }
 
-                lastLayerEndDepth = currentLayerEndDepth;
+                lastStratumEndDepth = currentStratumEndDepth;
             }
 
 
@@ -203,7 +195,7 @@ public class DirtManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
         {
             var n = pos + Lytil.FullNeighbourOffsets[i];
             var inBounds = Holder.IsInBounds(n);
-            var present = inBounds && _depthMap.At(n) > lastLayerEndDepth;
+            var present = inBounds && _depthMap.At(n) > lastStratumEndDepth;
             var check = (!inBounds && depth != 0) || present;
             fullQuery.Neighbours[i] = check;
             if (i < Lytil.HalfNeighbourOffsets.Length)
@@ -211,7 +203,7 @@ public class DirtManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
         }
 
         //march
-        var marchingSet = depth != 0 ? foundLayer?.marchingSet : outlineMarchingSet;
+        var marchingSet = depth != 0 ? foundStratum?.marchingSet : outlineMarchingSet;
         var marchingTile
             = (marchingSet &&
                (marchingSet.TryGetTile(fullQuery, out var variants) ||
@@ -221,7 +213,7 @@ public class DirtManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
         _marchingMap.SetTile((Vector3Int)pos, marchingTile);
 
 
-        if (foundLayer == null)
+        if (foundStratum == null)
         {
             _baseMap.SetTile((Vector3Int)pos, null);
             _lowerPebbleMap.SetTile((Vector3Int)pos, null);
@@ -229,16 +221,16 @@ public class DirtManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
             return;
         }
 
-        var layer = foundLayer.Value;
+        var stratum = foundStratum.Value;
 
         // base
-        _baseMap.SetTile((Vector3Int)pos, layer.baseTile);
+        _baseMap.SetTile((Vector3Int)pos, stratum.baseTile);
 
         //pebbles
         Random.InitState(pos.x * 100 + pos.y);
         var rndLower = Random.Range(0, 10000);
-        var shouldPlaceLower = rndLower <= layer.lowerPebbleDensity * 10000f;
-        var lowerPebbles = layer.lowerPebbles;
+        var shouldPlaceLower = rndLower <= stratum.lowerPebbleDensity * 10000f;
+        var lowerPebbles = stratum.lowerPebbles;
         var lowerPebble = (shouldPlaceLower && lowerPebbles?.Length > 0)
             ? lowerPebbles[rndLower % lowerPebbles.Length]
             : null;
@@ -247,8 +239,8 @@ public class DirtManipulator : PhysicalManipulatorBase, IPlaceRemoveHandler
 
         Random.InitState(rndLower);
         var rndUpper = Random.Range(0, 10000);
-        var shouldPlaceUpper = rndUpper <= layer.upperPebbleDensity * 10000f;
-        var upperPebbles = layer.upperPebbles;
+        var shouldPlaceUpper = rndUpper <= stratum.upperPebbleDensity * 10000f;
+        var upperPebbles = stratum.upperPebbles;
         var upperPebble = (shouldPlaceUpper && upperPebbles?.Length > 0)
             ? upperPebbles[rndUpper % upperPebbles.Length]
             : null;

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public static class Lytil
 {
@@ -30,4 +31,16 @@ public static class Lytil
     
     public static bool IsInBounds(Vector2 point, Vector2 start, Vector2 end) =>
         point.x >= start.x && point.x < end.x && point.y >= start.y && point.y < end.y;
+    
+    
+    public static Tilemap CreateTilemap(Transform parent, int offset, string mapName)
+    {
+        var go = new GameObject(mapName);
+        go.transform.SetParent(parent, false);
+        go.transform.localPosition = Vector3.back * 0.01f * offset;
+        var map = go.AddComponent<Tilemap>();
+        map.tileAnchor = new Vector3(0.5f, 0.5f, 0f);
+        map.orientation = Tilemap.Orientation.XY;
+        return map;
+    }
 }
