@@ -6,7 +6,7 @@ using UnityEngine.Tilemaps;
 namespace ChapterEditor
 {
 
-public class PhysicalManipulatorTrait : IPropertyHolder, IPackable
+public class PhysicalEntityTrait : IPropertyHolder, IPackable
 {
     private static void TogglePhysicsInObject(GameObject obj, bool value)
     {

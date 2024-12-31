@@ -1,27 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class SignalSource : MonoBehaviour
 {
-    [SerializeField] bool Output;
-    public bool activated { get; private set; }
-    public event System.Action<bool, GameObject> SignalUpdateEvent = delegate { };
+    private static HashSet<SignalSource> SignalsInScene = new HashSet<SignalSource>();
+    
+    [SerializeField] private bool output;
+    public bool Activated { get; private set; }
+    public event System.Action<bool, GameObject> SignalUpdateEvent;
 
     private void Start()
     {
-        SignalUpdateEvent(activated, gameObject);
+        SignalUpdateEvent?.Invoke(Activated, gameObject);
     }
 
     private void OnDestroy()
     {
-        SignalUpdateEvent(false, gameObject);
+        SignalUpdateEvent?.Invoke(false, gameObject);
     }
 
     public virtual void UpdateSignal (bool active, GameObject source)
     {
-        activated = active;
-        Output = active;
-        SignalUpdateEvent (active, source);
+        Activated = active;
+        output = active;
+        SignalUpdateEvent?.Invoke(active, source);
     }
 }

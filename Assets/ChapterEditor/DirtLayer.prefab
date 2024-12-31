@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5585420924436873903}
   - component: {fileID: 228163013616379759}
   m_Layer: 0
-  m_Name: DirtManipulator
+  m_Name: DirtLayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23e2094a739944f281fcf36f106213d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  manipulatorName: Dirt
+  title: Dirt
   target: {fileID: 5585420924436873903}
   maxDepth: 15
   outlineMarchingSet: {fileID: 11400000, guid: 2ceb0cc2d7393554cb4c125c4f315659, type: 2}

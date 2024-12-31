@@ -852,7 +852,7 @@ MonoBehaviour:
   soundPlayer: {fileID: 1245979366}
   loadedChapterName: Test
   spawnPointPrefab: {fileID: 6342695968797680592, guid: a8590ead1b7cb484486918d286004c84, type: 3}
-  layerFactory: {fileID: 11400000, guid: 1f7925561afaf844e94127d55ca23bea, type: 2}
+  entityFactory: {fileID: 11400000, guid: 1f7925561afaf844e94127d55ca23bea, type: 2}
 --- !u!114 &1262337692
 MonoBehaviour:
   m_ObjectHideFlags: 0

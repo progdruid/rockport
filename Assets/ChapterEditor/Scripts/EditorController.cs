@@ -3,6 +3,7 @@ using Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Serialization;
 
 namespace ChapterEditor
 {
@@ -13,8 +14,8 @@ public class EditorController : MonoBehaviour, IPackable
     public static bool s_CanEdit = true;
 
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    [SerializeField] private LayerFactory layerFactory;
-    [SerializeField] private ManipulatorUIPanel manipulatorUIPanel;
+    [SerializeField] private EntityFactory entityFactory;
+    [SerializeField] private EntityUIPanel entityUIPanel;
     [SerializeField] private TMP_Text layerText;
     [Space] 
     [SerializeField] private Camera cam;
@@ -33,13 +34,13 @@ public class EditorController : MonoBehaviour, IPackable
     private MapSpaceHolder _holder;
     
     private int _selectedLayer = -1;
-    private ManipulatorBase _selectedManipulator = null;
+    private MapEntity _selectedEntity = null;
 
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
     {
-        Assert.IsNotNull(layerFactory);
-        Assert.IsNotNull(manipulatorUIPanel);
+        Assert.IsNotNull(entityFactory);
+        Assert.IsNotNull(entityUIPanel);
         Assert.IsNotNull(layerText);
 
         Assert.IsNotNull(cam);
@@ -52,9 +53,9 @@ public class EditorController : MonoBehaviour, IPackable
         Assert.IsFalse(alpha2LayerTitle.Length == 0);
         Assert.IsFalse(alpha3LayerTitle.Length == 0);
         Assert.IsFalse(alpha4LayerTitle.Length == 0);
-
-        _holder = new MapSpaceHolder(initMapSize);
         
+        _holder = new MapSpaceHolder(initMapSize);
+
         UpdateLayerText();
     }
 
@@ -66,15 +67,15 @@ public class EditorController : MonoBehaviour, IPackable
         var chapterData = new MapData()
         {
             SpaceSize = _holder.MapSize,
-            LayerNames = new string[_holder.ManipulatorsCount],
-            LayerData = new string[_holder.ManipulatorsCount]
+            LayerNames = new string[_holder.EntitiesCount],
+            LayerData = new string[_holder.EntitiesCount]
         };
         
-        for (var i = 0; i < _holder.ManipulatorsCount; i++)
+        for (var i = 0; i < _holder.EntitiesCount; i++)
         {
-            var manipulator = _holder.GetManipulator(i);
-            chapterData.LayerNames[i] = manipulator.ManipulatorName;
-            chapterData.LayerData[i] = manipulator.Pack();
+            var entity = _holder.GetEntity(i);
+            chapterData.LayerNames[i] = entity.Title;
+            chapterData.LayerData[i] = entity.Pack();
         }
         
         return chapterData.Pack();
@@ -86,9 +87,9 @@ public class EditorController : MonoBehaviour, IPackable
         chapterData.Unpack(data);
 
         UnselectLayer();
-        while (_holder.ManipulatorsCount > 0)
+        while (_holder.EntitiesCount > 0)
         {
-            var dead = _holder.GetManipulator(0);
+            var dead = _holder.GetEntity(0);
             _holder.UnregisterAt(0);
             dead.Clear();
         }
@@ -98,9 +99,9 @@ public class EditorController : MonoBehaviour, IPackable
 
         for (var i = 0; i < chapterData.LayerNames.Length; i++)
         {
-            var manipulator = layerFactory.CreateManipulator(chapterData.LayerNames[i]);
-            _holder.RegisterAt(manipulator, i);
-            manipulator.Unpack(chapterData.LayerData[i]);
+            var entity = entityFactory.CreateEntity(chapterData.LayerNames[i]);
+            _holder.RegisterAt(entity, i);
+            entity.Unpack(chapterData.LayerData[i]);
         }
     }
 
@@ -171,8 +172,8 @@ public class EditorController : MonoBehaviour, IPackable
         // spawn point management
         if (Input.GetKeyDown(KeyCode.P))
         {
-            var layer = _holder.FindManipulator(GlobalConfig.Ins.spawnPointManipulatorName, out _);
-            if (layer < 0) CreateLayer(GlobalConfig.Ins.spawnPointManipulatorName);
+            var layer = _holder.FindEntity(GlobalConfig.Ins.spawnPointEntityName, out _);
+            if (layer < 0) CreateLayer(GlobalConfig.Ins.spawnPointEntityName);
             else SelectLayer(layer);
         }
         
@@ -190,15 +191,15 @@ public class EditorController : MonoBehaviour, IPackable
         if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButtonDown(0))
         {
             UnselectLayer();
-            for (var i = _holder.ManipulatorsCount - 1; i >= 0; i--)
-                if (_holder.GetManipulator(i).CheckOverlap(worldPos))
+            for (var i = _holder.EntitiesCount - 1; i >= 0; i--)
+                if (_holder.GetEntity(i).CheckOverlap(worldPos))
                 {
                     SelectLayer(i);
                     break;
                 }
         }
         
-        if (!_selectedManipulator || Input.GetKey(KeyCode.LeftShift))
+        if (!_selectedEntity || Input.GetKey(KeyCode.LeftShift))
             return;
         
         // place/remove
@@ -206,7 +207,7 @@ public class EditorController : MonoBehaviour, IPackable
         var destructive = Input.GetMouseButton(1);
             
         if (constructive != destructive)
-            _selectedManipulator.ChangeAt(worldPos, constructive);
+            _selectedEntity.ChangeAt(worldPos, constructive);
     }
 
 
@@ -215,11 +216,11 @@ public class EditorController : MonoBehaviour, IPackable
     {
         var layer = _selectedLayer + 1;
         UnselectLayer();
-        _holder.RegisterAt(layerFactory.CreateManipulator(layerTitle), layer);
+        _holder.RegisterAt(entityFactory.CreateEntity(layerTitle), layer);
         SelectLayer(layer);
 
         //updating camera position, so it is always behind the topmost layer
-        var z = _holder.GetTopmostManipulator().GetReferenceZ() - 1;
+        var z = _holder.GetTopmostEntity().GetReferenceZ() - 1;
         cam.transform.position = new Vector3(cam.transform.position.x, cam.transform.position.y, z);
     }
 
@@ -230,7 +231,7 @@ public class EditorController : MonoBehaviour, IPackable
             return;
 
         UnselectLayer();
-        var dead = _holder.GetManipulator(layer);
+        var dead = _holder.GetEntity(layer);
         _holder.UnregisterAt(layer);
         dead.Clear();
 
@@ -254,8 +255,8 @@ public class EditorController : MonoBehaviour, IPackable
 
         _selectedLayer = layer;
         UpdateLayerText();
-        _selectedManipulator = _holder.GetManipulator(layer);
-        manipulatorUIPanel.SetPropertyHolder(_selectedManipulator);
+        _selectedEntity = _holder.GetEntity(layer);
+        entityUIPanel.SetPropertyHolder(_selectedEntity);
     }
 
     private void UnselectLayer()
@@ -263,8 +264,8 @@ public class EditorController : MonoBehaviour, IPackable
         if (_selectedLayer == -1)
             return;
 
-        manipulatorUIPanel.UnsetPropertyHolder();
-        _selectedManipulator = null;
+        entityUIPanel.UnsetPropertyHolder();
+        _selectedEntity = null;
         _selectedLayer = -1;
         UpdateLayerText();
     }

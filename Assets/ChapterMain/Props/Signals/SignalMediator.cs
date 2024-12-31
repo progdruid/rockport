@@ -22,7 +22,7 @@ public class SignalMediator : SignalSource
         for (int i = 0; i < activators.Count; i++)
         { 
             activators[i].SignalUpdateEvent += UpdateSignal;
-            if (activators[i].activated)
+            if (activators[i].Activated)
                 activeSources.Add(activators[i].gameObject);
         }
 

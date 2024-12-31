@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Serialization;
 
 namespace Common
 {
@@ -34,7 +35,7 @@ public class GlobalConfig : ScriptableObject
     [SerializeField] private Material standardMaterial;
     [SerializeField] private Material worldTextureMaskMaterial;
     
-    [SerializeField] public string spawnPointManipulatorName;
+    [SerializeField] public string spawnPointEntityName;
     
     public Material StandardMaterial { get; private set; }
     public Material WorldTextureMaskMaterial { get; private set; }

@@ -63,7 +63,7 @@ public class PathMover : MonoBehaviour
 
     void Update()
     {
-        if (signal != null && !signal.activated)
+        if (signal != null && !signal.Activated)
             return;
 
         timePassed = ((timePassed + Time.deltaTime) % timePeriod + timePeriod) % timePeriod;

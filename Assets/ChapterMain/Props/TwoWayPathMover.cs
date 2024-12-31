@@ -64,11 +64,11 @@ public class TwoWayPathMover : MonoBehaviour
 
         Move(timePassed);
 
-        if (signal.activated && !inverseSignal.activated)
+        if (signal.Activated && !inverseSignal.Activated)
             timePassed += Time.deltaTime;
-        else if (!signal.activated && inverseSignal.activated)
+        else if (!signal.Activated && inverseSignal.Activated)
             timePassed -= Time.deltaTime;
-        else if (signal.activated && inverseSignal.activated)
+        else if (signal.Activated && inverseSignal.Activated)
             timePassed += Time.deltaTime * (int)priorWay;
 
         if (timePassed < 0f)

@@ -10,7 +10,7 @@ public class MapSpaceHolder
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private Vector2Int _mapSize;
     private readonly Grid _visualGrid;
-    private readonly List<ManipulatorBase> _manipulators;
+    private readonly List<MapEntity> _entities;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////    
     public MapSpaceHolder(Vector2Int size)
@@ -21,7 +21,7 @@ public class MapSpaceHolder
         var gridObject = new GameObject("LayerSheet");
         _visualGrid = gridObject.AddComponent<Grid>();
         _visualGrid.cellSize = new Vector3(0.5f, 0.5f, 0f);
-        _manipulators = new List<ManipulatorBase>();
+        _entities = new List<MapEntity>();
     }
 
 
@@ -30,7 +30,7 @@ public class MapSpaceHolder
     public Vector2Int MapSize => _mapSize;
     public Vector2 WorldSize => _mapSize * (Vector2)_visualGrid.cellSize;
     public Vector2 WorldStart => _visualGrid.transform.position;
-    public int ManipulatorsCount => _manipulators.Count;
+    public int EntitiesCount => _entities.Count;
     
     //grid operations
     public bool SnapWorldToMap(Vector2 worldPos, out Vector2Int mapPos)
@@ -52,18 +52,18 @@ public class MapSpaceHolder
     }
     
     //layer operations
-    public ManipulatorBase GetManipulator(int layer) => _manipulators[layer];
-    public ManipulatorBase GetTopmostManipulator() => _manipulators[^1];
-    public bool HasLayer(int layer) => layer >= 0 && layer < ManipulatorsCount;
-    public int ClampLayer(int layer) => Mathf.Clamp(layer, 0, ManipulatorsCount - 1);
+    public MapEntity GetEntity(int layer) => _entities[layer];
+    public MapEntity GetTopmostEntity() => _entities[^1];
+    public bool HasLayer(int layer) => layer >= 0 && layer < EntitiesCount;
+    public int ClampLayer(int layer) => Mathf.Clamp(layer, 0, EntitiesCount - 1);
     public bool MoveLayer(int layerFrom, int layerTo)
     {
         layerTo = ClampLayer(layerTo);
         if (!HasLayer(layerFrom) || layerFrom == layerTo) return false;
 
-        var movedObject = _manipulators[layerFrom];
-        _manipulators.RemoveAt(layerFrom);
-        _manipulators.Insert(layerTo, movedObject);
+        var movedObject = _entities[layerFrom];
+        _entities.RemoveAt(layerFrom);
+        _entities.Insert(layerTo, movedObject);
 
         var step = layerTo > layerFrom ? 1 : -1;
         for (var i = layerFrom; i != layerTo + step; i += step)
@@ -72,12 +72,12 @@ public class MapSpaceHolder
         return true;
     }
 
-    public int FindManipulator(string targetName, out ManipulatorBase result)
+    public int FindEntity(string targetName, out MapEntity result)
     {
-        for (var layer = 0; layer < _manipulators.Count; layer++)
+        for (var layer = 0; layer < _entities.Count; layer++)
         {
-            if (_manipulators[layer].ManipulatorName != targetName) continue;
-            result = _manipulators[layer];
+            if (_entities[layer].Title != targetName) continue;
+            result = _entities[layer];
             return layer;
         }
         
@@ -87,43 +87,43 @@ public class MapSpaceHolder
     
     
     //registration
-    public bool RegisterObject(ManipulatorBase manipulator, out int layer)
+    public bool RegisterObject(MapEntity entity, out int layer)
     {
         layer = -1;
-        if (_manipulators.Contains(manipulator))
+        if (_entities.Contains(entity))
             return false;
 
-        _manipulators.Add(manipulator);
-        layer = _manipulators.Count - 1;
-        manipulator.InjectHolder(this);
+        _entities.Add(entity);
+        layer = _entities.Count - 1;
+        entity.InjectHolder(this);
 
-        manipulator.Target.SetParent(_visualGrid.transform);
+        entity.Target.SetParent(_visualGrid.transform);
         UpdateZ(layer);
 
         return true;
     }
-    public bool RegisterAt(ManipulatorBase manipulator, int layer)
+    public bool RegisterAt(MapEntity entity, int layer)
     {
-        var to = Mathf.Clamp(layer, 0, _manipulators.Count);
-        var registered = RegisterObject(manipulator, out var from);
+        var to = Mathf.Clamp(layer, 0, _entities.Count);
+        var registered = RegisterObject(entity, out var from);
         if (registered)
             MoveLayer(from, to);
         return registered;
     }
 
-    public bool UnregisterObject(ManipulatorBase manipulator)
+    public bool UnregisterObject(MapEntity entity)
     {
-        var layer = _manipulators.FindIndex(m => m == manipulator);
+        var layer = _entities.FindIndex(e => e == entity);
         return UnregisterAt(layer);
     }
     public bool UnregisterAt(int layer)
     {
         if (!HasLayer(layer)) return false;
-        var manipulator = GetManipulator(layer);
-        manipulator.InjectHolder(null);
-        manipulator.Target.SetParent(null);
-        _manipulators.RemoveAt(layer);
-        for (var i = layer; i < _manipulators.Count - 1; i++)
+        var entity = GetEntity(layer);
+        entity.InjectHolder(null);
+        entity.Target.SetParent(null);
+        _entities.RemoveAt(layer);
+        for (var i = layer; i < _entities.Count - 1; i++)
             UpdateZ(i);
         return true;
     }
@@ -137,9 +137,9 @@ public class MapSpaceHolder
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     private void UpdateZ(int layer)
     {
-        var manipulator = _manipulators[layer];
-        var local = manipulator.Target.localPosition;
-        manipulator.Target.localPosition = new Vector3(local.x, local.y, -1 * layer);
+        var entity = _entities[layer];
+        var local = entity.Target.localPosition;
+        entity.Target.localPosition = new Vector3(local.x, local.y, -1 * layer);
     }
 }
 

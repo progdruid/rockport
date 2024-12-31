@@ -2,15 +2,15 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Tilemaps;
+using UnityEngine.Serialization;
 
 namespace ChapterEditor
 {
 
-public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder, IPackable
+public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IPackable
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    [SerializeField] private string manipulatorName;
+    [SerializeField] private string title;
     [SerializeField] private Transform target;
 
     private bool _initialised = false;
@@ -30,7 +30,7 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder, IPackabl
     }
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    public string ManipulatorName => manipulatorName;
+    public string Title => title;
     public Transform Target => target;
 
     public event Action PropertiesChangeEvent;
@@ -44,8 +44,8 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder, IPackabl
         {
             PropertyName = "Title",
             PropertyType = PropertyType.Text,
-            Getter = () => manipulatorName,
-            Setter = (object input) => manipulatorName = (string)input
+            Getter = () => title,
+            Setter = null
         };
     }
 
@@ -55,11 +55,8 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder, IPackabl
     public abstract string Pack();
     public abstract void Unpack(string data);
 
-    public void Release()
-    {
-        HandleRelease();
-        Destroy(this);
-    }
+    public virtual void Activate() { }
+
     public void Clear()
     {
         var targetObject = target.gameObject;
@@ -72,7 +69,6 @@ public abstract class ManipulatorBase : MonoBehaviour, IPropertyHolder, IPackabl
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     protected void InvokePropertiesChangeEvent() => PropertiesChangeEvent?.Invoke();
 
-    protected virtual void HandleRelease() { }
 }
 
 }

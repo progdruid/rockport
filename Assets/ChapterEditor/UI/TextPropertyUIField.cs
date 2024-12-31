@@ -50,7 +50,7 @@ public class TextPropertyUIField : MonoBehaviour
                 PropertyType.Text => s,
                 _ => throw new ArgumentOutOfRangeException()
             };
-            handle.Setter.Invoke(val);
+            handle.Setter?.Invoke(val);
             EditorController.s_CanEdit = true;
             inputField.text = handle.Getter.Invoke().ToString();
         });

@@ -5,7 +5,7 @@ using UnityEngine.Assertions;
 namespace ChapterEditor
 {
 
-public class ManipulatorUIPanel : MonoBehaviour
+public class EntityUIPanel : MonoBehaviour
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private Canvas canvas;

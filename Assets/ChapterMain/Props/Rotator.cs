@@ -23,7 +23,7 @@ public class Rotator : MonoBehaviour
 
     void Update()
     {
-        if (signal != null && !signal.activated)
+        if (signal != null && !signal.Activated)
             return;
 
         transform.rotation = Quaternion.Euler(0f, 0f, clockwiseMult * (Time.time - timeOffset) / period * 360f);

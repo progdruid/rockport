@@ -548,8 +548,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5e9f2b6cf3ca2046a1e90e5e2f2d264, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layerFactory: {fileID: 11400000, guid: 1f7925561afaf844e94127d55ca23bea, type: 2}
-  manipulatorUIPanel: {fileID: 2144953193}
+  entityFactory: {fileID: 11400000, guid: 1f7925561afaf844e94127d55ca23bea, type: 2}
+  entityUIPanel: {fileID: 2144953193}
   layerText: {fileID: 206225641}
   cam: {fileID: 202641129}
   cameraMoveSpeed: 1
@@ -560,7 +560,7 @@ MonoBehaviour:
   alpha1LayerTitle: Dirt
   alpha2LayerTitle: Tree
   alpha3LayerTitle: Tree Background
-  alpha4LayerTitle: Object
+  alpha4LayerTitle: Checkpoint
 --- !u!1 &563298347
 GameObject:
   m_ObjectHideFlags: 0

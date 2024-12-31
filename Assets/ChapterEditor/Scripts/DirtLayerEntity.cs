@@ -3,7 +3,6 @@ using System.Linq;
 using Common;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
@@ -28,7 +27,7 @@ public struct DirtStratum
     [SerializeField] public TileMarchingSet marchingSet;
 }
 
-public class DirtManipulator : ManipulatorBase
+public class DirtLayerEntity : MapEntity
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private int maxDepth;
@@ -44,7 +43,7 @@ public class DirtManipulator : ManipulatorBase
     private Material _material;
     private float _fogScale = 0f;
 
-    private PhysicalManipulatorTrait _physicalTrait;
+    private PhysicalEntityTrait _physicalTrait;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     protected override void Awake()
@@ -74,7 +73,7 @@ public class DirtManipulator : ManipulatorBase
         _upperPebbleMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _material;
         _marchingMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _material;
         
-        _physicalTrait = new PhysicalManipulatorTrait();
+        _physicalTrait = new PhysicalEntityTrait();
         _physicalTrait.AddTilemap(_baseMap);
         _physicalTrait.PropertiesChangeEvent += InvokePropertiesChangeEvent;
     }
@@ -163,9 +162,9 @@ public class DirtManipulator : ManipulatorBase
         }
     }
 
+    public override void Activate() => _physicalTrait.RequestGeneratePhysics();
     
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected override void HandleRelease() => _physicalTrait.RequestGeneratePhysics();
 
     private void UpdateVisualsAt(Vector2Int pos)
     {

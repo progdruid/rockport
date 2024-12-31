@@ -21,7 +21,7 @@ public class Cannon : MonoBehaviour
 
     void Update()
     {
-        if (signal != null && signal.activated)//because by activating signal you're disabling cannons
+        if (signal != null && signal.Activated)//because by activating signal you're disabling cannons
             return;
 
         if ((Time.time + timePeriod - offset)%timePeriod <= Time.deltaTime)

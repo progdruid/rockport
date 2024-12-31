@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 namespace ChapterEditor
 {
 
-public class TreeManipulator : ManipulatorBase
+public class TreeLayerEntity : MapEntity
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private Texture2D treeTexture;
@@ -27,7 +27,7 @@ public class TreeManipulator : ManipulatorBase
     private Material _worldMaterial;
     private float _fogScale = 0f;
 
-    private PhysicalManipulatorTrait _physicalTrait;
+    private PhysicalEntityTrait _physicalTrait;
 
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     protected override void Awake()
@@ -55,7 +55,7 @@ public class TreeManipulator : ManipulatorBase
         _treeMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _worldMaterial;
         _outlineMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _baseMaterial;
         
-        _physicalTrait = new PhysicalManipulatorTrait();
+        _physicalTrait = new PhysicalEntityTrait();
         _physicalTrait.AddTilemap(_treeMap);
         _physicalTrait.PropertiesChangeEvent += InvokePropertiesChangeEvent;
     }
@@ -125,9 +125,9 @@ public class TreeManipulator : ManipulatorBase
             UpdateVisualsAt(subPos);
     }
 
-    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected override void HandleRelease() => _physicalTrait.RequestGeneratePhysics();
+    public override void Activate() => _physicalTrait.RequestGeneratePhysics();
 
+    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     private void UpdateVisualsAt(Vector2Int pos)
     {
         var placedHere = _placed.At(pos);

@@ -7,7 +7,7 @@ namespace ChapterEditor
 {
 
 [CreateAssetMenu(menuName = "Lyport/Layer Factory")]
-public class LayerFactory : ScriptableObject
+public class EntityFactory : ScriptableObject
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private GameObject[] prefabs;
@@ -25,15 +25,15 @@ public class LayerFactory : ScriptableObject
 
         foreach (var prefab in prefabs)
         {
-            var manipulator = prefab.GetComponent<ManipulatorBase>();
-            Assert.IsNotNull(manipulator);
-            var uniqueTitle = manipulator.ManipulatorName;
+            var entity = prefab.GetComponent<MapEntity>();
+            Assert.IsNotNull(entity);
+            var uniqueTitle = entity.Title;
             _prefabMap.Add(uniqueTitle, prefab);
         }
     }
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    public ManipulatorBase CreateManipulator(string uniqueTitle)
+    public MapEntity CreateEntity(string uniqueTitle)
     {
         if (!_initialized)
         {
@@ -42,8 +42,8 @@ public class LayerFactory : ScriptableObject
         }
         
         var createdObject = Instantiate(_prefabMap[uniqueTitle]);
-        var manipulator = createdObject.GetComponent<ManipulatorBase>();
-        return manipulator;
+        var entity = createdObject.GetComponent<MapEntity>();
+        return entity;
     }
 }
 

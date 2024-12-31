@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3272225832976953077}
   - component: {fileID: 5949570980976721063}
   m_Layer: 0
-  m_Name: TreeBackManipulator
+  m_Name: TreeBackLayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44,12 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13709ec2dc6752748aa689e6095bd617, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  manipulatorName: Tree Background
+  title: Tree Background
   target: {fileID: 3272225832976953077}
-  holder: {fileID: 0}
-  layer: 0
   treeTexture: {fileID: 2800000, guid: 78354000784664c4989b906f0b41b434, type: 3}
-  worldTextureCutoutMaterial: {fileID: 2100000, guid: 8c22239b3ef1af34ca3f3dd510dbe019, type: 2}
   useMarching: 0
   treeMarching: {fileID: 11400000, guid: 5331ea820bb6bba4481cbacd28a54a88, type: 2}
   cutoutTile: {fileID: 11400000, guid: 5820277ebb8e1b14aa72f2db1ace222c, type: 2}

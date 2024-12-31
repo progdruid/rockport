@@ -4,6 +4,7 @@ using Common;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 public class MapLoader : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class MapLoader : MonoBehaviour
     [SerializeField] private SequentialSoundPlayer soundPlayer;
     [SerializeField] private string loadedChapterName;
     [SerializeField] private GameObject spawnPointPrefab;
-    [SerializeField] private LayerFactory layerFactory;
+    [SerializeField] private EntityFactory entityFactory;
     
     private GameObject _chapterObject;
     private MapData _currentMapData;
@@ -21,7 +22,7 @@ public class MapLoader : MonoBehaviour
     {
         Assert.IsNotNull(soundPlayer);
         Assert.IsNotNull(spawnPointPrefab);
-        Assert.IsNotNull(layerFactory);
+        Assert.IsNotNull(entityFactory);
         
         GameSystems.Ins.Loader = this;
         
@@ -111,27 +112,27 @@ public class MapLoader : MonoBehaviour
         
         for (var i = 0; i < data.LayerNames.Length; i++)
         {
-            var manipulator = layerFactory.CreateManipulator(data.LayerNames[i]);
-            holder.RegisterObject(manipulator, out _);
-            manipulator.Unpack(data.LayerData[i]);
+            var entity = entityFactory.CreateEntity(data.LayerNames[i]);
+            holder.RegisterObject(entity, out _);
+            entity.Unpack(data.LayerData[i]);
         }
 
-        GameSystems.Ins.CameraManager.ObservationHeight = holder.GetTopmostManipulator().GetReferenceZ();
+        GameSystems.Ins.CameraManager.ObservationHeight = holder.GetTopmostEntity().GetReferenceZ();
 
-        holder.FindManipulator(GlobalConfig.Ins.spawnPointManipulatorName, out var foundManipulator);
-        Assert.IsNotNull(foundManipulator);
-        var spawnManipulator = foundManipulator as PointManipulator;
-        Assert.IsNotNull(spawnManipulator);
-        var spawnPoint = spawnManipulator.Point;
-        var spawnZ = spawnManipulator.GetReferenceZ();
-        
+        holder.FindEntity(GlobalConfig.Ins.spawnPointEntityName, out var foundEntity);
+        Assert.IsNotNull(foundEntity);
+        var spawnPoint = foundEntity as AnchorEntity;
+        Assert.IsNotNull(spawnPoint);
+        var spawnPos = spawnPoint.GetPos();
+        var spawnZ = spawnPoint.GetReferenceZ();
+
         for (var i = 0; holder.HasLayer(i); i++)
         {
-            var manipulator = holder.GetManipulator(i);
-            manipulator.Release();
+            var entity = holder.GetEntity(i);
+            entity.Activate();
         }
         
-        GameSystems.Ins.PlayerManager.SetSpawnPoint(holder.ConvertMapToWorld(spawnPoint));
+        GameSystems.Ins.PlayerManager.SetSpawnPoint(holder.ConvertMapToWorld(spawnPos));
         GameSystems.Ins.PlayerManager.SetSpawnZ(spawnZ);
         
         LevelInstantiationEvent?.Invoke();

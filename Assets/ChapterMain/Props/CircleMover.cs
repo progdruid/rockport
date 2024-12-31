@@ -26,7 +26,7 @@ public class CircleMover : MonoBehaviour
 
     void Update()
     {
-        if (signal != null && !signal.activated)
+        if (signal != null && !signal.Activated)
             return;
 
         if (timePassed > timePeriod)

@@ -9,7 +9,7 @@ public class SignalNegator : SignalSource
     private void Start()
     {
         signal.SignalUpdateEvent += UpdateSignal;
-        UpdateSignal(signal.activated, signal.gameObject);
+        UpdateSignal(signal.Activated, signal.gameObject);
     }
 
     private void OnDestroy()

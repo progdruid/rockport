@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6360212949048405031}
   - component: {fileID: 8761389770760337943}
   - component: {fileID: -2867831548276733319}
+  - component: {fileID: 6803521080526574481}
   m_Layer: 7
   m_Name: Checkpoint
   m_TagString: Untagged
@@ -218,3 +219,18 @@ MonoBehaviour:
     volume: 1
   mute: 0
   emitPeriodInCalls: 1
+--- !u!114 &6803521080526574481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2487675744656186509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6c430a152904126bab1bb647d062313, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  title: Checkpoint
+  target: {fileID: 7716021490066822537}
+  parametrisedScript: {fileID: 6360212949048405031}
