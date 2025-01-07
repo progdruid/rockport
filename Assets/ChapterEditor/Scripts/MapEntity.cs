@@ -16,6 +16,7 @@ public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IPackable
     
     protected MapSpace Space { get; private set; }
     private readonly IntReference _layerHandle = new();
+    private readonly Dictionary<string, IEntityModule> _publicModules = new();
     
     private bool _initialised = false;
     
@@ -26,9 +27,9 @@ public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IPackable
         Assert.IsNotNull(title);
         Assert.IsTrue(title.Length > 0);
     }
+    
     protected void Start() => RequestInitialise();
-    protected virtual void Initialise() { }
-
+    
     protected void RequestInitialise()
     {
         if (_initialised) return;
@@ -36,12 +37,14 @@ public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IPackable
         Initialise();
     }
 
+    protected virtual void Initialise() { }
+
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public string Title => title;
     public Transform Target => target;
     public int Layer => _layerHandle.Value;
-    public SignalEmitter Emitter => emitter;
-    public SignalListener[] Listeners => listeners;
+    
+    public IReadOnlyDictionary<string, IEntityModule> PublicModules => _publicModules;
     
     public IntReference InjectMap(MapSpace injected)
     {
@@ -81,5 +84,10 @@ public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IPackable
 
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     protected void InvokePropertiesChangeEvent() => PropertiesChangeEvent?.Invoke();
+    protected void AddPublicModule(string moduleName, IEntityModule module)
+    {
+        _publicModules.TryAdd(moduleName, module);
+        module.Initialise(moduleName, this);
+    }
 }
 }

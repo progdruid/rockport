@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 21454352661399373}
   - component: {fileID: 21454352661399369}
   - component: {fileID: 3826480408867553601}
-  - component: {fileID: -937672859320918130}
   m_Layer: 7
   m_Name: JumpPad
   m_TagString: Untagged
@@ -172,10 +171,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e21cc1fbfd3a75941b35f06ce01512e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Impulse: 16
-  TimeOffset: 0.04
-  Cooldown: 0.5
-  OnJump:
+  title: Jump Pad
+  target: {fileID: 21454352661399368}
+  impulse: 16
+  timeOffset: 0.04
+  cooldown: 0.5
+  animator: {fileID: 21454352661399370}
+  onJump:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3826480408867553601}
@@ -209,18 +211,3 @@ MonoBehaviour:
     volume: 0.5
   mute: 0
   emitPeriodInCalls: 1
---- !u!114 &-937672859320918130
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 21454352661399372}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6c430a152904126bab1bb647d062313, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  title: Jump Pad
-  target: {fileID: 21454352661399368}
-  parametrisedScript: {fileID: 21454352661399369}

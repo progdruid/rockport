@@ -107,14 +107,16 @@ public class MapLoader : MonoBehaviour
         GameSystems.Ins.FruitManager.ClearFruits();
 
         var mapSpace = new MapSpace(data.SpaceSize);
+        var signalCircuit = new SignalCircuit();
         
         for (var i = 0; i < data.LayerNames.Length; i++)
         {
             var entity = entityFactory.CreateEntity(data.LayerNames[i]);
             mapSpace.RegisterObject(entity, out _);
             entity.Unpack(data.LayerData[i]);
+            signalCircuit.ExtractAndAdd(entity);
         }
-
+        
         GameSystems.Ins.CameraManager.ObservationHeight = mapSpace.GetTopmostEntity().GetReferenceZ();
 
         mapSpace.FindEntity(GlobalConfig.Ins.spawnPointEntityName, out var foundEntity);
@@ -129,6 +131,8 @@ public class MapLoader : MonoBehaviour
             var entity = mapSpace.GetEntity(i);
             entity.Activate();
         }
+        
+        signalCircuit.Unpack(data.SignalData);
         
         GameSystems.Ins.PlayerManager.SetSpawnPoint(mapSpace.ConvertMapToWorld(spawnPos));
         GameSystems.Ins.PlayerManager.SetSpawnZ(spawnZ);

@@ -12,22 +12,24 @@ public class Button : PropEntity
     private static readonly int PressedAnimatorParameterID = Animator.StringToHash("Pressed");
     
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    [SerializeField ]private Animator animator;
+    [SerializeField] private Animator animator;
     [SerializeField] private UniversalTrigger trigger;
-    [SerializeField] private SignalEmitter emitter;
     [SerializeField] private UnityEvent onPress;
     [SerializeField] private UnityEvent onRelease;
     
     private readonly List<Collider2D> _pressingBodies = new();
+    private SignalEmitter _signalEmitter;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     protected override void Awake()
     {
+        _signalEmitter = new SignalEmitter { Signal = false };
+        AddPublicModule("signal-output", _signalEmitter);
+
         base.Awake();
         
         Assert.IsNotNull(animator);
         Assert.IsNotNull(trigger);
-        Assert.IsNotNull(emitter);
     
         trigger.EnterEvent += HandleTriggerEnter;
         trigger.ExitEvent += HandleTriggerExit;
@@ -40,7 +42,7 @@ public class Button : PropEntity
     }
     
     
-    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
+    //game events///////////////////////////////////////////////////////////////////////////////////////////////////////
     private void HandleTriggerEnter (Collider2D other, TriggeredType type)
     {
         if ((type != TriggeredType.Player && type != TriggeredType.Corpse) || _pressingBodies.Contains(other))
@@ -51,7 +53,7 @@ public class Button : PropEntity
             return;
         onPress.Invoke();
         animator.SetBool(PressedAnimatorParameterID, true);
-        emitter.Signal = true;
+        _signalEmitter.Signal = true;
     }
 
     private void HandleTriggerExit (Collider2D other, TriggeredType type)
@@ -64,6 +66,6 @@ public class Button : PropEntity
             return;
         onRelease.Invoke();
         animator.SetBool(PressedAnimatorParameterID, false);
-        emitter.Signal = false;
+        _signalEmitter.Signal = false;
     }
 }

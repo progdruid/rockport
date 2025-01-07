@@ -1,9 +1,9 @@
 
+using System.Linq;
 using Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Serialization;
 
 namespace ChapterEditor
 {
@@ -32,6 +32,7 @@ public class EditorController : MonoBehaviour, IPackable
     [SerializeField] private string alpha4LayerTitle;
     
     private MapSpace _map;
+    private SignalCircuit _signalCircuit;
     
     private int _selectedLayer = -1;
     private MapEntity _selectedEntity = null;
@@ -55,7 +56,8 @@ public class EditorController : MonoBehaviour, IPackable
         Assert.IsFalse(alpha4LayerTitle.Length == 0);
         
         _map = new MapSpace(initMapSize);
-
+        _signalCircuit = new SignalCircuit();
+        
         UpdateLayerText();
     }
 
@@ -64,28 +66,28 @@ public class EditorController : MonoBehaviour, IPackable
 
     public string Pack()
     {
-        var chapterData = new MapData()
+        _signalCircuit.Link(_signalCircuit.Emitters.First(), _signalCircuit.Listeners.First());
+        
+        var mapData = new MapData()
         {
             SpaceSize = _map.MapSize,
             LayerNames = new string[_map.EntitiesCount],
-            LayerData = new string[_map.EntitiesCount]
+            LayerData = new string[_map.EntitiesCount],
+            SignalData = _signalCircuit.Pack()
         };
         
         for (var i = 0; i < _map.EntitiesCount; i++)
         {
             var entity = _map.GetEntity(i);
-            chapterData.LayerNames[i] = entity.Title;
-            chapterData.LayerData[i] = entity.Pack();
+            mapData.LayerNames[i] = entity.Title;
+            mapData.LayerData[i] = entity.Pack();
         }
         
-        return chapterData.Pack();
+        return mapData.Pack();
     }
 
     public void Unpack(string data)
     {
-        var chapterData = new MapData();
-        chapterData.Unpack(data);
-
         UnselectLayer();
         while (_map.EntitiesCount > 0)
         {
@@ -93,19 +95,23 @@ public class EditorController : MonoBehaviour, IPackable
             _map.UnregisterAt(0);
             dead.Clear();
         }
-        
         _map.Kill();
+        
+        var chapterData = new MapData();
+        chapterData.Unpack(data);
+        
         _map = new MapSpace(chapterData.SpaceSize);
-
         for (var i = 0; i < chapterData.LayerNames.Length; i++)
         {
             var entity = entityFactory.CreateEntity(chapterData.LayerNames[i]);
             _map.RegisterAt(entity, i);
             entity.Unpack(chapterData.LayerData[i]);
         }
+        
+        _signalCircuit.Unpack(chapterData.SignalData);
     }
 
-    //game loop/////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //game events///////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Update()
     {
         if (!s_CanEdit) return;
@@ -216,7 +222,11 @@ public class EditorController : MonoBehaviour, IPackable
     {
         var layer = _selectedLayer + 1;
         UnselectLayer();
-        _map.RegisterAt(entityFactory.CreateEntity(layerTitle), layer);
+        
+        var entity = entityFactory.CreateEntity(layerTitle);
+        _map.RegisterAt(entity, layer);
+        _signalCircuit.ExtractAndAdd(entity);
+        
         SelectLayer(layer);
 
         //updating camera position, so it is always behind the topmost layer
@@ -231,7 +241,9 @@ public class EditorController : MonoBehaviour, IPackable
             return;
 
         UnselectLayer();
+        
         var dead = _map.GetEntity(layer);
+        _signalCircuit.ExtractAndRemove(dead);
         _map.UnregisterAt(layer);
         dead.Clear();
 

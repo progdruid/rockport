@@ -2,7 +2,6 @@ using ChapterEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Animator))]
 public class Door : PropEntity
@@ -11,21 +10,27 @@ public class Door : PropEntity
 
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private Animator animator;
-    [SerializeField] private SignalListener listener;
     [SerializeField] private UnityEvent onOpening;
     [SerializeField] private UnityEvent onClosing;
     
     private bool _open = false;
+    private SignalListener _listener;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     protected override void Awake()
     {
+        _listener = new SignalListener();
+        AddPublicModule("signal-input-0", _listener);
+        
         base.Awake();
         
         Assert.IsNotNull(animator);
-        Assert.IsNotNull(listener);
+    }
 
-        listener.ActionOnSignal = UpdateDoor;
+    public override void Activate()
+    {
+        base.Activate();
+        _listener.ActionOnSignal = UpdateDoor;
     }
 
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////

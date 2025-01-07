@@ -5,8 +5,6 @@ using UnityEngine.Serialization;
 
 public class SignalSource : MonoBehaviour
 {
-    private static HashSet<SignalSource> SignalsInScene = new HashSet<SignalSource>();
-    
     [SerializeField] private bool output;
     public bool Activated { get; private set; }
     public event System.Action<bool, GameObject> SignalUpdateEvent;
