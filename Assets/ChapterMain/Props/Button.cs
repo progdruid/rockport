@@ -1,26 +1,34 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
+using ChapterEditor;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
-[RequireComponent(typeof(UniversalTrigger), typeof(SignalSource), typeof(Animator))]
-public class Button : MonoBehaviour
+[RequireComponent(typeof(UniversalTrigger), typeof(Animator))]
+public class Button : PropEntity
 {
-    [SerializeField] UnityEvent OnPress;
-    [SerializeField] UnityEvent OnUnpress;
-
-    private List<Collider2D> pressingBodies = new List<Collider2D>();
-
-    private Animator animator;
-    private SignalSource signal;
-    private UniversalTrigger trigger;
-
-    #region ceremony
-    private void Start()
+    private static readonly int PressedAnimatorParameterID = Animator.StringToHash("Pressed");
+    
+    //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    [SerializeField ]private Animator animator;
+    [SerializeField] private UniversalTrigger trigger;
+    [SerializeField] private SignalEmitter emitter;
+    [SerializeField] private UnityEvent onPress;
+    [SerializeField] private UnityEvent onRelease;
+    
+    private readonly List<Collider2D> _pressingBodies = new();
+    
+    //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected override void Awake()
     {
-        animator = GetComponent<Animator>();
-        signal = GetComponent<SignalSource>();
-        trigger = GetComponent<UniversalTrigger>();
+        base.Awake();
+        
+        Assert.IsNotNull(animator);
+        Assert.IsNotNull(trigger);
+        Assert.IsNotNull(emitter);
+    
         trigger.EnterEvent += HandleTriggerEnter;
         trigger.ExitEvent += HandleTriggerExit;
     }
@@ -30,31 +38,32 @@ public class Button : MonoBehaviour
         trigger.EnterEvent -= HandleTriggerEnter;
         trigger.ExitEvent -= HandleTriggerExit;
     }
-    #endregion
-
+    
+    
+    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     private void HandleTriggerEnter (Collider2D other, TriggeredType type)
     {
-        if ((type != TriggeredType.Player && type != TriggeredType.Corpse) || pressingBodies.Contains(other))
+        if ((type != TriggeredType.Player && type != TriggeredType.Corpse) || _pressingBodies.Contains(other))
             return;
         
-        pressingBodies.Add(other);
-        if (pressingBodies.Count > 1)
+        _pressingBodies.Add(other);
+        if (_pressingBodies.Count > 1)
             return;
-        OnPress.Invoke();
-        animator.SetBool("Pressed", true);
-        signal.UpdateSignal(true, gameObject);
+        onPress.Invoke();
+        animator.SetBool(PressedAnimatorParameterID, true);
+        emitter.Signal = true;
     }
 
     private void HandleTriggerExit (Collider2D other, TriggeredType type)
     {
-        if ((type != TriggeredType.Player && type != TriggeredType.Corpse) || !pressingBodies.Contains(other))
+        if (type is not (TriggeredType.Player or TriggeredType.Corpse) || !_pressingBodies.Contains(other))
             return;
 
-        pressingBodies.Remove(other);
-        if (pressingBodies.Count > 0)
+        _pressingBodies.Remove(other);
+        if (_pressingBodies.Count > 0)
             return;
-        OnUnpress.Invoke();
-        animator.SetBool("Pressed", false);
-        signal.UpdateSignal(false, gameObject);
+        onRelease.Invoke();
+        animator.SetBool(PressedAnimatorParameterID, false);
+        emitter.Signal = false;
     }
 }

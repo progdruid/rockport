@@ -559,8 +559,8 @@ MonoBehaviour:
   initMapSize: {x: 200, y: 100}
   alpha1LayerTitle: Dirt
   alpha2LayerTitle: Tree
-  alpha3LayerTitle: Tree Background
-  alpha4LayerTitle: Checkpoint
+  alpha3LayerTitle: Button
+  alpha4LayerTitle: Door
 --- !u!1 &563298347
 GameObject:
   m_ObjectHideFlags: 0

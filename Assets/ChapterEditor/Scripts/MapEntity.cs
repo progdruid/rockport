@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Common;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Serialization;
 
 namespace ChapterEditor
 {
@@ -12,15 +13,21 @@ public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IPackable
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private string title;
     [SerializeField] private Transform target;
-
+    
+    protected MapSpace Space { get; private set; }
+    private readonly IntReference _layerHandle = new();
+    
     private bool _initialised = false;
-    protected MapSpaceHolder Holder { get; private set; }
-
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected virtual void Awake() => Assert.IsNotNull(target);
+    protected virtual void Awake()
+    {
+        Assert.IsNotNull(target);
+        Assert.IsNotNull(title);
+        Assert.IsTrue(title.Length > 0);
+    }
     protected void Start() => RequestInitialise();
-    protected virtual void Initialise() {}
+    protected virtual void Initialise() { }
 
     protected void RequestInitialise()
     {
@@ -32,12 +39,18 @@ public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IPackable
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public string Title => title;
     public Transform Target => target;
+    public int Layer => _layerHandle.Value;
+    public SignalEmitter Emitter => emitter;
+    public SignalListener[] Listeners => listeners;
+    
+    public IntReference InjectMap(MapSpace injected)
+    {
+        Space = injected;
+        return _layerHandle;
+    }
+    
 
     public event Action PropertiesChangeEvent;
-
-    public void InjectHolder(MapSpaceHolder injected) => Holder = injected;
-
-    
     public virtual IEnumerator<PropertyHandle> GetProperties()
     {
         yield return new PropertyHandle()
@@ -68,7 +81,5 @@ public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IPackable
 
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     protected void InvokePropertiesChangeEvent() => PropertiesChangeEvent?.Invoke();
-
 }
-
 }

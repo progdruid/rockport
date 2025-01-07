@@ -62,7 +62,7 @@ public class TreeLayerEntity : MapEntity
 
     protected override void Initialise()
     {
-        _placed = new Datamap<bool>(Holder.MapSize, false);
+        _placed = new Datamap<bool>(Space.MapSize, false);
     }
 
 
@@ -70,7 +70,7 @@ public class TreeLayerEntity : MapEntity
     public override float GetReferenceZ() => _treeMap.transform.position.z;
     public override bool CheckOverlap(Vector2 pos)
     {
-        if (!Holder.SnapWorldToMap(pos, out var mapPos)) return false;
+        if (!Space.SnapWorldToMap(pos, out var mapPos)) return false;
         return _placed.At(mapPos);
     }
 
@@ -116,12 +116,12 @@ public class TreeLayerEntity : MapEntity
 
     public override void ChangeAt(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
     {
-        if (!Holder.SnapWorldToMap(rootWorldPos, out var rootPos)
+        if (!Space.SnapWorldToMap(rootWorldPos, out var rootPos)
             || shouldPlaceNotRemove == _placed.At(rootPos)) return;
 
         _placed.At(rootPos) = shouldPlaceNotRemove;
 
-        foreach (var subPos in Holder.RetrievePositions(rootPos, Lytil.FullAreaOffsets))
+        foreach (var subPos in Space.RetrievePositions(rootPos, Lytil.FullAreaOffsets))
             UpdateVisualsAt(subPos);
     }
 
@@ -144,7 +144,7 @@ public class TreeLayerEntity : MapEntity
             for (var i = 0; i < Lytil.FullNeighbourOffsets.Length; i++)
             {
                 var n = pos + Lytil.FullNeighbourOffsets[i];
-                var bounded = Holder.IsInBounds(n);
+                var bounded = Space.IsInBounds(n);
                 var check = (!bounded && placedHere) || (bounded && _placed.At(n));
                 fullQuery.Neighbours[i] = check;
                 if (i < Lytil.HalfNeighbourOffsets.Length)

@@ -31,7 +31,7 @@ public class EditorController : MonoBehaviour, IPackable
     [SerializeField] private string alpha3LayerTitle;
     [SerializeField] private string alpha4LayerTitle;
     
-    private MapSpaceHolder _holder;
+    private MapSpace _map;
     
     private int _selectedLayer = -1;
     private MapEntity _selectedEntity = null;
@@ -54,7 +54,7 @@ public class EditorController : MonoBehaviour, IPackable
         Assert.IsFalse(alpha3LayerTitle.Length == 0);
         Assert.IsFalse(alpha4LayerTitle.Length == 0);
         
-        _holder = new MapSpaceHolder(initMapSize);
+        _map = new MapSpace(initMapSize);
 
         UpdateLayerText();
     }
@@ -66,14 +66,14 @@ public class EditorController : MonoBehaviour, IPackable
     {
         var chapterData = new MapData()
         {
-            SpaceSize = _holder.MapSize,
-            LayerNames = new string[_holder.EntitiesCount],
-            LayerData = new string[_holder.EntitiesCount]
+            SpaceSize = _map.MapSize,
+            LayerNames = new string[_map.EntitiesCount],
+            LayerData = new string[_map.EntitiesCount]
         };
         
-        for (var i = 0; i < _holder.EntitiesCount; i++)
+        for (var i = 0; i < _map.EntitiesCount; i++)
         {
-            var entity = _holder.GetEntity(i);
+            var entity = _map.GetEntity(i);
             chapterData.LayerNames[i] = entity.Title;
             chapterData.LayerData[i] = entity.Pack();
         }
@@ -87,20 +87,20 @@ public class EditorController : MonoBehaviour, IPackable
         chapterData.Unpack(data);
 
         UnselectLayer();
-        while (_holder.EntitiesCount > 0)
+        while (_map.EntitiesCount > 0)
         {
-            var dead = _holder.GetEntity(0);
-            _holder.UnregisterAt(0);
+            var dead = _map.GetEntity(0);
+            _map.UnregisterAt(0);
             dead.Clear();
         }
         
-        _holder.Kill();
-        _holder = new MapSpaceHolder(chapterData.SpaceSize);
+        _map.Kill();
+        _map = new MapSpace(chapterData.SpaceSize);
 
         for (var i = 0; i < chapterData.LayerNames.Length; i++)
         {
             var entity = entityFactory.CreateEntity(chapterData.LayerNames[i]);
-            _holder.RegisterAt(entity, i);
+            _map.RegisterAt(entity, i);
             entity.Unpack(chapterData.LayerData[i]);
         }
     }
@@ -115,7 +115,7 @@ public class EditorController : MonoBehaviour, IPackable
         var vertical = (Input.GetKey(KeyCode.S) ? -1 : 0) + (Input.GetKey(KeyCode.W) ? 1 : 0);
         var zoom = -Input.mouseScrollDelta.y;
 
-        var worldSize = _holder.WorldSize;
+        var worldSize = _map.WorldSize;
         
         var prevMouseWorldPos = cam.ScreenToWorldPoint(Input.mousePosition);
 
@@ -132,7 +132,7 @@ public class EditorController : MonoBehaviour, IPackable
         var halfHeight = cam.orthographicSize;
         var halfWidth = halfHeight * cam.aspect;
 
-        var worldStart = _holder.WorldStart;
+        var worldStart = _map.WorldStart;
         var worldEnd = worldStart + worldSize;
 
         var clearance = halfHeight * cameraRelativeClearance;
@@ -172,7 +172,7 @@ public class EditorController : MonoBehaviour, IPackable
         // spawn point management
         if (Input.GetKeyDown(KeyCode.P))
         {
-            var layer = _holder.FindEntity(GlobalConfig.Ins.spawnPointEntityName, out _);
+            var layer = _map.FindEntity(GlobalConfig.Ins.spawnPointEntityName, out _);
             if (layer < 0) CreateLayer(GlobalConfig.Ins.spawnPointEntityName);
             else SelectLayer(layer);
         }
@@ -183,7 +183,7 @@ public class EditorController : MonoBehaviour, IPackable
         if (selectDirection != 0 && Input.GetKey(KeyCode.LeftControl))
             MoveLayer(selectDirection);
         else if (selectDirection != 0 && _selectedLayer + selectDirection >= 0)
-            SelectLayer(_holder.ClampLayer(_selectedLayer + selectDirection));
+            SelectLayer(_map.ClampLayer(_selectedLayer + selectDirection));
         else if (selectDirection != 0 && _selectedLayer + selectDirection < 0)
             UnselectLayer();
 
@@ -191,8 +191,8 @@ public class EditorController : MonoBehaviour, IPackable
         if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButtonDown(0))
         {
             UnselectLayer();
-            for (var i = _holder.EntitiesCount - 1; i >= 0; i--)
-                if (_holder.GetEntity(i).CheckOverlap(worldPos))
+            for (var i = _map.EntitiesCount - 1; i >= 0; i--)
+                if (_map.GetEntity(i).CheckOverlap(worldPos))
                 {
                     SelectLayer(i);
                     break;
@@ -216,33 +216,33 @@ public class EditorController : MonoBehaviour, IPackable
     {
         var layer = _selectedLayer + 1;
         UnselectLayer();
-        _holder.RegisterAt(entityFactory.CreateEntity(layerTitle), layer);
+        _map.RegisterAt(entityFactory.CreateEntity(layerTitle), layer);
         SelectLayer(layer);
 
         //updating camera position, so it is always behind the topmost layer
-        var z = _holder.GetTopmostEntity().GetReferenceZ() - 1;
+        var z = _map.GetTopmostEntity().GetReferenceZ() - 1;
         cam.transform.position = new Vector3(cam.transform.position.x, cam.transform.position.y, z);
     }
 
     private void DeleteLayer()
     {
         var layer = _selectedLayer;
-        if (!_holder.HasLayer(layer))
+        if (!_map.HasLayer(layer))
             return;
 
         UnselectLayer();
-        var dead = _holder.GetEntity(layer);
-        _holder.UnregisterAt(layer);
+        var dead = _map.GetEntity(layer);
+        _map.UnregisterAt(layer);
         dead.Clear();
 
-        SelectLayer(_holder.ClampLayer(layer));
+        SelectLayer(_map.ClampLayer(layer));
     }
 
 
     private void MoveLayer(int dir)
     {
         var layerTo = _selectedLayer + dir;
-        if (!_holder.MoveLayer(_selectedLayer, layerTo))
+        if (!_map.MoveLayer(_selectedLayer, layerTo))
             return;
         _selectedLayer = layerTo;
         UpdateLayerText();
@@ -250,13 +250,13 @@ public class EditorController : MonoBehaviour, IPackable
 
     private void SelectLayer(int layer)
     {
-        if (layer == _selectedLayer || !_holder.HasLayer(layer))
+        if (layer == _selectedLayer || !_map.HasLayer(layer))
             return;
 
         _selectedLayer = layer;
-        UpdateLayerText();
-        _selectedEntity = _holder.GetEntity(layer);
+        _selectedEntity = _map.GetEntity(layer);
         entityUIPanel.SetPropertyHolder(_selectedEntity);
+        UpdateLayerText();
     }
 
     private void UnselectLayer()
@@ -271,7 +271,7 @@ public class EditorController : MonoBehaviour, IPackable
     }
 
     private void UpdateLayerText() =>
-        layerText.text = _selectedLayer != -1 ? "Layer: " + _selectedLayer : "No layer selected"; 
+        layerText.text = $"Selected Layer: {_selectedLayer} " + (_selectedEntity ? "Entity layer: " + _selectedEntity.Layer : "No layer selected"); 
 }
 
 }

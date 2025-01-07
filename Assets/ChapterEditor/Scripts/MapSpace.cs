@@ -5,15 +5,16 @@ using UnityEngine.Assertions;
 namespace ChapterEditor
 {
 
-public class MapSpaceHolder
+public class MapSpace
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private Vector2Int _mapSize;
     private readonly Grid _visualGrid;
     private readonly List<MapEntity> _entities;
+    private Dictionary<MapEntity, IntReference> _entityToLayerHandleMap;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////    
-    public MapSpaceHolder(Vector2Int size)
+    public MapSpace(Vector2Int size)
     {
         Assert.IsTrue(size.x > 0);
         Assert.IsTrue(size.y > 0);
@@ -22,6 +23,7 @@ public class MapSpaceHolder
         _visualGrid = gridObject.AddComponent<Grid>();
         _visualGrid.cellSize = new Vector3(0.5f, 0.5f, 0f);
         _entities = new List<MapEntity>();
+        _entityToLayerHandleMap = new Dictionary<MapEntity, IntReference>();
     }
 
 
@@ -64,6 +66,7 @@ public class MapSpaceHolder
         var movedObject = _entities[layerFrom];
         _entities.RemoveAt(layerFrom);
         _entities.Insert(layerTo, movedObject);
+        _entityToLayerHandleMap[movedObject].Value = layerTo;
 
         var step = layerTo > layerFrom ? 1 : -1;
         for (var i = layerFrom; i != layerTo + step; i += step)
@@ -95,8 +98,10 @@ public class MapSpaceHolder
 
         _entities.Add(entity);
         layer = _entities.Count - 1;
-        entity.InjectHolder(this);
-
+        var layerHandle = entity.InjectMap(this);
+        layerHandle.Value = layer;
+        _entityToLayerHandleMap[entity] = layerHandle;
+        
         entity.Target.SetParent(_visualGrid.transform);
         UpdateZ(layer);
 
@@ -120,9 +125,10 @@ public class MapSpaceHolder
     {
         if (!HasLayer(layer)) return false;
         var entity = GetEntity(layer);
-        entity.InjectHolder(null);
+        entity.InjectMap(null);
         entity.Target.SetParent(null);
         _entities.RemoveAt(layer);
+        _entityToLayerHandleMap.Remove(entity);
         for (var i = layer; i < _entities.Count - 1; i++)
             UpdateZ(i);
         return true;

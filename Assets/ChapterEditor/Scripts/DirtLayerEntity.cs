@@ -80,14 +80,14 @@ public class DirtLayerEntity : MapEntity
 
     protected override void Initialise()
     {
-        _depthMap = new Datamap<int>(Holder.MapSize, 0);
+        _depthMap = new Datamap<int>(Space.MapSize, 0);
     }
 
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public override bool CheckOverlap(Vector2 pos)
     {
-        if (!Holder.SnapWorldToMap(pos, out var mapPos)) return false;
+        if (!Space.SnapWorldToMap(pos, out var mapPos)) return false;
         return _depthMap.At(mapPos) > 0;
     }
 
@@ -132,7 +132,7 @@ public class DirtLayerEntity : MapEntity
 
     public override void ChangeAt(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
     {
-        if (!Holder.SnapWorldToMap(rootWorldPos, out var rootPos) ||
+        if (!Space.SnapWorldToMap(rootWorldPos, out var rootPos) ||
             (_depthMap.At(rootPos) == 0) != shouldPlaceNotRemove) return;
 
         var pending = new Dictionary<Vector2Int, int>
@@ -145,7 +145,7 @@ public class DirtLayerEntity : MapEntity
             pending.Remove(pos);
 
             _depthMap.At(pos) = depth;
-            foreach (var neighbour in Holder.RetrievePositions(pos, Lytil.FullNeighbourOffsets))
+            foreach (var neighbour in Space.RetrievePositions(pos, Lytil.FullNeighbourOffsets))
             {
                 var currentDepth = _depthMap.At(neighbour);
                 var calculatedDepth = Mathf.Min(RetrieveMinNeighbourDepth(neighbour) + 1, maxDepth);
@@ -193,7 +193,7 @@ public class DirtLayerEntity : MapEntity
         for (var i = 0; i < Lytil.FullNeighbourOffsets.Length; i++)
         {
             var n = pos + Lytil.FullNeighbourOffsets[i];
-            var inBounds = Holder.IsInBounds(n);
+            var inBounds = Space.IsInBounds(n);
             var present = inBounds && _depthMap.At(n) > lastStratumEndDepth;
             var check = (!inBounds && depth != 0) || present;
             fullQuery.Neighbours[i] = check;
@@ -249,7 +249,7 @@ public class DirtLayerEntity : MapEntity
     private int RetrieveMinNeighbourDepth(Vector2Int pos)
     {
         var minDepth = maxDepth;
-        foreach (var neighbour in Holder.RetrievePositions(pos, Lytil.FullNeighbourOffsets))
+        foreach (var neighbour in Space.RetrievePositions(pos, Lytil.FullNeighbourOffsets))
         {
             var depth = _depthMap.At(neighbour);
             if (depth < minDepth) minDepth = depth;

@@ -1,39 +1,42 @@
-using System.Collections;
-using System.Collections.Generic;
+using ChapterEditor;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Animator))]
-public class Door : MonoBehaviour
+public class Door : PropEntity
 {
-    [SerializeField] UnityEvent OnOpening;
-    [SerializeField] UnityEvent OnClosing;
+    private static readonly int Open = Animator.StringToHash("Open");
 
-    public SignalSource signalSource;
-
-    private Animator animator;
-    private bool open = false;
-
-    private void Start()
+    //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    [SerializeField] private Animator animator;
+    [SerializeField] private SignalListener listener;
+    [SerializeField] private UnityEvent onOpening;
+    [SerializeField] private UnityEvent onClosing;
+    
+    private bool _open = false;
+    
+    //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected override void Awake()
     {
-        animator = GetComponent<Animator>();
+        base.Awake();
+        
+        Assert.IsNotNull(animator);
+        Assert.IsNotNull(listener);
 
-        signalSource.SignalUpdateEvent += UpdateDoor;
+        listener.ActionOnSignal = UpdateDoor;
     }
 
-    private void OnDestroy()
+    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
+    private void UpdateDoor (bool activate)
     {
-        signalSource.SignalUpdateEvent -= UpdateDoor;
-    }
+        animator.SetBool(Open, activate);
+        if (activate && !_open)
+            onOpening.Invoke();
+        else if (activate != _open)
+            onClosing.Invoke();
 
-    private void UpdateDoor (bool active, GameObject source)
-    {
-        animator.SetBool("Open", active);
-        if (active && active != open)
-            OnOpening.Invoke();
-        else if (active != open)
-            OnClosing.Invoke();
-
-        open = active;
+        _open = activate;
     }
 }
