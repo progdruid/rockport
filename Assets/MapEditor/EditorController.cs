@@ -1,7 +1,6 @@
 
 using UnityEngine;
 using UnityEngine.Assertions;
-using TMPro;
 using Map;
 
 namespace MapEditor
@@ -10,50 +9,43 @@ namespace MapEditor
 public class EditorController : MonoBehaviour, IPackable
 {
     /// TODO: should be extracted to a separate UI system
-    public static bool s_CanEdit = true;
+    public static bool CanEdit = true;
 
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    [SerializeField] private EntityFactory entityFactory;
-    [SerializeField] private EntityUIPanel entityUIPanel;
+    [SerializeField] private Vector2Int initMapSize;
+    [Space] 
+    [SerializeField] private EntityEditor entityEditor;
     [Space] 
     [SerializeField] private Camera cam;
     [SerializeField] private float cameraMoveSpeed;
     [SerializeField] private float cameraZoomSpeed;
     [SerializeField] private float cameraMinSize;
     [SerializeField] private float cameraRelativeClearance;
-    [Space] 
-    [SerializeField] private Vector2Int initMapSize;
-    [Space] 
-    [SerializeField] private string alpha1LayerTitle;
-    [SerializeField] private string alpha2LayerTitle;
-    [SerializeField] private string alpha3LayerTitle;
-    [SerializeField] private string alpha4LayerTitle;
     
     private MapSpace _map;
     private SignalCircuit _signalCircuit;
-    
-    private int _selectedLayer = -1;
-    private MapEntity _selectedEntity = null;
 
+    private IMapEditorMode[] _editorModes;
+    private int _currentModeIndex;
+    
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
     {
-        Assert.IsNotNull(entityFactory);
-        Assert.IsNotNull(entityUIPanel);
-
+        Assert.IsNotNull(entityEditor);
         Assert.IsNotNull(cam);
-
-        Assert.IsNotNull(alpha1LayerTitle);
-        Assert.IsNotNull(alpha2LayerTitle);
-        Assert.IsNotNull(alpha3LayerTitle);
-        Assert.IsNotNull(alpha4LayerTitle);
-        Assert.IsFalse(alpha1LayerTitle.Length == 0);
-        Assert.IsFalse(alpha2LayerTitle.Length == 0);
-        Assert.IsFalse(alpha3LayerTitle.Length == 0);
-        Assert.IsFalse(alpha4LayerTitle.Length == 0);
         
         _map = new MapSpace(initMapSize);
         _signalCircuit = new SignalCircuit();
+
+        entityEditor.Inject(cam);
+        entityEditor.Inject(_map);
+        entityEditor.Inject(_signalCircuit);
+        
+        _editorModes = new IMapEditorMode[]
+        {
+            entityEditor
+        };
+        _currentModeIndex = 0;
     }
 
 
@@ -80,7 +72,8 @@ public class EditorController : MonoBehaviour, IPackable
 
     public void Unpack(string data)
     {
-        UnselectLayer();
+        _editorModes[_currentModeIndex].Exit();
+        
         while (_map.EntitiesCount > 0)
         {
             var dead = _map.GetEntity(0);
@@ -95,18 +88,21 @@ public class EditorController : MonoBehaviour, IPackable
         _map = new MapSpace(chapterData.SpaceSize);
         for (var i = 0; i < chapterData.LayerNames.Length; i++)
         {
-            var entity = entityFactory.CreateEntity(chapterData.LayerNames[i]);
+            var entity = GlobalConfig.Ins.entityFactory.CreateEntity(chapterData.LayerNames[i]);
             _map.RegisterAt(entity, i);
             entity.Unpack(chapterData.LayerData[i]);
         }
         
         _signalCircuit.Unpack(chapterData.SignalData);
+        
+        entityEditor.Inject(_map);
+        _editorModes[_currentModeIndex].Enter();
     }
 
     //game events///////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Update()
     {
-        if (!s_CanEdit) return;
+        if (!CanEdit) return;
         
         // camera
         var horizontal = (Input.GetKey(KeyCode.A) ? -1 : 0) + (Input.GetKey(KeyCode.D) ? 1 : 0);
@@ -144,6 +140,13 @@ public class EditorController : MonoBehaviour, IPackable
 
         cam.transform.position = new Vector3(x, y, cam.transform.position.z);
 
+
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            _editorModes[_currentModeIndex].Exit();
+            _currentModeIndex = (_currentModeIndex + 1) % _editorModes.Length;
+            _editorModes[_currentModeIndex].Enter();
+        }
         
         // mouse pos in world
         var mousePos = Input.mousePosition;
@@ -152,124 +155,7 @@ public class EditorController : MonoBehaviour, IPackable
         var t = - ray.origin.z / ray.direction.z;
         var worldPos = (ray.origin + ray.direction * t);
         
-        
-        //layer creation
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-            CreateLayer(alpha1LayerTitle);
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-            CreateLayer(alpha2LayerTitle);
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-            CreateLayer(alpha3LayerTitle);
-        else if (Input.GetKeyDown(KeyCode.Alpha4))
-            CreateLayer(alpha4LayerTitle);
-        
-        //layer deletion
-        if (Input.GetKeyDown(KeyCode.Delete))
-            DeleteLayer();
-
-        // spawn point management
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            var layer = _map.FindEntity(GlobalConfig.Ins.spawnPointEntityName, out _);
-            if (layer < 0) CreateLayer(GlobalConfig.Ins.spawnPointEntityName);
-            else SelectLayer(layer);
-        }
-        
-        //moving and changing layers
-        var selectDirection = (Input.GetKeyDown(KeyCode.LeftArrow) ? -1 : 0) +
-                              (Input.GetKeyDown(KeyCode.RightArrow) ? 1 : 0);
-        if (selectDirection != 0 && Input.GetKey(KeyCode.LeftControl))
-            MoveLayer(selectDirection);
-        else if (selectDirection != 0 && _selectedLayer + selectDirection >= 0)
-            SelectLayer(_map.ClampLayer(_selectedLayer + selectDirection));
-        else if (selectDirection != 0 && _selectedLayer + selectDirection < 0)
-            UnselectLayer();
-
-        //mouse select
-        if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButtonDown(0))
-        {
-            UnselectLayer();
-            for (var i = _map.EntitiesCount - 1; i >= 0; i--)
-                if (_map.GetEntity(i).CheckOverlap(worldPos))
-                {
-                    SelectLayer(i);
-                    break;
-                }
-        }
-        
-        if (!_selectedEntity || Input.GetKey(KeyCode.LeftShift))
-            return;
-        
-        // place/remove
-        var constructive = Input.GetMouseButton(0);
-        var destructive = Input.GetMouseButton(1);
-            
-        if (constructive != destructive)
-            _selectedEntity.ChangeAt(worldPos, constructive);
-    }
-
-
-    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
-    private void CreateLayer(string layerTitle)
-    {
-        var layer = _selectedLayer + 1;
-        UnselectLayer();
-        
-        var entity = entityFactory.CreateEntity(layerTitle);
-        _map.RegisterAt(entity, layer);
-        _signalCircuit.ExtractAndAdd(entity);
-        
-        SelectLayer(layer);
-
-        //updating camera position, so it is always behind the topmost layer
-        var z = _map.GetTopmostEntity().GetReferenceZ() - 1;
-        cam.transform.position = new Vector3(cam.transform.position.x, cam.transform.position.y, z);
-    }
-
-    private void DeleteLayer()
-    {
-        var layer = _selectedLayer;
-        if (!_map.HasLayer(layer))
-            return;
-
-        UnselectLayer();
-        
-        var dead = _map.GetEntity(layer);
-        _signalCircuit.ExtractAndRemove(dead);
-        _map.UnregisterAt(layer);
-        dead.Clear();
-
-        SelectLayer(_map.ClampLayer(layer));
-    }
-
-
-    private void MoveLayer(int dir)
-    {
-        var layerTo = _selectedLayer + dir;
-        if (!_map.MoveLayer(_selectedLayer, layerTo))
-            return;
-        _selectedLayer = layerTo;
-        entityUIPanel.UpdateWithEntity(_selectedEntity);
-    }
-
-    private void SelectLayer(int layer)
-    {
-        if (layer == _selectedLayer || !_map.HasLayer(layer))
-            return;
-
-        _selectedLayer = layer;
-        _selectedEntity = _map.GetEntity(layer);
-        entityUIPanel.UpdateWithEntity(_selectedEntity);
-    }
-
-    private void UnselectLayer()
-    {
-        if (_selectedLayer == -1)
-            return;
-
-        entityUIPanel.ClearEntity();
-        _selectedEntity = null;
-        _selectedLayer = -1;
+        _editorModes[_currentModeIndex].HandleInput(worldPos);
     }
 }
 

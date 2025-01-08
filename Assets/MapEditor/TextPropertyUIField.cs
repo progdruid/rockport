@@ -41,7 +41,7 @@ public class TextPropertyUIField : MonoBehaviour
             PropertyType.Text => TMP_InputField.ContentType.Standard,
             _ => throw new ArgumentOutOfRangeException()
         };
-        inputField.onSelect.AddListener((s) => EditorController.s_CanEdit = false);
+        inputField.onSelect.AddListener((s) => EditorController.CanEdit = false);
         inputField.onEndEdit.AddListener((s) =>
         {
             object val = handle.PropertyType switch
@@ -52,7 +52,7 @@ public class TextPropertyUIField : MonoBehaviour
                 _ => throw new ArgumentOutOfRangeException()
             };
             handle.Setter?.Invoke(val);
-            EditorController.s_CanEdit = true;
+            EditorController.CanEdit = true;
             inputField.text = handle.Getter.Invoke().ToString();
         });
     }

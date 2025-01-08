@@ -15,4 +15,5 @@ MonoBehaviour:
   fogColor: {r: 0.7283375, g: 0.7664406, b: 0.7735849, a: 1}
   standardMaterial: {fileID: 2100000, guid: 33bbe0e8117600c48a5637f61abf8f71, type: 2}
   worldTextureMaskMaterial: {fileID: 2100000, guid: 8c22239b3ef1af34ca3f3dd510dbe019, type: 2}
+  entityFactory: {fileID: 11400000, guid: 1f7925561afaf844e94127d55ca23bea, type: 2}
   spawnPointEntityName: Spawn Point

@@ -47,7 +47,7 @@ public class SaveLoadUIPanel : MonoBehaviour
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     private void HandleInteractChange(bool interacting)
     {
-        EditorController.s_CanEdit = !interacting;
+        EditorController.CanEdit = !interacting;
     }
 
     private void HandleSaveButtonClick()

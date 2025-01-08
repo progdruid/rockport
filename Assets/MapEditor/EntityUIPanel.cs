@@ -80,7 +80,7 @@ public class EntityUIPanel : MonoBehaviour
         foreach (var field in _uiFields) 
             Destroy(field.Target.gameObject);
 
-        EditorController.s_CanEdit = true;
+        EditorController.CanEdit = true;
         _uiFields.Clear();
 
         layerText.rectTransform.anchoredPosition = new Vector2(0, 0);

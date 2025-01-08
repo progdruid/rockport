@@ -514,6 +514,7 @@ GameObject:
   m_Component:
   - component: {fileID: 251374646}
   - component: {fileID: 251374647}
+  - component: {fileID: 251374648}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -548,14 +549,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5e9f2b6cf3ca2046a1e90e5e2f2d264, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entityFactory: {fileID: 11400000, guid: 1f7925561afaf844e94127d55ca23bea, type: 2}
-  entityUIPanel: {fileID: 0}
+  initMapSize: {x: 200, y: 100}
+  entityEditor: {fileID: 251374648}
   cam: {fileID: 202641129}
   cameraMoveSpeed: 1
   cameraZoomSpeed: 20
   cameraMinSize: 1
   cameraRelativeClearance: 0.3
-  initMapSize: {x: 200, y: 100}
+--- !u!114 &251374648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 251374644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31288e26e23143c0bf6a30ab833bd8f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  entityUIPanel: {fileID: 1909970588}
   alpha1LayerTitle: Dirt
   alpha2LayerTitle: Tree
   alpha3LayerTitle: Button

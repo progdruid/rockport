@@ -8,10 +8,10 @@ namespace Map
 [CreateAssetMenu(menuName = "Lyport/GlobalSettings")]
 public class GlobalConfig : ScriptableObject
 {
-    public static GlobalConfig Ins => (s_instance ??= Load());
+    public static GlobalConfig Ins => (Instance ??= Load());
     
     
-    private static GlobalConfig s_instance;
+    private static GlobalConfig Instance;
     private static GlobalConfig Load()
     {
         var asset = Resources.Load<GlobalConfig>("GlobalConfig");
@@ -25,6 +25,8 @@ public class GlobalConfig : ScriptableObject
         asset.standardMaterial.SetColor(Lytil.FogColorID, asset.fogColor);
         asset.WorldTextureMaskMaterial.SetColor(Lytil.FogColorID, asset.fogColor);
         
+        Assert.IsNotNull(asset.entityFactory);
+        Assert.IsFalse(string.IsNullOrEmpty(asset.spawnPointEntityName)); 
         
         return asset;
     }
@@ -34,7 +36,8 @@ public class GlobalConfig : ScriptableObject
     [SerializeField] public Color fogColor;
     [SerializeField] private Material standardMaterial;
     [SerializeField] private Material worldTextureMaskMaterial;
-    
+    [Space]
+    [SerializeField] public EntityFactory entityFactory;
     [SerializeField] public string spawnPointEntityName;
     
     public Material StandardMaterial { get; private set; }
