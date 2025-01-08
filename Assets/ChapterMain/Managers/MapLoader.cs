@@ -1,10 +1,9 @@
 using System.Collections;
-using ChapterEditor;
-using Common;
+using MapEditor;
+using Map;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 
 public class MapLoader : MonoBehaviour
 {
@@ -73,7 +72,7 @@ public class MapLoader : MonoBehaviour
 
     private void MakeDecision()
     {
-        var loaded = ChapterFileManager.Load(loadedChapterName, out var contents);
+        var loaded = MapSaveManager.Load(loadedChapterName, out var contents);
         Assert.IsTrue(loaded);
         Assert.IsNotNull(contents);
         

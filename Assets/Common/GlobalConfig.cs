@@ -2,7 +2,7 @@
 using UnityEngine.Assertions;
 using UnityEngine.Serialization;
 
-namespace Common
+namespace Map
 {
 
 [CreateAssetMenu(menuName = "Lyport/GlobalSettings")]
