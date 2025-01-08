@@ -7,9 +7,6 @@ using Map;
 namespace MapEditor
 {
 
-/// <summary>
-/// sdcjshdcjhsdbcjshdbc <see cref="MonoBehaviour"/>
-/// </summary>
 public class EditorController : MonoBehaviour, IPackable
 {
     /// TODO: should be extracted to a separate UI system
@@ -18,7 +15,6 @@ public class EditorController : MonoBehaviour, IPackable
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private EntityFactory entityFactory;
     [SerializeField] private EntityUIPanel entityUIPanel;
-    [SerializeField] private TMP_Text layerText;
     [Space] 
     [SerializeField] private Camera cam;
     [SerializeField] private float cameraMoveSpeed;
@@ -44,7 +40,6 @@ public class EditorController : MonoBehaviour, IPackable
     {
         Assert.IsNotNull(entityFactory);
         Assert.IsNotNull(entityUIPanel);
-        Assert.IsNotNull(layerText);
 
         Assert.IsNotNull(cam);
 
@@ -59,13 +54,10 @@ public class EditorController : MonoBehaviour, IPackable
         
         _map = new MapSpace(initMapSize);
         _signalCircuit = new SignalCircuit();
-        
-        UpdateLayerText();
     }
 
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-
     public string Pack()
     {
         var mapData = new MapData()
@@ -257,7 +249,7 @@ public class EditorController : MonoBehaviour, IPackable
         if (!_map.MoveLayer(_selectedLayer, layerTo))
             return;
         _selectedLayer = layerTo;
-        UpdateLayerText();
+        entityUIPanel.UpdateWithEntity(_selectedEntity);
     }
 
     private void SelectLayer(int layer)
@@ -267,8 +259,7 @@ public class EditorController : MonoBehaviour, IPackable
 
         _selectedLayer = layer;
         _selectedEntity = _map.GetEntity(layer);
-        entityUIPanel.SetPropertyHolder(_selectedEntity);
-        UpdateLayerText();
+        entityUIPanel.UpdateWithEntity(_selectedEntity);
     }
 
     private void UnselectLayer()
@@ -276,15 +267,10 @@ public class EditorController : MonoBehaviour, IPackable
         if (_selectedLayer == -1)
             return;
 
-        entityUIPanel.UnsetPropertyHolder();
+        entityUIPanel.ClearEntity();
         _selectedEntity = null;
         _selectedLayer = -1;
-        UpdateLayerText();
     }
-
-    private void UpdateLayerText() =>
-        layerText.text = $"Selected Layer: {_selectedLayer} " +
-                         (_selectedEntity ? "Entity layer: " + _selectedEntity.Layer : "No layer selected");
 }
 
 }

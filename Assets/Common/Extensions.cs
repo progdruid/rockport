@@ -14,5 +14,10 @@ public static class Extensions
     public static void SetLocalXY(this Transform transform, Vector2 pos) =>
         transform.localPosition = new Vector3(pos.x, pos.y, transform.localPosition.z);
     
+    public static void SetWorldZ(this Transform transform, float z) =>
+        transform.position = new Vector3(transform.position.x, transform.position.y, z);
+    public static void SetLocalXY(this Transform transform, float z) =>
+        transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, z);
+    
     
 }

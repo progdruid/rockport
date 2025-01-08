@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Map;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -9,9 +10,9 @@ namespace MapEditor
 public class EntityUIPanel : MonoBehaviour
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    [SerializeField] private Canvas canvas;
+    [SerializeField] private RectTransform targetPanel;
+    [SerializeField] private TMP_Text layerText;
     [SerializeField] private GameObject propertyFieldPrefab;
-    [SerializeField] private RectTransform layerTextPanel;
 
     private readonly List<TextPropertyUIField> _uiFields = new();
     private IPropertyHolder _propertyHolder = null;
@@ -19,24 +20,32 @@ public class EntityUIPanel : MonoBehaviour
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
     {
-        Assert.IsNotNull(canvas);
+        Assert.IsNotNull(targetPanel);
+        Assert.IsNotNull(layerText);
         Assert.IsNotNull(propertyFieldPrefab);
+        
+        layerText.text = "No Layer selected";
     }
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    public void SetPropertyHolder(IPropertyHolder propertyHolder)
+    public void SetEnabled(bool value) => targetPanel.gameObject.SetActive(value);
+    
+    public void UpdateWithEntity(MapEntity entity)
     {
-        _propertyHolder = propertyHolder;
+        layerText.text = "Entity layer: " + entity.Layer;
+        _propertyHolder = entity;
         _propertyHolder.PropertiesChangeEvent += CreateUIFields;
         CreateUIFields();
     }
 
-    public void UnsetPropertyHolder()
+    public void ClearEntity()
     {
         ClearProperties();
         _propertyHolder.PropertiesChangeEvent -= CreateUIFields;
         _propertyHolder = null;
+        layerText.text = "No layer selected";
     }
+
 
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     private void CreateUIFields()
@@ -47,7 +56,7 @@ public class EntityUIPanel : MonoBehaviour
         var handles = _propertyHolder.GetProperties();
         while (handles.MoveNext())
         {
-            var field = Instantiate(propertyFieldPrefab, canvas.transform).GetComponent<TextPropertyUIField>();
+            var field = Instantiate(propertyFieldPrefab, targetPanel).GetComponent<TextPropertyUIField>();
             Assert.IsNotNull(field);
 
             field.SetProperty(handles.Current);
@@ -63,20 +72,18 @@ public class EntityUIPanel : MonoBehaviour
             yOffset += rect.sizeDelta.y;
         }
 
-        layerTextPanel.anchoredPosition = new Vector2(0, yOffset);
+        layerText.rectTransform.anchoredPosition = new Vector2(0, yOffset);
     }
 
     private void ClearProperties()
     {
-        foreach (var field in _uiFields)
-        {
+        foreach (var field in _uiFields) 
             Destroy(field.Target.gameObject);
-        }
 
         EditorController.s_CanEdit = true;
         _uiFields.Clear();
 
-        layerTextPanel.anchoredPosition = new Vector2(0, 0);
+        layerText.rectTransform.anchoredPosition = new Vector2(0, 0);
     }
 }
 
