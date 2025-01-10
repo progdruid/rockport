@@ -41,8 +41,8 @@ public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IPackable
     public string Title => title;
     public Transform Target => target;
     public int Layer => _layerHandle.Value;
-    
     public IReadOnlyDictionary<string, IEntityModule> PublicModules => _publicModules;
+    
     
     public IntReference InjectMap(MapSpace injected)
     {
@@ -65,7 +65,13 @@ public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IPackable
 
     public abstract float GetReferenceZ();
     public virtual bool CheckOverlap (Vector2 pos) => false;
-    
+    public virtual Vector2Int GetAnchorPoint()
+    {
+        var snapped = Space.SnapWorldToMap(Target.position, out var anchorPoint);
+        Assert.IsTrue(snapped);
+        return anchorPoint;
+    }
+
     public abstract string Pack();
     public abstract void Unpack(string data);
 

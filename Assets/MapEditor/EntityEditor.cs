@@ -17,7 +17,6 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
     
     private MapSpace _map;
     private SignalCircuit _signalCircuit;
-    private Camera _cam;
 
     private int _selectedLayer = -1;
     private MapEntity _selectedEntity;
@@ -40,7 +39,6 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public void Inject(MapSpace map) => _map = map;
     public void Inject(SignalCircuit circuit) => _signalCircuit = circuit;
-    public void Inject(Camera cam) => _cam = cam;
 
     public void Enter()
     {
@@ -48,12 +46,12 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
         UnselectLayer();
         SelectLayer(previouslySelectedLayer);
         
-        
+        entityUIPanel.SetEnabled(true);
     }
 
     public void Exit()
     {
-        
+        entityUIPanel.SetEnabled(false);
     }
 
     public void HandleInput(Vector2 worldMousePos)
@@ -125,9 +123,6 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
         _signalCircuit.ExtractAndAdd(entity);
         
         SelectLayer(layer);
-
-        //updating camera position, so it is always behind the topmost layer
-        _cam.transform.SetWorldZ(_map.GetTopmostEntity().GetReferenceZ() - 1);
     }
 
     private void DeleteLayer()

@@ -1,4 +1,5 @@
 
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Map;
@@ -15,6 +16,7 @@ public class EditorController : MonoBehaviour, IPackable
     [SerializeField] private Vector2Int initMapSize;
     [Space] 
     [SerializeField] private EntityEditor entityEditor;
+    [SerializeField] private WiringEditor wiringEditor;
     [Space] 
     [SerializeField] private Camera cam;
     [SerializeField] private float cameraMoveSpeed;
@@ -32,18 +34,22 @@ public class EditorController : MonoBehaviour, IPackable
     private void Awake()
     {
         Assert.IsNotNull(entityEditor);
+        Assert.IsNotNull(wiringEditor);
         Assert.IsNotNull(cam);
         
         _map = new MapSpace(initMapSize);
         _signalCircuit = new SignalCircuit();
 
-        entityEditor.Inject(cam);
         entityEditor.Inject(_map);
         entityEditor.Inject(_signalCircuit);
         
+        wiringEditor.Inject(_map);
+        wiringEditor.Inject(_signalCircuit);
+        
         _editorModes = new IMapEditorMode[]
         {
-            entityEditor
+            entityEditor,
+            wiringEditor,
         };
         _currentModeIndex = 0;
     }
@@ -77,6 +83,7 @@ public class EditorController : MonoBehaviour, IPackable
         while (_map.EntitiesCount > 0)
         {
             var dead = _map.GetEntity(0);
+            _signalCircuit.ExtractAndRemove(dead);
             _map.UnregisterAt(0);
             dead.Clear();
         }
@@ -91,11 +98,14 @@ public class EditorController : MonoBehaviour, IPackable
             var entity = GlobalConfig.Ins.entityFactory.CreateEntity(chapterData.LayerNames[i]);
             _map.RegisterAt(entity, i);
             entity.Unpack(chapterData.LayerData[i]);
+            _signalCircuit.ExtractAndAdd(entity);
         }
         
         _signalCircuit.Unpack(chapterData.SignalData);
+        _signalCircuit.Link(_signalCircuit.Emitters.First(), _signalCircuit.Listeners.First());
         
         entityEditor.Inject(_map);
+        wiringEditor.Inject(_map);
         _editorModes[_currentModeIndex].Enter();
     }
 
@@ -137,8 +147,9 @@ public class EditorController : MonoBehaviour, IPackable
         var y = cam.transform.position.y + vertical * halfHeight * cameraMoveSpeed * Time.deltaTime;
         y = Mathf.Max(y - halfHeight, worldStart.y - clearance) + halfHeight;
         y = Mathf.Min(y + halfHeight, worldEnd.y + clearance) - halfHeight;
-
-        cam.transform.position = new Vector3(x, y, cam.transform.position.z);
+        
+        //updating camera position, so it is always behind the topmost layer
+        cam.transform.position = new Vector3(x, y, _map.GetMapTop() - 5);
 
 
         if (Input.GetKeyDown(KeyCode.Tab))

@@ -54,9 +54,12 @@ public class MapSpace
         }
     }
     
+    public float GetMapTop()
+        => _entities.Count == 0 ? _visualGrid.transform.position.z : _entities[^1].GetReferenceZ();
+    
+
     //layer operations
     public MapEntity GetEntity(int layer) => _entities[layer];
-    public MapEntity GetTopmostEntity() => _entities[^1];
     public bool HasLayer(int layer) => layer >= 0 && layer < EntitiesCount;
     public int ClampLayer(int layer) => Mathf.Clamp(layer, 0, EntitiesCount - 1);
     public bool MoveLayer(int layerFrom, int layerTo)

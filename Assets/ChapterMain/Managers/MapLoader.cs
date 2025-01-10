@@ -115,8 +115,8 @@ public class MapLoader : MonoBehaviour
             entity.Unpack(data.LayerData[i]);
             signalCircuit.ExtractAndAdd(entity);
         }
-        
-        GameSystems.Ins.CameraManager.ObservationHeight = mapSpace.GetTopmostEntity().GetReferenceZ();
+
+        GameSystems.Ins.CameraManager.ObservationHeight = mapSpace.GetMapTop();
 
         mapSpace.FindEntity(GlobalConfig.Ins.spawnPointEntityName, out var foundEntity);
         Assert.IsNotNull(foundEntity);

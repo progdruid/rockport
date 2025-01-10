@@ -13,6 +13,7 @@ public interface IEntityModule
     }
     
     public EntityModulePath GetModulePath() => new(Entity.Layer, ModuleName);
+    public MapEntity GetEntity() => Entity;
 }
 
 }
