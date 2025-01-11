@@ -57,8 +57,7 @@ public class PropEntity : MapEntity
     public override bool CheckOverlap(Vector2 pos)
     {
         var renderers = GetComponentsInChildren<SpriteRenderer>();
-        return renderers.Any(spriteRenderer =>
-            Lytil.IsInBounds(pos, spriteRenderer.bounds.min, spriteRenderer.bounds.max));
+        return renderers.Any(spriteRenderer => Lytil.IsInRendererBounds(pos, spriteRenderer));
     }
 
     public override string Pack()

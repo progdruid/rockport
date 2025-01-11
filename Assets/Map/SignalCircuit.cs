@@ -16,9 +16,20 @@ public class SignalCircuit : IPackable
     
     
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    public IEnumerable<SignalEmitter> Emitters => _emitters;
-    public IEnumerable<SignalListener> Listeners => _listeners;
+    public IReadOnlyCollection<SignalEmitter> Emitters => _emitters;
+    public IReadOnlyCollection<SignalListener> Listeners => _listeners;
     public IReadOnlyDictionary<SignalListener, SignalEmitter> Links => _links;
+    public bool TryGetLinks(SignalEmitter emitter, out IReadOnlyCollection<SignalListener> listeners)
+    {
+        if (_invertedLinks.TryGetValue(emitter, out var outListeners))
+        {
+            listeners = outListeners;
+            return true;
+        }
+        listeners = null;
+        return false;
+    }
+    
     
     public void ExtractAndAdd(MapEntity entity)
     {

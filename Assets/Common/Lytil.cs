@@ -31,6 +31,9 @@ public static class Lytil
     
     public static bool IsInBounds(Vector2 point, Vector2 start, Vector2 end) =>
         point.x >= start.x && point.x < end.x && point.y >= start.y && point.y < end.y;
+
+    public static bool IsInRendererBounds(Vector2 point, SpriteRenderer renderer) =>
+        Lytil.IsInBounds(point, renderer.bounds.min, renderer.bounds.max);
     
     
     public static Tilemap CreateTilemap(Transform parent, int offset, string mapName)
