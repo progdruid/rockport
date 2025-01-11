@@ -36,7 +36,9 @@ public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IPackable
     }
 
     protected virtual void Initialise() { }
+    public virtual void Activate() { }
 
+    
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public string Title => title;
     public Transform Target => target;
@@ -63,8 +65,8 @@ public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IPackable
         };
     }
 
-    public abstract float GetReferenceZ();
     public virtual bool CheckOverlap (Vector2 pos) => false;
+    public virtual float GetReferenceZ() => Target.position.z;
     public virtual Vector2Int GetAnchorPoint()
     {
         var snapped = Space.SnapWorldToMap(Target.position, out var anchorPoint);
@@ -75,8 +77,6 @@ public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IPackable
     public abstract string Pack();
     public abstract void Unpack(string data);
 
-    public virtual void Activate() { }
-
     public void Clear()
     {
         var targetObject = target.gameObject;
@@ -85,7 +85,8 @@ public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IPackable
     }
 
     public abstract void ChangeAt(Vector2 worldPos, bool shouldPlaceNotRemove);
-
+    
+    
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     protected void InvokePropertiesChangeEvent() => PropertiesChangeEvent?.Invoke();
     protected void AddPublicModule(string moduleName, IEntityModule module)

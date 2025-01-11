@@ -28,7 +28,10 @@ public class PropEntity : MapEntity
         _physicalTrait.PropertiesChangeEvent += InvokePropertiesChangeEvent;
         _physicalTrait.AddObject(gameObject);
     }
+    
+    public override void Activate() => _physicalTrait.RequestGeneratePhysics();
 
+    
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public override IEnumerator<PropertyHandle> GetProperties()
     {
@@ -82,8 +85,6 @@ public class PropEntity : MapEntity
         var snappedWorldPos = Space.ConvertMapToWorld(mapPos);
         Target.SetWorldXY(snappedWorldPos);
     }
-
-    public override void Activate() => _physicalTrait.RequestGeneratePhysics();
 }
 
 }

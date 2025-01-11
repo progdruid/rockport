@@ -572,7 +572,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entityUIPanel: {fileID: 1909970588}
   alpha1LayerTitle: Dirt
-  alpha2LayerTitle: Tree
+  alpha2LayerTitle: AND Gate
   alpha3LayerTitle: Button
   alpha4LayerTitle: Door
 --- !u!114 &251374649
