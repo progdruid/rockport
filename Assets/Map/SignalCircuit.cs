@@ -46,8 +46,14 @@ public class SignalCircuit : IPackable
         foreach (var (key, module) in entity.PublicModules)
             switch (module)
             {
-                case SignalEmitter emitter: _emitters.Remove(emitter); break;
-                case SignalListener listener: _listeners.Remove(listener); break;
+                case SignalEmitter emitter: 
+                    Unlink(emitter); 
+                    _emitters.Remove(emitter); 
+                    break;
+                case SignalListener listener: 
+                    Unlink(listener);
+                    _listeners.Remove(listener); 
+                    break;
             }
     }
 

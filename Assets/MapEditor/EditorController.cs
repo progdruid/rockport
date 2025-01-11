@@ -102,7 +102,6 @@ public class EditorController : MonoBehaviour, IPackable
         }
         
         _signalCircuit.Unpack(chapterData.SignalData);
-        _signalCircuit.Link(_signalCircuit.Emitters.First(), _signalCircuit.Listeners.First());
         
         entityEditor.Inject(_map);
         wiringEditor.Inject(_map);
