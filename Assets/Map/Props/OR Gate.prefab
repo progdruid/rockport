@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8151422791600274197}
   - component: {fileID: 6739475105351752937}
   m_Layer: 0
-  m_Name: AND Gate
+  m_Name: OR Gate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50,9 +50,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1156755c27384f61ad8f820556c48e49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  title: AND Gate
+  title: OR Gate
   target: {fileID: 1798520876106313945}
-  type: 0
+  type: 1
   textRenderer: {fileID: 8151422791600274197}
 --- !u!23 &8151422791600274197
 MeshRenderer:
@@ -119,7 +119,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '*'
+  m_text: +
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

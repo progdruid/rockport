@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -16,7 +17,7 @@ public class SignalGate : MapEntity
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private SignalGateType type = SignalGateType.And;
-    [SerializeField] private TMP_Text signalText;
+    [SerializeField] private Renderer textRenderer;
 
     private SignalEmitter _emitter;
     private SignalListener[] _listeners;
@@ -25,7 +26,7 @@ public class SignalGate : MapEntity
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     protected override void Awake()
     {
-        Assert.IsNotNull(signalText);
+        Assert.IsNotNull(textRenderer);
         
         _emitter = new SignalEmitter();
         AddPublicModule("gate-output", _emitter);
@@ -59,7 +60,8 @@ public class SignalGate : MapEntity
 
     public override void Activate()
     {
-        base.Activate();
+        textRenderer.enabled = false;
+        
         for (var i = 0; i < _listeners.Length; i++)
         {
             var savedI = i;
@@ -68,15 +70,23 @@ public class SignalGate : MapEntity
                 _listenedValues[savedI] = val; 
                 TryEmit(); 
             };
-            
         }
-        
     }
 
     
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    public override string Pack() => null;
-    public override void Unpack(string data) => RequestInitialise();
+    public override string Pack()
+    {
+        Space.SnapWorldToMap(Target.position, out var map);
+        return Lytil.PackVector2Int(map);
+    }
+
+    public override void Unpack(string data)
+    {
+        RequestInitialise();
+        var worldPos = Space.ConvertMapToWorld(Lytil.UnpackVector2Int(data));
+        Target.SetWorldXY(worldPos);
+    }
 
     public override void ChangeAt(Vector2 worldPos, bool shouldPlaceNotRemove)
     {

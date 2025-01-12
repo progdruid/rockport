@@ -14,15 +14,17 @@ public class WiringEditor : MonoBehaviour, IMapEditorMode
     [SerializeField] private GameObject inputPinPrefab;
     [SerializeField] private GameObject outputPinPrefab;
     [SerializeField] private GameObject linkLinePrefab;
-
+    [Space] 
+    [SerializeField] private float pinPadding;
+    
     private MapSpace _map;
     private SignalCircuit _signalCircuit;
     
     private readonly Dictionary<SignalEmitter, SpriteRenderer> _outputs = new();
     private readonly Dictionary<SignalListener, SpriteRenderer> _inputs = new();
-    
     private readonly Dictionary<SignalListener, LineRenderer> _linkLines = new();
-    
+    private readonly Dictionary<MapEntity, Dictionary<SignalListener, int>> _entityToListeners = new();
+    private readonly HashSet<MapEntity> _entityToEmitter = new();
     
     private SignalEmitter _draggedEmitter;
     private SignalListener _draggedListener;
@@ -34,6 +36,7 @@ public class WiringEditor : MonoBehaviour, IMapEditorMode
         Assert.IsNotNull(inputPinPrefab);
         Assert.IsNotNull(outputPinPrefab);
         Assert.IsNotNull(linkLinePrefab);
+        Assert.AreNotApproximatelyEqual(pinPadding, 0f);
     }
     
     
@@ -43,11 +46,21 @@ public class WiringEditor : MonoBehaviour, IMapEditorMode
 
     public void Enter()
     {
+        Assert.IsTrue(_outputs.Count == 0);
+        Assert.IsTrue(_inputs.Count == 0);
+        Assert.IsTrue(_linkLines.Count == 0);
+        Assert.IsTrue(_entityToListeners.Count == 0);
+        Assert.IsTrue(_entityToEmitter.Count == 0);
+        
         foreach (var emitter in _signalCircuit.Emitters)
         {
             var spriteRenderer = Instantiate(outputPinPrefab, target).GetComponent<SpriteRenderer>();
             Assert.IsNotNull(spriteRenderer);
             _outputs.Add(emitter, spriteRenderer);
+
+            var entity = ((IEntityModule)emitter).GetEntity();
+            Assert.IsFalse(_entityToEmitter.Contains(entity));
+            _entityToEmitter.Add(entity);
         }
 
         foreach (var listener in _signalCircuit.Listeners)
@@ -55,6 +68,13 @@ public class WiringEditor : MonoBehaviour, IMapEditorMode
             var spriteRenderer = Instantiate(inputPinPrefab, target).GetComponent<SpriteRenderer>();
             Assert.IsNotNull(spriteRenderer);
             _inputs.Add(listener, spriteRenderer);
+            
+            var entity = ((IEntityModule)listener).GetEntity();
+            _entityToListeners.TryAdd(entity, new Dictionary<SignalListener, int>());
+            
+            var listeners = _entityToListeners[entity];
+            Assert.IsFalse(listeners.ContainsKey(listener));
+            listeners.Add(listener, listeners.Count);
         }
 
         UpdatePinPositions();
@@ -65,6 +85,9 @@ public class WiringEditor : MonoBehaviour, IMapEditorMode
 
     public void Exit()
     {
+        _entityToEmitter.Clear();
+        _entityToListeners.Clear();
+        
         foreach (var (_, line) in _linkLines) Destroy(line.gameObject);
         _linkLines.Clear();
 
@@ -157,15 +180,30 @@ public class WiringEditor : MonoBehaviour, IMapEditorMode
         foreach (var (module, pin) in _outputs)
         {
             var entity = ((IEntityModule)module).GetEntity();
-            var anchor = _map.ConvertMapToWorld(entity.GetAnchorPoint());
-            pin.transform.SetWorld(anchor, z);
+            var pos = _map.ConvertMapToWorld(entity.GetAnchorPoint());
+            
+            if (_entityToListeners.ContainsKey(entity))
+                pos.x += pinPadding;
+            
+            pin.transform.SetWorld(pos, z);
         }
         
         foreach (var (module, pin) in _inputs)
         {
             var entity = ((IEntityModule)module).GetEntity();
-            var anchor = _map.ConvertMapToWorld(entity.GetAnchorPoint());
-            pin.transform.SetWorld(anchor, z);
+            var pos = _map.ConvertMapToWorld(entity.GetAnchorPoint());
+            
+            var foundListeners = _entityToListeners.TryGetValue(entity, out var listeners);
+            Assert.IsTrue(foundListeners && listeners.Any());
+            var foundIndex = listeners.TryGetValue(module, out var index);
+            Assert.IsTrue(foundIndex);
+
+            pos.y += pinPadding * (2f * index - listeners.Count + 1f);
+            
+            if (_entityToListeners.ContainsKey(entity))
+                pos.x -= pinPadding;
+
+            pin.transform.SetWorld(pos, z);
         }
         
     }

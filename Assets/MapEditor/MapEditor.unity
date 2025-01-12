@@ -573,8 +573,8 @@ MonoBehaviour:
   entityUIPanel: {fileID: 1909970588}
   alpha1LayerTitle: Dirt
   alpha2LayerTitle: AND Gate
-  alpha3LayerTitle: Button
-  alpha4LayerTitle: Door
+  alpha3LayerTitle: OR Gate
+  alpha4LayerTitle: NOT Gate
 --- !u!114 &251374649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -591,6 +591,7 @@ MonoBehaviour:
   inputPinPrefab: {fileID: 5978428056469647193, guid: 2924125ce82605f4eae77504dcb59969, type: 3}
   outputPinPrefab: {fileID: 5998092136542494110, guid: fb29f7ebdb3156e42986c1a086dcf074, type: 3}
   linkLinePrefab: {fileID: 6178525489307969705, guid: 0ad6418d9b2cb9b42b5cfed6ccc0dd3c, type: 3}
+  pinPadding: 0.5
 --- !u!1 &563298347
 GameObject:
   m_ObjectHideFlags: 0
