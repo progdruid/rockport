@@ -1,4 +1,5 @@
 
+using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -72,8 +73,24 @@ public class EditorController : MonoBehaviour, IPackable
             mapData.LayerNames[i] = entity.Title;
             mapData.LayerData[i] = entity.Pack();
         }
+
+        var res = mapData.Pack();
         
-        return mapData.Pack();
+        //don't beat me, just checkin' if the packing was successful
+        Assert.IsTrue(new Func<bool>((() =>
+        {
+            try
+            {
+                Unpack(res);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        })).Invoke());
+        
+        return res;
     }
 
     public void Unpack(string data)

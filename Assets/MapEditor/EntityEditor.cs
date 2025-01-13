@@ -15,7 +15,7 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
     
     private MapSpace _map;
     private SignalCircuit _signalCircuit;
-
+    
     private int _selectedLayer = -1;
     private MapEntity _selectedEntity;
     

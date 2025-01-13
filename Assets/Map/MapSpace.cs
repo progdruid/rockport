@@ -70,11 +70,13 @@ public class MapSpace
         var movedObject = _entities[layerFrom];
         _entities.RemoveAt(layerFrom);
         _entities.Insert(layerTo, movedObject);
-        _entityToLayerHandleMap[movedObject].Value = layerTo;
-
+        
         var step = layerTo > layerFrom ? 1 : -1;
         for (var i = layerFrom; i != layerTo + step; i += step)
+        {
+            _entityToLayerHandleMap[_entities[i]].Value = i;
             UpdateZ(i);
+        }
 
         return true;
     }
