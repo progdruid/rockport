@@ -1,6 +1,4 @@
-﻿using System;
-using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Map
@@ -12,6 +10,7 @@ public enum SignalGateType
     Or,
     Not
 }
+
 
 public class SignalGate : MapEntity
 {
@@ -27,6 +26,7 @@ public class SignalGate : MapEntity
     protected override void Awake()
     {
         Assert.IsNotNull(textRenderer);
+        
         
         _emitter = new SignalEmitter();
         AddPublicModule("gate-output", _emitter);

@@ -14,7 +14,7 @@ public class EntityFactory : ScriptableObject
     private Dictionary<string, GameObject> _prefabMap;
     
     [NonSerialized]
-    private bool _initialized = false;
+    private bool _initialised = false;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Initialise()
@@ -35,15 +35,26 @@ public class EntityFactory : ScriptableObject
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public MapEntity CreateEntity(string uniqueTitle)
     {
-        if (!_initialized)
+        if (!_initialised)
         {
             Initialise();
-            _initialized = true;
+            _initialised = true;
         }
         
         var createdObject = Instantiate(_prefabMap[uniqueTitle]);
         var entity = createdObject.GetComponent<MapEntity>();
         return entity;
+    }
+
+    public Dictionary<string, GameObject>.KeyCollection GetEntityTitles()
+    {
+        if (!_initialised)
+        {
+            Initialise();
+            _initialised = true;
+        }
+
+        return _prefabMap.Keys;
     }
 }
 

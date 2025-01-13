@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Assertions;
 using Map;
+using TMPro;
 
 namespace MapEditor
 {
@@ -9,11 +11,7 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private EntityUIPanel entityUIPanel;
-    [Space] 
-    [SerializeField] private string alpha1LayerTitle;
-    [SerializeField] private string alpha2LayerTitle;
-    [SerializeField] private string alpha3LayerTitle;
-    [SerializeField] private string alpha4LayerTitle;
+    [SerializeField] private TMP_Dropdown dropdown;
     
     private MapSpace _map;
     private SignalCircuit _signalCircuit;
@@ -25,15 +23,11 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
     private void Awake()
     {
         Assert.IsNotNull(entityUIPanel);
-
-        Assert.IsNotNull(alpha1LayerTitle);
-        Assert.IsNotNull(alpha2LayerTitle);
-        Assert.IsNotNull(alpha3LayerTitle);
-        Assert.IsNotNull(alpha4LayerTitle);
-        Assert.IsFalse(alpha1LayerTitle.Length == 0);
-        Assert.IsFalse(alpha2LayerTitle.Length == 0);
-        Assert.IsFalse(alpha3LayerTitle.Length == 0);
-        Assert.IsFalse(alpha4LayerTitle.Length == 0);
+        Assert.IsNotNull(dropdown);
+        
+        var entityTitles = GlobalConfig.Ins.entityFactory.GetEntityTitles();
+        dropdown.ClearOptions();
+        dropdown.AddOptions(new List<string>(entityTitles));
     }
     
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,14 +51,11 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
     public void HandleInput(Vector2 worldMousePos)
     {
         //layer creation
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-            CreateLayer(alpha1LayerTitle);
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-            CreateLayer(alpha2LayerTitle);
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-            CreateLayer(alpha3LayerTitle);
-        else if (Input.GetKeyDown(KeyCode.Alpha4))
-            CreateLayer(alpha4LayerTitle);
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            var layerTitle = dropdown.options[dropdown.value].text;
+            CreateLayer(layerTitle);
+        }
         
         //layer deletion
         if (Input.GetKeyDown(KeyCode.Delete))
