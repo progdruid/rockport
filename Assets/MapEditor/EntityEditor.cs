@@ -61,13 +61,9 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
         if (Input.GetKeyDown(KeyCode.Delete))
             DeleteLayer();
 
-        // spawn point management
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            var layer = _map.FindEntity(GlobalConfig.Ins.spawnPointEntityName, out _);
-            if (layer < 0) CreateLayer(GlobalConfig.Ins.spawnPointEntityName);
-            else SelectLayer(layer);
-        }
+        //unselect
+        if (Input.GetKeyDown(KeyCode.Escape))
+            UnselectLayer();
         
         //moving and changing layers
         var selectDirection = (Input.GetKeyDown(KeyCode.LeftArrow) ? -1 : 0) +
