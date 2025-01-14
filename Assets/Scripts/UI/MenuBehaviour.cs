@@ -5,10 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class MenuBehaviour : MonoBehaviour
 {
-    [SerializeField] LevelListMover levelListMover;
-    [SerializeField] LevelTreeManager levelTreeManager;
-    [SerializeField] SequentialSoundPlayer soundPlayer;
-    [SerializeField] TransitionVeil transitionVeil;
+    [SerializeField] private SequentialSoundPlayer soundPlayer;
+    [SerializeField] private TransitionVeil transitionVeil;
     
     private void Start()
     {
@@ -27,7 +25,7 @@ public class MenuBehaviour : MonoBehaviour
         yield return soundPlayer.StopPlaying();
         yield return new WaitWhile(() => transitionVeil.inTransition);
 
-        PlayerPrefs.SetInt("Level_ID_Selected_in_Menu", levelListMover.GetSelectedLevel());
+        //PlayerPrefs.SetInt("Level_ID_Selected_in_Menu", levelListMover.GetSelectedLevel());
         SceneManager.LoadScene("Main");
     }
 

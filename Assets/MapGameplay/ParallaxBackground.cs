@@ -39,18 +39,7 @@ public class ParallaxBackground : MonoBehaviour
     private void Init()
     {
         targetTransform = Camera.main.gameObject.transform;
-
-        GameObject foundObject;
-        if (_mapLoader != null)
-            foundObject = _mapLoader.TryFindObjectWithTag("EquatorialLineObject");
-        else
-            foundObject = GameObject.FindGameObjectWithTag("EquatorialLineObject");
-
-        if (foundObject != null)
-            equatorialLinePoint = (Vector2)foundObject.transform.position;
-        else
-            equatorialLinePoint = Vector2.zero;
-
+        equatorialLinePoint = Vector2.zero;
     }
 
     void FixedUpdate() 
