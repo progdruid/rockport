@@ -19,7 +19,7 @@ public class JumpPad : PropEntity
 
     [SerializeField] private UnityEvent onJump;
 
-    private readonly List<(Collider2D col, IUltraJumper jumper, bool isPlayer, float time)> _bodiesInside = new();
+    private readonly List<(Collider2D col, bool isPlayer, float time)> _bodiesInside = new();
 
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,11 +54,8 @@ public class JumpPad : PropEntity
     {
         if (!other.CompareTag("Player") && !other.CompareTag("Corpse"))
             return;
-
-        var jumper = (IUltraJumper)(other.gameObject.GetComponent<Player>())
-                     ?? other.gameObject.GetComponent<CorpsePhysics>();
-
-        var body = (other, jumper, other.CompareTag("Player"), Time.time);
+        
+        var body = (other, other.CompareTag("Player"), Time.time);
         _bodiesInside.Add(body);
 
         StartCoroutine(Push(body));
@@ -77,8 +74,7 @@ public class JumpPad : PropEntity
         for (var i = 0; i < _bodiesInside.Count; i++)
             if (_bodiesInside[i].time - Time.time >= cooldown)
             {
-                _bodiesInside[i] = (_bodiesInside[i].col, _bodiesInside[i].jumper, _bodiesInside[i].isPlayer,
-                    Time.time);
+                _bodiesInside[i] = (_bodiesInside[i].col, _bodiesInside[i].isPlayer, Time.time);
                 StartCoroutine(Push(_bodiesInside[i]));
             }
     }
@@ -86,16 +82,12 @@ public class JumpPad : PropEntity
 
 
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
-    private IEnumerator Push((Collider2D col, IUltraJumper jumper, bool isPlayer, float time) pressingBody)
+    private IEnumerator Push((Collider2D col, bool isPlayer, float time) pressingBody)
     {
-        pressingBody.jumper.PresetUltraJumped(true);
-
         onJump.Invoke();
         animator.SetBool(Pressed, true);
         yield return new WaitForSeconds(timeOffset);
         animator.SetBool(Pressed, false);
-
-        pressingBody.jumper.MakeUltraJump(impulse);
     }
 }
 

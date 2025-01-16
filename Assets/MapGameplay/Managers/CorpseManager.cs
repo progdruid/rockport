@@ -16,7 +16,6 @@ public class CorpseManager : MonoBehaviour
     {
         GameObject corpse = Instantiate(corpsePrefab, new Vector3(pos.x, pos.y, -1), Quaternion.identity);
         corpse.GetComponent<Rigidbody2D>().linearVelocity += startVel;
-        corpse.GetComponent<CorpsePhysics>().kickedMode = true;
         corpse.GetComponent<SpriteRenderer>().flipX = flipX;
         corpses.Add(corpse);
 

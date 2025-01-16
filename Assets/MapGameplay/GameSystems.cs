@@ -6,7 +6,7 @@ public class GameSystems
     public static GameSystems Ins { get; private set; } = new GameSystems();
 
     public MapLoader Loader;
-    public CameraManager CameraManager;
+    public GameplayCamera GameplayCamera;
     public InputSet InputSet;
     public CorpseManager CorpseManager;
     public FruitManager FruitManager;

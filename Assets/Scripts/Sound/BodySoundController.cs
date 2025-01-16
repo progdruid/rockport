@@ -5,7 +5,7 @@ using UnityEngine;
 public class BodySoundController : MonoBehaviour
 {
     [SerializeField] protected float landingCooldown;
-    [SerializeField] protected BodySideTrigger bottomTrigger;
+    //[SerializeField] protected BodySideTrigger bottomTrigger;
     [SerializeField] protected CustomSoundEmitter soundEmitter;
     
     protected Rigidbody2D rb;
@@ -18,14 +18,14 @@ public class BodySoundController : MonoBehaviour
         //soundEmitter = GetComponent<CustomSoundEmitter>();
         rb = GetComponent<Rigidbody2D>();
 
-        bottomTrigger.EnterEvent += HandleLanding;
-        bottomTrigger.ExitEvent += HandleExit;
+        //bottomTrigger.EnterEvent += HandleLanding;
+       // bottomTrigger.ExitEvent += HandleExit;
     }
 
     protected virtual void OnDestroy()
     {
-        bottomTrigger.EnterEvent -= HandleLanding;
-        bottomTrigger.ExitEvent -= HandleExit;
+       // bottomTrigger.EnterEvent -= HandleLanding;
+       // bottomTrigger.ExitEvent -= HandleExit;
     }
 
     protected virtual void HandleLanding (Collider2D other, TriggeredType type)
@@ -43,7 +43,7 @@ public class BodySoundController : MonoBehaviour
 
     protected virtual void HandleExit (Collider2D other, TriggeredType type)
     {
-        if (!bottomTrigger.triggered)
-            standingType = TriggeredType.None;
+        //if (!bottomTrigger.triggered)
+        //    standingType = TriggeredType.None;
     }
 }

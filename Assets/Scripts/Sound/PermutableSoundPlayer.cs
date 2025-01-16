@@ -10,6 +10,8 @@ public class PermutableSoundPlayer : MonoBehaviour
     private string selectedName;
     private AudioSource selectedSource;
 
+    private bool _isPlaying = false;
+    
     void Awake()
     {
         foreach (var sound in sounds)
@@ -57,14 +59,19 @@ public class PermutableSoundPlayer : MonoBehaviour
 
     public void PlayAll()
     {
-        foreach (var source in sourceMap.Values)
-        {
-            source.Play();
-        }
+        if (_isPlaying)
+            return;
+        _isPlaying = true;
+        
+        foreach (var source in sourceMap.Values) source.Play();
     }
 
     public void Stop()
     {
+        if (!_isPlaying)
+            return;
+        _isPlaying = false;
+        
         foreach (var source in sourceMap.Values)
         {
             source.Stop();

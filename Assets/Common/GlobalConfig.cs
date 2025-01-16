@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Serialization;
 
@@ -8,6 +9,7 @@ namespace Map
 [CreateAssetMenu(menuName = "Lyport/GlobalSettings")]
 public class GlobalConfig : ScriptableObject
 {
+    //static part///////////////////////////////////////////////////////////////////////////////////////////////////////
     public static GlobalConfig Ins => (Instance ??= Load());
     
     
@@ -32,14 +34,20 @@ public class GlobalConfig : ScriptableObject
     }
     
     
-
+    //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    [Header("Materials")]
     [SerializeField] public Color fogColor;
     [SerializeField] private Material standardMaterial;
     [SerializeField] private Material worldTextureMaskMaterial;
-    [Space]
+    
+    [Header("Entities")]
     [SerializeField] public EntityFactory entityFactory;
     [SerializeField] public string spawnPointEntityName;
     
+    //[Header("Gameplay")]
+    
+    
+    //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public Material StandardMaterial { get; private set; }
     public Material WorldTextureMaskMaterial { get; private set; }
 }
