@@ -804,14 +804,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1262337689}
-  - component: {fileID: 1262337700}
-  - component: {fileID: 1262337699}
   - component: {fileID: 1262337694}
   - component: {fileID: 1262337696}
   - component: {fileID: 1262337697}
   - component: {fileID: 1262337690}
   - component: {fileID: 1262337692}
   - component: {fileID: 1262337695}
+  - component: {fileID: 1262337698}
   m_Layer: 0
   m_Name: LevelManager
   m_TagString: GameController
@@ -920,22 +919,8 @@ MonoBehaviour:
   playerPrefab: {fileID: 7112237262537267370, guid: b3ccaed0f9643254faa7ed372f92ba37, type: 3}
   smokeEffectPrefab: {fileID: 1079392192033553945, guid: ec523a26f72f91f42a77d54904f6e373, type: 3}
   smokeTimeOffset: 0
---- !u!114 &1262337699
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1262337688}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90d23f00c6c60f1459475c3f68b62703, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  leftMoveRect: {fileID: 2017490873}
-  rightMoveRect: {fileID: 549998813}
-  jumpRect: {fileID: 1893933799}
---- !u!114 &1262337700
+  controller: {fileID: 0}
+--- !u!114 &1262337698
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -944,12 +929,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1262337688}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74045d178791a7d4badd6d91ec834d96, type: 3}
+  m_Script: {fileID: 11500000, guid: d893511f1c1c4d3419e01c164a568955, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  restrictPlayerKillKey: 1
-  restrictReloadKey: 1
-  restrictQuitKey: 1
+  loader: {fileID: 1262337690}
+  playerManager: {fileID: 1262337697}
+  allowKillKey: 1
 --- !u!1 &1323148067
 GameObject:
   m_ObjectHideFlags: 0
@@ -1032,7 +1017,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1262337699}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: InputSet, Assembly-CSharp
         m_MethodName: InvokeQuitActivationEvent
         m_Mode: 1
@@ -1450,7 +1435,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1262337699}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: InputSet, Assembly-CSharp
         m_MethodName: InvokeReloadActivationEvent
         m_Mode: 1

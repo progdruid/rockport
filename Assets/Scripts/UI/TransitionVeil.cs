@@ -30,9 +30,6 @@ public class TransitionVeil : MonoBehaviour
         if (!closed)
         {
             inTransition = true;
-            if (GameSystems.Ins.InputSet != null && GameSystems.Ins.DeathsBar != null)
-                GameSystems.Ins.InputSet.Active = false;
-            
 
             yield return new WaitWhile(() => animator.GetCurrentAnimatorStateInfo(0).IsName("Start"));
             soundEmitter.EmitSound("TransiteIn");
@@ -58,8 +55,6 @@ public class TransitionVeil : MonoBehaviour
 
             yield return new WaitUntil(() => animator.GetCurrentAnimatorStateInfo(0).IsName("Open"));
 
-            if (GameSystems.Ins.InputSet != null && GameSystems.Ins.DeathsBar != null)
-                GameSystems.Ins.InputSet.Active = true;
             
             inTransition = false;
         }

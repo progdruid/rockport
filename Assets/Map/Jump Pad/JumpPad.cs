@@ -65,8 +65,8 @@ public class JumpPad : PropEntity
     {
         _bodiesInside.RemoveAll((x) => x.col == other);
 
-        if (other.CompareTag("Player"))
-            GameSystems.Ins.InputSet.CanJump = true;
+        //if (other.CompareTag("Player"))
+        //    GameSystems.Ins.InputSet.CanJump = true;
     }
 
     private void Update()

@@ -11,15 +11,19 @@ public class MapLoader : MonoBehaviour
     [SerializeField] private string loadedChapterName;
     [SerializeField] private SequentialSoundPlayer soundPlayer;
     [SerializeField] private EntityFactory entityFactory;
+    [SerializeField] private GameplayController controller;
     
-    private GameObject _chapterObject;
     private MapData _currentMapData;
+    private MapSpace _currentMapSpace;
+    
+    private bool _isLoading = false;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
     {
         Assert.IsNotNull(soundPlayer);
         Assert.IsNotNull(entityFactory);
+        Assert.IsNotNull(controller);
         
         GameSystems.Ins.Loader = this;
         
@@ -31,22 +35,31 @@ public class MapLoader : MonoBehaviour
         soundPlayer.StartPlaying();
         MakeDecision();
     }
-
-    private void OnDestroy() => UnsubscribeFromInput();
     
     
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public event System.Action LevelInstantiationEvent;
     
-    public void AttachToLevelAsChild (Transform transform) => transform.SetParent(_chapterObject.transform);
-    public void ProceedFurther () => MakeDecision();
-    
-    
-    
-    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
-    private void ReloadLevel() => StartCoroutine(LoadLevelRoutine(_currentMapData));
-    private void QuitToMenu() => StartCoroutine(GoToMenuRoutine());
+    public void ProceedFurther ()
+    {
+        if (!_isLoading)
+            MakeDecision();
+    }
 
+    public void ReloadLevel()
+    {
+        if (!_isLoading)
+            StartCoroutine(LoadLevelRoutine(_currentMapData));
+    }
+
+    public void QuitToMenu()
+    {
+        if (!_isLoading)
+            StartCoroutine(GoToMenuRoutine());
+    }
+
+
+    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     private void MakeDecision()
     {
         var loaded = MapSaveManager.Load(loadedChapterName, out var contents);
@@ -70,15 +83,17 @@ public class MapLoader : MonoBehaviour
 
     private IEnumerator LoadLevelRoutine (MapData data)
     {
-        UnsubscribeFromInput();
+        _isLoading = true;
 
-        if (_chapterObject)
+        if (_currentMapSpace != null)
         {
+            controller.AllowMove = false;
             yield return GameSystems.Ins.TransitionVeil.TransiteIn();
 
             GameSystems.Ins.CorpseManager.ClearCorpses();
             GameSystems.Ins.PlayerManager.DestroyPlayer();
-            Destroy(_chapterObject);
+            _currentMapSpace.Kill();
+            _currentMapSpace = null;
         }
         GameSystems.Ins.FruitManager.ClearFruits();
 
@@ -93,14 +108,17 @@ public class MapLoader : MonoBehaviour
             signalCircuit.ExtractAndAdd(entity);
         }
 
-        GameSystems.Ins.GameplayCamera.ObservationHeight = mapSpace.GetMapTop();
-
         mapSpace.FindEntity(GlobalConfig.Ins.spawnPointEntityName, out var foundEntity);
         Assert.IsNotNull(foundEntity);
         var spawnPoint = foundEntity as AnchorEntity;
         Assert.IsNotNull(spawnPoint);
         var spawnPos = spawnPoint.GetPos();
         var spawnZ = spawnPoint.GetReferenceZ();
+        
+        GameSystems.Ins.PlayerManager.SetSpawnPoint(mapSpace.ConvertMapToWorld(spawnPos));
+        GameSystems.Ins.PlayerManager.SetSpawnZ(spawnZ);
+
+        GameSystems.Ins.GameplayCamera.ObservationHeight = mapSpace.GetMapTop();
 
         for (var i = 0; mapSpace.HasLayer(i); i++)
         {
@@ -109,27 +127,14 @@ public class MapLoader : MonoBehaviour
         }
         
         signalCircuit.Unpack(data.SignalData);
-        
-        GameSystems.Ins.PlayerManager.SetSpawnPoint(mapSpace.ConvertMapToWorld(spawnPos));
-        GameSystems.Ins.PlayerManager.SetSpawnZ(spawnZ);
-        
+
+        _currentMapSpace = mapSpace;
         LevelInstantiationEvent?.Invoke();
         
         GameSystems.Ins.PlayerManager.SpawnPlayer();
         yield return GameSystems.Ins.TransitionVeil.TransiteOut();
+        controller.AllowMove = true;
 
-        SubscribeToInput();
-    }
-    
-    private void SubscribeToInput()
-    {
-        GameSystems.Ins.InputSet.QuitActivationEvent += QuitToMenu;
-        GameSystems.Ins.InputSet.ReloadActivationEvent += ReloadLevel;
-    }
-
-    private void UnsubscribeFromInput()
-    {
-        GameSystems.Ins.InputSet.QuitActivationEvent -= QuitToMenu;
-        GameSystems.Ins.InputSet.ReloadActivationEvent -= ReloadLevel;
+        _isLoading = false;
     }
 }

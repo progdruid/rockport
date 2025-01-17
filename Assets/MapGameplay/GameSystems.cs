@@ -7,7 +7,6 @@ public class GameSystems
 
     public MapLoader Loader;
     public GameplayCamera GameplayCamera;
-    public InputSet InputSet;
     public CorpseManager CorpseManager;
     public FruitManager FruitManager;
     public PlayerManager PlayerManager;

@@ -52,6 +52,7 @@ public class Player : MonoBehaviour
     private float _timeTriedJumping = float.NegativeInfinity;
     private float _maxYDuringFall = 0;
     
+    
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
     {
@@ -62,17 +63,11 @@ public class Player : MonoBehaviour
         Assert.IsNotNull(soundEmitter);
         Assert.IsNotNull(soundPlayer);
         
-        GameSystems.Ins.InputSet.JumpKeyPressEvent += MakeRegularJump;
-        GameSystems.Ins.InputSet.JumpKeyReleaseEvent += SuppressJump;
-
         GameSystems.Ins.PlayerManager.PlayerDeathEvent += HandleDeath;
     }
 
     private void OnDestroy()
     {
-        GameSystems.Ins.InputSet.JumpKeyPressEvent -= MakeRegularJump;
-        GameSystems.Ins.InputSet.JumpKeyReleaseEvent -= SuppressJump;
-
         GameSystems.Ins.PlayerManager.PlayerDeathEvent -= HandleDeath;
     }
     
@@ -90,6 +85,8 @@ public class Player : MonoBehaviour
         if (rb.linearVelocity.y > 0)
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * suppressFactor);
     }
+
+    public float HorizontalDirection { get; set; }
     
     
     //game events///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,9 +126,9 @@ public class Player : MonoBehaviour
             animator.SetBool(JumpedAnimatorPropertyID, false);
             soundPlayer.UnselectClip();
         }
-        
-        
-        var hor = GameSystems.Ins.InputSet.HorizontalValue;
+
+
+        var hor = HorizontalDirection;
         var staying = Mathf.Approximately(hor, 0);
         
         var horizontalSpeed = staying
@@ -153,7 +150,7 @@ public class Player : MonoBehaviour
             _ => spriteRenderer.flipX
         };
         
-        //TODO: don't call it every time
+        //TODO: stop calling it every frame
         if (!staying)
             soundPlayer.PlayAll();
         else
