@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5645039037448293764}
   - component: {fileID: 2102823470089423786}
   - component: {fileID: 7249320659173849170}
-  - component: {fileID: -3695136260296186864}
   - component: {fileID: 639415712624142429}
   m_Layer: 7
   m_Name: FinishTrigger
@@ -149,20 +148,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c66240035ce9e748ae9c3dddcade30b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-3695136260296186864
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1837159818062676352}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f61fb9e685da0a4bacc7d49d36eecb3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  signs:
-  - Finish
 --- !u!114 &639415712624142429
 MonoBehaviour:
   m_ObjectHideFlags: 0
