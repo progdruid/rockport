@@ -26,8 +26,7 @@ public class PlayerManager : MonoBehaviour
     
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public event System.Action<GameObject> PlayerSpawnEvent;
-    public event System.Action PlayerDeathEvent;
-    
+
     public Player Player { get; private set; }
 
     public void SetSpawnPoint (Vector2 pos) => _spawnPoint = pos;
@@ -48,9 +47,10 @@ public class PlayerManager : MonoBehaviour
         if (_killingPlayer)
             return;
         _killingPlayer = true;
-        PlayerDeathEvent?.Invoke();
+        Player.PrepareForDeath();
+        //TODO: call player death event
 
-        var canSpawnCorpse = GameSystems.Ins.FruitManager.GetFruitsAmount() != 0;
+        var canSpawnCorpse = true;//GameSystems.Ins.FruitManager.GetFruitsAmount() != 0;
         StartCoroutine(KillPlayerRoutine(canSpawnCorpse));
     }
 
@@ -61,25 +61,26 @@ public class PlayerManager : MonoBehaviour
         Player = null;
     }
     
+    
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     private IEnumerator KillPlayerRoutine(bool shouldSpawnCorpse)
     {
-        var rb = Player.GetComponent<Rigidbody2D>();
-
-        var vel = rb.linearVelocity;
+        var rb = Player.Body;
         var pos = Player.transform.position;
-        var flipX = Player.GetComponent<SpriteRenderer>().flipX;
 
         Instantiate(smokeEffectPrefab, new Vector3(pos.x, pos.y, smokeEffectPrefab.transform.position.z),
             Quaternion.identity);
 
-        rb.constraints = RigidbodyConstraints2D.FreezePosition;
+        rb.constraints |= RigidbodyConstraints2D.FreezePosition;
         controller.AllowMove = false;
 
         yield return new WaitForSeconds(smokeTimeOffset);
 
         if (shouldSpawnCorpse)
         {
+            var vel = rb.linearVelocity;
+            var flipX = Player.Flip;
+            
             GameSystems.Ins.FruitManager.DestroyFruit();
             DestroyPlayer();
             var corpse = GameSystems.Ins.CorpseManager.SpawnCorpse(pos, vel, flipX).transform;
@@ -95,6 +96,6 @@ public class PlayerManager : MonoBehaviour
         
         SpawnPlayer();
         yield return GameSystems.Ins.TransitionVeil.TransiteOut();
-        controller.AllowMove = true;
+        controller.AllowMove = true;    
     }
 }

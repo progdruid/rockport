@@ -4,40 +4,44 @@ using UnityEngine;
 
 public class CorpseManager : MonoBehaviour
 {
-    public event System.Action CorpseUpdateEvent = delegate { };
-    public event System.Action<GameObject> NewCorpseEvent = delegate { };
-    public GameObject corpsePrefab;
-    private List<GameObject> corpses = new List<GameObject>();
+    //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    [SerializeField] private GameObject corpsePrefab;
 
+    private readonly List<GameObject> _corpses = new List<GameObject>();
+    
+    
+    //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake() => GameSystems.Ins.CorpseManager = this;
-    private void Start() => CorpseUpdateEvent();
+    private void Start() => CorpseUpdateEvent?.Invoke();
 
-    public GameObject SpawnCorpse (Vector2 pos, Vector2 startVel, bool flipX)
+    
+    //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
+    public event System.Action CorpseUpdateEvent;
+    public event System.Action<GameObject> NewCorpseEvent;
+    public int GetCorpseCount () => _corpses.Count;
+    
+    public GameObject SpawnCorpse (Vector3 pos, Vector2 startVel, bool flipX)
     {
-        GameObject corpse = Instantiate(corpsePrefab, new Vector3(pos.x, pos.y, -1), Quaternion.identity);
+        var corpse = Instantiate(corpsePrefab, pos, Quaternion.identity);
         corpse.GetComponent<Rigidbody2D>().linearVelocity += startVel;
         corpse.GetComponent<SpriteRenderer>().flipX = flipX;
-        corpses.Add(corpse);
+        _corpses.Add(corpse);
 
-        CorpseUpdateEvent();
-        NewCorpseEvent(corpse);
+        CorpseUpdateEvent?.Invoke();
+        NewCorpseEvent?.Invoke(corpse);
 
         return corpse;
     }
 
     public void ClearCorpses ()
     {
-        for (int i = corpses.Count - 1; i >= 0; i--)
+        for (var i = _corpses.Count - 1; i >= 0; i--)
         {
-            Destroy(corpses[i]);
-            corpses.RemoveAt(i);
+            Destroy(_corpses[i]);
+            _corpses.RemoveAt(i);
         }
 
-        CorpseUpdateEvent();
+        CorpseUpdateEvent?.Invoke();
     }
 
-    public int GetCorpseCount ()
-    {
-        return corpses.Count;
-    }
 }

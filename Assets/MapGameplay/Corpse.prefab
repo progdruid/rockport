@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 6388440925167425494}
   - component: {fileID: 6388440925167425488}
   - component: {fileID: 456645942844967705}
-  - component: {fileID: 8207401305756667770}
+  - component: {fileID: -2527689664746702288}
   - component: {fileID: 3938242994105235464}
   - component: {fileID: -4062892864499950858}
   m_Layer: 3
@@ -255,17 +255,14 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.34375, y: 0.46875}
-      - {x: -0.40625, y: 0.40625}
-      - {x: -0.40625, y: -0.421875}
-      - {x: -0.34375, y: -0.484375}
-      - {x: 0.34375, y: -0.484375}
-      - {x: 0.40625, y: -0.421875}
-      - {x: 0.40625, y: 0.40625}
-      - {x: 0.34375, y: 0.46875}
+    - - {x: 0.40625, y: 0.46875}
+      - {x: -0.40625, y: 0.46875}
+      - {x: -0.40625, y: -0.46875}
+      - {x: -0.0036966205, y: -0.484375}
+      - {x: 0.40625, y: -0.46875}
   m_UseDelaunayMesh: 0
---- !u!256 &8207401305756667770
-FrictionJoint2D:
+--- !u!254 &-2527689664746702288
+RelativeJoint2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -278,11 +275,12 @@ FrictionJoint2D:
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_BreakAction: 3
-  m_AutoConfigureConnectedAnchor: 1
-  m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0, y: 0}
-  m_MaxForce: 30
-  m_MaxTorque: 1
+  m_MaxForce: 10
+  m_MaxTorque: 10
+  m_CorrectionScale: 0
+  m_AutoConfigureOffset: 1
+  m_LinearOffset: {x: 0, y: 0}
+  m_AngularOffset: 0
 --- !u!114 &3938242994105235464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -295,6 +293,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f61e00dc964de6746beb79fab4a89b80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pushingFactor: 0.5
+  baseSpeed: 4
+  groundFriction: 10
+  correctionSpeed: 20
+  maxVelocityDelta: 1000
+  distance: 0.75
+  rb: {fileID: 6388440925167425488}
 --- !u!114 &-4062892864499950858
 MonoBehaviour:
   m_ObjectHideFlags: 0

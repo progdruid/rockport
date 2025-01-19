@@ -47,8 +47,10 @@ public class GameplayController : MonoBehaviour
         else if (AllowMove && Input.GetKeyUp(KeyCode.Space))
             playerManager.Player.SuppressJump();
 
+        
         if (!AllowMove) return;
         playerManager.Player.HorizontalDirection = 
             (Input.GetKey(KeyCode.A) ? -1 : 0) + (Input.GetKey(KeyCode.D) ? 1 : 0);
+        playerManager.Player.Hitch = Input.GetKey(KeyCode.LeftShift);
     }
 }

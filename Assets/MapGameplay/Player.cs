@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using Map;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Serialization;
@@ -33,6 +30,7 @@ public class Player : MonoBehaviour
     [Header("Touches")]
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float groundCheckDistance = 0.1f;
+    [SerializeField] private LayerMask corpseLayer;
 
     [Header("Effects")] 
     [SerializeField] private float landingEffectHeightThreshold;
@@ -52,6 +50,7 @@ public class Player : MonoBehaviour
     private float _timeTriedJumping = float.NegativeInfinity;
     private float _maxYDuringFall = 0;
     
+    private CorpsePhysics _hitchedCorpse;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
@@ -62,19 +61,28 @@ public class Player : MonoBehaviour
         Assert.IsNotNull(animator);
         Assert.IsNotNull(soundEmitter);
         Assert.IsNotNull(soundPlayer);
-        
-        GameSystems.Ins.PlayerManager.PlayerDeathEvent += HandleDeath;
     }
 
-    private void OnDestroy()
+
+    //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public Rigidbody2D Body => rb;
+    
+    public bool Flip { get => spriteRenderer.flipX; set => spriteRenderer.flipX = value; }
+    
+    public float HorizontalDirection { get; set; }
+    public bool Hitch { get; set; }
+    
+    public void PrepareForDeath()
     {
-        GameSystems.Ins.PlayerManager.PlayerDeathEvent -= HandleDeath;
+        gameObject.layer = 10;
+        animator.SetBool(DiedAnimatorPropertyID, true);
     }
     
-    
-    //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public void MakeRegularJump()
     {
+        if (_hitchedCorpse) return;
+        
         _timeTriedJumping = Time.time;
         if (_grounded || _timeUngrounded + coyoteTime > Time.time)
             Jump(jumpKick);
@@ -86,8 +94,6 @@ public class Player : MonoBehaviour
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * suppressFactor);
     }
 
-    public float HorizontalDirection { get; set; }
-    
     
     //game events///////////////////////////////////////////////////////////////////////////////////////////////////////
     private void FixedUpdate()
@@ -95,15 +101,12 @@ public class Player : MonoBehaviour
         if (!_grounded && _maxYDuringFall < rb.transform.position.y)
             _maxYDuringFall = rb.transform.position.y;
         
-        var cachedQueriesStartInColliders = Physics2D.queriesStartInColliders;
-        Physics2D.queriesStartInColliders = false;
-        var groundHit = Physics2D.CapsuleCast(capsule.bounds.center, capsule.size, capsule.direction, 0, 
-            Vector2.down, groundCheckDistance, groundLayer);
-        Physics2D.queriesStartInColliders = cachedQueriesStartInColliders;
-        var isDirt = groundHit.collider?.CompareTag("Dirt") ?? false;
+        var isGroundHit = CheckCollision(Vector2.down, groundLayer, out var groundHitData)
+            || CheckCollision(Vector2.down, corpseLayer, out groundHitData);
+        var isDirt = isGroundHit && groundHitData.collider.CompareTag("Dirt");
         
         
-        if (groundHit && !_grounded)
+        if (groundHitData && !_grounded)
         {
             _grounded = true;
             _timeUngrounded = float.NegativeInfinity;
@@ -118,7 +121,7 @@ public class Player : MonoBehaviour
             }
             _maxYDuringFall = 0;
         }
-        else if (!groundHit && _grounded)
+        else if (!groundHitData && _grounded)
         {
             _grounded = false;
             _timeUngrounded = Time.time;
@@ -130,6 +133,19 @@ public class Player : MonoBehaviour
 
         var hor = HorizontalDirection;
         var staying = Mathf.Approximately(hor, 0);
+
+        if ((!Hitch || !_grounded) && _hitchedCorpse)
+        {
+            _hitchedCorpse.Unhitch();
+            _hitchedCorpse = null;
+        }
+        else if (Hitch && !_hitchedCorpse && !staying &&
+                 CheckCollision(new Vector2(hor, 0), corpseLayer, out var hitData) && 
+                 hitData.collider.TryGetComponent(out CorpsePhysics corpse))
+        {
+            _hitchedCorpse = corpse;
+            _hitchedCorpse.Hitch(rb);
+        }
         
         var horizontalSpeed = staying
             ? Mathf.MoveTowards(rb.linearVelocity.x, 0, Time.fixedDeltaTime * deceleration)
@@ -138,6 +154,8 @@ public class Player : MonoBehaviour
         var verticalSpeed = Mathf.MoveTowards(rb.linearVelocity.y, -maxFallSpeed, Time.fixedDeltaTime * gravity);
         
         rb.linearVelocity = new Vector2(horizontalSpeed, verticalSpeed);
+        _hitchedCorpse?.Push(hor, Mathf.Abs(horizontalSpeed));
+        
         
         
         animator.SetBool(RunningAnimatorPropertyID, !staying);
@@ -157,19 +175,22 @@ public class Player : MonoBehaviour
             soundPlayer.Stop();
     }
     
+    
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
-
     private void Jump(float kick)
     {
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, kick);
         animator.SetBool(JumpedAnimatorPropertyID, true);
         soundEmitter.EmitSound("Jump");
     }
-    
-    private void HandleDeath()
+
+    private bool CheckCollision(Vector2 direction, LayerMask layer, out RaycastHit2D hit)
     {
-        gameObject.layer = 10;
-        animator.SetBool(DiedAnimatorPropertyID, true);
+        var cachedQueriesStartInColliders = Physics2D.queriesStartInColliders;
+        Physics2D.queriesStartInColliders = false;
+        hit = Physics2D.CapsuleCast(capsule.bounds.center, capsule.size, capsule.direction, 0, 
+            direction, groundCheckDistance, layer);
+        Physics2D.queriesStartInColliders = cachedQueriesStartInColliders;
+        return hit;
     }
-    
 }
