@@ -139,8 +139,8 @@ public class Player : MonoBehaviour
             _hitchedCorpse.Unhitch();
             _hitchedCorpse = null;
         }
-        else if (Hitch && !_hitchedCorpse && !staying &&
-                 CheckCollision(new Vector2(hor, 0), corpseLayer, out var hitData) && 
+        else if (Hitch && !_hitchedCorpse &&
+                 CheckCollision(new Vector2(spriteRenderer.flipX ? -1 : 1, 0), corpseLayer, out var hitData) &&
                  hitData.collider.TryGetComponent(out CorpsePhysics corpse))
         {
             _hitchedCorpse = corpse;

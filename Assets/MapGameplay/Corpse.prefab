@@ -100,7 +100,6 @@ GameObject:
   - component: {fileID: 6388440925167425494}
   - component: {fileID: 6388440925167425488}
   - component: {fileID: 456645942844967705}
-  - component: {fileID: -2527689664746702288}
   - component: {fileID: 3938242994105235464}
   - component: {fileID: -4062892864499950858}
   m_Layer: 3
@@ -261,26 +260,6 @@ PolygonCollider2D:
       - {x: -0.0036966205, y: -0.484375}
       - {x: 0.40625, y: -0.46875}
   m_UseDelaunayMesh: 0
---- !u!254 &-2527689664746702288
-RelativeJoint2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6388440925167425491}
-  m_Enabled: 1
-  serializedVersion: 4
-  m_EnableCollision: 1
-  m_ConnectedRigidBody: {fileID: 0}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_BreakAction: 3
-  m_MaxForce: 10
-  m_MaxTorque: 10
-  m_CorrectionScale: 0
-  m_AutoConfigureOffset: 1
-  m_LinearOffset: {x: 0, y: 0}
-  m_AngularOffset: 0
 --- !u!114 &3938242994105235464
 MonoBehaviour:
   m_ObjectHideFlags: 0
