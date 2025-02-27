@@ -189,9 +189,9 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6388440925167425491}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
-  m_UseFullKinematicContacts: 0
+  m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDamping: 0
@@ -273,12 +273,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pushingFactor: 0.5
-  baseSpeed: 4
+  baseSpeed: 0
   groundFriction: 10
   correctionSpeed: 20
   maxVelocityDelta: 1000
   distance: 0.75
+  gravity: 50
+  groundCheckDistance: 0.1
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  bodyLayer:
+    serializedVersion: 2
+    m_Bits: 8
   rb: {fileID: 6388440925167425488}
+  polyCollider: {fileID: 456645942844967705}
 --- !u!114 &-4062892864499950858
 MonoBehaviour:
   m_ObjectHideFlags: 0

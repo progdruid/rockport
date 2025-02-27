@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public static class Lytil
+public static class RockUtil
 {
     public static readonly int FogColorID = Shader.PropertyToID("_FogColor");
     public static readonly int FogIntensityID = Shader.PropertyToID("_FogIntensity");
@@ -33,7 +33,7 @@ public static class Lytil
         point.x >= start.x && point.x < end.x && point.y >= start.y && point.y < end.y;
 
     public static bool IsInRendererBounds(Vector2 point, SpriteRenderer renderer) =>
-        Lytil.IsInBounds(point, renderer.bounds.min, renderer.bounds.max);
+        RockUtil.IsInBounds(point, renderer.bounds.min, renderer.bounds.max);
     
     
     public static Tilemap CreateTilemap(Transform parent, int offset, string mapName)
@@ -53,6 +53,15 @@ public static class Lytil
     {
         var split = data.Split(',');
         return new Vector2Int (int.Parse(split[0]), int.Parse(split[1]));
+    }
+    
+    
+    public static bool IsInLayerMask(int layer, LayerMask mask) => (mask.value & (1 << layer)) != 0;
+
+    public static void DrawDebugPoint(Vector3 pos, Color color, float size = 0.02f, float duration = float.MaxValue)
+    {
+        Debug.DrawLine(pos + new Vector3(-1, -1, 0) * size, pos + new Vector3( 1, 1, 0) * size, color, duration);
+        Debug.DrawLine(pos + new Vector3( 1, -1, 0) * size, pos + new Vector3(-1, 1, 0) * size, color, duration);
     }
     
 }

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Serialization;
@@ -28,9 +30,9 @@ public class Player : MonoBehaviour
     [SerializeField] private float gravity = 50f;
     
     [Header("Touches")]
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private float groundCheckDistance = 0.1f;
-    [SerializeField] private LayerMask corpseLayer;
+    [SerializeField] private LayerMask collisionMask;
+    [SerializeField] private float collisionCheckDistance = 0.1f;
+    [SerializeField] private float penetrationResolutionSpeed = 30f;
 
     [Header("Effects")] 
     [SerializeField] private float landingEffectHeightThreshold;
@@ -50,7 +52,15 @@ public class Player : MonoBehaviour
     private float _timeTriedJumping = float.NegativeInfinity;
     private float _maxYDuringFall = 0;
     
-    private CorpsePhysics _hitchedCorpse;
+    private readonly HashSet<Collider2D> _topColliders = new();
+    private readonly HashSet<Collider2D> _botColliders = new();
+    private readonly HashSet<Collider2D> _rightColliders = new();
+    private readonly HashSet<Collider2D> _leftColliders = new();
+
+    private Vector2 _min;
+    private Vector2 _max;
+    private Vector2 _centre;
+    
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
@@ -61,6 +71,26 @@ public class Player : MonoBehaviour
         Assert.IsNotNull(animator);
         Assert.IsNotNull(soundEmitter);
         Assert.IsNotNull(soundPlayer);
+        
+        _min = capsule.bounds.center - capsule.bounds.size / 2;
+        _max = capsule.bounds.center + capsule.bounds.size / 2;
+        _centre = capsule.bounds.center;
+        
+        rb.simulated = true;
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        rb.useFullKinematicContacts = true;
+        rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+        rb.sleepMode = RigidbodySleepMode2D.NeverSleep;
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        rb.freezeRotation = true;
+        rb.gravityScale = 0;
+        rb.linearDamping = 0;
+        rb.angularDamping = 0;
+        rb.linearVelocity = Vector2.zero;
+        rb.inertia = 0;
+        rb.useAutoMass = false;
+        rb.mass = 0;
     }
 
 
@@ -81,7 +111,7 @@ public class Player : MonoBehaviour
     
     public void MakeRegularJump()
     {
-        if (_hitchedCorpse) return;
+        //if (_hitchedCorpse) return;
         
         _timeTriedJumping = Time.time;
         if (_grounded || _timeUngrounded + coyoteTime > Time.time)
@@ -94,34 +124,46 @@ public class Player : MonoBehaviour
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * suppressFactor);
     }
 
-    
     //game events///////////////////////////////////////////////////////////////////////////////////////////////////////
+    private bool disablePhys = false;
     private void FixedUpdate()
     {
+        if (Physics2D.simulationMode == SimulationMode2D.Script)
+            return;
+        
+        if (disablePhys)
+        {
+            var check = CheckCollision(Vector2.down, collisionCheckDistance, collisionMask, out var checkData);
+            Debug.Log("CCD: " + check);
+            Physics2D.simulationMode = SimulationMode2D.Script;
+            disablePhys = false;
+            return;
+        }
+        
+        //update max y since ungrounded
         if (!_grounded && _maxYDuringFall < rb.transform.position.y)
             _maxYDuringFall = rb.transform.position.y;
         
-        var isGroundHit = CheckCollision(Vector2.down, groundLayer, out var groundHitData)
-            || CheckCollision(Vector2.down, corpseLayer, out groundHitData);
-        var isDirt = isGroundHit && groundHitData.collider.CompareTag("Dirt");
         
+        var isGroundHit = CheckCollision(Vector2.down, collisionCheckDistance, collisionMask, out var groundHitData);
+        var isGroundDirt = isGroundHit && groundHitData.collider.CompareTag("Dirt");
         
-        if (groundHitData && !_grounded)
+        if (isGroundHit && !_grounded)
         {
             _grounded = true;
             _timeUngrounded = float.NegativeInfinity;
             if (_timeTriedJumping + jumpBufferTime > Time.time)
                 Jump(jumpKick);
             
-            soundPlayer.SelectClip(isDirt ? "WalkDirt" : "WalkSolid");
+            soundPlayer.SelectClip(isGroundDirt ? "WalkDirt" : "WalkSolid");
             if (_maxYDuringFall - rb.transform.position.y > landingEffectHeightThreshold)
             {
                 Instantiate(landingDustPrefab, landingDustSpawnPoint.position, Quaternion.identity);
-                soundEmitter.EmitSound(isDirt ? "LandingDirt" : "LandingSolid");
+                soundEmitter.EmitSound(isGroundDirt ? "LandingDirt" : "LandingSolid");
             }
             _maxYDuringFall = 0;
         }
-        else if (!groundHitData && _grounded)
+        else if (!isGroundHit && _grounded)
         {
             _grounded = false;
             _timeUngrounded = Time.time;
@@ -130,32 +172,31 @@ public class Player : MonoBehaviour
             soundPlayer.UnselectClip();
         }
 
-
         var hor = HorizontalDirection;
         var staying = Mathf.Approximately(hor, 0);
-
-        if ((!Hitch || !_grounded) && _hitchedCorpse)
-        {
-            _hitchedCorpse.Unhitch();
-            _hitchedCorpse = null;
-        }
-        else if (Hitch && !_hitchedCorpse &&
-                 CheckCollision(new Vector2(spriteRenderer.flipX ? -1 : 1, 0), corpseLayer, out var hitData) &&
-                 hitData.collider.TryGetComponent(out CorpsePhysics corpse))
-        {
-            _hitchedCorpse = corpse;
-            _hitchedCorpse.Hitch(rb);
-        }
         
         var horizontalSpeed = staying
-            ? Mathf.MoveTowards(rb.linearVelocity.x, 0, Time.fixedDeltaTime * deceleration)
-            : Mathf.MoveTowards(rb.linearVelocity.x, hor * maxSpeed, Time.fixedDeltaTime * acceleration);
-
-        var verticalSpeed = Mathf.MoveTowards(rb.linearVelocity.y, -maxFallSpeed, Time.fixedDeltaTime * gravity);
+            ? Mathf.MoveTowards(rb.linearVelocityX, 0, Time.fixedDeltaTime * deceleration)
+            : Mathf.MoveTowards(rb.linearVelocityX, hor * maxSpeed, Time.fixedDeltaTime * acceleration);
         
-        rb.linearVelocity = new Vector2(horizontalSpeed, verticalSpeed);
-        _hitchedCorpse?.Push(hor, Mathf.Abs(horizontalSpeed));
+        var verticalSpeed = _grounded 
+            ? rb.linearVelocityY.ClampBottom(0)
+            : Mathf.MoveTowards(rb.linearVelocityY, -maxFallSpeed, Time.fixedDeltaTime * gravity);
         
+        rb.linearVelocity = new Vector2(0, verticalSpeed);
+        
+        
+        //for high speeds
+        var predictedDelta = rb.linearVelocityY * Time.fixedDeltaTime;
+        if (-predictedDelta > collisionCheckDistance 
+            && CheckCollision(Vector2.down, -predictedDelta, collisionMask, out var groundCCDHit))
+        {
+            rb.position += Vector2.down * groundCCDHit.distance;
+            rb.linearVelocityY = 0;
+            
+            disablePhys = true;
+            return;
+        }
         
         
         animator.SetBool(RunningAnimatorPropertyID, !staying);
@@ -164,7 +205,7 @@ public class Player : MonoBehaviour
         spriteRenderer.flipX = hor switch
         {
             < 0 => true,
-            > 0 => false,
+            > 0 => false, 
             _ => spriteRenderer.flipX
         };
         
@@ -176,20 +217,40 @@ public class Player : MonoBehaviour
     }
     
     
+    
+    // private void OnCollisionStay2D(Collision2D collision)
+    // {
+    //     var totalPenetrationVector = Vector2.zero;
+    //     foreach (var contact in collision.contacts) 
+    //         totalPenetrationVector += contact.normal * Mathf.Abs(contact.separation);
+    //     totalPenetrationVector /= collision.contactCount;
+    //
+    //     Debug.Log(totalPenetrationVector);
+    //     rb.linearVelocity += totalPenetrationVector * penetrationResolutionSpeed;
+    //     
+    //     // old
+    //     // var resolutionMovement = totalPenetrationVector * penetrationResolutionSpeed * Time.fixedDeltaTime;
+    //     // rb.position += resolutionMovement;
+    //
+    //     // Optional: Implement a maximum resolution distance per frame
+    //     // resolutionMovement = Vector2.ClampMagnitude(resolutionMovement, maxResolutionDistancePerFrame);
+    // }
+    
+    
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Jump(float kick)
     {
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, kick);
+        rb.linearVelocityY = kick;
         animator.SetBool(JumpedAnimatorPropertyID, true);
         soundEmitter.EmitSound("Jump");
     }
 
-    private bool CheckCollision(Vector2 direction, LayerMask layer, out RaycastHit2D hit)
+    private bool CheckCollision(Vector2 direction, float distance, LayerMask layer, out RaycastHit2D hit)
     {
         var cachedQueriesStartInColliders = Physics2D.queriesStartInColliders;
         Physics2D.queriesStartInColliders = false;
         hit = Physics2D.CapsuleCast(capsule.bounds.center, capsule.size, capsule.direction, 0, 
-            direction, groundCheckDistance, layer);
+            direction, distance, layer);
         Physics2D.queriesStartInColliders = cachedQueriesStartInColliders;
         return hit;
     }

@@ -60,13 +60,13 @@ public class DirtLayerEntity : MapEntity
                 stratum.marchingSet.ParseTiles();
 
         
-        _baseMap = Lytil.CreateTilemap(Target, 0, "Dirt Base Tilemap");
-        _lowerPebbleMap = Lytil.CreateTilemap(Target,1, "Dirt Lower Pebble Tilemap");
-        _upperPebbleMap = Lytil.CreateTilemap(Target,2, "Dirt Upper Pebble Tilemap");
-        _marchingMap = Lytil.CreateTilemap(Target,3, "Dirt Marching Tilemap");
+        _baseMap = RockUtil.CreateTilemap(Target, 0, "Dirt Base Tilemap");
+        _lowerPebbleMap = RockUtil.CreateTilemap(Target,1, "Dirt Lower Pebble Tilemap");
+        _upperPebbleMap = RockUtil.CreateTilemap(Target,2, "Dirt Upper Pebble Tilemap");
+        _marchingMap = RockUtil.CreateTilemap(Target,3, "Dirt Marching Tilemap");
 
         _material = new Material(GlobalConfig.Ins.StandardMaterial);
-        _material.SetFloat(Lytil.FogIntensityID, _fogScale);
+        _material.SetFloat(RockUtil.FogIntensityID, _fogScale);
         
         _baseMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _material;
         _lowerPebbleMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _material;
@@ -109,7 +109,7 @@ public class DirtLayerEntity : MapEntity
             Setter = (value) =>
             {
                 _fogScale = (float)value / 100f;
-                _material.SetFloat(Lytil.FogIntensityID, _fogScale);
+                _material.SetFloat(RockUtil.FogIntensityID, _fogScale);
             }
         };
     }
@@ -145,7 +145,7 @@ public class DirtLayerEntity : MapEntity
             pending.Remove(pos);
 
             _depthMap.At(pos) = depth;
-            foreach (var neighbour in Space.RetrievePositions(pos, Lytil.FullNeighbourOffsets))
+            foreach (var neighbour in Space.RetrievePositions(pos, RockUtil.FullNeighbourOffsets))
             {
                 var currentDepth = _depthMap.At(neighbour);
                 var calculatedDepth = Mathf.Min(RetrieveMinNeighbourDepth(neighbour) + 1, maxDepth);
@@ -188,16 +188,16 @@ public class DirtLayerEntity : MapEntity
 
 
         // marching query
-        var fullQuery = new MarchingTileQuery(new bool[Lytil.FullNeighbourOffsets.Length]);
-        var halfQuery = new MarchingTileQuery(new bool[Lytil.HalfNeighbourOffsets.Length]);
-        for (var i = 0; i < Lytil.FullNeighbourOffsets.Length; i++)
+        var fullQuery = new MarchingTileQuery(new bool[RockUtil.FullNeighbourOffsets.Length]);
+        var halfQuery = new MarchingTileQuery(new bool[RockUtil.HalfNeighbourOffsets.Length]);
+        for (var i = 0; i < RockUtil.FullNeighbourOffsets.Length; i++)
         {
-            var n = pos + Lytil.FullNeighbourOffsets[i];
+            var n = pos + RockUtil.FullNeighbourOffsets[i];
             var inBounds = Space.IsInBounds(n);
             var present = inBounds && _depthMap.At(n) > lastStratumEndDepth;
             var check = (!inBounds && depth != 0) || present;
             fullQuery.Neighbours[i] = check;
-            if (i < Lytil.HalfNeighbourOffsets.Length)
+            if (i < RockUtil.HalfNeighbourOffsets.Length)
                 halfQuery.Neighbours[i] = check;
         }
 
@@ -249,7 +249,7 @@ public class DirtLayerEntity : MapEntity
     private int RetrieveMinNeighbourDepth(Vector2Int pos)
     {
         var minDepth = maxDepth;
-        foreach (var neighbour in Space.RetrievePositions(pos, Lytil.FullNeighbourOffsets))
+        foreach (var neighbour in Space.RetrievePositions(pos, RockUtil.FullNeighbourOffsets))
         {
             var depth = _depthMap.At(neighbour);
             if (depth < minDepth) minDepth = depth;

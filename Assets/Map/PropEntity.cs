@@ -19,7 +19,7 @@ public class PropEntity : MapEntity
         base.Awake();
         
         _material = new Material(GlobalConfig.Ins.StandardMaterial);
-        _material.SetFloat(Lytil.FogIntensityID, _fogScale);
+        _material.SetFloat(RockUtil.FogIntensityID, _fogScale);
         
         foreach (var rend in GetComponentsInChildren<Renderer>(true)) 
             rend.sharedMaterial = _material;
@@ -51,7 +51,7 @@ public class PropEntity : MapEntity
             Setter = (value) =>
             {
                 _fogScale = (float)value / 100f;
-                _material.SetFloat(Lytil.FogIntensityID, _fogScale);
+                _material.SetFloat(RockUtil.FogIntensityID, _fogScale);
             }
         };
     }
@@ -60,7 +60,7 @@ public class PropEntity : MapEntity
     public override bool CheckOverlap(Vector2 pos)
     {
         var renderers = GetComponentsInChildren<SpriteRenderer>();
-        return renderers.Any(spriteRenderer => Lytil.IsInRendererBounds(pos, spriteRenderer));
+        return renderers.Any(spriteRenderer => RockUtil.IsInRendererBounds(pos, spriteRenderer));
     }
 
     public override string Pack()

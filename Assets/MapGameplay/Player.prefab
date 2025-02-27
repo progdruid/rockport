@@ -229,16 +229,13 @@ MonoBehaviour:
   maxSpeed: 8
   acceleration: 50
   deceleration: 100
-  pushingSpeed: 1
   maxFallSpeed: 40
   gravity: 50
-  groundLayer:
+  collisionMask:
     serializedVersion: 2
-    m_Bits: 256
-  groundCheckDistance: 0.1
-  corpseLayer:
-    serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 264
+  collisionCheckDistance: 0.1
+  penetrationResolutionSpeed: 10
   landingEffectHeightThreshold: 1
   landingDustPrefab: {fileID: 2625986167463492280, guid: d15531b3a30a07443beebbef91a6afa6, type: 3}
   landingDustSpawnPoint: {fileID: 1138232065740235648}

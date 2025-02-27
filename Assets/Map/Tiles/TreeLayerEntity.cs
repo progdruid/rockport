@@ -42,14 +42,14 @@ public class TreeLayerEntity : MapEntity
         outlineMarching.ParseTiles();
 
         _baseMaterial = new Material(GlobalConfig.Ins.StandardMaterial);
-        _baseMaterial.SetFloat(Lytil.FogIntensityID, _fogScale);
+        _baseMaterial.SetFloat(RockUtil.FogIntensityID, _fogScale);
         
         _worldMaterial = new Material(GlobalConfig.Ins.WorldTextureMaskMaterial);
-        _worldMaterial.SetFloat(Lytil.FogIntensityID, _fogScale);
-        _worldMaterial.SetTexture(Lytil.WorldTextureID, treeTexture);
+        _worldMaterial.SetFloat(RockUtil.FogIntensityID, _fogScale);
+        _worldMaterial.SetTexture(RockUtil.WorldTextureID, treeTexture);
         
-        _treeMap = Lytil.CreateTilemap(Target, 0, "Tree Tilemap");
-        _outlineMap = Lytil.CreateTilemap(Target, 1, "Tree Outline Tilemap");
+        _treeMap = RockUtil.CreateTilemap(Target, 0, "Tree Tilemap");
+        _outlineMap = RockUtil.CreateTilemap(Target, 1, "Tree Outline Tilemap");
         
         _treeMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _worldMaterial;
         _outlineMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _baseMaterial;
@@ -91,8 +91,8 @@ public class TreeLayerEntity : MapEntity
             Setter = (value) =>
             {
                 _fogScale = (float)value / 100f;
-                _baseMaterial.SetFloat(Lytil.FogIntensityID, _fogScale);
-                _worldMaterial.SetFloat(Lytil.FogIntensityID, _fogScale);
+                _baseMaterial.SetFloat(RockUtil.FogIntensityID, _fogScale);
+                _worldMaterial.SetFloat(RockUtil.FogIntensityID, _fogScale);
             }
         };
     }
@@ -120,7 +120,7 @@ public class TreeLayerEntity : MapEntity
 
         _placed.At(rootPos) = shouldPlaceNotRemove;
 
-        foreach (var subPos in Space.RetrievePositions(rootPos, Lytil.FullAreaOffsets))
+        foreach (var subPos in Space.RetrievePositions(rootPos, RockUtil.FullAreaOffsets))
             UpdateVisualsAt(subPos);
     }
 
@@ -138,15 +138,15 @@ public class TreeLayerEntity : MapEntity
 
         if (useMarching || !placedHere)
         {
-            var fullQuery = new MarchingTileQuery(new bool[Lytil.FullNeighbourOffsets.Length]);
-            var halfQuery = new MarchingTileQuery(new bool[Lytil.HalfNeighbourOffsets.Length]);
-            for (var i = 0; i < Lytil.FullNeighbourOffsets.Length; i++)
+            var fullQuery = new MarchingTileQuery(new bool[RockUtil.FullNeighbourOffsets.Length]);
+            var halfQuery = new MarchingTileQuery(new bool[RockUtil.HalfNeighbourOffsets.Length]);
+            for (var i = 0; i < RockUtil.FullNeighbourOffsets.Length; i++)
             {
-                var n = pos + Lytil.FullNeighbourOffsets[i];
+                var n = pos + RockUtil.FullNeighbourOffsets[i];
                 var bounded = Space.IsInBounds(n);
                 var check = (!bounded && placedHere) || (bounded && _placed.At(n));
                 fullQuery.Neighbours[i] = check;
-                if (i < Lytil.HalfNeighbourOffsets.Length)
+                if (i < RockUtil.HalfNeighbourOffsets.Length)
                     halfQuery.Neighbours[i] = check;
             }
 

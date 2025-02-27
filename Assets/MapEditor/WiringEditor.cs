@@ -115,13 +115,13 @@ public class WiringEditor : MonoBehaviour, IMapEditorMode
         SignalEmitter pointedEmitter = null;
         foreach (var (listener, pin) in _inputs)
         {
-            if (!Lytil.IsInRendererBounds(worldMousePos, pin)) continue;
+            if (!RockUtil.IsInRendererBounds(worldMousePos, pin)) continue;
             pointedListener = listener;
             break;
         }
         foreach (var (emitter, pin) in _outputs)
         {
-            if (!Lytil.IsInRendererBounds(worldMousePos, pin)) continue;
+            if (!RockUtil.IsInRendererBounds(worldMousePos, pin)) continue;
             pointedEmitter = emitter;
             break;
         }

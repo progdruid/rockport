@@ -24,8 +24,8 @@ public class GlobalConfig : ScriptableObject
         asset.StandardMaterial = new Material(asset.standardMaterial);
         asset.WorldTextureMaskMaterial = new Material(asset.worldTextureMaskMaterial);
         
-        asset.standardMaterial.SetColor(Lytil.FogColorID, asset.fogColor);
-        asset.WorldTextureMaskMaterial.SetColor(Lytil.FogColorID, asset.fogColor);
+        asset.standardMaterial.SetColor(RockUtil.FogColorID, asset.fogColor);
+        asset.WorldTextureMaskMaterial.SetColor(RockUtil.FogColorID, asset.fogColor);
         
         Assert.IsNotNull(asset.entityFactory);
         Assert.IsFalse(string.IsNullOrEmpty(asset.spawnPointEntityName)); 

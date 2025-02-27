@@ -78,13 +78,13 @@ public class SignalGate : MapEntity
     public override string Pack()
     {
         Space.SnapWorldToMap(Target.position, out var map);
-        return Lytil.PackVector2Int(map);
+        return RockUtil.PackVector2Int(map);
     }
 
     public override void Unpack(string data)
     {
         RequestInitialise();
-        var worldPos = Space.ConvertMapToWorld(Lytil.UnpackVector2Int(data));
+        var worldPos = Space.ConvertMapToWorld(RockUtil.UnpackVector2Int(data));
         Target.SetWorldXY(worldPos);
     }
 
