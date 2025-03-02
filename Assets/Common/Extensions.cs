@@ -42,9 +42,9 @@ public static class Extensions
     
     
     //vectors
-    public static bool ApproximatelyEqual(this Vector2 a, Vector2 b) =>
+    public static bool IsApproximately(this Vector2 a, Vector2 b) =>
         Mathf.Approximately(a.x, b.x) && Mathf.Approximately(a.y, b.y);
-    public static bool ApproximatelyEqual(this Vector3 a, Vector3 b) =>
+    public static bool IsApproximately(this Vector3 a, Vector3 b) =>
         Mathf.Approximately(a.x, b.x) && Mathf.Approximately(a.y, b.y) && Mathf.Approximately(a.z, b.z);
     public static Vector2 SmoothDamp(this Vector2 value, Vector2 target, ref Vector2 currentVelocity, float smoothTime) =>
         Vector2.SmoothDamp(value, target, ref currentVelocity, smoothTime);
@@ -55,6 +55,7 @@ public static class Extensions
     
     
     //floats
+    public static bool IsApproximately(this float a, float b) => Mathf.Approximately(a, b);
     public static float Abs(this float value) => Mathf.Abs(value);
     public static float Lerp(this float t, float value1, float value2) => Mathf.Lerp(value1, value2, t);
     public static float ClampBottom(this float value, float bound) => Mathf.Max(value, bound);

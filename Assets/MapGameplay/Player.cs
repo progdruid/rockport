@@ -177,6 +177,7 @@ public class Player : MonoBehaviour
         rb.linearVelocity = new Vector2(horizontalSpeed, verticalSpeed);
         
         
+        //TODO: implement full blocking ccd
         //for high speeds
         var predictedDelta = rb.linearVelocityY * Time.fixedDeltaTime;
         if (-predictedDelta > collisionCheckDistance 
@@ -238,6 +239,7 @@ public class Player : MonoBehaviour
     private bool CastBody(Vector2 direction, float distance, LayerMask layer, out RaycastHit2D hit)
     {
         var originalLayer = capsule.gameObject.layer;
+        //TODO: do something with layers
         capsule.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
 
         hit = Physics2D.CapsuleCast(capsule.bounds.center, capsule.size, capsule.direction, 0, direction, distance, layer);
