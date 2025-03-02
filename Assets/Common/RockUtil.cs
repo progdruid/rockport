@@ -58,10 +58,44 @@ public static class RockUtil
     
     public static bool IsInLayerMask(int layer, LayerMask mask) => (mask.value & (1 << layer)) != 0;
 
+    
+    
     public static void DrawDebugPoint(Vector3 pos, Color color, float size = 0.02f, float duration = float.MaxValue)
     {
         Debug.DrawLine(pos + new Vector3(-1, -1, 0) * size, pos + new Vector3( 1, 1, 0) * size, color, duration);
         Debug.DrawLine(pos + new Vector3( 1, -1, 0) * size, pos + new Vector3(-1, 1, 0) * size, color, duration);
     }
     
+    public static void DrawDebugCapsule(CapsuleCollider2D capsule, Vector2 position, Color color, float duration = float.MaxValue)
+    {
+        if (capsule == null)
+            return;
+
+        float radius = capsule.size.x * 0.5f;
+        float height = capsule.size.y;
+        int segments = 12;
+        Vector2 up = Vector2.up * (height * 0.5f - radius);
+        Vector2 down = -up;
+        Vector2 right = Vector2.right * radius;
+
+        Debug.DrawLine(position + up + right, position + down + right, color, duration);
+        Debug.DrawLine(position + up - right, position + down - right, color, duration);
+
+        void DrawArc(Vector2 center, float startAngle, float endAngle)
+        {
+            float angleStep = (endAngle - startAngle) / segments;
+            Vector2 prevPoint = center + new Vector2(Mathf.Cos(startAngle * Mathf.Deg2Rad), Mathf.Sin(startAngle * Mathf.Deg2Rad)) * radius;
+            
+            for (int i = 1; i <= segments; i++)
+            {
+                float angle = startAngle + angleStep * i;
+                Vector2 newPoint = center + new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad)) * radius;
+                Debug.DrawLine(prevPoint, newPoint, color, duration);
+                prevPoint = newPoint;
+            }
+        }
+
+        DrawArc(position + up, 0, 180);
+        DrawArc(position + down, 180, 360);
+    }
 }

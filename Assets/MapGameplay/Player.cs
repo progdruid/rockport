@@ -31,7 +31,7 @@ public class Player : MonoBehaviour
     
     [Header("Touches")]
     [SerializeField] private LayerMask collisionMask;
-    [SerializeField] private float collisionCheckDistance = 0.1f;
+    [SerializeField] private float collisionCheckDistance = 0.2f;
     [SerializeField] private float penetrationResolutionSpeed = 30f;
 
     [Header("Effects")] 
@@ -111,8 +111,6 @@ public class Player : MonoBehaviour
     
     public void MakeRegularJump()
     {
-        //if (_hitchedCorpse) return;
-        
         _timeTriedJumping = Time.time;
         if (_grounded || _timeUngrounded + coyoteTime > Time.time)
             Jump(jumpKick);
@@ -128,24 +126,17 @@ public class Player : MonoBehaviour
     private bool disablePhys = false;
     private void FixedUpdate()
     {
+        if (disablePhys)
+            return;
         if (Physics2D.simulationMode == SimulationMode2D.Script)
             return;
-        
-        if (disablePhys)
-        {
-            var check = CheckCollision(Vector2.down, collisionCheckDistance, collisionMask, out var checkData);
-            Debug.Log("CCD: " + check);
-            Physics2D.simulationMode = SimulationMode2D.Script;
-            disablePhys = false;
-            return;
-        }
         
         //update max y since ungrounded
         if (!_grounded && _maxYDuringFall < rb.transform.position.y)
             _maxYDuringFall = rb.transform.position.y;
         
         
-        var isGroundHit = CheckCollision(Vector2.down, collisionCheckDistance, collisionMask, out var groundHitData);
+        var isGroundHit = CastBody(Vector2.down, collisionCheckDistance, collisionMask, out var groundHitData);
         var isGroundDirt = isGroundHit && groundHitData.collider.CompareTag("Dirt");
         
         if (isGroundHit && !_grounded)
@@ -183,19 +174,18 @@ public class Player : MonoBehaviour
             ? rb.linearVelocityY.ClampBottom(0)
             : Mathf.MoveTowards(rb.linearVelocityY, -maxFallSpeed, Time.fixedDeltaTime * gravity);
         
-        rb.linearVelocity = new Vector2(0, verticalSpeed);
+        rb.linearVelocity = new Vector2(horizontalSpeed, verticalSpeed);
         
         
         //for high speeds
         var predictedDelta = rb.linearVelocityY * Time.fixedDeltaTime;
         if (-predictedDelta > collisionCheckDistance 
-            && CheckCollision(Vector2.down, -predictedDelta, collisionMask, out var groundCCDHit))
+            && CastBody(Vector2.down, -predictedDelta, collisionMask, out var groundCCDHit))
         {
             rb.position += Vector2.down * groundCCDHit.distance;
             rb.linearVelocityY = 0;
             
-            disablePhys = true;
-            return;
+            //disablePhys = true;
         }
         
         
@@ -245,13 +235,14 @@ public class Player : MonoBehaviour
         soundEmitter.EmitSound("Jump");
     }
 
-    private bool CheckCollision(Vector2 direction, float distance, LayerMask layer, out RaycastHit2D hit)
+    private bool CastBody(Vector2 direction, float distance, LayerMask layer, out RaycastHit2D hit)
     {
-        var cachedQueriesStartInColliders = Physics2D.queriesStartInColliders;
-        Physics2D.queriesStartInColliders = false;
-        hit = Physics2D.CapsuleCast(capsule.bounds.center, capsule.size, capsule.direction, 0, 
-            direction, distance, layer);
-        Physics2D.queriesStartInColliders = cachedQueriesStartInColliders;
+        var originalLayer = capsule.gameObject.layer;
+        capsule.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+
+        hit = Physics2D.CapsuleCast(capsule.bounds.center, capsule.size, capsule.direction, 0, direction, distance, layer);
+
+        capsule.gameObject.layer = originalLayer;
         return hit;
     }
 }
