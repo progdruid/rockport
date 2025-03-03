@@ -272,20 +272,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f61e00dc964de6746beb79fab4a89b80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pushingFactor: 0.5
-  baseSpeed: 0
-  groundFriction: 10
-  correctionSpeed: 20
-  maxVelocityDelta: 1000
-  distance: 0.75
+  maxFallSpeed: 40
   gravity: 50
-  groundCheckDistance: 0.1
-  groundLayer:
+  deceleration: 100
+  collisionMask:
     serializedVersion: 2
-    m_Bits: 256
-  bodyLayer:
-    serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 264
+  collisionCheckDistance: 0.2
+  collisionGap: 0.01
+  landingEffectHeightThreshold: 1
+  landingDustPrefab: {fileID: 2625986167463492280, guid: d15531b3a30a07443beebbef91a6afa6, type: 3}
+  landingDustSpawnPoint: {fileID: 2287312012242563915}
   rb: {fileID: 6388440925167425488}
   polyCollider: {fileID: 456645942844967705}
 --- !u!114 &-4062892864499950858

@@ -66,13 +66,10 @@ public static class RockUtil
         Debug.DrawLine(pos + new Vector3( 1, -1, 0) * size, pos + new Vector3(-1, 1, 0) * size, color, duration);
     }
     
-    public static void DrawDebugCapsule(CapsuleCollider2D capsule, Vector2 position, Color color, float duration = float.MaxValue)
+    public static void DrawDebugCapsule(Vector2 position, Vector2 size, Color color, float duration = float.MaxValue)
     {
-        if (capsule == null)
-            return;
-
-        float radius = capsule.size.x * 0.5f;
-        float height = capsule.size.y;
+        float radius = size.x * 0.5f;
+        float height = size.y;
         int segments = 12;
         Vector2 up = Vector2.up * (height * 0.5f - radius);
         Vector2 down = -up;

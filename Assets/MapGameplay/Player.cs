@@ -33,7 +33,6 @@ public class Player : MonoBehaviour
     [SerializeField] private LayerMask collisionMask;
     [SerializeField] private float collisionCheckDistance = 0.2f;
     [SerializeField] private float collisionGap = 0.01f;
-    [SerializeField] private float penetrationResolutionSpeed = 30f;
 
     [Header("Effects")] 
     [SerializeField] private float landingEffectHeightThreshold;
@@ -53,16 +52,6 @@ public class Player : MonoBehaviour
     private float _timeTriedJumping = float.NegativeInfinity;
     private float _maxYDuringFall = 0;
     
-    private readonly HashSet<Collider2D> _topColliders = new();
-    private readonly HashSet<Collider2D> _botColliders = new();
-    private readonly HashSet<Collider2D> _rightColliders = new();
-    private readonly HashSet<Collider2D> _leftColliders = new();
-
-    private Vector2 _min;
-    private Vector2 _max;
-    private Vector2 _centre;
-    
-    
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
     {
@@ -72,10 +61,6 @@ public class Player : MonoBehaviour
         Assert.IsNotNull(animator);
         Assert.IsNotNull(soundEmitter);
         Assert.IsNotNull(soundPlayer);
-        
-        _min = capsule.bounds.center - capsule.bounds.size / 2;
-        _max = capsule.bounds.center + capsule.bounds.size / 2;
-        _centre = capsule.bounds.center;
         
         rb.simulated = true;
         rb.bodyType = RigidbodyType2D.Kinematic;
@@ -124,14 +109,8 @@ public class Player : MonoBehaviour
     }
 
     //game events///////////////////////////////////////////////////////////////////////////////////////////////////////
-    private bool disablePhys = false;
     private void FixedUpdate()
     {
-        if (disablePhys)
-            return;
-        if (Physics2D.simulationMode == SimulationMode2D.Script)
-            return;
-        
         //update max y since ungrounded
         if (!_grounded && _maxYDuringFall < rb.transform.position.y)
             _maxYDuringFall = rb.transform.position.y;
