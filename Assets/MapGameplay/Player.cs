@@ -32,6 +32,7 @@ public class Player : MonoBehaviour
     [Header("Touches")]
     [SerializeField] private LayerMask collisionMask;
     [SerializeField] private float collisionCheckDistance = 0.2f;
+    [SerializeField] private float collisionGap = 0.01f;
     [SerializeField] private float penetrationResolutionSpeed = 30f;
 
     [Header("Effects")] 
@@ -177,16 +178,22 @@ public class Player : MonoBehaviour
         rb.linearVelocity = new Vector2(horizontalSpeed, verticalSpeed);
         
         
-        //TODO: implement full blocking ccd
-        //for high speeds
-        var predictedDelta = rb.linearVelocityY * Time.fixedDeltaTime;
-        if (-predictedDelta > collisionCheckDistance 
-            && CastBody(Vector2.down, -predictedDelta, collisionMask, out var groundCCDHit))
+        //TODO: experiment with single 2D CCD instead of two for axes
+        var predictedDeltaY = rb.linearVelocityY * Time.fixedDeltaTime;
+        var vertDir = predictedDeltaY > 0 ? Vector2.up : Vector2.down;
+        if (!predictedDeltaY.IsApproximately(0) 
+            && CastBody(vertDir, predictedDeltaY.Abs(), collisionMask, out var vertCCDHit))
         {
-            rb.position += Vector2.down * groundCCDHit.distance;
+            rb.position += vertDir * (vertCCDHit.distance - collisionGap);
             rb.linearVelocityY = 0;
-            
-            //disablePhys = true;
+        }
+        var predictedDeltaX = rb.linearVelocityX * Time.fixedDeltaTime;
+        var horDir = predictedDeltaX > 0 ? Vector2.right : Vector2.left;
+        if (!predictedDeltaX.IsApproximately(0) 
+            && CastBody(horDir, predictedDeltaX.Abs(), collisionMask, out var horCCDHit))
+        {
+            rb.position += horDir * (horCCDHit.distance - collisionGap);
+            rb.linearVelocityX = 0;
         }
         
         

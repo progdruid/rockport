@@ -234,7 +234,7 @@ MonoBehaviour:
   collisionMask:
     serializedVersion: 2
     m_Bits: 264
-  collisionCheckDistance: 0.1
+  collisionCheckDistance: 0.05
   penetrationResolutionSpeed: 10
   landingEffectHeightThreshold: 1
   landingDustPrefab: {fileID: 2625986167463492280, guid: d15531b3a30a07443beebbef91a6afa6, type: 3}
@@ -383,6 +383,6 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -0.0875}
+  m_Offset: {x: 0, y: -0.09}
   m_Size: {x: 0.7575, y: 0.805}
   m_Direction: 0
