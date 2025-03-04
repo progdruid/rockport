@@ -200,7 +200,21 @@ public class Player : MonoBehaviour
         }
         
         
-        //TODO: experiment with single 2D CCD instead of two for axes
+        animator.SetBool(RunningAnimatorPropertyID, moveOrdered);
+        animator.SetBool(GroundedAnimatorPropertyID, _grounded);
+
+        spriteRenderer.flipX = moveOrdered 
+            ? hor < 0 
+            : spriteRenderer.flipX;
+        
+        //TODO: stop calling it every frame
+        if (moveOrdered)
+            soundPlayer.PlayAll();
+        else
+            soundPlayer.Stop();
+        
+        
+        
         var predictedDeltaY = rb.linearVelocityY * Time.fixedDeltaTime;
         var vertDir = predictedDeltaY > 0 ? Vector2.up : Vector2.down;
         if (!predictedDeltaY.IsApproximately(0) 
@@ -218,19 +232,18 @@ public class Player : MonoBehaviour
             rb.linearVelocityX = 0;
         }
         
-        
-        animator.SetBool(RunningAnimatorPropertyID, moveOrdered);
-        animator.SetBool(GroundedAnimatorPropertyID, _grounded);
-
-        spriteRenderer.flipX = moveOrdered 
-            ? hor < 0 
-            : spriteRenderer.flipX;
-        
-        //TODO: stop calling it every frame
-        if (moveOrdered)
-            soundPlayer.PlayAll();
-        else
-            soundPlayer.Stop();
+        // experimental
+        var predictedDelta = rb.linearVelocity * Time.fixedDeltaTime;
+        var distance = predictedDelta.magnitude;
+        var direction = predictedDelta.normalized;
+        if (!distance.IsApproximately(0)
+            && CastBodyTo(direction, distance, collisionMask, out var directionCCDHit))
+        {
+            rb.position += direction * (directionCCDHit.distance - collisionGap);
+            var normal = directionCCDHit.normal;
+            rb.linearVelocity -= Vector2.Dot(rb.linearVelocity, normal) * normal;
+            rb.linearVelocity *= 0.5f;
+        }
     }
     
     
@@ -268,7 +281,7 @@ public class Player : MonoBehaviour
         //TODO: do something with layers
         capsule.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
 
-        hit = Physics2D.CapsuleCast(capsule.bounds.center, capsule.size, capsule.direction, 0, direction, distance, layer);
+        hit = Physics2D.CapsuleCast(rb.position + capsule.offset, capsule.size, capsule.direction, 0, direction, distance, layer);
 
         capsule.gameObject.layer = originalLayer;
         return hit;
