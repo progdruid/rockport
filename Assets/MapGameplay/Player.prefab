@@ -51,6 +51,37 @@ MonoBehaviour:
   - name: WalkSolid
     clip: {fileID: 8300000, guid: 2c169c232a277ee49b2f5608355b3206, type: 3}
     volume: 1
+--- !u!1 &1099271127854763476
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5962408719113288719}
+  m_Layer: 3
+  m_Name: RightClingAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5962408719113288719
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1099271127854763476}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.4, y: -0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7112237262537267374}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1435185554695862446
 GameObject:
   m_ObjectHideFlags: 0
@@ -108,6 +139,37 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.015625, y: -0.34375, z: 0.01}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7112237262537267374}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1986940311461545253
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5623131706093084869}
+  m_Layer: 3
+  m_Name: LeftClingAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5623131706093084869
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1986940311461545253}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.4, y: -0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -208,6 +270,8 @@ Transform:
   - {fileID: 5984829613376836120}
   - {fileID: 7396137428960267915}
   - {fileID: 4960426892232836368}
+  - {fileID: 5962408719113288719}
+  - {fileID: 5623131706093084869}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &9184977755300486699
@@ -235,7 +299,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 264
   collisionCheckDistance: 0.05
-  penetrationResolutionSpeed: 10
+  collisionGap: 0.01
+  leftClingWithAnchor: {fileID: 5623131706093084869}
+  rightClingWithAnchor: {fileID: 5962408719113288719}
+  clingMask:
+    serializedVersion: 2
+    m_Bits: 8
   landingEffectHeightThreshold: 1
   landingDustPrefab: {fileID: 2625986167463492280, guid: d15531b3a30a07443beebbef91a6afa6, type: 3}
   landingDustSpawnPoint: {fileID: 1138232065740235648}

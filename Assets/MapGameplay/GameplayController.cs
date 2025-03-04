@@ -28,7 +28,7 @@ public class GameplayController : MonoBehaviour
         {
             _allowMove = value;
             if (!_allowMove)
-                playerManager.Player.HorizontalDirection = 0;
+                playerManager.Player.HorizontalOrderDirection = 0;
         }
     }
     
@@ -49,8 +49,8 @@ public class GameplayController : MonoBehaviour
 
         
         if (!AllowMove) return;
-        playerManager.Player.HorizontalDirection = 
+        playerManager.Player.HorizontalOrderDirection = 
             (Input.GetKey(KeyCode.A) ? -1 : 0) + (Input.GetKey(KeyCode.D) ? 1 : 0);
-        playerManager.Player.Hitch = Input.GetKey(KeyCode.LeftShift);
+        playerManager.Player.OrderedToCling = Input.GetKey(KeyCode.LeftShift);
     }
 }

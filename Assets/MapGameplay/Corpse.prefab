@@ -57,6 +57,37 @@ MonoBehaviour:
     volume: 1
   mute: 0
   emitPeriodInCalls: 1
+--- !u!1 &4014696924592610975
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 433087414915425976}
+  m_Layer: 3
+  m_Name: RightClingAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &433087414915425976
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4014696924592610975}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.4375, y: -0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6388440925167425495}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5819270717578585216
 GameObject:
   m_ObjectHideFlags: 0
@@ -124,6 +155,8 @@ Transform:
   m_Children:
   - {fileID: 2287312012242563915}
   - {fileID: 2151445058687442364}
+  - {fileID: 242484621690004631}
+  - {fileID: 433087414915425976}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6388440925167425494
@@ -280,6 +313,8 @@ MonoBehaviour:
     m_Bits: 264
   collisionCheckDistance: 0.2
   collisionGap: 0.01
+  leftClingToAnchor: {fileID: 242484621690004631}
+  rightClingToAnchor: {fileID: 433087414915425976}
   landingEffectHeightThreshold: 1
   landingDustPrefab: {fileID: 2625986167463492280, guid: d15531b3a30a07443beebbef91a6afa6, type: 3}
   landingDustSpawnPoint: {fileID: 2287312012242563915}
@@ -299,3 +334,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   landingCooldown: 0.1
   soundEmitter: {fileID: 1596116633695954149}
+--- !u!1 &8751538986862691676
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 242484621690004631}
+  m_Layer: 3
+  m_Name: LeftClingAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &242484621690004631
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8751538986862691676}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.4375, y: -0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6388440925167425495}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

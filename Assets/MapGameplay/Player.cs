@@ -33,7 +33,12 @@ public class Player : MonoBehaviour
     [SerializeField] private LayerMask collisionMask;
     [SerializeField] private float collisionCheckDistance = 0.2f;
     [SerializeField] private float collisionGap = 0.01f;
-
+    
+    [Header("Cling")]
+    [SerializeField] private Transform leftClingWithAnchor;
+    [SerializeField] private Transform rightClingWithAnchor;
+    [SerializeField] private LayerMask clingMask;
+    
     [Header("Effects")] 
     [SerializeField] private float landingEffectHeightThreshold;
     [SerializeField] private GameObject landingDustPrefab;
@@ -52,6 +57,9 @@ public class Player : MonoBehaviour
     private float _timeTriedJumping = float.NegativeInfinity;
     private float _maxYDuringFall = 0;
     
+    private Corpse _clungCorpse = null;
+    private Vector2 _clingOffset = Vector2.zero;
+    
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
     {
@@ -61,6 +69,12 @@ public class Player : MonoBehaviour
         Assert.IsNotNull(animator);
         Assert.IsNotNull(soundEmitter);
         Assert.IsNotNull(soundPlayer);
+        
+        Assert.IsNotNull(leftClingWithAnchor);
+        Assert.IsNotNull(rightClingWithAnchor);
+        
+        Assert.IsNotNull(landingDustPrefab);
+        Assert.IsNotNull(landingDustSpawnPoint);
         
         rb.simulated = true;
         rb.bodyType = RigidbodyType2D.Kinematic;
@@ -83,11 +97,10 @@ public class Player : MonoBehaviour
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Rigidbody2D Body => rb;
+    public bool Flip => spriteRenderer.flipX;
     
-    public bool Flip { get => spriteRenderer.flipX; set => spriteRenderer.flipX = value; }
-    
-    public float HorizontalDirection { get; set; }
-    public bool Hitch { get; set; }
+    public float HorizontalOrderDirection { get; set; }
+    public bool OrderedToCling { get; set; }
     
     public void PrepareForDeath()
     {
@@ -98,7 +111,7 @@ public class Player : MonoBehaviour
     public void MakeRegularJump()
     {
         _timeTriedJumping = Time.time;
-        if (_grounded || _timeUngrounded + coyoteTime > Time.time)
+        if ((_grounded || _timeUngrounded + coyoteTime > Time.time) && !_clungCorpse)
             Jump(jumpKick);
     }
 
@@ -123,7 +136,7 @@ public class Player : MonoBehaviour
         {
             _grounded = true;
             _timeUngrounded = float.NegativeInfinity;
-            if (_timeTriedJumping + jumpBufferTime > Time.time)
+            if (_timeTriedJumping + jumpBufferTime > Time.time && !_clungCorpse)
                 Jump(jumpKick);
             
             soundPlayer.SelectClip(isGroundDirt ? "WalkDirt" : "WalkSolid");
@@ -143,18 +156,42 @@ public class Player : MonoBehaviour
             soundPlayer.UnselectClip();
         }
 
-        var hor = HorizontalDirection;
-        var staying = Mathf.Approximately(hor, 0);
         
-        var horizontalSpeed = staying
-            ? Mathf.MoveTowards(rb.linearVelocityX, 0, Time.fixedDeltaTime * deceleration)
-            : Mathf.MoveTowards(rb.linearVelocityX, hor * maxSpeed, Time.fixedDeltaTime * acceleration);
         
-        var verticalSpeed = _grounded 
-            ? rb.linearVelocityY.ClampBottom(0)
-            : Mathf.MoveTowards(rb.linearVelocityY, -maxFallSpeed, Time.fixedDeltaTime * gravity);
+        var hor = HorizontalOrderDirection;
+        var moveOrdered = !Mathf.Approximately(hor, 0);
+        var facingRight = moveOrdered ? hor > 0 : spriteRenderer.flipX;
+
+        if (OrderedToCling && !_clungCorpse
+            && CastBody(facingRight ? Vector2.right : Vector2.left, collisionCheckDistance, clingMask, out var hitData))
+        {
+            _clungCorpse = hitData.collider.GetComponentInParent<Corpse>();
+            Assert.IsNotNull(_clungCorpse);
+            _clingOffset = facingRight
+                ? _clungCorpse.LeftClingLocal - rightClingWithAnchor.localPosition.To2()
+                : _clungCorpse.RightClingLocal - leftClingWithAnchor.localPosition.To2();
+        }
+        else if (!OrderedToCling && _clungCorpse)
+            _clungCorpse = null;
+
+
+        if (!_clungCorpse)
+        {
+            if (moveOrdered && hor * rb.linearVelocityX < 0) //different directions -> different signs -> mult is negative
+                rb.linearVelocityX = 0;
+
+            rb.linearVelocityX = moveOrdered
+                ? Mathf.MoveTowards(rb.linearVelocityX, hor * maxSpeed, Time.fixedDeltaTime * acceleration)
+                : Mathf.MoveTowards(rb.linearVelocityX, 0, Time.fixedDeltaTime * deceleration);
         
-        rb.linearVelocity = new Vector2(horizontalSpeed, verticalSpeed);
+            rb.linearVelocityY = _grounded 
+                ? rb.linearVelocityY.ClampBottom(0)
+                : Mathf.MoveTowards(rb.linearVelocityY, -maxFallSpeed, Time.fixedDeltaTime * gravity);
+        }
+        else
+        {
+            rb.MovePosition(_clungCorpse.Position + _clingOffset);
+        }
         
         
         //TODO: experiment with single 2D CCD instead of two for axes
@@ -176,18 +213,15 @@ public class Player : MonoBehaviour
         }
         
         
-        animator.SetBool(RunningAnimatorPropertyID, !staying);
+        animator.SetBool(RunningAnimatorPropertyID, moveOrdered);
         animator.SetBool(GroundedAnimatorPropertyID, _grounded);
-        
-        spriteRenderer.flipX = hor switch
-        {
-            < 0 => true,
-            > 0 => false, 
-            _ => spriteRenderer.flipX
-        };
+
+        spriteRenderer.flipX = moveOrdered 
+            ? hor < 0 
+            : spriteRenderer.flipX;
         
         //TODO: stop calling it every frame
-        if (!staying)
+        if (moveOrdered)
             soundPlayer.PlayAll();
         else
             soundPlayer.Stop();

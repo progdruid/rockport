@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Serialization;
 
 public class Corpse : MonoBehaviour
 {
@@ -16,6 +17,10 @@ public class Corpse : MonoBehaviour
     [SerializeField] private LayerMask collisionMask;
     [SerializeField] private float collisionCheckDistance = 0.2f;
     [SerializeField] private float collisionGap = 0.01f;
+    
+    [Header("Cling")]
+    [SerializeField] private Transform leftClingToAnchor;
+    [SerializeField] private Transform rightClingToAnchor;
     
     [Header("Effects")] 
     [SerializeField] private float landingEffectHeightThreshold = 1;
@@ -37,6 +42,10 @@ public class Corpse : MonoBehaviour
     }
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    public Vector2 LeftClingLocal => leftClingToAnchor.localPosition.To2();
+    public Vector2 RightClingLocal => rightClingToAnchor.localPosition.To2();
+    public Vector2 Position => rb.position;
     
     //game events///////////////////////////////////////////////////////////////////////////////////////////////////////
     private void FixedUpdate()
