@@ -129,7 +129,7 @@ public class Player : MonoBehaviour
             _maxYDuringFall = rb.transform.position.y;
         
         
-        var isGroundHit = CastBody(Vector2.down, collisionCheckDistance, collisionMask, out var groundHitData);
+        var isGroundHit = CastBodyTo(Vector2.down, collisionCheckDistance, collisionMask, out var groundHitData);
         var isGroundDirt = isGroundHit && groundHitData.collider.CompareTag("Dirt");
         
         if (isGroundHit && !_grounded)
@@ -162,14 +162,20 @@ public class Player : MonoBehaviour
         var moveOrdered = !Mathf.Approximately(hor, 0);
         var facingRight = moveOrdered ? hor > 0 : spriteRenderer.flipX;
 
+        
         if (OrderedToCling && !_clungCorpse
-            && CastBody(facingRight ? Vector2.right : Vector2.left, collisionCheckDistance, clingMask, out var hitData))
+            && CastBodyTo(facingRight ? Vector2.right : Vector2.left, collisionCheckDistance, clingMask, out var corpseHit))
         {
-            _clungCorpse = hitData.collider.GetComponentInParent<Corpse>();
-            Assert.IsNotNull(_clungCorpse);
-            _clingOffset = facingRight
-                ? _clungCorpse.LeftClingLocal - rightClingWithAnchor.localPosition.To2()
-                : _clungCorpse.RightClingLocal - leftClingWithAnchor.localPosition.To2();
+            var corpse = corpseHit.collider.GetComponentInParent<Corpse>();
+            Assert.IsNotNull(corpse);
+            var offset = facingRight
+                ? corpse.LeftClingLocal - rightClingWithAnchor.localPosition.To2()
+                : corpse.RightClingLocal - leftClingWithAnchor.localPosition.To2();
+            if (!CastBodyAt(corpse.Position + offset, collisionMask, out var _))
+            {
+                _clungCorpse = corpse;
+                _clingOffset = offset;
+            }
         }
         else if (!OrderedToCling && _clungCorpse)
             _clungCorpse = null;
@@ -198,7 +204,7 @@ public class Player : MonoBehaviour
         var predictedDeltaY = rb.linearVelocityY * Time.fixedDeltaTime;
         var vertDir = predictedDeltaY > 0 ? Vector2.up : Vector2.down;
         if (!predictedDeltaY.IsApproximately(0) 
-            && CastBody(vertDir, predictedDeltaY.Abs(), collisionMask, out var vertCCDHit))
+            && CastBodyTo(vertDir, predictedDeltaY.Abs(), collisionMask, out var vertCCDHit))
         {
             rb.position += vertDir * (vertCCDHit.distance - collisionGap);
             rb.linearVelocityY = 0;
@@ -206,7 +212,7 @@ public class Player : MonoBehaviour
         var predictedDeltaX = rb.linearVelocityX * Time.fixedDeltaTime;
         var horDir = predictedDeltaX > 0 ? Vector2.right : Vector2.left;
         if (!predictedDeltaX.IsApproximately(0) 
-            && CastBody(horDir, predictedDeltaX.Abs(), collisionMask, out var horCCDHit))
+            && CastBodyTo(horDir, predictedDeltaX.Abs(), collisionMask, out var horCCDHit))
         {
             rb.position += horDir * (horCCDHit.distance - collisionGap);
             rb.linearVelocityX = 0;
@@ -256,13 +262,25 @@ public class Player : MonoBehaviour
         soundEmitter.EmitSound("Jump");
     }
 
-    private bool CastBody(Vector2 direction, float distance, LayerMask layer, out RaycastHit2D hit)
+    private bool CastBodyTo(Vector2 direction, float distance, LayerMask layer, out RaycastHit2D hit)
     {
         var originalLayer = capsule.gameObject.layer;
         //TODO: do something with layers
         capsule.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
 
         hit = Physics2D.CapsuleCast(capsule.bounds.center, capsule.size, capsule.direction, 0, direction, distance, layer);
+
+        capsule.gameObject.layer = originalLayer;
+        return hit;
+    }
+    
+    private bool CastBodyAt(Vector2 position, LayerMask layer, out RaycastHit2D hit)
+    {
+        var originalLayer = capsule.gameObject.layer;
+        //TODO: do something with layers
+        capsule.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+
+        hit = Physics2D.CapsuleCast(position, capsule.size, capsule.direction, 0, Vector2.zero, 0, layer);
 
         capsule.gameObject.layer = originalLayer;
         return hit;
