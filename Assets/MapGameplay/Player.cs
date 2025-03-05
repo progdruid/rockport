@@ -38,6 +38,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform leftClingWithAnchor;
     [SerializeField] private Transform rightClingWithAnchor;
     [SerializeField] private LayerMask clingMask;
+    [SerializeField] private float clingMoveMultiplier = 0.5f;
     
     [Header("Effects")] 
     [SerializeField] private float landingEffectHeightThreshold;
@@ -134,8 +135,7 @@ public class Player : MonoBehaviour
         
         if (isGroundHit && !_grounded)
         {
-            _grounded = true;
-            _timeUngrounded = float.NegativeInfinity;
+            animator.SetBool(JumpedAnimatorPropertyID, false);
             if (_timeTriedJumping + jumpBufferTime > Time.time && !_clungCorpse)
                 Jump(jumpKick);
             
@@ -145,7 +145,10 @@ public class Player : MonoBehaviour
                 Instantiate(landingDustPrefab, landingDustSpawnPoint.position, Quaternion.identity);
                 soundEmitter.EmitSound(isGroundDirt ? "LandingDirt" : "LandingSolid");
             }
+            
             _maxYDuringFall = 0;
+            _grounded = true;
+            _timeUngrounded = float.NegativeInfinity;
         }
         else if (!isGroundHit && _grounded)
         {
@@ -164,9 +167,9 @@ public class Player : MonoBehaviour
 
         
         if (OrderedToCling && !_clungCorpse
-            && CastBodyTo(facingRight ? Vector2.right : Vector2.left, collisionCheckDistance, clingMask, out var corpseHit))
+            && CastBodyTo(facingRight ? Vector2.right : Vector2.left, collisionCheckDistance, clingMask, out var clingHit))
         {
-            var corpse = corpseHit.collider.GetComponentInParent<Corpse>();
+            var corpse = clingHit.collider.GetComponentInParent<Corpse>();
             Assert.IsNotNull(corpse);
             var offset = facingRight
                 ? corpse.LeftClingLocal - rightClingWithAnchor.localPosition.To2()
@@ -174,32 +177,34 @@ public class Player : MonoBehaviour
             if (!CastBodyAt(corpse.Position + offset, collisionMask, out var _))
             {
                 _clungCorpse = corpse;
+                _clungCorpse.IsClung = true;
+                _clungCorpse.IgnoredObject = gameObject;
                 _clingOffset = offset;
             }
         }
         else if (!OrderedToCling && _clungCorpse)
+        {
+            _clungCorpse.IsClung = false;
+            _clungCorpse.IgnoredObject = null;
             _clungCorpse = null;
-
-
-        if (!_clungCorpse)
-        {
-            if (moveOrdered && hor * rb.linearVelocityX < 0) //different directions -> different signs -> mult is negative
-                rb.linearVelocityX = 0;
-
-            rb.linearVelocityX = moveOrdered
-                ? Mathf.MoveTowards(rb.linearVelocityX, hor * maxSpeed, Time.fixedDeltaTime * acceleration)
-                : Mathf.MoveTowards(rb.linearVelocityX, 0, Time.fixedDeltaTime * deceleration);
-        
-            rb.linearVelocityY = _grounded 
-                ? rb.linearVelocityY.ClampBottom(0)
-                : Mathf.MoveTowards(rb.linearVelocityY, -maxFallSpeed, Time.fixedDeltaTime * gravity);
         }
-        else
-        {
-            rb.MovePosition(_clungCorpse.Position + _clingOffset);
-        }
+
         
+        if (moveOrdered && hor * rb.linearVelocityX < 0) //different directions -> different signs -> mult is negative
+            rb.linearVelocityX = 0;
+
+        var targetHorSpeed = hor * maxSpeed;
+        if (_clungCorpse) 
+            targetHorSpeed *= clingMoveMultiplier;
+        rb.linearVelocityX = moveOrdered
+            ? Mathf.MoveTowards(rb.linearVelocityX,  targetHorSpeed, Time.fixedDeltaTime * acceleration)
+            : Mathf.MoveTowards(rb.linearVelocityX, 0, Time.fixedDeltaTime * deceleration);
         
+        rb.linearVelocityY = _grounded 
+            ? rb.linearVelocityY.ClampBottom(0)
+            : Mathf.MoveTowards(rb.linearVelocityY, -maxFallSpeed, Time.fixedDeltaTime * gravity);
+        
+        Debug.Log("Grounded: " + _grounded + " MoveOrdered: " + moveOrdered);
         animator.SetBool(RunningAnimatorPropertyID, moveOrdered);
         animator.SetBool(GroundedAnimatorPropertyID, _grounded);
 
@@ -214,58 +219,111 @@ public class Player : MonoBehaviour
             soundPlayer.Stop();
         
         
-        
+        //vertical ccd
         var predictedDeltaY = rb.linearVelocityY * Time.fixedDeltaTime;
         var vertDir = predictedDeltaY > 0 ? Vector2.up : Vector2.down;
-        if (!predictedDeltaY.IsApproximately(0) 
-            && CastBodyTo(vertDir, predictedDeltaY.Abs(), collisionMask, out var vertCCDHit))
+        if (!predictedDeltaY.IsApproximately(0))
         {
-            rb.position += vertDir * (vertCCDHit.distance - collisionGap);
-            rb.linearVelocityY = 0;
-        }
-        var predictedDeltaX = rb.linearVelocityX * Time.fixedDeltaTime;
-        var horDir = predictedDeltaX > 0 ? Vector2.right : Vector2.left;
-        if (!predictedDeltaX.IsApproximately(0) 
-            && CastBodyTo(horDir, predictedDeltaX.Abs(), collisionMask, out var horCCDHit))
-        {
-            rb.position += horDir * (horCCDHit.distance - collisionGap);
-            rb.linearVelocityX = 0;
+            var hit = false;
+            var hitDist = float.MaxValue;
+            if (CastBodyTo(vertDir, predictedDeltaY.Abs(), collisionMask, out var bodyData))
+            {
+                hitDist = bodyData.distance;
+                hit = true;
+            }
+
+            if (_clungCorpse 
+                && _clungCorpse.CastBodyTo(vertDir, predictedDeltaY.Abs(), collisionMask, out var corpseData)
+                && corpseData.distance < hitDist)
+            {
+                hitDist = corpseData.distance;
+                hit = true;
+            }
+
+            if (hit)
+            {
+                rb.position += vertDir * (hitDist - collisionGap);
+                if (_clungCorpse)
+                    _clungCorpse.Position += vertDir * (hitDist - collisionGap);
+                rb.linearVelocityY = 0;
+            }
         }
         
-        // experimental
+        //horizontal ccd
+        var predictedDeltaX = rb.linearVelocityX * Time.fixedDeltaTime;
+        var horDir = predictedDeltaX > 0 ? Vector2.right : Vector2.left;
+        if (!predictedDeltaX.IsApproximately(0))
+        {
+            var hit = false;
+            var hitDist = float.MaxValue;
+            if (CastBodyTo(horDir, predictedDeltaX.Abs(), collisionMask, out var bodyData))
+            {
+                hitDist = bodyData.distance;
+                hit = true;
+            }
+
+            if (_clungCorpse 
+                && _clungCorpse.CastBodyTo(horDir, predictedDeltaX.Abs(), collisionMask, out var corpseData)
+                && corpseData.distance < hitDist)
+            {
+                hitDist = corpseData.distance;
+                hit = true;
+            }
+
+            if (hit)
+            {
+                rb.position += horDir * (hitDist - collisionGap);
+                if (_clungCorpse)
+                    _clungCorpse.Position += horDir * (hitDist - collisionGap);
+                rb.linearVelocityX = 0;
+            }
+        }
+        
+        // experimental directional ccd
         var predictedDelta = rb.linearVelocity * Time.fixedDeltaTime;
         var distance = predictedDelta.magnitude;
         var direction = predictedDelta.normalized;
         if (!distance.IsApproximately(0)
             && CastBodyTo(direction, distance, collisionMask, out var directionCCDHit))
         {
-            rb.position += direction * (directionCCDHit.distance - collisionGap);
-            var normal = directionCCDHit.normal;
-            rb.linearVelocity -= Vector2.Dot(rb.linearVelocity, normal) * normal;
-            rb.linearVelocity *= 0.5f;
+            var hit = false;
+            var hitNormal = Vector2.zero;
+            var hitDist = float.MaxValue;
+            if (CastBodyTo(direction, distance, collisionMask, out var bodyData))
+            {
+                hitDist = bodyData.distance;
+                hitNormal = bodyData.normal;
+                hit = true;
+            }
+            if (_clungCorpse 
+                && _clungCorpse.CastBodyTo(direction, distance, collisionMask, out var corpseData) 
+                && corpseData.distance < hitDist)
+            {
+                hitDist = corpseData.distance;
+                hitNormal = corpseData.normal;
+                hit = true;
+            }
+
+            if (hit)
+            {
+                rb.position += direction * (hitDist - collisionGap);
+                if (_clungCorpse)
+                    _clungCorpse.Position += direction * (hitDist - collisionGap);
+                rb.linearVelocity -= Vector2.Dot(rb.linearVelocity, hitNormal) * hitNormal;
+                rb.linearVelocity *= 0.5f;
+            }
+        }
+        
+        if (_clungCorpse)
+        {
+            _clungCorpse.VelocityX = rb.linearVelocityX;
+            _clungCorpse.VelocityY = rb.linearVelocityY;
         }
     }
     
     
     
-    // private void OnCollisionStay2D(Collision2D collision)
-    // {
-    //     var totalPenetrationVector = Vector2.zero;
-    //     foreach (var contact in collision.contacts) 
-    //         totalPenetrationVector += contact.normal * Mathf.Abs(contact.separation);
-    //     totalPenetrationVector /= collision.contactCount;
-    //
-    //     Debug.Log(totalPenetrationVector);
-    //     rb.linearVelocity += totalPenetrationVector * penetrationResolutionSpeed;
-    //     
-    //     // old
-    //     // var resolutionMovement = totalPenetrationVector * penetrationResolutionSpeed * Time.fixedDeltaTime;
-    //     // rb.position += resolutionMovement;
-    //
-    //     // Optional: Implement a maximum resolution distance per frame
-    //     // resolutionMovement = Vector2.ClampMagnitude(resolutionMovement, maxResolutionDistancePerFrame);
-    // }
-    
+   
     
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Jump(float kick)
@@ -277,25 +335,37 @@ public class Player : MonoBehaviour
 
     private bool CastBodyTo(Vector2 direction, float distance, LayerMask layer, out RaycastHit2D hit)
     {
-        var originalLayer = capsule.gameObject.layer;
         //TODO: do something with layers
-        capsule.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+        var ignoreLayer = LayerMask.NameToLayer("Ignore Raycast");
+        var originalLayer = capsule.gameObject.layer;
+        var originalClungLayer = _clungCorpse?.gameObject.layer ?? ignoreLayer;
+        
+        capsule.gameObject.layer = ignoreLayer;
+        if (_clungCorpse) _clungCorpse.gameObject.layer = ignoreLayer;
 
         hit = Physics2D.CapsuleCast(rb.position + capsule.offset, capsule.size, capsule.direction, 0, direction, distance, layer);
 
         capsule.gameObject.layer = originalLayer;
+        if (_clungCorpse) _clungCorpse.gameObject.layer = originalClungLayer;
+        
         return hit;
     }
     
     private bool CastBodyAt(Vector2 position, LayerMask layer, out RaycastHit2D hit)
     {
-        var originalLayer = capsule.gameObject.layer;
         //TODO: do something with layers
-        capsule.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
-
+        var ignoreLayer = LayerMask.NameToLayer("Ignore Raycast");
+        var originalLayer = capsule.gameObject.layer;
+        var originalClungLayer = _clungCorpse?.gameObject.layer ?? ignoreLayer;
+        
+        capsule.gameObject.layer = ignoreLayer;
+        if (_clungCorpse) _clungCorpse.gameObject.layer = ignoreLayer;
+        
         hit = Physics2D.CapsuleCast(position, capsule.size, capsule.direction, 0, Vector2.zero, 0, layer);
-
+        
         capsule.gameObject.layer = originalLayer;
+        if (_clungCorpse) _clungCorpse.gameObject.layer = originalClungLayer;
+        
         return hit;
     }
 }

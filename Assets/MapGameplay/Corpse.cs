@@ -45,7 +45,24 @@ public class Corpse : MonoBehaviour
     
     public Vector2 LeftClingLocal => leftClingToAnchor.localPosition.To2();
     public Vector2 RightClingLocal => rightClingToAnchor.localPosition.To2();
-    public Vector2 Position => rb.position;
+    public Vector2 Position
+    {
+        get => rb.position;
+        set => rb.position = value;
+    }
+
+    public float VelocityX
+    {
+        get => rb.linearVelocityX;
+        set => rb.linearVelocityX = value;
+    }
+    public float VelocityY
+    {
+        get => rb.linearVelocityY;
+        set => rb.linearVelocityY = value;
+    }
+    public bool IsClung { get; set; } = false;
+    public GameObject IgnoredObject { get; set; }
     
     //game events///////////////////////////////////////////////////////////////////////////////////////////////////////
     private void FixedUpdate()
@@ -54,7 +71,7 @@ public class Corpse : MonoBehaviour
             _maxYDuringFall = rb.transform.position.y;
         
         
-        var isGroundHit = CastBody(Vector2.down, collisionCheckDistance, collisionMask, out var groundHitData);
+        var isGroundHit = CastBodyTo(Vector2.down, collisionCheckDistance, collisionMask, out var groundHitData);
         if (isGroundHit && !_grounded)
         {
             _grounded = true;
@@ -69,6 +86,8 @@ public class Corpse : MonoBehaviour
             _maxYDuringFall = rb.transform.position.y;
         }
         
+        if(IsClung)
+            return;
         
         var horizontalSpeed = Mathf.MoveTowards(rb.linearVelocityX, 0, Time.fixedDeltaTime * deceleration);
         
@@ -79,11 +98,10 @@ public class Corpse : MonoBehaviour
         rb.linearVelocity = new Vector2(horizontalSpeed, verticalSpeed);
         
         
-        //TODO: experiment with single 2D CCD instead of two for axes
         var predictedDeltaY = rb.linearVelocityY * Time.fixedDeltaTime;
         var vertDir = predictedDeltaY > 0 ? Vector2.up : Vector2.down;
         if (!predictedDeltaY.IsApproximately(0) 
-            && CastBody(vertDir, predictedDeltaY.Abs(), collisionMask, out var vertCCDHit))
+            && CastBodyTo(vertDir, predictedDeltaY.Abs(), collisionMask, out var vertCCDHit))
         {
             rb.position += vertDir * (vertCCDHit.distance - collisionGap);
             rb.linearVelocityY = 0;
@@ -91,23 +109,30 @@ public class Corpse : MonoBehaviour
         var predictedDeltaX = rb.linearVelocityX * Time.fixedDeltaTime;
         var horDir = predictedDeltaX > 0 ? Vector2.right : Vector2.left;
         if (!predictedDeltaX.IsApproximately(0) 
-            && CastBody(horDir, predictedDeltaX.Abs(), collisionMask, out var horCCDHit))
+            && CastBodyTo(horDir, predictedDeltaX.Abs(), collisionMask, out var horCCDHit))
         {
             rb.position += horDir * (horCCDHit.distance - collisionGap);
             rb.linearVelocityX = 0;
         }
+        //TODO: experiment with directional 2D CCD
     }
     
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
-    private bool CastBody(Vector2 direction, float distance, LayerMask layer, out RaycastHit2D hit)
+    public bool CastBodyTo(Vector2 direction, float distance, LayerMask layer, out RaycastHit2D hit)
     {
-        var originalLayer = polyCollider.gameObject.layer;
         //TODO: do something with layers
-        polyCollider.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+        var ignoreLayer = LayerMask.NameToLayer("Ignore Raycast");
+        var originalLayer = polyCollider.gameObject.layer;
+        var originalClungLayer = IgnoredObject?.gameObject.layer ?? ignoreLayer;
         
-        hit = Physics2D.CapsuleCast(polyCollider.bounds.center, polyCollider.bounds.size, CapsuleDirection2D.Vertical, 0, direction, distance, layer);
+        polyCollider.gameObject.layer = ignoreLayer;
+        if (IgnoredObject) IgnoredObject.gameObject.layer = ignoreLayer;
 
+        hit = Physics2D.CapsuleCast(polyCollider.bounds.center, polyCollider.bounds.size, CapsuleDirection2D.Vertical, 0, direction, distance, layer);
+        
         polyCollider.gameObject.layer = originalLayer;
+        if (IgnoredObject) IgnoredObject.gameObject.layer = originalClungLayer;
+        
         return hit;
     }
 }
