@@ -64,9 +64,13 @@ public class Corpse : MonoBehaviour
     public bool IsClung { get; set; } = false;
     public GameObject IgnoredObject { get; set; }
     
+    private Vector2 _lastFramePos = Vector2.zero;
     //game events///////////////////////////////////////////////////////////////////////////////////////////////////////
     private void FixedUpdate()
     {
+        //Debug.Log("Corpse delta: " + (rb.position.x - _lastFramePos.x));
+        _lastFramePos = rb.position;
+        
         if (!_grounded && _maxYDuringFall < rb.transform.position.y)
             _maxYDuringFall = rb.transform.position.y;
         

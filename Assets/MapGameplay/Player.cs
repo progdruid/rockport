@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -122,9 +123,18 @@ public class Player : MonoBehaviour
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * suppressFactor);
     }
 
+    private Vector2 _lastFramePos = Vector2.zero;
+    private Vector2 _savedVelocity = Vector2.zero;
     //game events///////////////////////////////////////////////////////////////////////////////////////////////////////
     private void FixedUpdate()
     {
+        rb.linearVelocity = _savedVelocity;
+        
+        if (_clungCorpse)
+            Debug.Log("Debug: " + (_clungCorpse.Position.x - rb.position.x));
+        _lastFramePos = rb.position;
+
+        
         //update max y since ungrounded
         if (!_grounded && _maxYDuringFall < rb.transform.position.y)
             _maxYDuringFall = rb.transform.position.y;
@@ -204,7 +214,6 @@ public class Player : MonoBehaviour
             ? rb.linearVelocityY.ClampBottom(0)
             : Mathf.MoveTowards(rb.linearVelocityY, -maxFallSpeed, Time.fixedDeltaTime * gravity);
         
-        Debug.Log("Grounded: " + _grounded + " MoveOrdered: " + moveOrdered);
         animator.SetBool(RunningAnimatorPropertyID, moveOrdered);
         animator.SetBool(GroundedAnimatorPropertyID, _grounded);
 
@@ -314,21 +323,33 @@ public class Player : MonoBehaviour
             }
         }
         
+        rb.position += rb.linearVelocity * Time.fixedDeltaTime;
+        if (_clungCorpse)
+            _clungCorpse.transform.position = capsule.transform.position - _clingOffset.To3();
+
+        _savedVelocity = rb.linearVelocity;
+        rb.linearVelocity = Vector2.zero;
         if (_clungCorpse)
         {
             _clungCorpse.VelocityX = rb.linearVelocityX;
             _clungCorpse.VelocityY = rb.linearVelocityY;
         }
     }
+
+    private void LateUpdate()
+    {
+        //if (_clungCorpse)
+        //    _clungCorpse.transform.position = capsule.transform.position - _clingOffset.To3();
+    }
     
     
-    
-   
-    
+
+
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Jump(float kick)
     {
         rb.linearVelocityY = kick;
+        _savedVelocity.y = kick;
         animator.SetBool(JumpedAnimatorPropertyID, true);
         soundEmitter.EmitSound("Jump");
     }
