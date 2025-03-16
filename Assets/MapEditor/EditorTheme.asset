@@ -221,8 +221,10 @@ MonoBehaviour:
     \"uss\": {}\r\n      },\r\n      \"minus-2point5\": {\r\n        \"value\": \"-10px\",\r\n       
     \"uss\": {}\r\n      },\r\n      \"minus-3point5\": {\r\n        \"value\": \"-14px\",\r\n       
     \"uss\": {}\r\n      }\r\n    },\r\n    \"plugins\": {},\r\n    \"customUss\":
-    \"\"\r\n  },\r\n  \"utilities\": {\r\n    \"alignContent\": {\r\n      \"data\":
-    {\r\n        \"start\": {\r\n          \"value\": \"flex-start\",\r\n         
+    \".flex-grow-2 {\\r\\n\\tflex-grow: 2;\\r\\n}\\n\\n.flex-grow-3 {\\r\\n\\tflex-grow:
+    3;\\r\\n}\\n\\n.flex-grow-4 {\\r\\n\\tflex-grow: 4;\\r\\n}\\n\\n.flex-grow-5
+    {\\r\\n\\tflex-grow: 5;\\r\\n}\"\r\n  },\r\n  \"utilities\": {\r\n    \"alignContent\":
+    {\r\n      \"data\": {\r\n        \"start\": {\r\n          \"value\": \"flex-start\",\r\n         
     \"uss\": {}\r\n        },\r\n        \"center\": {\r\n          \"value\": \"center\",\r\n         
     \"uss\": {}\r\n        },\r\n        \"end\": {\r\n          \"value\": \"flex-end\",\r\n         
     \"uss\": {}\r\n        },\r\n        \"stretch\": {\r\n          \"value\": \"stretch\",\r\n         
@@ -999,8 +1001,8 @@ MonoBehaviour:
     ]\r\n        }\r\n      }\r\n    }\r\n  },\r\n  \"compilation\": {\r\n    \"content\":
     [\r\n      \"Assets/*.cs\",\r\n      \"Assets/*.uxml\"\r\n    ],\r\n    \"safelist\":
     [],\r\n    \"blocklist\": []\r\n  },\r\n  \"schemaVersion\": \"1.0.1\"\r\n}"
-  m_ussFilePath: Assets/Styles/generated.uss
-  m_purgedUssFilePath: Assets/Styles/purged.uss
+  m_ussFilePath: Assets/MapEditor/generated.uss
+  m_purgedUssFilePath: Assets/MapEditor/purged.uss
   themeConfigDisplay:
     schemaVersion: 1.0.1
     Core:
@@ -2433,7 +2435,9 @@ MonoBehaviour:
       ValuesImageValueDictionary: []
       ValuesFontAssetValueDictionary: []
       ValueString:
-        Value: 
+        Value: ".flex-grow-2 {\r\n\tflex-grow: 2;\r\n}\n\n.flex-grow-3 {\r\n\tflex-grow:
+          3;\r\n}\n\n.flex-grow-4 {\r\n\tflex-grow: 4;\r\n}\n\n.flex-grow-5 {\r\n\tflex-grow:
+          5;\r\n}"
         isMultiline: 1
         Validator:
           IsRequired: 0

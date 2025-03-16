@@ -10,8 +10,7 @@ namespace MapEditor
 public class EntityEditor : MonoBehaviour, IMapEditorMode
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    [SerializeField] private EntityUIPanel entityUIPanel;
-    [SerializeField] private TMP_Dropdown dropdown;
+    [SerializeField] private EditorUI editorUI;
     
     private MapSpace _map;
     private SignalCircuit _signalCircuit;
@@ -22,12 +21,7 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
     {
-        Assert.IsNotNull(entityUIPanel);
-        Assert.IsNotNull(dropdown);
-        
-        var entityTitles = GlobalConfig.Ins.entityFactory.GetEntityTitles();
-        dropdown.ClearOptions();
-        dropdown.AddOptions(new List<string>(entityTitles));
+        Assert.IsNotNull(editorUI);
     }
     
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,12 +34,12 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
         UnselectLayer();
         SelectLayer(previouslySelectedLayer);
         
-        entityUIPanel.SetEnabled(true);
+        editorUI.SetEnabled(true);
     }
 
     public void Exit()
     {
-        entityUIPanel.SetEnabled(false);
+        editorUI.SetEnabled(false);
     }
 
     public void HandleInput(Vector2 worldMousePos)
@@ -53,7 +47,7 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
         //layer creation
         if (Input.GetKeyDown(KeyCode.N))
         {
-            var layerTitle = dropdown.options[dropdown.value].text;
+            var layerTitle = editorUI.GetSelectedEntityTitleForCreation();
             CreateLayer(layerTitle);
         }
         
@@ -135,7 +129,7 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
         if (!_map.MoveLayer(_selectedLayer, layerTo))
             return;
         _selectedLayer = layerTo;
-        entityUIPanel.UpdateWithEntity(_selectedEntity);
+        editorUI.SetEntity(_selectedEntity);
     }
 
     private void SelectLayer(int layer)
@@ -145,7 +139,7 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
 
         _selectedLayer = layer;
         _selectedEntity = _map.GetEntity(layer);
-        entityUIPanel.UpdateWithEntity(_selectedEntity);
+        editorUI.SetEntity(_selectedEntity);
     }
 
     private void UnselectLayer()
@@ -153,7 +147,7 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
         if (_selectedLayer == -1)
             return;
 
-        entityUIPanel.ClearEntity();
+        editorUI.ClearEntity();
         _selectedEntity = null;
         _selectedLayer = -1;
     }

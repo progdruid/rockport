@@ -30,7 +30,7 @@ public class EditorController : MonoBehaviour, IPackable
 
     private IMapEditorMode[] _editorModes;
     private int _currentModeIndex;
-    
+
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
     {

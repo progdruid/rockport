@@ -35,9 +35,9 @@ public class PhysicalEntityTrait : IPropertyHolder, IPackable
         yield return new PropertyHandle()
         {
             PropertyName = "Generate Physics",
-            PropertyType = PropertyType.Text,
-            Getter = () => _generatePhysics ? "true" : "false",
-            Setter = (object input) => _generatePhysics = (string)input == "true"
+            PropertyType = PropertyType.Bool,
+            Getter = () => _generatePhysics,
+            Setter = (object input) => _generatePhysics = (bool)input
         };
     }
 

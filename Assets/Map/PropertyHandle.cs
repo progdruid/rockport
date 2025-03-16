@@ -7,7 +7,8 @@ public enum PropertyType
 {
     Decimal,
     Integer,
-    Text
+    Text,
+    Bool
 }
 
 public struct PropertyHandle

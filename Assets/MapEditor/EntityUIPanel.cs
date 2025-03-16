@@ -35,6 +35,7 @@ public class EntityUIPanel : MonoBehaviour
         layerText.text = "Entity layer: " + entity.Layer;
         _propertyHolder = entity;
         _propertyHolder.PropertiesChangeEvent += CreateUIFields;
+        ClearProperties();
         CreateUIFields();
     }
 
@@ -50,8 +51,6 @@ public class EntityUIPanel : MonoBehaviour
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     private void CreateUIFields()
     {
-        ClearProperties();
-
         Assert.IsNotNull(_propertyHolder);
         var handles = _propertyHolder.GetProperties();
         while (handles.MoveNext())
