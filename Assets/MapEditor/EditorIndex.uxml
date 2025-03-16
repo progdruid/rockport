@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" >
+  <Style src="generated.uss" />
+  
+  <!-- Main container with game view -->
+  <ui:VisualElement class="w-full h-full" style="background-color: #7E9561;">
+    
+    <!-- Top Row: Dropdown and Controls -->
+    <ui:VisualElement class="flex-row items-start justify-between p-1">
+      <!-- Top-left dropdown (wider with slight gap) -->
+      <ui:DropdownField name="materialDropdown" text="Dirt" class="min-w-32 h-8 bg-gray-100 border border-gray-300" style="border-radius: 0;" />
+      
+      <!-- Top-right controls -->
+      <ui:VisualElement>
+        <!-- Text input field -->
+        <ui:TextField name="testField" value="Test" class="mb-1 bg-gray-100 border border-gray-300 rounded p-1 min-w-full" />
+        
+        <!-- Buttons row -->
+        <ui:VisualElement class="flex-row justify-end">
+          <ui:Button name="saveButton" text="Save" class="mr-1 bg-gray-100 border border-gray-300 min-w-16 h-8 rounded flex-grow" />
+          <ui:Button name="loadButton" text="Load" class="mr-1 bg-gray-100 border border-gray-300 min-w-16 h-8 rounded flex-grow" />
+          <ui:Button name="deleteButton" text="Delete" class="bg-gray-100 border border-gray-300 min-w-16 h-8 rounded flex-grow" />
+        </ui:VisualElement>
+      </ui:VisualElement>
+    </ui:VisualElement>
+    
+    <!-- Bottom-left info panel (light background) -->
+    <ui:VisualElement class="position-absolute bottom-1 left-1 bg-gray-100 p-3 min-w-auto">
+      <ui:VisualElement class="flex-row items-center mb-2">
+        <ui:Label text="Entity layer: " class="min-w-28" />
+        <ui:Label name="entityLayerLabel" text="0" class="font-medium" />
+      </ui:VisualElement>
+      
+      <ui:VisualElement class="flex-row items-center mb-2">
+        <ui:Label text="Title: " class="min-w-28" />
+        <ui:TextField name="layerTitleField" value="Tree Background" class="min-w-40 bg-white border border-gray-300" />
+      </ui:VisualElement>
+      
+      <ui:VisualElement class="flex-row items-center mb-2">
+        <ui:Label text="Generate Physics: " class="min-w-28" />
+        <ui:Toggle name="generatePhysicsToggle" value="false" />
+      </ui:VisualElement>
+      
+      <ui:VisualElement class="flex-row items-center">
+        <ui:Label text="Fog Intensity %: " class="min-w-28" />
+        <ui:SliderInt name="fogIntensitySlider" value="0" low-value="0" high-value="100" class="min-w-40 bg-white" />
+      </ui:VisualElement>
+    </ui:VisualElement>
+  </ui:VisualElement>
+</ui:UXML>
