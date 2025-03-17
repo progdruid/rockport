@@ -29,6 +29,8 @@ public class EditorUI : MonoBehaviour
     
     private MapEntity _mapEntity;
     
+    private bool _mouseOverUI;
+    
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake() 
     {
@@ -55,14 +57,12 @@ public class EditorUI : MonoBehaviour
         _loadButton.clicked += OnLoadButtonClicked;
         _deleteButton.clicked += OnDeleteButtonClicked;
 
-        _savingIsle.RegisterCallback<MouseEnterEvent>(_ => EditorController.CanEdit = false);
-        _savingIsle.RegisterCallback<MouseLeaveEvent>(_ => EditorController.CanEdit = true);
-        _entityCreationDropdown.RegisterCallback<MouseEnterEvent>(_ => EditorController.CanEdit = false);
-        _entityCreationDropdown.RegisterCallback<MouseLeaveEvent>(_ => EditorController.CanEdit = true);
-        _entityPropertiesContainer.RegisterCallback<MouseEnterEvent>(_ => EditorController.CanEdit = false);
-        _entityPropertiesContainer.RegisterCallback<MouseLeaveEvent>(_ => EditorController.CanEdit = true);
-        _root.RegisterCallback<FocusInEvent>(_ => Debug.Log("FocusIn"));
-        _root.RegisterCallback<FocusOutEvent>(_ => Debug.Log("FocusOut"));
+        _savingIsle.RegisterCallback<MouseEnterEvent>(_ => _mouseOverUI = true);
+        _savingIsle.RegisterCallback<MouseLeaveEvent>(_ => _mouseOverUI = false);
+        _entityCreationDropdown.RegisterCallback<MouseEnterEvent>(_ => _mouseOverUI = true);
+        _entityCreationDropdown.RegisterCallback<MouseLeaveEvent>(_ => _mouseOverUI = false);
+        _entityPropertiesContainer.RegisterCallback<MouseEnterEvent>(_ => _mouseOverUI = true);
+        _entityPropertiesContainer.RegisterCallback<MouseLeaveEvent>(_ => _mouseOverUI = false);
         
         UpdateFields();
     }
@@ -94,7 +94,16 @@ public class EditorUI : MonoBehaviour
     public string GetSelectedEntityTitleForCreation() => _entityCreationDropdown.value;
     
     
+    //game loop//////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private void Update() => UpdateInputConsumption();
+
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private void UpdateInputConsumption()
+    {
+        EditorController.CanEdit = !_mouseOverUI && !_entityCreationDropdown.;
+    }
+    
     private void UpdateFields()
     {
         _entityPropertiesContainer.Clear();
