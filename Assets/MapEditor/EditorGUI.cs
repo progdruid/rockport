@@ -5,6 +5,7 @@ using UnityEngine.Assertions;
 using UnityEngine.EventSystems;
 using TMPro;
 using Map;
+using UnityEngine.SceneManagement;
 
 namespace MapEditor
 {
@@ -13,6 +14,7 @@ public class EditorGUI : MonoBehaviour
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private TMP_InputField pathInputField;
+    [SerializeField] private ButtonWithEvents testButton;
     [SerializeField] private ButtonWithEvents saveButton;
     [SerializeField] private ButtonWithEvents loadButton;
     [SerializeField] private ButtonWithEvents deleteButton;
@@ -33,6 +35,7 @@ public class EditorGUI : MonoBehaviour
     private void Awake()
     {
         Assert.IsNotNull(pathInputField);
+        Assert.IsNotNull(testButton);
         Assert.IsNotNull(saveButton);
         Assert.IsNotNull(loadButton);
         Assert.IsNotNull(deleteButton);
@@ -45,7 +48,13 @@ public class EditorGUI : MonoBehaviour
         
         Assert.IsNotNull(editorController);
 
+        if (PlayerPrefs.HasKey("TestMap"))
+        {
+            pathInputField.text = PlayerPrefs.GetString("TestMap");
+            PlayerPrefs.DeleteKey("TestMap");
+        }
         
+        testButton.onClick.AddListener(HandleTestButtonClick);
         saveButton.onClick.AddListener(HandleSaveButtonClick);
         loadButton.onClick.AddListener(HandleLoadButtonClick);
         deleteButton.onClick.AddListener(HandleDeleteButtonClick);
@@ -59,6 +68,7 @@ public class EditorGUI : MonoBehaviour
 
     private void OnDisable()
     {
+        testButton.onClick.RemoveListener(HandleTestButtonClick);
         saveButton.onClick.RemoveListener(HandleSaveButtonClick);
         loadButton.onClick.RemoveListener(HandleLoadButtonClick);
         deleteButton.onClick.RemoveListener(HandleDeleteButtonClick);
@@ -129,6 +139,17 @@ public class EditorGUI : MonoBehaviour
         }
 
         currentLayerText.rectTransform.anchoredPosition = new Vector2(0, yOffset);
+    }
+
+
+    private void HandleTestButtonClick()
+    {
+        Debug.Log("Test button clicked");
+        HandleSaveButtonClick();
+        PlayerPrefs.SetString("TestMap", pathInputField.text);
+        PlayerPrefs.SetString("GameplayReturnScene", SceneManager.GetActiveScene().name);
+        PlayerPrefs.Save();
+        SceneManager.LoadScene($"MapGameplay");
     }
     
     private void HandleSaveButtonClick()

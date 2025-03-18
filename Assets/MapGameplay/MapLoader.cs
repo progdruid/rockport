@@ -62,7 +62,11 @@ public class MapLoader : MonoBehaviour
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     private void MakeDecision()
     {
-        var loaded = MapSaveManager.Load(loadedChapterName, out var contents);
+        var nameToLoad = loadedChapterName;
+        if (PlayerPrefs.HasKey("TestMap")) 
+            nameToLoad = PlayerPrefs.GetString("TestMap");
+        
+        var loaded = MapSaveManager.Load(nameToLoad, out var contents);
         Assert.IsTrue(loaded);
         Assert.IsNotNull(contents);
         

@@ -933,6 +933,7 @@ GameObject:
   - component: {fileID: 1323148071}
   - component: {fileID: 1323148070}
   - component: {fileID: 1323148069}
+  - component: {fileID: 1323148072}
   m_Layer: 5
   m_Name: QuitButton
   m_TagString: Untagged
@@ -1003,9 +1004,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: InputSet, Assembly-CSharp
-        m_MethodName: InvokeQuitActivationEvent
+      - m_Target: {fileID: 1323148072}
+        m_TargetAssemblyTypeName: MapGameplay.TempReturnScript, Assembly-CSharp
+        m_MethodName: ReturnToPreviousScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1065,6 +1066,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1323148067}
   m_CullTransparentMesh: 1
+--- !u!114 &1323148072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1323148067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a72de245b49cbad45b6ce9e0e2511bed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1410532343
 GameObject:
   m_ObjectHideFlags: 0
