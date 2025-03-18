@@ -286,7 +286,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9c9fdadbe5a31241913bd6878eeff35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpKick: 15
+  jumpKick: 15.5
   suppressFactor: 0.5
   coyoteTime: 0.05
   jumpBufferTime: 0.1
@@ -305,6 +305,7 @@ MonoBehaviour:
   clingMask:
     serializedVersion: 2
     m_Bits: 8
+  clingMoveMultiplier: 0.5
   landingEffectHeightThreshold: 1
   landingDustPrefab: {fileID: 2625986167463492280, guid: d15531b3a30a07443beebbef91a6afa6, type: 3}
   landingDustSpawnPoint: {fileID: 1138232065740235648}

@@ -119,8 +119,8 @@ public class Player : MonoBehaviour
 
     public void SuppressJump()
     {
-        if (rb.linearVelocity.y > 0)
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * suppressFactor);
+        if (_savedVelocity.y > 0)
+            _savedVelocity.y *= suppressFactor;
     }
 
     private Vector2 _lastFramePos = Vector2.zero;
