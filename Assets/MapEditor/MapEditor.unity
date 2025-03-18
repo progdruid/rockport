@@ -804,8 +804,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31288e26e23143c0bf6a30ab833bd8f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entityUIPanel: {fileID: 1909970588}
-  dropdown: {fileID: 731417156}
+  editorGUI: {fileID: 1907505783}
 --- !u!114 &251374649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1413,7 +1412,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_FirstSelected: {fileID: 0}
-  m_sendNavigationEvents: 1
+  m_sendNavigationEvents: 0
   m_DragThreshold: 10
 --- !u!4 &661802290
 Transform:
@@ -2372,7 +2371,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1026556908}
-  - component: {fileID: 1026556909}
   m_Layer: 5
   m_Name: SaveLoadPanel
   m_TagString: Untagged
@@ -2403,23 +2401,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 346.19, y: 158.38}
   m_Pivot: {x: 1, y: 1}
---- !u!114 &1026556909
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1026556907}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd060dd5bfc04efbad71d97d65d65d78, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pathInputField: {fileID: 563298349}
-  saveButton: {fileID: 846627746}
-  loadButton: {fileID: 1010440294}
-  deleteButton: {fileID: 588232054}
-  editorController: {fileID: 251374647}
 --- !u!1 &1096673656
 GameObject:
   m_ObjectHideFlags: 0
@@ -3160,6 +3141,60 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1825103613}
   m_CullTransparentMesh: 1
+--- !u!1 &1907505782
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1907505784}
+  - component: {fileID: 1907505783}
+  m_Layer: 0
+  m_Name: EditorGUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1907505783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1907505782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4152540bdb791d47b7845ebd2530b26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pathInputField: {fileID: 563298349}
+  saveButton: {fileID: 846627746}
+  loadButton: {fileID: 1010440294}
+  deleteButton: {fileID: 588232054}
+  entityCreationDropdown: {fileID: 731417156}
+  entityPropertiesPanel: {fileID: 882699494}
+  currentLayerText: {fileID: 206225641}
+  propertyFieldPrefab: {fileID: 5546529199475802461, guid: c15c93373ad50174cbf69c05600cb567, type: 3}
+  dropdown: {fileID: 731417156}
+  editorController: {fileID: 251374647}
+--- !u!4 &1907505784
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1907505782}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1909970586
 GameObject:
   m_ObjectHideFlags: 0
@@ -3169,7 +3204,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1909970587}
-  - component: {fileID: 1909970588}
   m_Layer: 5
   m_Name: EntityPanel
   m_TagString: Untagged
@@ -3198,21 +3232,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1909970588
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1909970586}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 649bc3050dba25545ab7cfcef6316823, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetPanel: {fileID: 1909970587}
-  layerText: {fileID: 206225641}
-  propertyFieldPrefab: {fileID: 5546529199475802461, guid: c15c93373ad50174cbf69c05600cb567, type: 3}
 --- !u!1 &2144953188
 GameObject:
   m_ObjectHideFlags: 0
@@ -3326,3 +3345,4 @@ SceneRoots:
   - {fileID: 251374646}
   - {fileID: 2144953192}
   - {fileID: 661802290}
+  - {fileID: 1907505784}
