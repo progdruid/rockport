@@ -23,7 +23,6 @@ public class EditorController : MonoBehaviour, IPackable
     [SerializeField] private float cameraMoveSpeed;
     [SerializeField] private float cameraZoomSpeed;
     [SerializeField] private float cameraMinSize;
-    [SerializeField] private float cameraRelativeClearance;
     
     private MapSpace _map;
     private SignalCircuit _signalCircuit;
@@ -140,34 +139,32 @@ public class EditorController : MonoBehaviour, IPackable
         var prevMouseWorldPos = cam.ScreenToWorldPoint(Input.mousePosition);
 
         cam.orthographicSize += zoom * cameraZoomSpeed * cam.orthographicSize * Time.deltaTime;
-        cam.orthographicSize = Mathf.Max(cam.orthographicSize, cameraMinSize);
-
-        cam.orthographicSize = Mathf.Min(cam.orthographicSize, worldSize.y * 0.5f / (1f - cameraRelativeClearance));
-        cam.orthographicSize = Mathf.Min(cam.orthographicSize, worldSize.x * 0.5f / (cam.aspect - cameraRelativeClearance));
+        cam.orthographicSize = cam.orthographicSize
+            .ClampBottom(cameraMinSize)
+            .ClampTop(worldSize.y * 0.5f)
+            .ClampTop(worldSize.x * 0.5f / cam.aspect);
 
         var newMouseWorldPos = cam.ScreenToWorldPoint(Input.mousePosition);
         var worldOffset = prevMouseWorldPos - newMouseWorldPos;
         cam.transform.position += worldOffset;
 
         var halfHeight = cam.orthographicSize;
-        var halfWidth = halfHeight * cam.aspect;
 
         var worldStart = _map.WorldStart;
         var worldEnd = worldStart + worldSize;
 
-        var clearance = halfHeight * cameraRelativeClearance;
-        var x = cam.transform.position.x + horizontal * halfHeight * cameraMoveSpeed * Time.deltaTime;
-        x = Mathf.Max(x - halfWidth, worldStart.x - clearance) + halfWidth;
-        x = Mathf.Min(x + halfWidth, worldEnd.x + clearance) - halfWidth;
+        var x = (cam.transform.position.x + horizontal * halfHeight * cameraMoveSpeed * Time.deltaTime)
+            .ClampBottom(worldStart.x)
+            .ClampTop(worldEnd.x);
 
-        var y = cam.transform.position.y + vertical * halfHeight * cameraMoveSpeed * Time.deltaTime;
-        y = Mathf.Max(y - halfHeight, worldStart.y - clearance) + halfHeight;
-        y = Mathf.Min(y + halfHeight, worldEnd.y + clearance) - halfHeight;
+        var y = (cam.transform.position.y + vertical * halfHeight * cameraMoveSpeed * Time.deltaTime)
+            .ClampBottom(worldStart.y)
+            .ClampTop(worldEnd.y);
         
         //updating camera position, so it is always behind the topmost layer
-        cam.transform.position = new Vector3(x, y, _map.GetMapTop() - 5);
-
-
+        cam.transform.SetWorld(x, y, _map.GetMapTop() - 5);
+        
+        
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             _editorModes[_currentModeIndex].Exit();

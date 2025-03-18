@@ -24,6 +24,9 @@ public static class Extensions
         transform.position = new Vector3(pos.x, pos.y, transform.position.z);
     public static void SetWorld(this Transform transform, Vector2 pos, float z) =>
         transform.position = new Vector3(pos.x, pos.y, z);
+    public static void SetWorld(this Transform transform, float x, float y, float z) =>
+        transform.position = new Vector3(x, y, z);
+    
     
     
     public static void SetLocalX(this Transform transform, float x) =>
@@ -38,6 +41,8 @@ public static class Extensions
         transform.localPosition = new Vector3(pos.x, pos.y, transform.localPosition.z);
     public static void SetLocal(this Transform transform, Vector2 pos, float z) =>
         transform.localPosition = new Vector3(pos.x, pos.y, z);
+    public static void SetLocal(this Transform transform, float x, float y, float z) =>
+        transform.localPosition = new Vector3(x, y, z);
     
     
     
