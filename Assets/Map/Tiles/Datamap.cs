@@ -21,7 +21,7 @@ public struct Datamap<T> : IPackable
     }
 
     public ref T At(Vector2Int pos) => ref _buffer[pos.y * _size.x + pos.x];
-
+    
     public Vector2Int Size => _size;
     public int Width => _size.x;
     public int Height => _size.y;

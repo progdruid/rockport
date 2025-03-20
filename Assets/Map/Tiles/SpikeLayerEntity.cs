@@ -11,39 +11,45 @@ public class SpikeLayerEntity : MapEntity
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [Header("Spikes")] 
     [SerializeField] private SerializableMap<string, TileBase> tiles;
-
-    private TileBase[] _tileRegister;
-    private Dictionary<string, byte> _nameToIndex = new ();
     
-    private Tilemap _tilemap;
-    private Datamap<byte> _placed;
-
+    private TileBase[] _tileRegister;
+    private readonly Dictionary<string, byte> _nameToIndex = new ();
+    
     private string _selectedTileName = "None";
     private TileBase _selectedTile = null;
+    private byte _selectedIndex = 0;
+
+    private Datamap<byte> _placed;
     
-    private UniversalTrigger _trigger;
+    private Tilemap _tilemap;
+    private UniversalTrigger _trigger = null;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     protected override void Awake()
     {
         base.Awake();
 
-        _tileRegister = new TileBase[tiles.Count];
-        int i 
+        _tileRegister = new TileBase[tiles.Count+1];
+        _tileRegister[0] = null;
+        byte index = 1;
         foreach (var (tileName, tile) in tiles)
         {
             Assert.IsNotNull(tile);
-            
+            _tileRegister[index] = tile;
+            _nameToIndex[tileName] = index;
+            index++;
         }
 
-        
-        
         _tilemap = RockUtil.CreateTilemap(Target, 0, "Spike Map");
         _tilemap.gameObject.AddComponent<TilemapRenderer>();
-        _tilemap.gameObject.AddComponent<TilemapCollider2D>();
-        _trigger = _tilemap.gameObject.AddComponent<UniversalTrigger>();
+    }
+
+    protected override void Initialise()
+    {
+        _placed = new Datamap<byte>(Space.MapSize, 0);
     }
     
+    //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public override IEnumerator<PropertyHandle> GetProperties()
     {
         var iter = base.GetProperties();
@@ -63,42 +69,72 @@ public class SpikeLayerEntity : MapEntity
                     return;
                 _selectedTileName = tileName;
                 _selectedTile = tile;
+                _selectedIndex = _nameToIndex[tileName];
             }
         };
     }
 
     public override bool CheckOverlap(Vector2 pos) 
-        => Space.SnapWorldToMap(pos, out var mapPos) && _placed.At(mapPos);
+        => Space.SnapWorldToMap(pos, out var mapPos) && _placed.At(mapPos) != 0;
 
     public override string Pack()
     {
-        var data = _placed.Pack();
-        return JsonUtility.ToJson(data);
+        return _placed.Pack();
     }
 
     public override void Unpack(string data)
     {
         RequestInitialise();
+        
         _placed.Unpack(data);
+        for (var x = 0; x < _placed.Width; x++)
+        for (var y = 0; y < _placed.Height; y++)
+        {
+            var pos = new Vector2Int(x, y);
+            var index = _placed.At(pos);
+            if (index == 0) continue;
+                
+            _tilemap.SetTile((Vector3Int)pos, _tileRegister[index]);
+        }
     }
 
     public override void ChangeAt(Vector2 worldPos, bool shouldPlaceNotRemove)
     {
         if (!_selectedTile 
             || !Space.SnapWorldToMap(worldPos, out var pos) 
-            || shouldPlaceNotRemove == _placed.At(pos)) 
+            || (!shouldPlaceNotRemove && _placed.At(pos) == 0)
+            || (shouldPlaceNotRemove && _placed.At(pos) == _selectedIndex)) 
             return;
-        
-        _placed.At(pos) = shouldPlaceNotRemove;
-        _tilemap.SetTile((Vector3Int)pos, _selectedTile);
+
+        if (shouldPlaceNotRemove)
+        {
+            _placed.At(pos) = _selectedIndex;
+            _tilemap.SetTile((Vector3Int)pos, _selectedTile);
+        }
+        else
+        {
+            _placed.At(pos) = 0;
+            _tilemap.SetTile((Vector3Int)pos, null);
+        }
     }
 
     public override void Activate()
     {
         base.Activate();
+        
+        _tilemap.gameObject.AddComponent<TilemapCollider2D>();
+        _tilemap.gameObject.layer = Target.gameObject.layer;
+        _trigger = _tilemap.gameObject.AddComponent<UniversalTrigger>();
+        _trigger.EnterEvent += HandleTriggerEnter;
+    }
+    
+    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
+    private void HandleTriggerEnter (Collider2D col, TriggeredType type)
+    {
+        if (type != TriggeredType.Player)
+            return;
 
-        if (_generateCollider)
-            _tilemap.gameObject.AddComponent<TilemapCollider2D>();
+        GameSystems.Ins.PlayerManager.KillPlayer();
     }
 }
 
