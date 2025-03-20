@@ -324,15 +324,14 @@ public class Player : MonoBehaviour
         }
         
         rb.position += rb.linearVelocity * Time.fixedDeltaTime;
-        if (_clungCorpse)
-            _clungCorpse.transform.position = capsule.transform.position - _clingOffset.To3();
-
         _savedVelocity = rb.linearVelocity;
         rb.linearVelocity = Vector2.zero;
+        
         if (_clungCorpse)
         {
-            _clungCorpse.VelocityX = rb.linearVelocityX;
-            _clungCorpse.VelocityY = rb.linearVelocityY;
+            _clungCorpse.Position = rb.position - _clingOffset;
+            _clungCorpse.VelocityX = 0;
+            _clungCorpse.VelocityY = 0;
         }
     }
 
