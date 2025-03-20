@@ -9,6 +9,7 @@ namespace Map
 public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IPackable
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    [Header("Entity Base")]
     [SerializeField] private string title;
     [SerializeField] private Transform target;
     

@@ -1,16 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
-[RequireComponent(typeof(UniversalTrigger))]
 public class KillerObject : MonoBehaviour
 {
-    private UniversalTrigger trigger;
-
-    #region ceremony
-    private void Start()
+    //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    [SerializeField] private UniversalTrigger trigger;
+    
+    //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
+    private void Awake()
     {
-        trigger = GetComponent<UniversalTrigger>();
+        Assert.IsNotNull(trigger);
+        
         trigger.EnterEvent += HandleTriggerEnter;
     }
 
@@ -18,7 +21,6 @@ public class KillerObject : MonoBehaviour
     {
         trigger.EnterEvent -= HandleTriggerEnter;
     }
-    #endregion
 
     private void HandleTriggerEnter (Collider2D col, TriggeredType type)
     {

@@ -10,6 +10,7 @@ namespace Map
 public class TreeLayerEntity : MapEntity
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    [Header("Tree")]
     [SerializeField] private Texture2D treeTexture;
     [Space] 
     [SerializeField] private bool useMarching = true;

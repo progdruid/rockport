@@ -30,6 +30,7 @@ public struct DirtStratum
 public class DirtLayerEntity : MapEntity
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    [Header("Dirt")]
     [SerializeField] private int maxDepth;
     [SerializeField] private TileMarchingSet outlineMarchingSet;
     [SerializeField] private DirtStratum[] strata;

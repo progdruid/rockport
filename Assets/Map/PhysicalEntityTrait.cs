@@ -8,6 +8,7 @@ namespace Map
 
 public class PhysicalEntityTrait : IPropertyHolder, IPackable
 {
+    //static part///////////////////////////////////////////////////////////////////////////////////////////////////////
     private static void TogglePhysicsInObject(GameObject obj, bool value)
     {
         foreach (var col in obj.GetComponentsInChildren<Collider2D>(true)) 

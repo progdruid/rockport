@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public enum TriggeredType
 {
@@ -11,12 +13,11 @@ public enum TriggeredType
     Corpse
 }
 
-public class UniversalTrigger : MonoBehaviour
+[RequireComponent(typeof(Collider2D))]
+public sealed class UniversalTrigger : MonoBehaviour
 {
-    public event System.Action<Collider2D, TriggeredType> EnterEvent = delegate { };
-    public event System.Action<Collider2D, TriggeredType> ExitEvent = delegate { };
-
-    protected Dictionary<string, TriggeredType> tagTypeMap = new()
+    //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private readonly Dictionary<string, TriggeredType> _tagTypeMap = new()
     {
         { "Dirt", TriggeredType.Dirt },
         { "Wood", TriggeredType.Wood },
@@ -25,21 +26,24 @@ public class UniversalTrigger : MonoBehaviour
         { "Player", TriggeredType.Player },
         { "Corpse", TriggeredType.Corpse }
     };
-
-    protected void InvokeEnterEvent(Collider2D other, TriggeredType type) => EnterEvent(other, type);
-    protected void InvokeExitEvent(Collider2D other, TriggeredType type) => ExitEvent(other, type);
-
-    protected virtual void OnTriggerEnter2D(Collider2D other)
+    
+    private Collider2D _collider;
+    
+    //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
+    private void Awake()
     {
-        TriggeredType type = tagTypeMap[other.tag];
-
-        InvokeEnterEvent(other, type);
+        _collider = GetComponent<Collider2D>();
+        Assert.IsNotNull(_collider); //no real need for this, as it's a required component
+        
+        _collider.isTrigger = true;
     }
 
-    protected virtual void OnTriggerExit2D(Collider2D other)
-    {
-        TriggeredType type = tagTypeMap[other.tag];
 
-        InvokeExitEvent(other, type);
-    }
+    //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
+    public event System.Action<Collider2D, TriggeredType> EnterEvent;
+    public event System.Action<Collider2D, TriggeredType> ExitEvent;
+
+    //game loop/////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private void OnTriggerEnter2D(Collider2D other) => EnterEvent?.Invoke(other, _tagTypeMap[other.tag]);
+    private void OnTriggerExit2D(Collider2D other) => ExitEvent?.Invoke(other, _tagTypeMap[other.tag]);
 }

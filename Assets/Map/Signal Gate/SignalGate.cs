@@ -15,6 +15,7 @@ public enum SignalGateType
 public class SignalGate : MapEntity
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    [Header("Gate")]
     [SerializeField] private SignalGateType type = SignalGateType.And;
     [SerializeField] private Renderer textRenderer;
 
