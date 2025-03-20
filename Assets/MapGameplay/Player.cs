@@ -61,6 +61,7 @@ public class Player : MonoBehaviour
     
     private Corpse _clungCorpse = null;
     private Vector2 _clingOffset = Vector2.zero;
+    private Vector2 _savedVelocity = Vector2.zero;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
@@ -123,17 +124,10 @@ public class Player : MonoBehaviour
             _savedVelocity.y *= suppressFactor;
     }
 
-    private Vector2 _lastFramePos = Vector2.zero;
-    private Vector2 _savedVelocity = Vector2.zero;
     //game events///////////////////////////////////////////////////////////////////////////////////////////////////////
     private void FixedUpdate()
     {
         rb.linearVelocity = _savedVelocity;
-        
-        if (_clungCorpse)
-            Debug.Log("Debug: " + (_clungCorpse.Position.x - rb.position.x));
-        _lastFramePos = rb.position;
-
         
         //update max y since ungrounded
         if (!_grounded && _maxYDuringFall < rb.transform.position.y)

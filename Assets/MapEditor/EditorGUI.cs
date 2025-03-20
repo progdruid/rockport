@@ -17,7 +17,6 @@ public class EditorGUI : MonoBehaviour
     [SerializeField] private ButtonWithEvents testButton;
     [SerializeField] private ButtonWithEvents saveButton;
     [SerializeField] private ButtonWithEvents loadButton;
-    [SerializeField] private ButtonWithEvents deleteButton;
     [SerializeField] private TMP_Dropdown entityCreationDropdown;
     [Space]
     [SerializeField] private RectTransform entityPropertiesPanel;
@@ -38,7 +37,6 @@ public class EditorGUI : MonoBehaviour
         Assert.IsNotNull(testButton);
         Assert.IsNotNull(saveButton);
         Assert.IsNotNull(loadButton);
-        Assert.IsNotNull(deleteButton);
         
         Assert.IsNotNull(entityPropertiesPanel);
         Assert.IsNotNull(currentLayerText);
@@ -57,7 +55,6 @@ public class EditorGUI : MonoBehaviour
         testButton.onClick.AddListener(HandleTestButtonClick);
         saveButton.onClick.AddListener(HandleSaveButtonClick);
         loadButton.onClick.AddListener(HandleLoadButtonClick);
-        deleteButton.onClick.AddListener(HandleDeleteButtonClick);
         
         currentLayerText.text = "No Layer selected";
         
@@ -71,7 +68,6 @@ public class EditorGUI : MonoBehaviour
         testButton.onClick.RemoveListener(HandleTestButtonClick);
         saveButton.onClick.RemoveListener(HandleSaveButtonClick);
         loadButton.onClick.RemoveListener(HandleLoadButtonClick);
-        deleteButton.onClick.RemoveListener(HandleDeleteButtonClick);
     }
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,8 +140,6 @@ public class EditorGUI : MonoBehaviour
 
     private void HandleTestButtonClick()
     {
-        Debug.Log("Test button clicked");
-        HandleSaveButtonClick();
         PlayerPrefs.SetString("TestMap", pathInputField.text);
         PlayerPrefs.SetString("GameplayReturnScene", SceneManager.GetActiveScene().name);
         PlayerPrefs.Save();
@@ -176,18 +170,6 @@ public class EditorGUI : MonoBehaviour
 
         if (MapSaveManager.Load(fileName, out var content))
             editorController.Unpack(content);
-    }
-
-    private void HandleDeleteButtonClick()
-    {
-        var fileName = pathInputField.text;
-        if (string.IsNullOrEmpty(fileName))
-        {
-            Debug.LogError("File name is empty. Please enter a valid file name.");
-            return;
-        }
-
-        MapSaveManager.Delete(fileName);
     }
 }
 
