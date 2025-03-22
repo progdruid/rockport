@@ -1,14 +1,16 @@
 
 using System;
+using System.Data.Common;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Map;
+using SimpleJSON;
 
 namespace MapEditor
 {
 
-public class EditorController : MonoBehaviour, IPackable
+public class EditorController : MonoBehaviour, IReplicable
 {
     /// TODO: should be extracted to a separate UI system
     public static bool CanEdit = true;
@@ -56,31 +58,30 @@ public class EditorController : MonoBehaviour, IPackable
 
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    public string Pack()
+    public JSONObject ExtractData()
     {
-        var mapData = new MapData()
-        {
-            SpaceSize = _map.MapSize,
-            LayerNames = new string[_map.EntitiesCount],
-            LayerData = new string[_map.EntitiesCount],
-            SignalData = _signalCircuit.Pack()
-        };
+        var mapData = new JSONObject();
+        mapData["spaceSize"]= _map.MapSize.ToJson();
+        mapData["signalData"] = _signalCircuit.ExtractData();
+        var layers = new JSONArray();
         
         for (var i = 0; i < _map.EntitiesCount; i++)
         {
+            var entityData = new JSONObject();
             var entity = _map.GetEntity(i);
-            mapData.LayerNames[i] = entity.Title;
-            mapData.LayerData[i] = entity.Pack();
+            entityData["title"] = entity.Title;
+            entityData["data"] = entity.ExtractData();
+            layers.Add(entityData);
         }
-
-        var res = mapData.Pack();
         
+        mapData["layers"] = layers;
+
         //don't beat me, just checkin' if the packing was successful
         Assert.IsTrue(new Func<bool>((() =>
         {
             try
             {
-                Unpack(res);
+                Replicate(mapData);
                 return true;
             }
             catch (Exception)
@@ -88,14 +89,14 @@ public class EditorController : MonoBehaviour, IPackable
                 return false;
             }
         })).Invoke());
-        
-        return res;
+
+        return mapData;
     }
 
-    public void Unpack(string data)
+    public void Replicate(JSONObject mapData)
     {
         _editorModes[_currentModeIndex].Exit();
-        
+
         while (_map.EntitiesCount > 0)
         {
             var dead = _map.GetEntity(0);
@@ -104,21 +105,22 @@ public class EditorController : MonoBehaviour, IPackable
             dead.Clear();
         }
         _map.Kill();
+
         
-        var chapterData = new MapData();
-        chapterData.Unpack(data);
+        _map = new MapSpace(mapData["spaceSize"].ReadVector2Int());
         
-        _map = new MapSpace(chapterData.SpaceSize);
-        for (var i = 0; i < chapterData.LayerNames.Length; i++)
+        var layers = mapData["layers"].AsArray;
+        for (var i = 0; i < layers.Count; i++)
         {
-            var entity = GlobalConfig.Ins.entityFactory.CreateEntity(chapterData.LayerNames[i]);
+            var layer = layers[i].AsObject;
+            var entity = GlobalConfig.Ins.entityFactory.CreateEntity(layer["title"]);
             _map.RegisterAt(entity, i);
-            entity.Unpack(chapterData.LayerData[i]);
+            entity.Replicate(layer["data"].AsObject);
             _signalCircuit.ExtractAndAdd(entity);
         }
-        
-        _signalCircuit.Unpack(chapterData.SignalData);
-        
+
+        _signalCircuit.Replicate(mapData["signalData"].AsObject);
+
         entityEditor.Inject(_map);
         wiringEditor.Inject(_map);
         _editorModes[_currentModeIndex].Enter();

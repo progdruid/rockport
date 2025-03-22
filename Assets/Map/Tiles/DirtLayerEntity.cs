@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Map;
+using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Tilemaps;
@@ -116,16 +117,25 @@ public class DirtLayerEntity : MapEntity
     }
 
     public override float GetReferenceZ() => _baseMap.transform.position.z;
-    public override string Pack() => JsonUtility.ToJson((_physicalTrait.Pack(), _depthMap.Pack()));
-
-    public override void Unpack(string data)
+    
+    public override JSONObject ExtractData()
     {
-        var (physicalPacked, depthPacked) = JsonUtility.FromJson<(string, string)>(data);
-        
+        var json = new JSONObject {
+            ["physicalTrait"] = _physicalTrait.ExtractData(),
+            ["depthMap"] = _depthMap.ExtractData()
+        };
+        return json;
+    }
+
+    public override void Replicate(JSONObject data)
+    {
+        var physicalPacked = data["physicalTrait"].AsObject;
+        var depthPacked = data["depthMap"].AsObject;
+
         RequestInitialise();
-        _physicalTrait.Unpack(physicalPacked);
-        _depthMap.Unpack(depthPacked);
-        
+        _physicalTrait.Replicate(physicalPacked);
+        _depthMap.Replicate(depthPacked);
+
         for (var x = 0; x < _depthMap.Width; x++)
         for (var y = 0; y < _depthMap.Height; y++)
             UpdateVisualsAt(new Vector2Int(x, y));

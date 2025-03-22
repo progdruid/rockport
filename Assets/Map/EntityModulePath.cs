@@ -1,11 +1,12 @@
 ﻿using System;
 using MapEditor;
+using SimpleJSON;
 
 namespace Map
 {
 
 [Serializable]
-public struct EntityModulePath : IEquatable<EntityModulePath>, IPackable
+public struct EntityModulePath : IEquatable<EntityModulePath>, IReplicable
 {
     public int EntityIndex { get; private set; }
     public string DependencyKey { get; private set; }
@@ -31,15 +32,19 @@ public struct EntityModulePath : IEquatable<EntityModulePath>, IPackable
     public static bool operator !=(EntityModulePath left, EntityModulePath right) =>
         !left.Equals(right);
 
-    public string Pack() => $"{EntityIndex}:{DependencyKey}";
-
-    public void Unpack(string data)
+    public JSONObject ExtractData()
     {
-        var parts = data.Split(':');
-        if (parts.Length != 2 || !int.TryParse(parts[0], out var entityIndex))
-            throw new FormatException("Invalid entity module path data");
-        EntityIndex = entityIndex;
-        DependencyKey = parts[1];
+        var json = new JSONObject {
+            ["EntityIndex"] = EntityIndex,
+            ["DependencyKey"] = DependencyKey
+        };
+        return json;
+    }
+
+    public void Replicate(JSONObject data)
+    {
+        EntityIndex = data["EntityIndex"].AsInt;
+        DependencyKey = data["DependencyKey"];
     }
 }
 

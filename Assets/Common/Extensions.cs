@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using SimpleJSON;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 public static class Extensions
@@ -57,8 +58,27 @@ public static class Extensions
         Vector3.SmoothDamp(value, target, ref currentVelocity, smoothTime);
     public static Vector3 To3(this Vector2 v) => v;
     public static Vector2 To2(this Vector3 v) => v;
+    public static Vector2Int FloorToInt(this Vector2 v) => Vector2Int.FloorToInt(v);
+    public static Vector3Int FloorToInt(this Vector3 v) => Vector3Int.FloorToInt(v);
+    public static Vector2Int RoundToInt(this Vector2 v) => Vector2Int.RoundToInt(v);
+    public static Vector3Int RoundToInt(this Vector3 v) => Vector3Int.RoundToInt(v);
+    public static Vector2Int CeilToInt(this Vector2 v) => Vector2Int.CeilToInt(v);
+    public static Vector3Int CeilToInt(this Vector3 v) => Vector3Int.CeilToInt(v);
     
+    public static JSONNode ToJson(this Vector2Int v)
+    {
+        var array = new JSONArray();
+        array.WriteVector2Int(v);
+        return array;
+    }
+    public static JSONNode ToJson(this Vector3Int v)
+    {
+        var array = new JSONArray();
+        array.WriteVector3Int(v);
+        return array;
+    }
     
+
     //floats
     public static bool IsApproximately(this float a, float b) => Mathf.Approximately(a, b);
     public static float Abs(this float value) => Mathf.Abs(value);

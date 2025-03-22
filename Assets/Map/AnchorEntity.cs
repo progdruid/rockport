@@ -1,13 +1,11 @@
-﻿using System.Drawing;
+﻿using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Map
 {
-
-public class AnchorEntity : MapEntity
+public class AnchorEntity : MapEntity, IReplicable
 {
-    //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public override float GetReferenceZ() => Target.position.z;
 
     public Vector2Int GetPos()
@@ -17,21 +15,19 @@ public class AnchorEntity : MapEntity
         return mapPos;
     }
 
-    public override string Pack()
+    public override JSONObject ExtractData()
     {
-        var mapPos = GetPos();
-        return $"{mapPos.x} {mapPos.y}";
+        var json = new JSONObject();
+        json["mapPos"] = GetPos().ToJson();
+        return json;
     }
 
-    public override void Unpack(string data)
+    public override void Replicate(JSONObject data)
     {
-        var parts = data.Split(' ');
-        var mapPos = Vector2Int.zero;
-        if (parts.Length == 2 && int.TryParse(parts[0], out var pointX) && int.TryParse(parts[1], out var pointY))
-            mapPos = new Vector2Int(pointX, pointY);
+        var mapPos = data["mapPos"].ReadVector2Int();
         var worldPos = Space.ConvertMapToWorld(mapPos);
         Target.position = new Vector3(worldPos.x, worldPos.y, Target.position.z);
-        
+
         RequestInitialise();
     }
 
@@ -42,5 +38,4 @@ public class AnchorEntity : MapEntity
         Target.SetWorldXY(snappedWorldPos);
     }
 }
-
 }

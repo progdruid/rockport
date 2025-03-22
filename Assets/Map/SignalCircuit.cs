@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using Map;
+using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Map
 {
-public class SignalCircuit : IPackable
+public class SignalCircuit : IReplicable
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private readonly HashSet<SignalEmitter> _emitters = new();
@@ -90,45 +91,48 @@ public class SignalCircuit : IPackable
         _invertedLinks.Remove(emitter);
     }
 
-    public string Pack()
+    public JSONObject ExtractData()
     {
-        var emitterData = new string[_links.Count];
-        var listenerData = new string[_links.Count];
-        
-        var i = 0;
+        var json = new JSONObject();
+        var emitterData = new JSONArray();
+        var listenerData = new JSONArray();
+
         foreach (var (listener, emitter) in _links)
         {
-            emitterData[i] = ((IEntityModule)emitter).GetModulePath().Pack();
-            listenerData[i] = ((IEntityModule)listener).GetModulePath().Pack();
-            i++;
+            emitterData.Add(((IEntityModule)emitter).GetModulePath().ExtractData());
+            listenerData.Add(((IEntityModule)listener).GetModulePath().ExtractData());
         }
-        return JsonUtility.ToJson((emitterData, listenerData));
+
+        json["emitterData"] = emitterData;
+        json["listenerData"] = listenerData;
+        return json;
     }
 
-    public void Unpack(string data)
+    public void Replicate(JSONObject data)
     {
         Dictionary<EntityModulePath, SignalEmitter> emitterMap = new();
         Dictionary<EntityModulePath, SignalListener> listenerMap = new();
-        
-        foreach (var emitter in _emitters) 
+
+        foreach (var emitter in _emitters)
             emitterMap[((IEntityModule)emitter).GetModulePath()] = emitter;
-        foreach (var listener in _listeners) 
+        foreach (var listener in _listeners)
             listenerMap[((IEntityModule)listener).GetModulePath()] = listener;
-        
-        var (emitterData, listenerData) = JsonUtility.FromJson<(string[], string[])>(data);
-        
-        for (var i = 0; i < emitterData.Length; i++)
+
+        var emitterData = data["emitterData"].AsArray;
+        var listenerData = data["listenerData"].AsArray;
+
+        for (var i = 0; i < emitterData.Count; i++)
         {
             var emitterPath = new EntityModulePath();
             var listenerPath = new EntityModulePath();
-            emitterPath.Unpack(emitterData[i]);
-            listenerPath.Unpack(listenerData[i]);
-            
+            emitterPath.Replicate(emitterData[i].AsObject);
+            listenerPath.Replicate(listenerData[i].AsObject);
+
             emitterMap.TryGetValue(emitterPath, out var emitter);
             listenerMap.TryGetValue(listenerPath, out var listener);
             Assert.IsNotNull(emitter);
             Assert.IsNotNull(listener);
-            
+
             Link(emitter, listener);
         }
     }

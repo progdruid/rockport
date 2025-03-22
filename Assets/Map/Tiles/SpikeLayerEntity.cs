@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Assert = UnityEngine.Assertions.Assert;
@@ -77,23 +78,28 @@ public class SpikeLayerEntity : MapEntity
     public override bool CheckOverlap(Vector2 pos) 
         => Space.SnapWorldToMap(pos, out var mapPos) && _placed.At(mapPos) != 0;
 
-    public override string Pack()
+    public override JSONObject ExtractData()
     {
-        return _placed.Pack();
+        var json = new JSONObject {
+            ["placed"] = _placed.ExtractData()
+        };
+        return json;
     }
 
-    public override void Unpack(string data)
+    public override void Replicate(JSONObject data)
     {
+        var placedPacked = data["placed"].AsObject;
+
         RequestInitialise();
-        
-        _placed.Unpack(data);
+        _placed.Replicate(placedPacked);
+
         for (var x = 0; x < _placed.Width; x++)
         for (var y = 0; y < _placed.Height; y++)
         {
             var pos = new Vector2Int(x, y);
             var index = _placed.At(pos);
             if (index == 0) continue;
-                
+
             _tilemap.SetTile((Vector3Int)pos, _tileRegister[index]);
         }
     }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Tilemaps;
@@ -98,16 +99,24 @@ public class TreeLayerEntity : MapEntity
         };
     }
     
-    public override string Pack() => JsonUtility.ToJson((_physicalTrait.Pack(), _placed.Pack()));
-
-    public override void Unpack(string data)
+    public override JSONObject ExtractData()
     {
-        var (physicalPacked, placedPacked) = JsonUtility.FromJson<(string, string)>(data);
-        
+        var json = new JSONObject {
+            ["physicalTrait"] = _physicalTrait.ExtractData(),
+            ["placed"] = _placed.ExtractData()
+        };
+        return json;
+    }
+
+    public override void Replicate(JSONObject data)
+    {
+        var physicalPacked = data["physicalTrait"].AsObject;
+        var placedPacked = data["placed"].AsObject;
+
         RequestInitialise();
-        _physicalTrait.Unpack(physicalPacked);
-        _placed.Unpack(placedPacked);
-        
+        _physicalTrait.Replicate(physicalPacked);
+        _placed.Replicate(placedPacked);
+
         for (var x = 0; x < _placed.Width; x++)
         for (var y = 0; y < _placed.Height; y++)
             UpdateVisualsAt(new Vector2Int(x, y));

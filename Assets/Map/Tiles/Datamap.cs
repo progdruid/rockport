@@ -1,13 +1,14 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using SimpleJSON;
 using UnityEngine;
 
 namespace Map
 {
 
 [Serializable]
-public struct Datamap<T> : IPackable
+public struct Datamap<T> : IReplicable
 {
     private T[] _buffer;
     private Vector2Int _size;
@@ -27,17 +28,24 @@ public struct Datamap<T> : IPackable
     public int Height => _size.y;
     public int Count => _buffer.Length;
 
-    public string Pack()
+    public JSONObject ExtractData()
     {
         using var ms = new MemoryStream();
         var bf = new BinaryFormatter();
         bf.Serialize(ms, _buffer);
-        return Convert.ToBase64String(ms.ToArray());
+        var base64Data = Convert.ToBase64String(ms.ToArray());
+
+        var jsonObject = new JSONObject();
+        jsonObject["data"] = base64Data;
+
+        return jsonObject;
     }
 
-    public void Unpack(string data)
+    public void Replicate(JSONObject data)
     {
-        var bytes = Convert.FromBase64String(data);
+        var base64Data = data["data"];
+
+        var bytes = Convert.FromBase64String(base64Data);
         using var ms = new MemoryStream(bytes);
         var bf = new BinaryFormatter();
         _buffer = (T[])bf.Deserialize(ms);

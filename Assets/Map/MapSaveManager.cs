@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using SimpleJSON;
 using UnityEngine;
 
 namespace MapEditor
@@ -8,7 +9,7 @@ namespace MapEditor
 public static class MapSaveManager
 {
 
-    public static bool SaveAs(string name, string data)
+    public static bool SaveAs(string name, JSONObject data)
     {
         var directoryPath = Path.Combine(Application.dataPath, "Maps");
         var filePath = Path.Combine(directoryPath, name + ".json");
@@ -19,7 +20,7 @@ public static class MapSaveManager
             Directory.CreateDirectory(directoryPath);
 
             // Write the content to the file
-            File.WriteAllText(filePath, data);
+            File.WriteAllText(filePath, data.ToString());
             Debug.Log($"File saved successfully at: {filePath}");
             return true;
         }
@@ -30,7 +31,7 @@ public static class MapSaveManager
         }
     }
 
-    public static bool Load(string name, out string data)
+    public static bool Load(string name, out JSONObject data)
     {
         var filePath = Path.Combine(Application.dataPath, "Maps", name + ".json");
         
@@ -41,7 +42,18 @@ public static class MapSaveManager
             return false;
         }
 
-        data = File.ReadAllText(filePath);
+        var text = File.ReadAllText(filePath);
+        try
+        {
+            data = JSON.Parse(text).AsObject;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Error parsing file: {e.Message}");
+            data = null;
+            return false;
+        }
+        
         Debug.Log($"File loaded successfully from: {filePath}");
         return true;
     }

@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Map
 {
 
-public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IPackable
+public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IReplicable
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [Header("Entity Base")]
@@ -75,8 +76,8 @@ public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IPackable
         return anchorPoint;
     }
 
-    public abstract string Pack();
-    public abstract void Unpack(string data);
+    public abstract JSONObject ExtractData();
+    public abstract void Replicate(JSONObject data);
 
     public void Clear()
     {

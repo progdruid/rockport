@@ -47,15 +47,6 @@ public static class RockUtil
         return map;
     }
     
-    public static string PackVector2Int (Vector2Int vector) => $"{vector.x}, {vector.y}";
-
-    public static Vector2Int UnpackVector2Int(string data)
-    {
-        var split = data.Split(',');
-        return new Vector2Int (int.Parse(split[0]), int.Parse(split[1]));
-    }
-    
-    
     public static bool IsInLayerMask(int layer, LayerMask mask) => (mask.value & (1 << layer)) != 0;
 
     

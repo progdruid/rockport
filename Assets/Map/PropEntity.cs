@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using SimpleJSON;
 using UnityEngine;
 
 namespace Map
@@ -63,18 +64,23 @@ public class PropEntity : MapEntity
         return renderers.Any(spriteRenderer => RockUtil.IsInRendererBounds(pos, spriteRenderer));
     }
 
-    public override string Pack()
+    public override JSONObject ExtractData()
     {
         Space.SnapWorldToMap(Target.position, out var map);
-        return JsonUtility.ToJson((_physicalTrait.Pack(), map));
+        
+        var json = new JSONObject();
+        json["physicalTrait"] = _physicalTrait.ExtractData();
+        json["mapPos"] = map.ToJson();
+        return json;
     }
 
-    public override void Unpack(string data)
+    public override void Replicate(JSONObject data)
     {
-        var (physicalPacked, mapPos) = JsonUtility.FromJson<(string, Vector2Int)>(data);
-        
+        var physicalPacked = data["physicalTrait"].AsObject;
+        var mapPos = data["mapPos"].ReadVector2Int();
+
         RequestInitialise();
-        _physicalTrait.Unpack(physicalPacked);
+        _physicalTrait.Replicate(physicalPacked);
         var snappedWorldPos = Space.ConvertMapToWorld(mapPos);
         Target.SetWorldXY(snappedWorldPos);
     }

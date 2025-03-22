@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using SimpleJSON;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Map
@@ -76,16 +77,19 @@ public class SignalGate : MapEntity
 
     
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    public override string Pack()
+    public override JSONObject ExtractData()
     {
+        var json = new JSONObject();
         Space.SnapWorldToMap(Target.position, out var map);
-        return RockUtil.PackVector2Int(map);
+        json["map"] = map.ToJson();
+        return json;
     }
 
-    public override void Unpack(string data)
+    public override void Replicate(JSONObject data)
     {
         RequestInitialise();
-        var worldPos = Space.ConvertMapToWorld(RockUtil.UnpackVector2Int(data));
+        var map = data["map"].ReadVector2Int();
+        var worldPos = Space.ConvertMapToWorld(map);
         Target.SetWorldXY(worldPos);
     }
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using MapEditor;
 using Map;
+using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
@@ -13,7 +14,7 @@ public class MapLoader : MonoBehaviour
     [SerializeField] private EntityFactory entityFactory;
     [SerializeField] private GameplayController controller;
     
-    private MapData _currentMapData;
+    private JSONObject _currentMapData;
     private MapSpace _currentMapSpace;
     
     private bool _isLoading = false;
@@ -69,9 +70,8 @@ public class MapLoader : MonoBehaviour
         var loaded = MapSaveManager.Load(nameToLoad, out var contents);
         Assert.IsTrue(loaded);
         Assert.IsNotNull(contents);
-        
-        _currentMapData = new MapData();
-        _currentMapData.Unpack(contents);
+
+        _currentMapData = contents;
         StartCoroutine(LoadLevelRoutine(_currentMapData));
     }
 
@@ -85,7 +85,7 @@ public class MapLoader : MonoBehaviour
         SceneManager.LoadScene("Menu");
     }
 
-    private IEnumerator LoadLevelRoutine (MapData data)
+    private IEnumerator LoadLevelRoutine (JSONObject mapData)
     {
         _isLoading = true;
 
@@ -101,14 +101,16 @@ public class MapLoader : MonoBehaviour
         }
         GameSystems.Ins.FruitManager.ClearFruits();
 
-        var mapSpace = new MapSpace(data.SpaceSize);
+        var mapSpace = new MapSpace(mapData["spaceSize"].ReadVector2Int());
         var signalCircuit = new SignalCircuit();
         
-        for (var i = 0; i < data.LayerNames.Length; i++)
+        var layers = mapData["layers"].AsArray;
+        for (var i = 0; i < layers.Count; i++)
         {
-            var entity = entityFactory.CreateEntity(data.LayerNames[i]);
-            mapSpace.RegisterObject(entity, out _);
-            entity.Unpack(data.LayerData[i]);
+            var layer = layers[i].AsObject;
+            var entity = GlobalConfig.Ins.entityFactory.CreateEntity(layer["title"].Value);
+            mapSpace.RegisterAt(entity, i);
+            entity.Replicate(layer["data"].AsObject);
             signalCircuit.ExtractAndAdd(entity);
         }
 
@@ -130,7 +132,7 @@ public class MapLoader : MonoBehaviour
             entity.Activate();
         }
         
-        signalCircuit.Unpack(data.SignalData);
+        signalCircuit.Replicate(mapData["signalData"].AsObject);;
 
         _currentMapSpace = mapSpace;
         LevelInstantiationEvent?.Invoke();

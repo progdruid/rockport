@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using TMPro;
 using Map;
-using UnityEngine.SceneManagement;
+using SimpleJSON;
 
 namespace MapEditor
 {
@@ -155,7 +156,7 @@ public class EditorGUI : MonoBehaviour
             return;
         }
 
-        var content = editorController.Pack();
+        var content = editorController.ExtractData();
         MapSaveManager.SaveAs(fileName, content);
     }
 
@@ -169,7 +170,7 @@ public class EditorGUI : MonoBehaviour
         }
 
         if (MapSaveManager.Load(fileName, out var content))
-            editorController.Unpack(content);
+            editorController.Replicate(content);
     }
 }
 

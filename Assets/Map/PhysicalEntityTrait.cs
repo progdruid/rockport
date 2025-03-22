@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 namespace Map
 {
 
-public class PhysicalEntityTrait : IPropertyHolder, IPackable
+public class PhysicalEntityTrait : IPropertyHolder, IReplicable
 {
     //static part///////////////////////////////////////////////////////////////////////////////////////////////////////
     private static void TogglePhysicsInObject(GameObject obj, bool value)
@@ -42,11 +43,17 @@ public class PhysicalEntityTrait : IPropertyHolder, IPackable
         };
     }
 
-    public string Pack() => _generatePhysics ? "true" : "false";
-
-    public void Unpack(string data)
+    public JSONObject ExtractData()
     {
-        _generatePhysics = data == "true";
+        var json = new JSONObject {
+            ["generatePhysics"] = _generatePhysics
+        };
+        return json;
+    }
+
+    public void Replicate(JSONObject data)
+    {
+        _generatePhysics = data["generatePhysics"].AsBool;
         PropertiesChangeEvent?.Invoke();
     }
 
