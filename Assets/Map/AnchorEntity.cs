@@ -28,7 +28,7 @@ public class AnchorEntity : MapEntity, IReplicable
         var worldPos = Space.ConvertMapToWorld(mapPos);
         Target.position = new Vector3(worldPos.x, worldPos.y, Target.position.z);
 
-        RequestInitialise();
+        EnsureInitialise();
     }
 
     public override void ChangeAt(Vector2 worldPos, bool shouldPlaceNotRemove)

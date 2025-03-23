@@ -79,7 +79,7 @@ public class PropEntity : MapEntity
         var physicalPacked = data["physicalTrait"].AsObject;
         var mapPos = data["mapPos"].ReadVector2Int();
 
-        RequestInitialise();
+        EnsureInitialise();
         _physicalTrait.Replicate(physicalPacked);
         var snappedWorldPos = Space.ConvertMapToWorld(mapPos);
         Target.SetWorldXY(snappedWorldPos);

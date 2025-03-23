@@ -21,6 +21,9 @@ public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IReplicable
     private bool _initialised = false;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// <summary>
+    /// Always call base.Awake() in derived classes.
+    /// </summary>
     protected virtual void Awake()
     {
         Assert.IsNotNull(target);
@@ -28,16 +31,26 @@ public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IReplicable
         Assert.IsTrue(title.Length > 0);
     }
     
-    protected void Start() => RequestInitialise();
+    protected void Start() => EnsureInitialise();
     
-    protected void RequestInitialise()
+    /// <summary>
+    /// You can manually ensure initialisation.
+    /// </summary>
+    protected void EnsureInitialise()
     {
         if (_initialised) return;
         _initialised = true;
         Initialise();
     }
 
+    /// <summary>
+    /// This is "Start". Use this for any setup that requires external dependencies to be ready.
+    /// </summary>
     protected virtual void Initialise() { }
+    
+    /// <summary>
+    /// Called when gameplay mode starts.
+    /// </summary>
     public virtual void Activate() { }
 
     
@@ -69,7 +82,7 @@ public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IReplicable
 
     public virtual bool CheckOverlap (Vector2 pos) => false;
     public virtual float GetReferenceZ() => Target.position.z;
-    public virtual Vector2Int GetAnchorPoint()
+    public virtual Vector2Int GetOverlayAnchor()
     {
         var snapped = Space.SnapWorldToMap(Target.position, out var anchorPoint);
         Assert.IsTrue(snapped);
@@ -79,6 +92,9 @@ public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IReplicable
     public abstract JSONObject ExtractData();
     public abstract void Replicate(JSONObject data);
 
+    /// <summary>
+    /// Deletes the entity together with its GameObject.
+    /// </summary>
     public void Clear()
     {
         var targetObject = target.gameObject;

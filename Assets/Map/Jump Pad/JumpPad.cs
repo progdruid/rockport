@@ -2,6 +2,7 @@ using SimpleJSON;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Events;
 
 namespace Map
@@ -11,7 +12,7 @@ namespace Map
     {
         private static readonly int Pressed = Animator.StringToHash("Pressed");
 
-        //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //fields////////////////////////////////////////////////////////////////////////////////////////////////////////
         [SerializeField] private float impulse;
         [SerializeField] private float timeOffset;
         [SerializeField] private float cooldown;
@@ -21,7 +22,15 @@ namespace Map
 
         private readonly List<(Collider2D col, bool isPlayer, float time)> _bodiesInside = new();
 
-        //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
+        //initialisation////////////////////////////////////////////////////////////////////////////////////////////////
+        protected override void Awake()
+        {
+            base.Awake();
+            Assert.IsNotNull(animator);
+        }
+
+
+        //public interface//////////////////////////////////////////////////////////////////////////////////////////////
         public override IEnumerator<PropertyHandle> GetProperties()
         {
             var iter = base.GetProperties();
@@ -51,7 +60,8 @@ namespace Map
             base.Replicate(data);
         }
 
-        //game events///////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        //game events///////////////////////////////////////////////////////////////////////////////////////////////////
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (!other.CompareTag("Player") && !other.CompareTag("Corpse"))
@@ -78,7 +88,8 @@ namespace Map
                 }
         }
 
-        //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        //private logic/////////////////////////////////////////////////////////////////////////////////////////////////
         private IEnumerator Push((Collider2D col, bool isPlayer, float time) pressingBody)
         {
             onJump.Invoke();

@@ -82,6 +82,7 @@ public static class Extensions
     //floats
     public static bool IsApproximately(this float a, float b) => Mathf.Approximately(a, b);
     public static float Abs(this float value) => Mathf.Abs(value);
+    public static float Sign(this float value) => Mathf.Sign(value);
     public static float Lerp(this float t, float value1, float value2) => Mathf.Lerp(value1, value2, t);
     public static float ClampBottom(this float value, float bound) => Mathf.Max(value, bound);
     public static float ClampTop(this float value, float bound) => Mathf.Min(value, bound);
@@ -92,5 +93,9 @@ public static class Extensions
     public static float SmoothDamp(this float value, float target, ref float currentVelocity, float smoothTime) =>
         Mathf.SmoothDamp(value, target, ref currentVelocity, smoothTime);
     
-    public static bool Between (this float value, float from, float to) => value > from && value < to;
+    //ints
+    public static int Abs(this int value) => Mathf.Abs(value);
+    public static int Sign(this int value) => (int)Mathf.Sign(value);
+    public static int ClampBottom(this int value, int bound) => Mathf.Max(value, bound);
+    public static int ClampTop(this int value, int bound) => Mathf.Min(value, bound);
 }

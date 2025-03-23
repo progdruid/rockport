@@ -87,7 +87,7 @@ public class SignalGate : MapEntity
 
     public override void Replicate(JSONObject data)
     {
-        RequestInitialise();
+        EnsureInitialise();
         var map = data["map"].ReadVector2Int();
         var worldPos = Space.ConvertMapToWorld(map);
         Target.SetWorldXY(worldPos);

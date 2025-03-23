@@ -132,7 +132,7 @@ public class DirtLayerEntity : MapEntity
         var physicalPacked = data["physicalTrait"].AsObject;
         var depthPacked = data["depthMap"].AsObject;
 
-        RequestInitialise();
+        EnsureInitialise();
         _physicalTrait.Replicate(physicalPacked);
         _depthMap.Replicate(depthPacked);
 

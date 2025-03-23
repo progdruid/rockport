@@ -180,7 +180,7 @@ public class WiringEditor : MonoBehaviour, IMapEditorMode
         foreach (var (module, pin) in _outputs)
         {
             var entity = ((IEntityModule)module).GetEntity();
-            var pos = _map.ConvertMapToWorld(entity.GetAnchorPoint());
+            var pos = _map.ConvertMapToWorld(entity.GetOverlayAnchor());
             
             if (_entityToListeners.ContainsKey(entity))
                 pos.x += pinPadding;
@@ -191,7 +191,7 @@ public class WiringEditor : MonoBehaviour, IMapEditorMode
         foreach (var (module, pin) in _inputs)
         {
             var entity = ((IEntityModule)module).GetEntity();
-            var pos = _map.ConvertMapToWorld(entity.GetAnchorPoint());
+            var pos = _map.ConvertMapToWorld(entity.GetOverlayAnchor());
             
             var foundListeners = _entityToListeners.TryGetValue(entity, out var listeners);
             Assert.IsTrue(foundListeners && listeners.Any());

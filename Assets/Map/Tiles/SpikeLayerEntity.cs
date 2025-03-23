@@ -90,7 +90,7 @@ public class SpikeLayerEntity : MapEntity
     {
         var placedPacked = data["placed"].AsObject;
 
-        RequestInitialise();
+        EnsureInitialise();
         _placed.Replicate(placedPacked);
 
         for (var x = 0; x < _placed.Width; x++)

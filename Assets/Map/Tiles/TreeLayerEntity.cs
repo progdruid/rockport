@@ -113,7 +113,7 @@ public class TreeLayerEntity : MapEntity
         var physicalPacked = data["physicalTrait"].AsObject;
         var placedPacked = data["placed"].AsObject;
 
-        RequestInitialise();
+        EnsureInitialise();
         _physicalTrait.Replicate(physicalPacked);
         _placed.Replicate(placedPacked);
 

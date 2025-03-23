@@ -24,13 +24,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1246611666111112784}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1246611666111112741
 MonoBehaviour:
@@ -44,10 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dc3ff0affd10be4cbe0832d14f841bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  platformWidth: 1
+  title: Platform
+  target: {fileID: 1246611666111112740}
   colliderHeight: 0.2
-  triggerHeight: 1
-  sprite: {fileID: 21300000, guid: 7423045334c40e64eab04d4f2832e81c, type: 3}
   sprites:
   - {fileID: 1686027942, guid: e968cd4db2dcaa4448ae133a806b2bbb, type: 3}
   - {fileID: 1231087184, guid: e968cd4db2dcaa4448ae133a806b2bbb, type: 3}

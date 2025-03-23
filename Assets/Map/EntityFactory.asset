@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: EntityFactory
   m_EditorClassIdentifier: 
   prefabs:
+  - {fileID: 4877651214461097296, guid: d93fd7a6046d2c34098fedef1d16e7e6, type: 3}
   - {fileID: 6644706919620923965, guid: 10ee6b12ebc90df4f87d1ea8d66116f4, type: 3}
   - {fileID: 8795244301488319462, guid: 8ef7658a601da5d4f912339a1effadda, type: 3}
   - {fileID: 10922405712489145, guid: 634d26baec2cca8458109ebce0912820, type: 3}
-  - {fileID: 4877651214461097296, guid: d93fd7a6046d2c34098fedef1d16e7e6, type: 3}
+  - {fileID: 1621482437382962143, guid: 50d542d8ae76d3749a387023d1428a35, type: 3}
+  - {fileID: 1246611666111112784, guid: 6f2ec759d3b41da4e9112a840748c998, type: 3}
   - {fileID: 2487675744656186509, guid: 181b873f89b6894428651b825b52fa28, type: 3}
   - {fileID: 21454352661399372, guid: a39bfa46c7b596e43b90c3341836efc4, type: 3}
   - {fileID: 3658617579862564220, guid: b80404bac4503fd4d9642aeb72746a5a, type: 3}
@@ -24,4 +26,3 @@ MonoBehaviour:
   - {fileID: 4012706606192664358, guid: 96d1ef649e47ee44bbd7438e9618ca5b, type: 3}
   - {fileID: 4012706606192664358, guid: bee254b0a7f8b234a909b5aa3a313af6, type: 3}
   - {fileID: 4012706606192664358, guid: fa932243cdf23ae48bdbbe0a2418a93a, type: 3}
-  - {fileID: 1621482437382962143, guid: 50d542d8ae76d3749a387023d1428a35, type: 3}
