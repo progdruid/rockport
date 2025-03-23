@@ -298,6 +298,9 @@ MonoBehaviour:
   collisionMask:
     serializedVersion: 2
     m_Bits: 264
+  platformMask:
+    serializedVersion: 2
+    m_Bits: 64
   collisionCheckDistance: 0.05
   collisionGap: 0.01
   leftClingWithAnchor: {fileID: 5623131706093084869}

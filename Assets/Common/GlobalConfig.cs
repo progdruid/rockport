@@ -43,10 +43,7 @@ public class GlobalConfig : ScriptableObject
     [Header("Entities")]
     [SerializeField] public EntityFactory entityFactory;
     [SerializeField] public string spawnPointEntityName;
-    
-    //[Header("Gameplay")]
-    
-    
+
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public Material StandardMaterial { get; private set; }
     public Material WorldTextureMaskMaterial { get; private set; }

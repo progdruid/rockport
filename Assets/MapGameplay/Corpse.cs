@@ -15,6 +15,7 @@ public class Corpse : MonoBehaviour
     
     [Header("Touches")]
     [SerializeField] private LayerMask collisionMask;
+    [SerializeField] private LayerMask platformMask;
     [SerializeField] private float collisionCheckDistance = 0.2f;
     [SerializeField] private float collisionGap = 0.01f;
     
@@ -75,7 +76,7 @@ public class Corpse : MonoBehaviour
             _maxYDuringFall = rb.transform.position.y;
         
         
-        var isGroundHit = CastBodyTo(Vector2.down, collisionCheckDistance, collisionMask, out var groundHitData);
+        var isGroundHit = CastBodyTo(Vector2.down, collisionCheckDistance, collisionMask | platformMask, out var groundHitData, false);
         if (isGroundHit && !_grounded)
         {
             _grounded = true;
@@ -122,20 +123,23 @@ public class Corpse : MonoBehaviour
     }
     
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
-    public bool CastBodyTo(Vector2 direction, float distance, LayerMask layer, out RaycastHit2D hit)
+    public bool CastBodyTo(Vector2 direction, float distance, LayerMask layer, out RaycastHit2D hit, bool detectInside = true)
     {
         //TODO: do something with layers
         var ignoreLayer = LayerMask.NameToLayer("Ignore Raycast");
         var originalLayer = polyCollider.gameObject.layer;
         var originalClungLayer = IgnoredObject?.gameObject.layer ?? ignoreLayer;
+        var originalQueriesStartInColliders = Physics2D.queriesStartInColliders;
         
         polyCollider.gameObject.layer = ignoreLayer;
         if (IgnoredObject) IgnoredObject.gameObject.layer = ignoreLayer;
-
+        Physics2D.queriesStartInColliders = detectInside;
+        
         hit = Physics2D.CapsuleCast(polyCollider.bounds.center, polyCollider.bounds.size, CapsuleDirection2D.Vertical, 0, direction, distance, layer);
         
         polyCollider.gameObject.layer = originalLayer;
         if (IgnoredObject) IgnoredObject.gameObject.layer = originalClungLayer;
+        Physics2D.queriesStartInColliders = originalQueriesStartInColliders;
         
         return hit;
     }
