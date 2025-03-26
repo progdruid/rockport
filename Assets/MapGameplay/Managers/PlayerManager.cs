@@ -50,7 +50,7 @@ public class PlayerManager : MonoBehaviour
         Player.PrepareForDeath();
         //TODO: call player death event
 
-        var canSpawnCorpse = true;//GameSystems.Ins.FruitManager.GetFruitsAmount() != 0;
+        var canSpawnCorpse = false;//GameSystems.Ins.FruitManager.GetFruitsAmount() != 0;
         StartCoroutine(KillPlayerRoutine(canSpawnCorpse));
     }
 

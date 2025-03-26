@@ -51,6 +51,7 @@ public class EditorGUI : MonoBehaviour
         {
             pathInputField.text = PlayerPrefs.GetString("TestMap");
             PlayerPrefs.DeleteKey("TestMap");
+            HandleLoadButtonClick();
         }
         
         testButton.onClick.AddListener(HandleTestButtonClick);
