@@ -109,7 +109,7 @@ public class Platform : MapEntity
         for (var i = 0; i < _platformWidth; i++)
         {
             var piece = new GameObject("Platform_" + i);
-            piece.transform.SetParent(Target);
+            piece.transform.SetParent(Target, false);
             piece.transform.SetLocalXY(i * 0.5f + 0.25f, 0.25f+outlineOffset);
             
             var spriteRenderer = piece.AddComponent<SpriteRenderer>();

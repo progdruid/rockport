@@ -1,43 +1,56 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(UniversalTrigger), typeof(SignalSource), typeof(Animator))]
-public class Lever : MonoBehaviour
+namespace Map
 {
-    [SerializeField] UnityEvent OnPull;
 
-    private bool pulled;
+[RequireComponent(typeof(UniversalTrigger), typeof(Animator))]
+public class Lever : PropEntity
+{
+    private static readonly int PulledAnimatorParameterID = Animator.StringToHash("Pulled");
 
-    private SignalSource signal;
-    private Animator animator;
-    private UniversalTrigger trigger;
+    //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    [Header("Lever")]
+    [SerializeField] private Animator animator;
+    [SerializeField] private UniversalTrigger trigger;
+    [SerializeField] private UnityEvent onPull;
 
-    #region ceremony
-    private void Start()
+    private readonly List<Collider2D> _pressingBodies = new();
+    private SignalEmitter _signalEmitter;
+    
+    private bool _pulled;
+
+    protected override void Awake()
     {
-        signal = GetComponent<SignalSource>();
-        animator = GetComponent<Animator>();
-        trigger = GetComponent<UniversalTrigger>();
+        _signalEmitter = new SignalEmitter { Signal = false };
+        AddPublicModule("signal-output", _signalEmitter);
+
+        base.Awake();
+
+        Assert.IsNotNull(animator);
+        Assert.IsNotNull(trigger);
 
         trigger.EnterEvent += HandleTriggerEnter;
     }
-
+    
     private void OnDestroy()
     {
         trigger.EnterEvent -= HandleTriggerEnter;
     }
-    #endregion
 
-    private void HandleTriggerEnter (Collider2D other, TriggeredType type)
+
+    private void HandleTriggerEnter(Collider2D other, TriggeredType type)
     {
         if (type != TriggeredType.Player && type != TriggeredType.Corpse)
             return;
 
-        pulled = !pulled;
-        OnPull.Invoke();
-        animator.SetTrigger("Pulled");
-        signal.UpdateSignal(pulled, gameObject);
+        _pulled = !_pulled;
+        onPull.Invoke();
+        animator.SetTrigger(PulledAnimatorParameterID);
+        _signalEmitter.Signal = _pulled;
     }
+}
+
 }
