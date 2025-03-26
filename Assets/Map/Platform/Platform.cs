@@ -27,6 +27,7 @@ public class Platform : MapEntity
         foreach (var sprite in sprites)
             Assert.IsNotNull(sprite);
         
+        GenerateSprites();
     }
     
     public override void Activate()
