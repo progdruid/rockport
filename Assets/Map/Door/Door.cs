@@ -12,6 +12,7 @@ public class Door : PropEntity
     private static readonly int Open = Animator.StringToHash("Open");
 
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    [Header("Door")]
     [SerializeField] private Animator animator;
     [SerializeField] private UnityEvent onOpening;
     [SerializeField] private UnityEvent onClosing;
