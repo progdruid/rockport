@@ -36,7 +36,7 @@ public class DirtLayerEntity : MapEntity
     [SerializeField] private TileMarchingSet outlineMarchingSet;
     [SerializeField] private DirtStratum[] strata;
 
-    private Datamap<int> _depthMap;
+    private Datamap<byte> _depthMap;
     private Tilemap _baseMap;
     private Tilemap _lowerPebbleMap;
     private Tilemap _upperPebbleMap;
@@ -82,7 +82,7 @@ public class DirtLayerEntity : MapEntity
 
     protected override void Initialise()
     {
-        _depthMap = new Datamap<int>(Space.MapSize, 0);
+        _depthMap = new Datamap<byte>(Space.MapSize, 0);
     }
 
 
@@ -135,7 +135,7 @@ public class DirtLayerEntity : MapEntity
         EnsureInitialise();
         _physicalTrait.Replicate(physicalPacked);
         _depthMap.Replicate(depthPacked);
-
+        
         for (var x = 0; x < _depthMap.Width; x++)
         for (var y = 0; y < _depthMap.Height; y++)
             UpdateVisualsAt(new Vector2Int(x, y));
@@ -155,7 +155,7 @@ public class DirtLayerEntity : MapEntity
             pending.TryGetValue(pos, out var depth);
             pending.Remove(pos);
 
-            _depthMap.At(pos) = depth;
+            _depthMap.At(pos) = (byte)depth;
             foreach (var neighbour in Space.RetrievePositions(pos, RockUtil.FullNeighbourOffsets))
             {
                 var currentDepth = _depthMap.At(neighbour);
