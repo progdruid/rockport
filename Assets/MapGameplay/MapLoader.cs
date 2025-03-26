@@ -14,7 +14,7 @@ public class MapLoader : MonoBehaviour
     [SerializeField] private EntityFactory entityFactory;
     [SerializeField] private GameplayController controller;
     
-    private JSONObject _currentMapData;
+    private JSONNode _currentMapData;
     private MapSpace _currentMapSpace;
     
     private bool _isLoading = false;
@@ -85,7 +85,7 @@ public class MapLoader : MonoBehaviour
         SceneManager.LoadScene("Menu");
     }
 
-    private IEnumerator LoadLevelRoutine (JSONObject mapData)
+    private IEnumerator LoadLevelRoutine (JSONNode mapData)
     {
         _isLoading = true;
 

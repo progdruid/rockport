@@ -77,7 +77,7 @@ public class SignalGate : MapEntity
 
     
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    public override JSONObject ExtractData()
+    public override JSONNode ExtractData()
     {
         var json = new JSONObject();
         Space.SnapWorldToMap(Target.position, out var map);
@@ -85,7 +85,7 @@ public class SignalGate : MapEntity
         return json;
     }
 
-    public override void Replicate(JSONObject data)
+    public override void Replicate(JSONNode data)
     {
         EnsureInitialise();
         var map = data["map"].ReadVector2Int();

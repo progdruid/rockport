@@ -9,7 +9,7 @@ namespace MapEditor
 public static class MapSaveManager
 {
 
-    public static bool SaveAs(string name, JSONObject data)
+    public static bool SaveAs(string name, JSONNode data)
     {
         var directoryPath = Path.Combine(Application.dataPath, "Maps");
         var filePath = Path.Combine(directoryPath, name + ".json");
@@ -31,7 +31,7 @@ public static class MapSaveManager
         }
     }
 
-    public static bool Load(string name, out JSONObject data)
+    public static bool Load(string name, out JSONNode data)
     {
         var filePath = Path.Combine(Application.dataPath, "Maps", name + ".json");
         

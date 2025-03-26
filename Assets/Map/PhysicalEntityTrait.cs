@@ -43,7 +43,7 @@ public class PhysicalEntityTrait : IPropertyHolder, IReplicable
         };
     }
 
-    public JSONObject ExtractData()
+    public JSONNode ExtractData()
     {
         var json = new JSONObject {
             ["generatePhysics"] = _generatePhysics
@@ -51,7 +51,7 @@ public class PhysicalEntityTrait : IPropertyHolder, IReplicable
         return json;
     }
 
-    public void Replicate(JSONObject data)
+    public void Replicate(JSONNode data)
     {
         _generatePhysics = data["generatePhysics"].AsBool;
         PropertiesChangeEvent?.Invoke();

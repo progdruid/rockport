@@ -47,14 +47,14 @@ namespace Map
             yield return handle;
         }
 
-        public override JSONObject ExtractData()
+        public override JSONNode ExtractData()
         {
             var json = base.ExtractData();
             json["impulse"] = impulse;
             return json;
         }
 
-        public override void Replicate(JSONObject data)
+        public override void Replicate(JSONNode data)
         {
             impulse = data["impulse"].AsFloat;
             base.Replicate(data);

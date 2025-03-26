@@ -91,7 +91,7 @@ public class SignalCircuit : IReplicable
         _invertedLinks.Remove(emitter);
     }
 
-    public JSONObject ExtractData()
+    public JSONNode ExtractData()
     {
         var json = new JSONObject();
         var emitterData = new JSONArray();
@@ -108,7 +108,7 @@ public class SignalCircuit : IReplicable
         return json;
     }
 
-    public void Replicate(JSONObject data)
+    public void Replicate(JSONNode data)
     {
         Dictionary<EntityModulePath, SignalEmitter> emitterMap = new();
         Dictionary<EntityModulePath, SignalListener> listenerMap = new();

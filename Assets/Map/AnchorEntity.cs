@@ -15,14 +15,14 @@ public class AnchorEntity : MapEntity, IReplicable
         return mapPos;
     }
 
-    public override JSONObject ExtractData()
+    public override JSONNode ExtractData()
     {
         var json = new JSONObject();
         json["mapPos"] = GetPos().ToJson();
         return json;
     }
 
-    public override void Replicate(JSONObject data)
+    public override void Replicate(JSONNode data)
     {
         var mapPos = data["mapPos"].ReadVector2Int();
         var worldPos = Space.ConvertMapToWorld(mapPos);

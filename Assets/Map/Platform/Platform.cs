@@ -70,7 +70,7 @@ public class Platform : MapEntity
                && checkPos.x < platformPos.x + _platformWidth;
     }
 
-    public override JSONObject ExtractData()
+    public override JSONNode ExtractData()
     {
         var json = new JSONObject();
         var inBounds = Space.SnapWorldToMap(Target.position, out var mapPos);
@@ -80,7 +80,7 @@ public class Platform : MapEntity
         return json;
     }
 
-    public override void Replicate(JSONObject data)
+    public override void Replicate(JSONNode data)
     {
         var world = Space.ConvertMapToWorld(data["pos"].ReadVector2Int());
         Target.SetWorldXY(world);

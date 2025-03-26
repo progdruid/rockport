@@ -78,7 +78,7 @@ public class SpikeLayerEntity : MapEntity
     public override bool CheckOverlap(Vector2 pos) 
         => Space.SnapWorldToMap(pos, out var mapPos) && _placed.At(mapPos) != 0;
 
-    public override JSONObject ExtractData()
+    public override JSONNode ExtractData()
     {
         var json = new JSONObject {
             ["placed"] = _placed.ExtractData()
@@ -86,9 +86,9 @@ public class SpikeLayerEntity : MapEntity
         return json;
     }
 
-    public override void Replicate(JSONObject data)
+    public override void Replicate(JSONNode data)
     {
-        var placedPacked = data["placed"].AsObject;
+        var placedPacked = data["placed"];
 
         EnsureInitialise();
         _placed.Replicate(placedPacked);

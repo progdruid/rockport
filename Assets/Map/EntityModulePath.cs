@@ -32,19 +32,17 @@ public struct EntityModulePath : IEquatable<EntityModulePath>, IReplicable
     public static bool operator !=(EntityModulePath left, EntityModulePath right) =>
         !left.Equals(right);
 
-    public JSONObject ExtractData()
+    public JSONNode ExtractData()
     {
-        var json = new JSONObject {
-            ["EntityIndex"] = EntityIndex,
-            ["DependencyKey"] = DependencyKey
-        };
+        var json = new JSONString ($"{EntityIndex}:{DependencyKey}");
         return json;
     }
 
-    public void Replicate(JSONObject data)
+    public void Replicate(JSONNode data)
     {
-        EntityIndex = data["EntityIndex"].AsInt;
-        DependencyKey = data["DependencyKey"];
+        var split = data.Value.Split(':');
+        EntityIndex = int.Parse(split[0]);
+        DependencyKey = split[1];
     }
 }
 

@@ -58,7 +58,7 @@ public class EditorController : MonoBehaviour, IReplicable
 
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    public JSONObject ExtractData()
+    public JSONNode ExtractData()
     {
         var mapData = new JSONObject();
         mapData["spaceSize"]= _map.MapSize.ToJson();
@@ -93,7 +93,7 @@ public class EditorController : MonoBehaviour, IReplicable
         return mapData;
     }
 
-    public void Replicate(JSONObject mapData)
+    public void Replicate(JSONNode mapData)
     {
         _editorModes[_currentModeIndex].Exit();
 

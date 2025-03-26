@@ -5,8 +5,8 @@ namespace Map
 
 public interface IReplicable
 {
-    public abstract void Replicate(JSONObject data);
-    public abstract JSONObject ExtractData();
+    public abstract void Replicate(JSONNode data);
+    public abstract JSONNode ExtractData();
 }
 
 }

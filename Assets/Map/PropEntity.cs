@@ -64,7 +64,7 @@ public class PropEntity : MapEntity
         return renderers.Any(spriteRenderer => RockUtil.IsInRendererBounds(pos, spriteRenderer));
     }
 
-    public override JSONObject ExtractData()
+    public override JSONNode ExtractData()
     {
         Space.SnapWorldToMap(Target.position, out var map);
         
@@ -74,7 +74,7 @@ public class PropEntity : MapEntity
         return json;
     }
 
-    public override void Replicate(JSONObject data)
+    public override void Replicate(JSONNode data)
     {
         var physicalPacked = data["physicalTrait"].AsObject;
         var mapPos = data["mapPos"].ReadVector2Int();

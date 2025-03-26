@@ -28,23 +28,22 @@ public struct Datamap<T> : IReplicable
     public int Height => _size.y;
     public int Count => _buffer.Length;
 
-    public JSONObject ExtractData()
+    public JSONNode ExtractData()
     {
         using var ms = new MemoryStream();
         var bf = new BinaryFormatter();
         bf.Serialize(ms, _buffer);
         var base64Data = Convert.ToBase64String(ms.ToArray());
 
-        var jsonObject = new JSONObject();
-        jsonObject["data"] = base64Data;
+        var jsonObject = new JSONString(base64Data);
 
         return jsonObject;
     }
 
-    public void Replicate(JSONObject data)
+    public void Replicate(JSONNode data)
     {
-        var base64Data = data["data"];
-
+        var base64Data = data;
+        
         var bytes = Convert.FromBase64String(base64Data);
         using var ms = new MemoryStream(bytes);
         var bf = new BinaryFormatter();

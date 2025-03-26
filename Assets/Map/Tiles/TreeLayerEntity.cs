@@ -99,7 +99,7 @@ public class TreeLayerEntity : MapEntity
         };
     }
     
-    public override JSONObject ExtractData()
+    public override JSONNode ExtractData()
     {
         var json = new JSONObject {
             ["physicalTrait"] = _physicalTrait.ExtractData(),
@@ -108,10 +108,10 @@ public class TreeLayerEntity : MapEntity
         return json;
     }
 
-    public override void Replicate(JSONObject data)
+    public override void Replicate(JSONNode data)
     {
-        var physicalPacked = data["physicalTrait"].AsObject;
-        var placedPacked = data["placed"].AsObject;
+        var physicalPacked = data["physicalTrait"];
+        var placedPacked = data["placed"];
 
         EnsureInitialise();
         _physicalTrait.Replicate(physicalPacked);

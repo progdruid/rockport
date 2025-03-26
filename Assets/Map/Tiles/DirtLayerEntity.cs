@@ -118,7 +118,7 @@ public class DirtLayerEntity : MapEntity
 
     public override float GetReferenceZ() => _baseMap.transform.position.z;
     
-    public override JSONObject ExtractData()
+    public override JSONNode ExtractData()
     {
         var json = new JSONObject {
             ["physicalTrait"] = _physicalTrait.ExtractData(),
@@ -127,10 +127,10 @@ public class DirtLayerEntity : MapEntity
         return json;
     }
 
-    public override void Replicate(JSONObject data)
+    public override void Replicate(JSONNode data)
     {
-        var physicalPacked = data["physicalTrait"].AsObject;
-        var depthPacked = data["depthMap"].AsObject;
+        var physicalPacked = data["physicalTrait"];
+        var depthPacked = data["depthMap"];
 
         EnsureInitialise();
         _physicalTrait.Replicate(physicalPacked);

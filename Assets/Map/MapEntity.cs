@@ -89,8 +89,8 @@ public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IReplicable
         return anchorPoint;
     }
 
-    public abstract JSONObject ExtractData();
-    public abstract void Replicate(JSONObject data);
+    public abstract JSONNode ExtractData();
+    public abstract void Replicate(JSONNode data);
 
     /// <summary>
     /// Deletes the entity together with its GameObject.
