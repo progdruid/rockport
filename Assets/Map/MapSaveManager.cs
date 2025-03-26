@@ -20,7 +20,7 @@ public static class MapSaveManager
             Directory.CreateDirectory(directoryPath);
 
             // Write the content to the file
-            File.WriteAllText(filePath, data.ToString());
+            File.WriteAllText(filePath, data.ToString(4));
             Debug.Log($"File saved successfully at: {filePath}");
             return true;
         }

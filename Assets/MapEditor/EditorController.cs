@@ -143,8 +143,8 @@ public class EditorController : MonoBehaviour, IReplicable
         cam.orthographicSize += zoom * cameraZoomSpeed * cam.orthographicSize * Time.deltaTime;
         cam.orthographicSize = cam.orthographicSize
             .ClampBottom(cameraMinSize)
-            .ClampTop(worldSize.y * 0.5f)
-            .ClampTop(worldSize.x * 0.5f / cam.aspect);
+            .ClampTop(worldSize.y)
+            .ClampTop(worldSize.x / cam.aspect);
 
         var newMouseWorldPos = cam.ScreenToWorldPoint(Input.mousePosition);
         var worldOffset = prevMouseWorldPos - newMouseWorldPos;
