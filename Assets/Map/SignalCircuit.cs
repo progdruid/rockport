@@ -125,8 +125,8 @@ public class SignalCircuit : IReplicable
         {
             var emitterPath = new EntityModulePath();
             var listenerPath = new EntityModulePath();
-            emitterPath.Replicate(emitterData[i].AsObject);
-            listenerPath.Replicate(listenerData[i].AsObject);
+            emitterPath.Replicate(emitterData[i]);
+            listenerPath.Replicate(listenerData[i]);
 
             emitterMap.TryGetValue(emitterPath, out var emitter);
             listenerMap.TryGetValue(listenerPath, out var listener);
