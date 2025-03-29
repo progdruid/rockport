@@ -784,7 +784,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5e9f2b6cf3ca2046a1e90e5e2f2d264, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initMapSize: {x: 200, y: 100}
+  initMapSize: {x: 300, y: 300}
   entityEditor: {fileID: 251374648}
   wiringEditor: {fileID: 251374649}
   cam: {fileID: 202641129}
@@ -3173,7 +3173,6 @@ MonoBehaviour:
   testButton: {fileID: 1533696251}
   saveButton: {fileID: 846627746}
   loadButton: {fileID: 1010440294}
-  deleteButton: {fileID: 0}
   entityCreationDropdown: {fileID: 731417156}
   entityPropertiesPanel: {fileID: 882699494}
   currentLayerText: {fileID: 206225641}
