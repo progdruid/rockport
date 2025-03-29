@@ -11,7 +11,7 @@ public static class MapSaveManager
 
     public static bool SaveAs(string name, JSONNode data)
     {
-        var directoryPath = Path.Combine(Application.dataPath, "Maps");
+        var directoryPath = Path.Combine(Application.dataPath, "Resources", "Maps");
         var filePath = Path.Combine(directoryPath, name + ".json");
 
         try
@@ -33,7 +33,7 @@ public static class MapSaveManager
 
     public static bool Load(string name, out JSONNode data)
     {
-        var filePath = Path.Combine(Application.dataPath, "Maps", name + ".json");
+        var filePath = Path.Combine(Application.dataPath, "Resources", "Maps", name + ".json");
         
         if (!File.Exists(filePath))
         {
@@ -60,7 +60,7 @@ public static class MapSaveManager
 
     public static bool Delete(string name)
     {
-        var filePath = Path.Combine(Application.dataPath, "Maps", name + ".json");
+        var filePath = Path.Combine(Application.dataPath, "Resources", "Maps", name + ".json");
 
         if (!File.Exists(filePath))
         {
