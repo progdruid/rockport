@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 namespace Map
 {
 
-public class TreeLayerEntity : MapEntity
+public class TreeLayer : EntityComponent
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [Header("Tree")]
@@ -28,13 +28,9 @@ public class TreeLayerEntity : MapEntity
     private Material _worldMaterial;
     private float _fogScale = 0f;
 
-    private PhysicalEntityTrait _physicalTrait;
-
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected override void Awake()
+    protected override void Wake()
     {
-        base.Awake();
-
         Assert.IsNotNull(treeTexture);
         if (useMarching) Assert.IsNotNull(treeMarching);
         else Assert.IsNotNull(cutoutTile);
@@ -55,36 +51,28 @@ public class TreeLayerEntity : MapEntity
         
         _treeMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _worldMaterial;
         _outlineMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _baseMaterial;
-        
-        _physicalTrait = new PhysicalEntityTrait();
-        _physicalTrait.AddTilemap(_treeMap);
-        _physicalTrait.PropertiesChangeEvent += InvokePropertiesChangeEvent;
+
+        _treeMap.gameObject.AddComponent<TilemapCollider2D>();
+        _treeMap.gameObject.layer = 8;
     }
 
-    protected override void Initialise()
+    public override void Initialise()
     {
         _placed = new Datamap<bool>(Space.MapSize, false);
     }
 
+    public override void Activate() { }
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    public override float GetReferenceZ() => _treeMap.transform.position.z;
-    public override bool CheckOverlap(Vector2 pos)
-    {
-        if (!Space.SnapWorldToMap(pos, out var mapPos)) return false;
-        return _placed.At(mapPos);
-    }
+    // public override bool CheckOverlap(Vector2 pos)
+    // {
+    //     if (!Space.SnapWorldToMap(pos, out var mapPos)) return false;
+    //     return _placed.At(mapPos);
+    // }
 
+    public override string JsonName => "treeLayer";
     public override IEnumerator<PropertyHandle> GetProperties()
-    {
-        var iter = base.GetProperties();
-        while (iter.MoveNext())
-            yield return iter.Current;
-
-        var physicalTraitIter = _physicalTrait.GetProperties();
-        while (physicalTraitIter.MoveNext())
-            yield return physicalTraitIter.Current;
-        
+    {   
         yield return new PropertyHandle()
         {
             PropertyName = "Fog Intensity %",
@@ -102,19 +90,17 @@ public class TreeLayerEntity : MapEntity
     public override JSONNode ExtractData()
     {
         var json = new JSONObject {
-            ["physicalTrait"] = _physicalTrait.ExtractData(),
-            ["placed"] = _placed.ExtractData()
+            ["placed"] = _placed.ExtractData(),
+            ["fogScale"] = _fogScale
         };
         return json;
     }
 
     public override void Replicate(JSONNode data)
     {
-        var physicalPacked = data["physicalTrait"];
         var placedPacked = data["placed"];
-
-        EnsureInitialise();
-        _physicalTrait.Replicate(physicalPacked);
+        _fogScale = data["fogScale"].AsFloat;
+        
         _placed.Replicate(placedPacked);
 
         for (var x = 0; x < _placed.Width; x++)
@@ -123,7 +109,7 @@ public class TreeLayerEntity : MapEntity
     }
 
 
-    public override void ChangeAt(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
+    public void ChangeAt(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
     {
         if (!Space.SnapWorldToMap(rootWorldPos, out var rootPos)
             || shouldPlaceNotRemove == _placed.At(rootPos)) return;
@@ -133,8 +119,6 @@ public class TreeLayerEntity : MapEntity
         foreach (var subPos in Space.RetrievePositions(rootPos, RockUtil.FullAreaOffsets))
             UpdateVisualsAt(subPos);
     }
-
-    public override void Activate() => _physicalTrait.RequestGeneratePhysics();
 
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     private void UpdateVisualsAt(Vector2Int pos)

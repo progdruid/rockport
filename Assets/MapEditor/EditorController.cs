@@ -67,10 +67,8 @@ public class EditorController : MonoBehaviour, IReplicable
         
         for (var i = 0; i < _map.EntitiesCount; i++)
         {
-            var entityData = new JSONObject();
             var entity = _map.GetEntity(i);
-            entityData["title"] = entity.Title;
-            entityData["data"] = entity.ExtractData();
+            var entityData = entity.ExtractData();
             layers.Add(entityData);
         }
         
@@ -115,7 +113,8 @@ public class EditorController : MonoBehaviour, IReplicable
             var layer = layers[i].AsObject;
             var entity = GlobalConfig.Ins.entityFactory.CreateEntity(layer["title"]);
             _map.RegisterAt(entity, i);
-            entity.Replicate(layer["data"].AsObject);
+            entity.Initialise();
+            entity.Replicate(layer);
             _signalCircuit.ExtractAndAdd(entity);
         }
 

@@ -28,7 +28,7 @@ public struct DirtStratum
     [SerializeField] public TileMarchingSet marchingSet;
 }
 
-public class DirtLayerEntity : MapEntity
+public class DirtLayer : EntityComponent
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [Header("Dirt")]
@@ -44,14 +44,11 @@ public class DirtLayerEntity : MapEntity
 
     private Material _material;
     private float _fogScale = 0f;
-
-    private PhysicalEntityTrait _physicalTrait;
+    
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected override void Awake()
+    protected override void Wake()
     {
-        base.Awake();
-
         Assert.IsNotNull(outlineMarchingSet);
         Assert.IsNotNull(strata);
 
@@ -75,34 +72,27 @@ public class DirtLayerEntity : MapEntity
         _upperPebbleMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _material;
         _marchingMap.gameObject.AddComponent<TilemapRenderer>().sharedMaterial = _material;
         
-        _physicalTrait = new PhysicalEntityTrait();
-        _physicalTrait.AddTilemap(_baseMap);
-        _physicalTrait.PropertiesChangeEvent += InvokePropertiesChangeEvent;
+        _baseMap.gameObject.AddComponent<TilemapCollider2D>();
+        _baseMap.gameObject.layer = 8;
     }
 
-    protected override void Initialise()
+    public override void Initialise()
     {
         _depthMap = new Datamap<byte>(Space.MapSize, 0);
     }
 
+    public override void Activate() { }
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    public override bool CheckOverlap(Vector2 pos)
-    {
-        if (!Space.SnapWorldToMap(pos, out var mapPos)) return false;
-        return _depthMap.At(mapPos) > 0;
-    }
+    // public override bool CheckOverlap(Vector2 pos)
+    // {
+    //     if (!Space.SnapWorldToMap(pos, out var mapPos)) return false;
+    //     return _depthMap.At(mapPos) > 0;
+    // }
 
+    public override string JsonName => "dirtLayer";
     public override IEnumerator<PropertyHandle> GetProperties()
     {
-        var iter = base.GetProperties();
-        while (iter.MoveNext())
-            yield return iter.Current;
-
-        var physicalTraitIter = _physicalTrait.GetProperties();
-        while (physicalTraitIter.MoveNext())
-            yield return physicalTraitIter.Current;
-        
         yield return new PropertyHandle()
         {
             PropertyName = "Fog Intensity %",
@@ -116,24 +106,20 @@ public class DirtLayerEntity : MapEntity
         };
     }
 
-    public override float GetReferenceZ() => _baseMap.transform.position.z;
-    
     public override JSONNode ExtractData()
     {
         var json = new JSONObject {
-            ["physicalTrait"] = _physicalTrait.ExtractData(),
-            ["depthMap"] = _depthMap.ExtractData()
+            ["depthMap"] = _depthMap.ExtractData(),
+            ["fogScale"] = _fogScale
         };
         return json;
     }
 
     public override void Replicate(JSONNode data)
     {
-        var physicalPacked = data["physicalTrait"];
         var depthPacked = data["depthMap"];
+        _fogScale = data["fogScale"].AsFloat;
 
-        EnsureInitialise();
-        _physicalTrait.Replicate(physicalPacked);
         _depthMap.Replicate(depthPacked);
         
         for (var x = 0; x < _depthMap.Width; x++)
@@ -141,7 +127,7 @@ public class DirtLayerEntity : MapEntity
             UpdateVisualsAt(new Vector2Int(x, y));
     }
 
-    public override void ChangeAt(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
+    public void ChangeAt(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
     {
         if (!Space.SnapWorldToMap(rootWorldPos, out var rootPos) ||
             (_depthMap.At(rootPos) == 0) != shouldPlaceNotRemove) return;
@@ -172,11 +158,8 @@ public class DirtLayerEntity : MapEntity
             UpdateVisualsAt(pos);
         }
     }
-
-    public override void Activate() => _physicalTrait.RequestGeneratePhysics();
     
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
-
     private void UpdateVisualsAt(Vector2Int pos)
     {
         var depth = _depthMap.At(pos);

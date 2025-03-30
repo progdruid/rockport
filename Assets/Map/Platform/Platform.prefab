@@ -9,7 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1246611666111112740}
+  - component: {fileID: 3679821194951574041}
   - component: {fileID: 1246611666111112741}
+  - component: {fileID: 5529838887266805077}
   m_Layer: 6
   m_Name: Platform
   m_TagString: Untagged
@@ -32,6 +34,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3679821194951574041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1246611666111112784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bbb58be19878514a98f8d14ddc5b0d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  title: Platform
+  target: {fileID: 1246611666111112740}
+  components:
+  - {fileID: 1246611666111112741}
+  - {fileID: 5529838887266805077}
 --- !u!114 &1246611666111112741
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44,11 +63,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dc3ff0affd10be4cbe0832d14f841bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  title: Platform
-  target: {fileID: 1246611666111112740}
   colliderHeight: 0.2
+  outlineOffset: 0.0625
   sprites:
   - {fileID: 1686027942, guid: e968cd4db2dcaa4448ae133a806b2bbb, type: 3}
   - {fileID: 1231087184, guid: e968cd4db2dcaa4448ae133a806b2bbb, type: 3}
   - {fileID: -1471991583, guid: e968cd4db2dcaa4448ae133a806b2bbb, type: 3}
   - {fileID: -847883850, guid: e968cd4db2dcaa4448ae133a806b2bbb, type: 3}
+--- !u!114 &5529838887266805077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1246611666111112784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10664e4e60194cea9287c5d5cca0efa7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -9,10 +9,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3658617579862564218}
+  - component: {fileID: 3282395437883636724}
+  - component: {fileID: 5430271054451297004}
+  - component: {fileID: 3658617579862564219}
+  - component: {fileID: 1717478099186911408}
   - component: {fileID: 3658617579862564221}
   - component: {fileID: 3658617579862564217}
   - component: {fileID: 3658617579862564216}
-  - component: {fileID: 3658617579862564219}
   - component: {fileID: 6473081886207708476}
   - component: {fileID: 3593656765806976042}
   m_Layer: 7
@@ -37,6 +40,94 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3282395437883636724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3658617579862564220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bbb58be19878514a98f8d14ddc5b0d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  title: Button
+  target: {fileID: 3658617579862564218}
+  components:
+  - {fileID: 5430271054451297004}
+  - {fileID: 3658617579862564219}
+  - {fileID: 1717478099186911408}
+--- !u!114 &5430271054451297004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3658617579862564220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10664e4e60194cea9287c5d5cca0efa7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3658617579862564219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3658617579862564220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61531828e72d6d34998fb583e43ca38e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 3658617579862564217}
+  trigger: {fileID: 6473081886207708476}
+  onPress:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3593656765806976042}
+        m_TargetAssemblyTypeName: CustomSoundEmitter, Assembly-CSharp
+        m_MethodName: EmitSound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ButtonPress
+          m_BoolArgument: 0
+        m_CallState: 2
+  onRelease:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3593656765806976042}
+        m_TargetAssemblyTypeName: CustomSoundEmitter, Assembly-CSharp
+        m_MethodName: EmitSound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ButtonUnpress
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1717478099186911408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3658617579862564220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2c6fa1dbd58c9e459350086da0d8493, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  exposeToEditor: 0
+  generatePhysics: 1
 --- !u!212 &3658617579862564221
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -160,52 +251,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.875, y: 0.3125}
   m_EdgeRadius: 0
---- !u!114 &3658617579862564219
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3658617579862564220}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61531828e72d6d34998fb583e43ca38e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  title: Button
-  target: {fileID: 3658617579862564218}
-  animator: {fileID: 3658617579862564217}
-  trigger: {fileID: 6473081886207708476}
-  onPress:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3593656765806976042}
-        m_TargetAssemblyTypeName: CustomSoundEmitter, Assembly-CSharp
-        m_MethodName: EmitSound
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: ButtonPress
-          m_BoolArgument: 0
-        m_CallState: 2
-  onRelease:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3593656765806976042}
-        m_TargetAssemblyTypeName: CustomSoundEmitter, Assembly-CSharp
-        m_MethodName: EmitSound
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: ButtonUnpress
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &6473081886207708476
 MonoBehaviour:
   m_ObjectHideFlags: 0

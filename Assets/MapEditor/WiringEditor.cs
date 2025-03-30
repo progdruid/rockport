@@ -58,7 +58,7 @@ public class WiringEditor : MonoBehaviour, IMapEditorMode
             Assert.IsNotNull(spriteRenderer);
             _outputs.Add(emitter, spriteRenderer);
 
-            var entity = ((IEntityModule)emitter).GetEntity();
+            var entity = ((IEntityAccessor)emitter).GetEntity();
             Assert.IsFalse(_entityToEmitter.Contains(entity));
             _entityToEmitter.Add(entity);
         }
@@ -69,7 +69,7 @@ public class WiringEditor : MonoBehaviour, IMapEditorMode
             Assert.IsNotNull(spriteRenderer);
             _inputs.Add(listener, spriteRenderer);
             
-            var entity = ((IEntityModule)listener).GetEntity();
+            var entity = ((IEntityAccessor)listener).GetEntity();
             _entityToListeners.TryAdd(entity, new Dictionary<SignalListener, int>());
             
             var listeners = _entityToListeners[entity];
@@ -179,7 +179,7 @@ public class WiringEditor : MonoBehaviour, IMapEditorMode
         
         foreach (var (module, pin) in _outputs)
         {
-            var entity = ((IEntityModule)module).GetEntity();
+            var entity = ((IEntityAccessor)module).GetEntity();
             var pos = _map.ConvertMapToWorld(entity.GetOverlayAnchor());
             
             if (_entityToListeners.ContainsKey(entity))
@@ -190,7 +190,7 @@ public class WiringEditor : MonoBehaviour, IMapEditorMode
         
         foreach (var (module, pin) in _inputs)
         {
-            var entity = ((IEntityModule)module).GetEntity();
+            var entity = ((IEntityAccessor)module).GetEntity();
             var pos = _map.ConvertMapToWorld(entity.GetOverlayAnchor());
             
             var foundListeners = _entityToListeners.TryGetValue(entity, out var listeners);

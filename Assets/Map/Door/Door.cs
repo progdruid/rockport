@@ -1,4 +1,5 @@
-using MapEditor;
+using System.Collections.Generic;
+using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
@@ -7,7 +8,7 @@ namespace Map
 {
 
 [RequireComponent(typeof(Animator))]
-public class Door : PropEntity
+public class Door : EntityComponent
 {
     private static readonly int Open = Animator.StringToHash("Open");
 
@@ -21,21 +22,24 @@ public class Door : PropEntity
     private SignalListener _listener;
 
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected override void Awake()
+    protected override void Wake()
     {
         _listener = new SignalListener();
-        AddPublicModule("signal-input-0", _listener);
-
-        base.Awake();
+        Entity.AddPublicModule("signal-input-0", _listener);
 
         Assert.IsNotNull(animator);
     }
-
+    public override void Initialise() { }
     public override void Activate()
     {
-        base.Activate();
         _listener.ActionOnSignal = UpdateDoor;
     }
+
+    //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
+    public override string JsonName => "door";
+    public override IEnumerator<PropertyHandle> GetProperties() { yield break; }
+    public override void Replicate(JSONNode data) { }
+    public override JSONNode ExtractData() => new JSONObject();
 
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     private void UpdateDoor(bool activate)

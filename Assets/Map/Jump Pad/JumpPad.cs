@@ -8,7 +8,7 @@ using UnityEngine.Events;
 namespace Map
 {
     [RequireComponent(typeof(Animator))]
-    public class JumpPad : PropEntity, IReplicable
+    public class JumpPad : EntityComponent
     {
         private static readonly int Pressed = Animator.StringToHash("Pressed");
 
@@ -23,33 +23,29 @@ namespace Map
         private readonly List<(Collider2D col, bool isPlayer, float time)> _bodiesInside = new();
 
         //initialisation////////////////////////////////////////////////////////////////////////////////////////////////
-        protected override void Awake()
+        protected override void Wake()
         {
-            base.Awake();
             Assert.IsNotNull(animator);
         }
-
+        public override void Initialise() {}
+        public override void Activate() { }
 
         //public interface//////////////////////////////////////////////////////////////////////////////////////////////
+        public override string JsonName => "jumpPad";
         public override IEnumerator<PropertyHandle> GetProperties()
         {
-            var iter = base.GetProperties();
-            while (iter.MoveNext())
-                yield return iter.Current;
-
-            var handle = new PropertyHandle()
+            yield return new PropertyHandle()
             {
                 PropertyName = "Impulse",
                 PropertyType = PropertyType.Decimal,
                 Getter = () => impulse,
                 Setter = (object input) => impulse = (float)input
             };
-            yield return handle;
         }
 
         public override JSONNode ExtractData()
         {
-            var json = base.ExtractData();
+            var json = new JSONObject();
             json["impulse"] = impulse;
             return json;
         }
@@ -57,7 +53,6 @@ namespace Map
         public override void Replicate(JSONNode data)
         {
             impulse = data["impulse"].AsFloat;
-            base.Replicate(data);
         }
 
         

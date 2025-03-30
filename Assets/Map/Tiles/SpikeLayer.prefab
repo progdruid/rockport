@@ -9,7 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2573685023679411748}
+  - component: {fileID: 1216375531489144970}
   - component: {fileID: 5310152257245745128}
+  - component: {fileID: 2849284576514723515}
   m_Layer: 7
   m_Name: SpikeLayer
   m_TagString: Untagged
@@ -32,6 +34,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1216375531489144970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1621482437382962143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bbb58be19878514a98f8d14ddc5b0d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  title: Spikes
+  target: {fileID: 2573685023679411748}
+  components:
+  - {fileID: 5310152257245745128}
+  - {fileID: 2849284576514723515}
 --- !u!114 &5310152257245745128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44,8 +63,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 200990c32cfdc3049a63672582d4b193, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  title: Spikes
-  target: {fileID: 2573685023679411748}
   tiles:
     serializedItems:
     - Key: ^
@@ -56,3 +73,17 @@ MonoBehaviour:
       Value: {fileID: 11400000, guid: b8a4f309a560a674d8df1ee066ca9818, type: 2}
     - Key: <
       Value: {fileID: 11400000, guid: 9bf8cf28c8c43a2479b9727a06b93e97, type: 2}
+--- !u!114 &2849284576514723515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1621482437382962143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2c6fa1dbd58c9e459350086da0d8493, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  exposeToEditor: 0
+  generatePhysics: 1

@@ -9,10 +9,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4365052880456163226}
+  - component: {fileID: 3347742590493878525}
+  - component: {fileID: 5317888094550473783}
+  - component: {fileID: 8443300701681391596}
+  - component: {fileID: -475646918996417920}
   - component: {fileID: 4365052880456163227}
   - component: {fileID: 4365052880456163300}
   - component: {fileID: 4365052880456163301}
-  - component: {fileID: 8443300701681391596}
   - component: {fileID: 3108557415503862509}
   m_Layer: 8
   m_Name: Door
@@ -36,6 +39,93 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3347742590493878525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4365052880456163302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bbb58be19878514a98f8d14ddc5b0d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  title: Door
+  target: {fileID: 4365052880456163226}
+  components:
+  - {fileID: 5317888094550473783}
+  - {fileID: 8443300701681391596}
+  - {fileID: -475646918996417920}
+--- !u!114 &5317888094550473783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4365052880456163302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10664e4e60194cea9287c5d5cca0efa7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8443300701681391596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4365052880456163302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14f96e7baf175d04893469238f7be446, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 4365052880456163300}
+  onOpening:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3108557415503862509}
+        m_TargetAssemblyTypeName: CustomSoundEmitter, Assembly-CSharp
+        m_MethodName: EmitSound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Open
+          m_BoolArgument: 0
+        m_CallState: 2
+  onClosing:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3108557415503862509}
+        m_TargetAssemblyTypeName: CustomSoundEmitter, Assembly-CSharp
+        m_MethodName: EmitSound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Close
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &-475646918996417920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4365052880456163302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2c6fa1dbd58c9e459350086da0d8493, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  exposeToEditor: 0
+  generatePhysics: 1
 --- !u!212 &4365052880456163227
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -159,51 +249,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.375, y: 3.5}
   m_EdgeRadius: 0
---- !u!114 &8443300701681391596
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4365052880456163302}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 14f96e7baf175d04893469238f7be446, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  title: Door
-  target: {fileID: 4365052880456163226}
-  animator: {fileID: 4365052880456163300}
-  onOpening:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3108557415503862509}
-        m_TargetAssemblyTypeName: CustomSoundEmitter, Assembly-CSharp
-        m_MethodName: EmitSound
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Open
-          m_BoolArgument: 0
-        m_CallState: 2
-  onClosing:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3108557415503862509}
-        m_TargetAssemblyTypeName: CustomSoundEmitter, Assembly-CSharp
-        m_MethodName: EmitSound
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Close
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &3108557415503862509
 MonoBehaviour:
   m_ObjectHideFlags: 0

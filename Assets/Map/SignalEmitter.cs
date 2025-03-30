@@ -3,14 +3,14 @@
 namespace Map
 {
 
-public class SignalEmitter : IEntityModule
+public class SignalEmitter : IEntityAccessor
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private readonly HashSet<SignalListener> _listeners = new();
     private bool _signal;
     
-    MapEntity IEntityModule.Entity { get; set; }
-    string IEntityModule.ModuleName { get; set; }
+    MapEntity IEntityAccessor.Entity { get; set; }
+    string IEntityAccessor.AccessorName { get; set; }
     
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public bool Signal

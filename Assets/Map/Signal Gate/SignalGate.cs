@@ -1,4 +1,5 @@
-﻿using SimpleJSON;
+﻿using System.Collections.Generic;
+using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -13,7 +14,7 @@ public enum SignalGateType
 }
 
 
-public class SignalGate : MapEntity
+public class SignalGate : EntityComponent
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [Header("Gate")]
@@ -25,40 +26,39 @@ public class SignalGate : MapEntity
     private bool[] _listenedValues;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected override void Awake()
+    protected override void Wake()
     {
         Assert.IsNotNull(textRenderer);
         
-        
         _emitter = new SignalEmitter();
-        AddPublicModule("gate-output", _emitter);
+        Entity.AddPublicModule("gate-output", _emitter);
         
         switch (type)
         {
             case SignalGateType.And:
                 _listenedValues = new bool[2];
                 _listeners = new[] { new SignalListener(), new SignalListener() };
-                AddPublicModule("and-gate-input-0", _listeners[0]);
-                AddPublicModule("and-gate-input-1", _listeners[1]);
+                Entity.AddPublicModule("and-gate-input-0", _listeners[0]);
+                Entity.AddPublicModule("and-gate-input-1", _listeners[1]);
                 break;
             case SignalGateType.Or:
                 _listenedValues = new bool[2];
                 _listeners = new[] { new SignalListener(), new SignalListener() };
-                AddPublicModule("or-gate-input-0", _listeners[0]);
-                AddPublicModule("or-gate-input-1", _listeners[1]);
+                Entity.AddPublicModule("or-gate-input-0", _listeners[0]);
+                Entity.AddPublicModule("or-gate-input-1", _listeners[1]);
                 break;
             case SignalGateType.Not:
                 _listenedValues = new bool[2];
                 _listeners = new[] { new SignalListener() };
-                AddPublicModule("not-gate-input", _listeners[0]);
+                Entity.AddPublicModule("not-gate-input", _listeners[0]);
                 break;
             default:
                 Assert.IsTrue(false, "Invalid signal gate type");
                 break;
         }
-        
-        base.Awake();
     }
+
+    public override void Initialise() {}
 
     public override void Activate()
     {
@@ -77,29 +77,10 @@ public class SignalGate : MapEntity
 
     
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    public override JSONNode ExtractData()
-    {
-        var json = new JSONObject();
-        Space.SnapWorldToMap(Target.position, out var map);
-        json["map"] = map.ToJson();
-        return json;
-    }
-
-    public override void Replicate(JSONNode data)
-    {
-        EnsureInitialise();
-        var map = data["map"].ReadVector2Int();
-        var worldPos = Space.ConvertMapToWorld(map);
-        Target.SetWorldXY(worldPos);
-    }
-
-    public override void ChangeAt(Vector2 worldPos, bool shouldPlaceNotRemove)
-    {
-        if (!Space.SnapWorldToMap(worldPos, out var mapPos)) return;
-        var snappedWorldPos = Space.ConvertMapToWorld(mapPos);
-        Target.SetWorldXY(snappedWorldPos);
-    }
-    
+    public override string JsonName => "signalGate";
+    public override IEnumerator<PropertyHandle> GetProperties() { yield break; }
+    public override JSONNode ExtractData() => new JSONObject();
+    public override void Replicate(JSONNode data) { }
     
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     private void TryEmit()

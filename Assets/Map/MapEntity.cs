@@ -7,69 +7,62 @@ using UnityEngine.Assertions;
 namespace Map
 {
 
-public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IReplicable
+public class MapEntity : MonoBehaviour, IPropertyHolder, IReplicable
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [Header("Entity Base")]
     [SerializeField] private string title;
     [SerializeField] private Transform target;
+    [SerializeField] private EntityComponent[] components;
     
-    protected MapSpace Space { get; private set; }
+    public MapSpace Space { get; private set; }
     private readonly IntReference _layerHandle = new();
-    private readonly Dictionary<string, IEntityModule> _publicModules = new();
-    
-    private bool _initialised = false;
+    private readonly Dictionary<string, IEntityAccessor> _accessors = new();
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
-    /// <summary>
-    /// Always call base.Awake() in derived classes.
-    /// </summary>
-    protected virtual void Awake()
+    private void Awake()
     {
         Assert.IsNotNull(target);
         Assert.IsNotNull(title);
         Assert.IsTrue(title.Length > 0);
+        
+        foreach (var component in components) 
+            component.Setup(this, target);
     }
     
-    protected void Start() => EnsureInitialise();
-    
-    /// <summary>
-    /// You can manually ensure initialisation.
-    /// </summary>
-    protected void EnsureInitialise()
+    public IntReference InjectMap(MapSpace injected)
     {
-        if (_initialised) return;
-        _initialised = true;
-        Initialise();
+        Space = injected;
+        foreach (var component in components)
+            component.InjectMap(Space);
+        return _layerHandle;
+    }
+    
+    public void Initialise()
+    { 
+        foreach (var component in components) 
+            component.Initialise();
     }
 
     /// <summary>
-    /// This is "Start". Use this for any setup that requires external dependencies to be ready.
-    /// </summary>
-    protected virtual void Initialise() { }
-    
-    /// <summary>
     /// Called when gameplay mode starts.
     /// </summary>
-    public virtual void Activate() { }
+    public virtual void Activate()
+    {
+        foreach (var component in components) 
+            component.Activate();
+    }
 
     
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public string Title => title;
     public Transform Target => target;
     public int Layer => _layerHandle.Value;
-    public IReadOnlyDictionary<string, IEntityModule> PublicModules => _publicModules;
-    
-    
-    public IntReference InjectMap(MapSpace injected)
-    {
-        Space = injected;
-        return _layerHandle;
-    }
+    public IReadOnlyDictionary<string, IEntityAccessor> Accessors => _accessors;
     
 
     public event Action PropertiesChangeEvent;
-    public virtual IEnumerator<PropertyHandle> GetProperties()
+    public IEnumerator<PropertyHandle> GetProperties()
     {
         yield return new PropertyHandle()
         {
@@ -78,19 +71,49 @@ public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IReplicable
             Getter = () => title,
             Setter = null
         };
+
+        foreach (var component in components)
+        {
+            var properties = component.GetProperties();
+            while (properties.MoveNext())
+                yield return properties.Current;
+        }
     }
 
-    public virtual bool CheckOverlap (Vector2 pos) => false;
-    public virtual float GetReferenceZ() => Target.position.z;
-    public virtual Vector2Int GetOverlayAnchor()
+    /// <summary>
+    /// Out of order just now.
+    /// </summary>
+    public bool CheckOverlap (Vector2 pos) => false;
+    public float GetReferenceZ() => Target.position.z;
+    public Vector2Int GetOverlayAnchor()
     {
         var snapped = Space.SnapWorldToMap(Target.position, out var anchorPoint);
         Assert.IsTrue(snapped);
         return anchorPoint;
     }
 
-    public abstract JSONNode ExtractData();
-    public abstract void Replicate(JSONNode data);
+    public JSONNode ExtractData()
+    {
+        var json = new JSONObject();
+        json["title"] = title;
+        
+        foreach (var component in components)
+        {
+            var componentName = component.JsonName;
+            json[componentName] = component.ExtractData();
+        }
+        return json;
+    }
+
+    public void Replicate(JSONNode data)
+    {
+        foreach (var component in components)
+        {
+            var componentName = component.JsonName;
+            component.Replicate(data[componentName]);
+        }
+        PropertiesChangeEvent?.Invoke();
+    }
 
     /// <summary>
     /// Deletes the entity together with its GameObject.
@@ -101,16 +124,11 @@ public abstract class MapEntity : MonoBehaviour, IPropertyHolder, IReplicable
         Destroy(this);
         Destroy(targetObject);
     }
-
-    public abstract void ChangeAt(Vector2 worldPos, bool shouldPlaceNotRemove);
     
-    
-    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected void InvokePropertiesChangeEvent() => PropertiesChangeEvent?.Invoke();
-    protected void AddPublicModule(string moduleName, IEntityModule module)
+    public void AddPublicModule(string moduleName, IEntityAccessor accessor)
     {
-        _publicModules.TryAdd(moduleName, module);
-        module.Initialise(moduleName, this);
+        _accessors.TryAdd(moduleName, accessor);
+        accessor.Initialise(moduleName, this);
     }
 }
 }

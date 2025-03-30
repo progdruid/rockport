@@ -1,18 +1,18 @@
 ﻿namespace Map
 {
 
-public interface IEntityModule
+public interface IEntityAccessor
 {
     protected MapEntity Entity { get; set; }
-    protected string ModuleName { get; set; }
+    protected string AccessorName { get; set; }
 
     public void Initialise(string moduleName, MapEntity entity)
     {
         Entity = entity;
-        ModuleName = moduleName;
+        AccessorName = moduleName;
     }
     
-    public EntityModulePath GetModulePath() => new(Entity.Layer, ModuleName);
+    public EntityAccessorPath GetAccessorPath() => new(Entity.Layer, AccessorName);
     public MapEntity GetEntity() => Entity;
 }
 

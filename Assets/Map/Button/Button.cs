@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
@@ -7,7 +8,7 @@ namespace Map
 {
 
 [RequireComponent(typeof(UniversalTrigger), typeof(Animator))]
-public class Button : PropEntity
+public class Button : EntityComponent
 {
     private static readonly int PressedAnimatorParameterID = Animator.StringToHash("Pressed");
 
@@ -20,13 +21,12 @@ public class Button : PropEntity
     private readonly List<Collider2D> _pressingBodies = new();
     private SignalEmitter _signalEmitter;
 
+    
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected override void Awake()
+    protected override void Wake()
     {
         _signalEmitter = new SignalEmitter { Signal = false };
-        AddPublicModule("signal-output", _signalEmitter);
-
-        base.Awake();
+        Entity.AddPublicModule("signal-output", _signalEmitter);
 
         Assert.IsNotNull(animator);
         Assert.IsNotNull(trigger);
@@ -41,7 +41,17 @@ public class Button : PropEntity
         trigger.ExitEvent -= HandleTriggerExit;
     }
 
+    public override void Initialise() {}
+    public override void Activate() {}
 
+    
+    //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
+    public override string JsonName => "button";
+    public override IEnumerator<PropertyHandle> GetProperties() { yield break; }
+    public override void Replicate(JSONNode data) { }
+    public override JSONNode ExtractData() => new JSONObject();
+    
+    
     //game events///////////////////////////////////////////////////////////////////////////////////////////////////////
     private void HandleTriggerEnter(Collider2D other, TriggeredType type)
     {

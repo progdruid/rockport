@@ -9,7 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5585420924436873903}
+  - component: {fileID: 3837288934543067239}
   - component: {fileID: 228163013616379759}
+  - component: {fileID: 329514562742438803}
   m_Layer: 0
   m_Name: DirtLayer
   m_TagString: Untagged
@@ -32,6 +34,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3837288934543067239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6644706919620923965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bbb58be19878514a98f8d14ddc5b0d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  title: Dirt
+  target: {fileID: 5585420924436873903}
+  components:
+  - {fileID: 228163013616379759}
+  - {fileID: 329514562742438803}
 --- !u!114 &228163013616379759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44,8 +63,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23e2094a739944f281fcf36f106213d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  title: Dirt
-  target: {fileID: 5585420924436873903}
   maxDepth: 15
   outlineMarchingSet: {fileID: 11400000, guid: 2ceb0cc2d7393554cb4c125c4f315659, type: 2}
   strata:
@@ -107,3 +124,17 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 0995361cd4f88c24b81fb00e7e44c326, type: 2}
     - {fileID: 11400000, guid: d29260a7e7797db41bd0e49f9f35fb87, type: 2}
     marchingSet: {fileID: 0}
+--- !u!114 &329514562742438803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6644706919620923965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2c6fa1dbd58c9e459350086da0d8493, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  exposeToEditor: 1
+  generatePhysics: 1

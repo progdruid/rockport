@@ -5,7 +5,7 @@ using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-public class Platform : MapEntity
+public class Platform : EntityComponent
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [Header("Platform")]
@@ -19,17 +19,17 @@ public class Platform : MapEntity
     private int _platformWidth = 2;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected override void Awake()
+    protected override void Wake()
     {
-        base.Awake();
-        
         Assert.IsNotNull(sprites);
         foreach (var sprite in sprites)
             Assert.IsNotNull(sprite);
         
         GenerateSprites();
     }
-    
+
+    public override void Initialise() {}
+
     public override void Activate()
     {
         _platformCollider = Target.gameObject.AddComponent<BoxCollider2D>();
@@ -39,12 +39,9 @@ public class Platform : MapEntity
     
     
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
+    public override string JsonName => "platform";
     public override IEnumerator<PropertyHandle> GetProperties()
     {
-        var iter = base.GetProperties();
-        while (iter.MoveNext())
-            yield return iter.Current;
-
         yield return new PropertyHandle()
         {
             PropertyName = "Width",
@@ -58,43 +55,30 @@ public class Platform : MapEntity
         };
     }
 
-    public override bool CheckOverlap(Vector2 pos)
-    {
-        if (!Space.SnapWorldToMap(pos, out var checkPos))
-            return false;
-        
-        var inbounds = Space.SnapWorldToMap(Target.position.To2(), out var platformPos);
-        Assert.IsTrue(inbounds);
-        
-        return checkPos.y == platformPos.y 
-               && checkPos.x >= platformPos.x 
-               && checkPos.x < platformPos.x + _platformWidth;
-    }
+    // public override bool CheckOverlap(Vector2 pos)
+    // {
+    //     if (!Space.SnapWorldToMap(pos, out var checkPos))
+    //         return false;
+    //     
+    //     var inbounds = Space.SnapWorldToMap(Target.position.To2(), out var platformPos);
+    //     Assert.IsTrue(inbounds);
+    //     
+    //     return checkPos.y == platformPos.y 
+    //            && checkPos.x >= platformPos.x 
+    //            && checkPos.x < platformPos.x + _platformWidth;
+    // }
 
     public override JSONNode ExtractData()
     {
         var json = new JSONObject();
-        var inBounds = Space.SnapWorldToMap(Target.position, out var mapPos);
-        Assert.IsTrue(inBounds);
-        json["pos"] = mapPos.ToJson();
         json["width"] = _platformWidth;
         return json;
     }
 
     public override void Replicate(JSONNode data)
     {
-        var world = Space.ConvertMapToWorld(data["pos"].ReadVector2Int());
-        Target.SetWorldXY(world);
-        
         _platformWidth = data["width"].AsInt;
         GenerateSprites();
-    }
-
-    public override void ChangeAt(Vector2 worldPos, bool shouldPlaceNotRemove)
-    {
-        if (!Space.SnapWorldToMap(worldPos, out var mapPos)) return;
-        var snappedWorldPos = Space.ConvertMapToWorld(mapPos);
-        Target.SetWorldXY(snappedWorldPos);
     }
     
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////

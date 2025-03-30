@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
@@ -6,8 +7,7 @@ using UnityEngine.Events;
 namespace Map
 {
 
-[RequireComponent(typeof(UniversalTrigger), typeof(Animator))]
-public class Lever : PropEntity
+public class Lever : EntityComponent
 {
     private static readonly int PulledAnimatorParameterID = Animator.StringToHash("Pulled");
 
@@ -22,25 +22,34 @@ public class Lever : PropEntity
     
     private bool _pulled;
 
-    protected override void Awake()
+    //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected override void Wake()
     {
         _signalEmitter = new SignalEmitter { Signal = false };
-        AddPublicModule("signal-output", _signalEmitter);
-
-        base.Awake();
+        Entity.AddPublicModule("signal-output", _signalEmitter);
 
         Assert.IsNotNull(animator);
         Assert.IsNotNull(trigger);
 
         trigger.EnterEvent += HandleTriggerEnter;
     }
-    
+
+    public override void Initialise() { }
+    public override void Activate() { }
+
+
     private void OnDestroy()
     {
         trigger.EnterEvent -= HandleTriggerEnter;
     }
 
+    //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
+    public override string JsonName => "lever";
+    public override IEnumerator<PropertyHandle> GetProperties() { yield break; }
+    public override void Replicate(JSONNode data) { }
+    public override JSONNode ExtractData() => new JSONObject();
 
+    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     private void HandleTriggerEnter(Collider2D other, TriggeredType type)
     {
         if (type != TriggeredType.Player && type != TriggeredType.Corpse)

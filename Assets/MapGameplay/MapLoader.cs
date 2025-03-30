@@ -110,18 +110,17 @@ public class MapLoader : MonoBehaviour
             var layer = layers[i].AsObject;
             var entity = GlobalConfig.Ins.entityFactory.CreateEntity(layer["title"].Value);
             mapSpace.RegisterAt(entity, i);
-            entity.Replicate(layer["data"].AsObject);
+            entity.Initialise();
+            entity.Replicate(layer);
             signalCircuit.ExtractAndAdd(entity);
         }
 
         mapSpace.FindEntity(GlobalConfig.Ins.spawnPointEntityName, out var foundEntity);
         Assert.IsNotNull(foundEntity);
-        var spawnPoint = foundEntity as AnchorEntity;
-        Assert.IsNotNull(spawnPoint);
-        var spawnPos = spawnPoint.GetPos();
-        var spawnZ = spawnPoint.GetReferenceZ();
+        var spawnPos = foundEntity.Target.position.To2();
+        var spawnZ = foundEntity.GetReferenceZ();
         
-        GameSystems.Ins.PlayerManager.SetSpawnPoint(mapSpace.ConvertMapToWorld(spawnPos));
+        GameSystems.Ins.PlayerManager.SetSpawnPoint(spawnPos);
         GameSystems.Ins.PlayerManager.SetSpawnZ(spawnZ);
 
         GameSystems.Ins.GameplayCamera.ObservationHeight = mapSpace.GetMapTop();

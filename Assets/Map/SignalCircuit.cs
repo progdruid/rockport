@@ -34,7 +34,7 @@ public class SignalCircuit : IReplicable
     
     public void ExtractAndAdd(MapEntity entity)
     {
-        foreach (var (_, module) in entity.PublicModules)
+        foreach (var (_, module) in entity.Accessors)
             switch (module)
             {
                 case SignalEmitter emitter: _emitters.Add(emitter); break;
@@ -44,7 +44,7 @@ public class SignalCircuit : IReplicable
 
     public void ExtractAndRemove(MapEntity entity)
     {
-        foreach (var (key, module) in entity.PublicModules)
+        foreach (var (key, module) in entity.Accessors)
             switch (module)
             {
                 case SignalEmitter emitter: 
@@ -99,8 +99,8 @@ public class SignalCircuit : IReplicable
 
         foreach (var (listener, emitter) in _links)
         {
-            emitterData.Add(((IEntityModule)emitter).GetModulePath().ExtractData());
-            listenerData.Add(((IEntityModule)listener).GetModulePath().ExtractData());
+            emitterData.Add(((IEntityAccessor)emitter).GetAccessorPath().ExtractData());
+            listenerData.Add(((IEntityAccessor)listener).GetAccessorPath().ExtractData());
         }
 
         json["emitterData"] = emitterData;
@@ -110,21 +110,21 @@ public class SignalCircuit : IReplicable
 
     public void Replicate(JSONNode data)
     {
-        Dictionary<EntityModulePath, SignalEmitter> emitterMap = new();
-        Dictionary<EntityModulePath, SignalListener> listenerMap = new();
+        Dictionary<EntityAccessorPath, SignalEmitter> emitterMap = new();
+        Dictionary<EntityAccessorPath, SignalListener> listenerMap = new();
 
         foreach (var emitter in _emitters)
-            emitterMap[((IEntityModule)emitter).GetModulePath()] = emitter;
+            emitterMap[((IEntityAccessor)emitter).GetAccessorPath()] = emitter;
         foreach (var listener in _listeners)
-            listenerMap[((IEntityModule)listener).GetModulePath()] = listener;
+            listenerMap[((IEntityAccessor)listener).GetAccessorPath()] = listener;
 
         var emitterData = data["emitterData"].AsArray;
         var listenerData = data["listenerData"].AsArray;
 
         for (var i = 0; i < emitterData.Count; i++)
         {
-            var emitterPath = new EntityModulePath();
-            var listenerPath = new EntityModulePath();
+            var emitterPath = new EntityAccessorPath();
+            var listenerPath = new EntityAccessorPath();
             emitterPath.Replicate(emitterData[i]);
             listenerPath.Replicate(listenerData[i]);
 

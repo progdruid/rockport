@@ -87,9 +87,9 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
         // place/remove
         var constructive = Input.GetMouseButton(0);
         var destructive = Input.GetMouseButton(1);
-            
+
         if (constructive != destructive)
-            _selectedEntity.ChangeAt(worldMousePos, constructive);
+            ;//_selectedEntity.ChangeAt(worldMousePos, constructive);
     }
 
 

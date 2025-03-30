@@ -9,10 +9,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 21454352661399368}
+  - component: {fileID: 834255205741908856}
+  - component: {fileID: 6073723552209283704}
+  - component: {fileID: 21454352661399369}
+  - component: {fileID: -1430361908840513167}
   - component: {fileID: 21454352661399371}
   - component: {fileID: 21454352661399370}
   - component: {fileID: 21454352661399373}
-  - component: {fileID: 21454352661399369}
   - component: {fileID: 3826480408867553601}
   m_Layer: 7
   m_Name: JumpPad
@@ -36,6 +39,81 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &834255205741908856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 21454352661399372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bbb58be19878514a98f8d14ddc5b0d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  title: Jump Pad
+  target: {fileID: 21454352661399368}
+  components:
+  - {fileID: 6073723552209283704}
+  - {fileID: 21454352661399369}
+  - {fileID: -1430361908840513167}
+--- !u!114 &6073723552209283704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 21454352661399372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10664e4e60194cea9287c5d5cca0efa7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &21454352661399369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 21454352661399372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e21cc1fbfd3a75941b35f06ce01512e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  impulse: 16
+  timeOffset: 0.04
+  cooldown: 0.5
+  animator: {fileID: 21454352661399370}
+  onJump:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3826480408867553601}
+        m_TargetAssemblyTypeName: CustomSoundEmitter, Assembly-CSharp
+        m_MethodName: EmitSound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Jump
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &-1430361908840513167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 21454352661399372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2c6fa1dbd58c9e459350086da0d8493, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  exposeToEditor: 0
+  generatePhysics: 1
 --- !u!212 &21454352661399371
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -159,39 +237,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.75, y: 0.4375}
   m_EdgeRadius: 0
---- !u!114 &21454352661399369
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 21454352661399372}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e21cc1fbfd3a75941b35f06ce01512e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  title: Jump Pad
-  target: {fileID: 21454352661399368}
-  impulse: 16
-  timeOffset: 0.04
-  cooldown: 0.5
-  animator: {fileID: 21454352661399370}
-  onJump:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3826480408867553601}
-        m_TargetAssemblyTypeName: CustomSoundEmitter, Assembly-CSharp
-        m_MethodName: EmitSound
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Jump
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &3826480408867553601
 MonoBehaviour:
   m_ObjectHideFlags: 0

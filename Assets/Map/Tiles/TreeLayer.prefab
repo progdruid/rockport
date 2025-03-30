@@ -9,7 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1657705866761597282}
+  - component: {fileID: -8519565501850105494}
   - component: {fileID: 4943152271999791301}
+  - component: {fileID: -3309443822510571188}
   m_Layer: 0
   m_Name: TreeLayer
   m_TagString: Untagged
@@ -32,6 +34,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-8519565501850105494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 10922405712489145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bbb58be19878514a98f8d14ddc5b0d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  title: Tree
+  target: {fileID: 1657705866761597282}
+  components:
+  - {fileID: 4943152271999791301}
+  - {fileID: -3309443822510571188}
 --- !u!114 &4943152271999791301
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44,10 +63,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13709ec2dc6752748aa689e6095bd617, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  title: Tree
-  target: {fileID: 1657705866761597282}
   treeTexture: {fileID: 2800000, guid: c2e9f2a62a415e144bcd164b9bbb8ddc, type: 3}
   useMarching: 1
   treeMarching: {fileID: 11400000, guid: 5331ea820bb6bba4481cbacd28a54a88, type: 2}
   cutoutTile: {fileID: 11400000, guid: 5820277ebb8e1b14aa72f2db1ace222c, type: 2}
   outlineMarching: {fileID: 11400000, guid: 2ceb0cc2d7393554cb4c125c4f315659, type: 2}
+--- !u!114 &-3309443822510571188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 10922405712489145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2c6fa1dbd58c9e459350086da0d8493, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  exposeToEditor: 1
+  generatePhysics: 1

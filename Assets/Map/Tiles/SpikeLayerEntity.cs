@@ -7,7 +7,7 @@ using Assert = UnityEngine.Assertions.Assert;
 namespace Map
 {
 
-public class SpikeLayerEntity : MapEntity
+public class SpikeLayerEntity : EntityComponent
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [Header("Spikes")] 
@@ -26,10 +26,8 @@ public class SpikeLayerEntity : MapEntity
     private UniversalTrigger _trigger = null;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected override void Awake()
+    protected override void Wake()
     {
-        base.Awake();
-
         _tileRegister = new TileBase[tiles.Count+1];
         _tileRegister[0] = null;
         byte index = 1;
@@ -43,20 +41,28 @@ public class SpikeLayerEntity : MapEntity
 
         _tilemap = RockUtil.CreateTilemap(Target, 0, "Spike Map");
         _tilemap.gameObject.AddComponent<TilemapRenderer>();
+        _tilemap.gameObject.AddComponent<TilemapCollider2D>();
+        _tilemap.gameObject.layer = 7;
     }
 
-    protected override void Initialise()
+    public override void Initialise()
     {
         _placed = new Datamap<byte>(Space.MapSize, 0);
     }
     
+    public override void Activate()
+    {
+        _tilemap.gameObject.AddComponent<TilemapCollider2D>();
+        _tilemap.gameObject.layer = Target.gameObject.layer;
+        _trigger = _tilemap.gameObject.AddComponent<UniversalTrigger>();
+        _trigger.EnterEvent += HandleTriggerEnter;
+    }
+
+    
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
+    public override string JsonName => "spikes";
     public override IEnumerator<PropertyHandle> GetProperties()
     {
-        var iter = base.GetProperties();
-        while (iter.MoveNext())
-            yield return iter.Current;
-        
         yield return new PropertyHandle()
         {
             PropertyName = "Selected Tile",
@@ -75,8 +81,8 @@ public class SpikeLayerEntity : MapEntity
         };
     }
 
-    public override bool CheckOverlap(Vector2 pos) 
-        => Space.SnapWorldToMap(pos, out var mapPos) && _placed.At(mapPos) != 0;
+    // public override bool CheckOverlap(Vector2 pos) 
+    //     => Space.SnapWorldToMap(pos, out var mapPos) && _placed.At(mapPos) != 0;
 
     public override JSONNode ExtractData()
     {
@@ -90,7 +96,6 @@ public class SpikeLayerEntity : MapEntity
     {
         var placedPacked = data["placed"];
 
-        EnsureInitialise();
         _placed.Replicate(placedPacked);
 
         for (var x = 0; x < _placed.Width; x++)
@@ -104,7 +109,7 @@ public class SpikeLayerEntity : MapEntity
         }
     }
 
-    public override void ChangeAt(Vector2 worldPos, bool shouldPlaceNotRemove)
+    public void ChangeAt(Vector2 worldPos, bool shouldPlaceNotRemove)
     {
         if (!_selectedTile 
             || !Space.SnapWorldToMap(worldPos, out var pos) 
@@ -122,16 +127,6 @@ public class SpikeLayerEntity : MapEntity
             _placed.At(pos) = 0;
             _tilemap.SetTile((Vector3Int)pos, null);
         }
-    }
-
-    public override void Activate()
-    {
-        base.Activate();
-        
-        _tilemap.gameObject.AddComponent<TilemapCollider2D>();
-        _tilemap.gameObject.layer = Target.gameObject.layer;
-        _trigger = _tilemap.gameObject.AddComponent<UniversalTrigger>();
-        _trigger.EnterEvent += HandleTriggerEnter;
     }
     
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
