@@ -7,7 +7,7 @@ using Assert = UnityEngine.Assertions.Assert;
 namespace Map
 {
 
-public class SpikeLayerEntity : EntityComponent
+public class SpikeLayerEntity : EntityComponent, ITileLayerAccessor
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [Header("Spikes")] 
@@ -24,10 +24,15 @@ public class SpikeLayerEntity : EntityComponent
     
     private Tilemap _tilemap;
     private UniversalTrigger _trigger = null;
-    
+
+    MapEntity IEntityAccessor.Entity { get; set; }
+    string IEntityAccessor.AccessorName { get; set; }
+
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     protected override void Wake()
     {
+        Entity.AddPublicModule("tile-layer", this);
+        
         _tileRegister = new TileBase[tiles.Count+1];
         _tileRegister[0] = null;
         byte index = 1;
@@ -108,24 +113,29 @@ public class SpikeLayerEntity : EntityComponent
             _tilemap.SetTile((Vector3Int)pos, _tileRegister[index]);
         }
     }
-
-    public void ChangeAt(Vector2 worldPos, bool shouldPlaceNotRemove)
+    
+    public void ChangeAtWorldPos(Vector2 worldPos, bool shouldPlaceNotRemove)
     {
-        if (!_selectedTile 
-            || !Space.SnapWorldToMap(worldPos, out var pos) 
-            || (!shouldPlaceNotRemove && _placed.At(pos) == 0)
-            || (shouldPlaceNotRemove && _placed.At(pos) == _selectedIndex)) 
-            return;
+        if (!Space.SnapWorldToMap(worldPos, out var rootPos)) return;
+        ChangeAtMapPos(rootPos, shouldPlaceNotRemove);
+    }
 
+    public void ChangeAtMapPos(Vector2Int mapPos, bool shouldPlaceNotRemove)
+    {
+        if (!_selectedTile  
+            || (!shouldPlaceNotRemove && _placed.At(mapPos) == 0)
+            || (shouldPlaceNotRemove && _placed.At(mapPos) == _selectedIndex)) 
+            return;
+        
         if (shouldPlaceNotRemove)
         {
-            _placed.At(pos) = _selectedIndex;
-            _tilemap.SetTile((Vector3Int)pos, _selectedTile);
+            _placed.At(mapPos) = _selectedIndex;
+            _tilemap.SetTile((Vector3Int)mapPos, _selectedTile);
         }
         else
         {
-            _placed.At(pos) = 0;
-            _tilemap.SetTile((Vector3Int)pos, null);
+            _placed.At(mapPos) = 0;
+            _tilemap.SetTile((Vector3Int)mapPos, null);
         }
     }
     

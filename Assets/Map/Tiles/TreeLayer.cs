@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 namespace Map
 {
 
-public class TreeLayer : EntityComponent
+public class TreeLayer : EntityComponent, ITileLayerAccessor
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [Header("Tree")]
@@ -27,7 +27,10 @@ public class TreeLayer : EntityComponent
     private Material _baseMaterial;
     private Material _worldMaterial;
     private float _fogScale = 0f;
-
+    
+    MapEntity IEntityAccessor.Entity { get; set; }
+    string IEntityAccessor.AccessorName { get; set; }
+    
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     protected override void Wake()
     {
@@ -36,6 +39,8 @@ public class TreeLayer : EntityComponent
         else Assert.IsNotNull(cutoutTile);
         Assert.IsNotNull(outlineMarching);
 
+        Entity.AddPublicModule("tile-layer", this);
+        
         treeMarching.ParseTiles();
         outlineMarching.ParseTiles();
 
@@ -109,13 +114,17 @@ public class TreeLayer : EntityComponent
     }
 
 
-    public void ChangeAt(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
+    public void ChangeAtWorldPos(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
     {
-        if (!Space.SnapWorldToMap(rootWorldPos, out var rootPos)
-            || shouldPlaceNotRemove == _placed.At(rootPos)) return;
+        if (!Space.SnapWorldToMap(rootWorldPos, out var rootPos)) return;
+        ChangeAtMapPos(rootPos, shouldPlaceNotRemove);
+    }
 
+    public void ChangeAtMapPos(Vector2Int rootPos, bool shouldPlaceNotRemove)
+    {
+        if (shouldPlaceNotRemove == _placed.At(rootPos)) return;
+        
         _placed.At(rootPos) = shouldPlaceNotRemove;
-
         foreach (var subPos in Space.RetrievePositions(rootPos, RockUtil.FullAreaOffsets))
             UpdateVisualsAt(subPos);
     }

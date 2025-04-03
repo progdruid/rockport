@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Map;
@@ -17,6 +18,7 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
     
     private int _selectedLayer = -1;
     private MapEntity _selectedEntity;
+    private Action<Vector2, bool> _selectedEntityAction = null;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
@@ -89,7 +91,7 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
         var destructive = Input.GetMouseButton(1);
 
         if (constructive != destructive)
-            ;//_selectedEntity.ChangeAt(worldMousePos, constructive);
+            _selectedEntityAction.Invoke(worldMousePos, constructive);
     }
 
 
@@ -140,6 +142,19 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
         _selectedLayer = layer;
         _selectedEntity = _map.GetEntity(layer);
         editorGUI.SetEntity(_selectedEntity);
+        
+        if (_selectedEntity.Accessors.TryGetValue("anchor", out var anchorRawAccessor))
+        {
+            Assert.IsTrue(anchorRawAccessor is IAnchorAccessor);
+            var anchorAccessor = (IAnchorAccessor)anchorRawAccessor;
+            _selectedEntityAction = (worldPos, constructive) => anchorAccessor.SetPositionSnapped(worldPos);
+        }
+        else if (_selectedEntity.Accessors.TryGetValue("tile-layer", out var tileRawAccessor))
+        {
+            Assert.IsTrue(tileRawAccessor is ITileLayerAccessor);
+            var tileAccessor = (ITileLayerAccessor)tileRawAccessor;
+            _selectedEntityAction = (worldPos, constructive) => tileAccessor.ChangeAtWorldPos(worldPos, constructive);
+        }
     }
 
     private void UnselectLayer()
@@ -150,6 +165,7 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
         editorGUI.ClearEntity();
         _selectedEntity = null;
         _selectedLayer = -1;
+        _selectedEntityAction = null;
     }
 }
 }

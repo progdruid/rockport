@@ -14,8 +14,8 @@ public class MapEntity : MonoBehaviour, IPropertyHolder, IReplicable
     [SerializeField] private string title;
     [SerializeField] private Transform target;
     [SerializeField] private EntityComponent[] components;
-    
-    public MapSpace Space { get; private set; }
+
+    private MapSpace Space { get; set; }
     private readonly IntReference _layerHandle = new();
     private readonly Dictionary<string, IEntityAccessor> _accessors = new();
     
@@ -47,7 +47,7 @@ public class MapEntity : MonoBehaviour, IPropertyHolder, IReplicable
     /// <summary>
     /// Called when gameplay mode starts.
     /// </summary>
-    public virtual void Activate()
+    public void Activate()
     {
         foreach (var component in components) 
             component.Activate();
@@ -110,6 +110,7 @@ public class MapEntity : MonoBehaviour, IPropertyHolder, IReplicable
         foreach (var component in components)
         {
             var componentName = component.JsonName;
+            if (!data.HasKey(componentName)) continue;
             component.Replicate(data[componentName]);
         }
         PropertiesChangeEvent?.Invoke();

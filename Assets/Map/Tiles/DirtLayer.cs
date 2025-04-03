@@ -28,7 +28,7 @@ public struct DirtStratum
     [SerializeField] public TileMarchingSet marchingSet;
 }
 
-public class DirtLayer : EntityComponent
+public class DirtLayer : EntityComponent, ITileLayerAccessor
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [Header("Dirt")]
@@ -45,13 +45,17 @@ public class DirtLayer : EntityComponent
     private Material _material;
     private float _fogScale = 0f;
     
-    
+    MapEntity IEntityAccessor.Entity { get; set; }
+    string IEntityAccessor.AccessorName { get; set; }
+
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     protected override void Wake()
     {
         Assert.IsNotNull(outlineMarchingSet);
         Assert.IsNotNull(strata);
-
+        
+        Entity.AddPublicModule("tile-layer", this);
+        
         outlineMarchingSet.ParseTiles();
 
         foreach (var stratum in strata)
@@ -89,6 +93,7 @@ public class DirtLayer : EntityComponent
     //     if (!Space.SnapWorldToMap(pos, out var mapPos)) return false;
     //     return _depthMap.At(mapPos) > 0;
     // }
+    
 
     public override string JsonName => "dirtLayer";
     public override IEnumerator<PropertyHandle> GetProperties()
@@ -127,11 +132,15 @@ public class DirtLayer : EntityComponent
             UpdateVisualsAt(new Vector2Int(x, y));
     }
 
-    public void ChangeAt(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
+    public void ChangeAtWorldPos(Vector2 rootWorldPos, bool shouldPlaceNotRemove)
     {
-        if (!Space.SnapWorldToMap(rootWorldPos, out var rootPos) ||
-            (_depthMap.At(rootPos) == 0) != shouldPlaceNotRemove) return;
-
+        if (!Space.SnapWorldToMap(rootWorldPos, out var rootPos)) return;
+        ChangeAtMapPos(rootPos, shouldPlaceNotRemove);
+    }
+    public void ChangeAtMapPos(Vector2Int rootPos, bool shouldPlaceNotRemove)
+    {
+        if ((_depthMap.At(rootPos) == 0) != shouldPlaceNotRemove) return;
+        
         var pending = new Dictionary<Vector2Int, int>
             { [rootPos] = shouldPlaceNotRemove ? 1 : 0 };
 
