@@ -103,6 +103,7 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
         
         var entity = GlobalConfig.Ins.entityFactory.CreateEntity(layerTitle);
         _map.RegisterAt(entity, layer);
+        entity.Initialise();
         _signalCircuit.ExtractAndAdd(entity);
         
         SelectLayer(layer);

@@ -9,10 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1895417737920014309}
+  - component: {fileID: 8075614603155381494}
+  - component: {fileID: 3520394090878241303}
+  - component: {fileID: 1895417737920014310}
   - component: {fileID: 1895417737920014308}
   - component: {fileID: 1958099844365453162}
   - component: {fileID: 1895417737920014307}
-  - component: {fileID: 1895417737920014310}
   - component: {fileID: 5875522970299289035}
   - component: {fileID: 8355062210162810095}
   m_Layer: 11
@@ -37,6 +39,64 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8075614603155381494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1895417737920014306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bbb58be19878514a98f8d14ddc5b0d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  title: Fruit
+  target: {fileID: 1895417737920014309}
+  components:
+  - {fileID: 3520394090878241303}
+  - {fileID: 1895417737920014310}
+--- !u!114 &3520394090878241303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1895417737920014306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10664e4e60194cea9287c5d5cca0efa7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1895417737920014310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1895417737920014306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f38166d6ed3b49448728722bc8bfe9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onCollect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8355062210162810095}
+        m_TargetAssemblyTypeName: CustomSoundEmitter, Assembly-CSharp
+        m_MethodName: EmitSound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Collect
+          m_BoolArgument: 0
+        m_CallState: 2
+  trigger: {fileID: 5875522970299289035}
+  animator: {fileID: 1958099844365453162}
 --- !u!212 &1895417737920014308
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -148,10 +208,10 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.265, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.25, y: 0.5}
     oldSize: {x: 1, y: 1}
     newSize: {x: 0.6875, y: 0.8125}
     adaptiveTilingThreshold: 0.5
@@ -160,33 +220,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.8, y: 0.8}
   m_EdgeRadius: 0
---- !u!114 &1895417737920014310
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1895417737920014306}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f38166d6ed3b49448728722bc8bfe9c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnCollect:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8355062210162810095}
-        m_TargetAssemblyTypeName: CustomSoundEmitter, Assembly-CSharp
-        m_MethodName: EmitSound
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Collect
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &5875522970299289035
 MonoBehaviour:
   m_ObjectHideFlags: 0
