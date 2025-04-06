@@ -25,7 +25,7 @@ public class Door : EntityComponent
     protected override void Wake()
     {
         _listener = new SignalListener();
-        Entity.AddPublicModule("signal-input-0", _listener);
+        Entity.AddAccessor("signal-input-0", _listener);
 
         Assert.IsNotNull(animator);
     }

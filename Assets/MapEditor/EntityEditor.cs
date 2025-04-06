@@ -75,8 +75,11 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
         if (Input.GetKey(KeyCode.LeftShift) && Input.GetMouseButtonDown(0))
         {
             UnselectLayer();
+            
             for (var i = _map.EntitiesCount - 1; i >= 0; i--)
-                if (_map.GetEntity(i).CheckOverlap(worldMousePos))
+                if (_map.GetEntity(i).Accessors.TryGetValue("overlap", out var accessor)
+                    && accessor is EntityOverlapAccessor overlapAccessor
+                    && overlapAccessor.CheckOverlap(worldMousePos))
                 {
                     SelectLayer(i);
                     break;

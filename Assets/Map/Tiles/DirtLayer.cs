@@ -53,8 +53,13 @@ public class DirtLayer : EntityComponent, ITileLayerAccessor
     {
         Assert.IsNotNull(outlineMarchingSet);
         Assert.IsNotNull(strata);
-        
-        Entity.AddPublicModule("tile-layer", this);
+
+        var overlapAccessor = new EntityOverlapAccessor(pos => 
+            Space.SnapWorldToMap(pos, out var mapPos) 
+            && _depthMap.At(mapPos) > 0);
+
+        Entity.AddAccessor("tile-layer", this);
+        Entity.AddAccessor("overlap", overlapAccessor);
         
         outlineMarchingSet.ParseTiles();
 
@@ -88,13 +93,6 @@ public class DirtLayer : EntityComponent, ITileLayerAccessor
     public override void Activate() { }
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    // public override bool CheckOverlap(Vector2 pos)
-    // {
-    //     if (!Space.SnapWorldToMap(pos, out var mapPos)) return false;
-    //     return _depthMap.At(mapPos) > 0;
-    // }
-    
-
     public override string JsonName => "dirtLayer";
     public override IEnumerator<PropertyHandle> GetProperties()
     {

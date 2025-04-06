@@ -31,7 +31,12 @@ public class SpikeLayerEntity : EntityComponent, ITileLayerAccessor
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     protected override void Wake()
     {
-        Entity.AddPublicModule("tile-layer", this);
+        var overlapAccessor = new EntityOverlapAccessor(pos => 
+            Space.SnapWorldToMap(pos, out var mapPos) 
+            && _placed.At(mapPos) != 0);
+
+        Entity.AddAccessor("tile-layer", this);
+        Entity.AddAccessor("overlap", overlapAccessor);
         
         _tileRegister = new TileBase[tiles.Count+1];
         _tileRegister[0] = null;
@@ -85,9 +90,6 @@ public class SpikeLayerEntity : EntityComponent, ITileLayerAccessor
             }
         };
     }
-
-    // public override bool CheckOverlap(Vector2 pos) 
-    //     => Space.SnapWorldToMap(pos, out var mapPos) && _placed.At(mapPos) != 0;
 
     public override JSONNode ExtractData()
     {

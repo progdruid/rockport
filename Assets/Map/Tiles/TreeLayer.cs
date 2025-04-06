@@ -39,7 +39,12 @@ public class TreeLayer : EntityComponent, ITileLayerAccessor
         else Assert.IsNotNull(cutoutTile);
         Assert.IsNotNull(outlineMarching);
 
-        Entity.AddPublicModule("tile-layer", this);
+        var overlapAccessor = new EntityOverlapAccessor(pos => 
+            Space.SnapWorldToMap(pos, out var mapPos) 
+            && _placed.At(mapPos));
+
+        Entity.AddAccessor("tile-layer", this);
+        Entity.AddAccessor("overlap", overlapAccessor);
         
         treeMarching.ParseTiles();
         outlineMarching.ParseTiles();
@@ -68,13 +73,8 @@ public class TreeLayer : EntityComponent, ITileLayerAccessor
 
     public override void Activate() { }
 
+    
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    // public override bool CheckOverlap(Vector2 pos)
-    // {
-    //     if (!Space.SnapWorldToMap(pos, out var mapPos)) return false;
-    //     return _placed.At(mapPos);
-    // }
-
     public override string JsonName => "treeLayer";
     public override IEnumerator<PropertyHandle> GetProperties()
     {   

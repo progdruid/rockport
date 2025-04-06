@@ -26,7 +26,7 @@ public class Button : EntityComponent
     protected override void Wake()
     {
         _signalEmitter = new SignalEmitter { Signal = false };
-        Entity.AddPublicModule("signal-output", _signalEmitter);
+        Entity.AddAccessor("signal-output", _signalEmitter);
 
         Assert.IsNotNull(animator);
         Assert.IsNotNull(trigger);

@@ -31,26 +31,26 @@ public class SignalGate : EntityComponent
         Assert.IsNotNull(textRenderer);
         
         _emitter = new SignalEmitter();
-        Entity.AddPublicModule("gate-output", _emitter);
+        Entity.AddAccessor("gate-output", _emitter);
         
         switch (type)
         {
             case SignalGateType.And:
                 _listenedValues = new bool[2];
                 _listeners = new[] { new SignalListener(), new SignalListener() };
-                Entity.AddPublicModule("and-gate-input-0", _listeners[0]);
-                Entity.AddPublicModule("and-gate-input-1", _listeners[1]);
+                Entity.AddAccessor("and-gate-input-0", _listeners[0]);
+                Entity.AddAccessor("and-gate-input-1", _listeners[1]);
                 break;
             case SignalGateType.Or:
                 _listenedValues = new bool[2];
                 _listeners = new[] { new SignalListener(), new SignalListener() };
-                Entity.AddPublicModule("or-gate-input-0", _listeners[0]);
-                Entity.AddPublicModule("or-gate-input-1", _listeners[1]);
+                Entity.AddAccessor("or-gate-input-0", _listeners[0]);
+                Entity.AddAccessor("or-gate-input-1", _listeners[1]);
                 break;
             case SignalGateType.Not:
                 _listenedValues = new bool[2];
                 _listeners = new[] { new SignalListener() };
-                Entity.AddPublicModule("not-gate-input", _listeners[0]);
+                Entity.AddAccessor("not-gate-input", _listeners[0]);
                 break;
             default:
                 Assert.IsTrue(false, "Invalid signal gate type");

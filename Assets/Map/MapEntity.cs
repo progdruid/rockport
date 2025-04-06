@@ -80,10 +80,6 @@ public class MapEntity : MonoBehaviour, IPropertyHolder, IReplicable
         }
     }
 
-    /// <summary>
-    /// Out of order just now.
-    /// </summary>
-    public bool CheckOverlap (Vector2 pos) => false;
     public float GetReferenceZ() => Target.position.z;
     public Vector2Int GetOverlayAnchor()
     {
@@ -100,7 +96,9 @@ public class MapEntity : MonoBehaviour, IPropertyHolder, IReplicable
         foreach (var component in components)
         {
             var componentName = component.JsonName;
-            json[componentName] = component.ExtractData();
+            var data = component.ExtractData();
+            if (data.Count == 0) continue;
+            json[componentName] = data;
         }
         return json;
     }
@@ -126,10 +124,11 @@ public class MapEntity : MonoBehaviour, IPropertyHolder, IReplicable
         Destroy(targetObject);
     }
     
-    public void AddPublicModule(string moduleName, IEntityAccessor accessor)
+    public void AddAccessor(string accessorName, IEntityAccessor accessor)
     {
-        _accessors.TryAdd(moduleName, accessor);
-        accessor.Initialise(moduleName, this);
+        var success = _accessors.TryAdd(accessorName, accessor);
+        Assert.IsTrue(success);
+        accessor.Initialise(accessorName, this);
     }
 }
 }

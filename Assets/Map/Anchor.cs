@@ -14,7 +14,7 @@ public class Anchor : EntityComponent, IAnchorAccessor
     string IEntityAccessor.AccessorName { get; set; }
 
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected override void Wake() => Entity.AddPublicModule("anchor", this);
+    protected override void Wake() => Entity.AddAccessor("anchor", this);
     public override void Initialise() { }
     public override void Activate() { }
 
