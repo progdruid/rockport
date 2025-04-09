@@ -51,7 +51,6 @@ public class SpikeLayerEntity : EntityComponent, ITileLayerAccessor
 
         _tilemap = RockUtil.CreateTilemap(Target, 0, "Spike Map");
         _tilemap.gameObject.AddComponent<TilemapRenderer>();
-        _tilemap.gameObject.AddComponent<TilemapCollider2D>();
         _tilemap.gameObject.layer = 7;
     }
 

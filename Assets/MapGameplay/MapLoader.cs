@@ -34,6 +34,8 @@ public class MapLoader : MonoBehaviour
     private void Start()
     {
         soundPlayer.StartPlaying();
+        if (PlayerPrefs.HasKey("TestMap")) 
+            loadedChapterName = PlayerPrefs.GetString("TestMap");
         MakeDecision();
     }
     
@@ -41,10 +43,11 @@ public class MapLoader : MonoBehaviour
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public event System.Action LevelInstantiationEvent;
     
-    public void ProceedFurther ()
+    public void ProceedFurther (string mapName)
     {
-        if (!_isLoading)
-            MakeDecision();
+        if (_isLoading) return;
+        loadedChapterName = mapName;
+        MakeDecision();
     }
 
     public void ReloadLevel()
@@ -63,11 +66,7 @@ public class MapLoader : MonoBehaviour
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     private void MakeDecision()
     {
-        var nameToLoad = loadedChapterName;
-        if (PlayerPrefs.HasKey("TestMap")) 
-            nameToLoad = PlayerPrefs.GetString("TestMap");
-        
-        var loaded = MapSaveManager.Load(nameToLoad, out var contents);
+        var loaded = MapSaveManager.Load(loadedChapterName, out var contents);
         Assert.IsTrue(loaded);
         Assert.IsNotNull(contents);
 
