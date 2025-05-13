@@ -13,6 +13,7 @@ public class MapLoader : MonoBehaviour
     [SerializeField] private SequentialSoundPlayer soundPlayer;
     [SerializeField] private EntityFactory entityFactory;
     [SerializeField] private GameplayController controller;
+    [SerializeField] private ParallaxBackground[] parallaxBackgrounds;
     
     private JSONNode _currentMapData;
     private MapSpace _currentMapSpace;
@@ -97,7 +98,10 @@ public class MapLoader : MonoBehaviour
             GameSystems.Ins.PlayerManager.DestroyPlayer();
             _currentMapSpace.Kill();
             _currentMapSpace = null;
+            
         }
+        foreach (var background in parallaxBackgrounds)
+            background.Clear();
         GameSystems.Ins.FruitManager.ClearFruits();
 
         var mapSpace = new MapSpace(mapData["spaceSize"].ReadVector2Int());
@@ -113,7 +117,7 @@ public class MapLoader : MonoBehaviour
             entity.Replicate(layer);
             signalCircuit.ExtractAndAdd(entity);
         }
-
+        
         mapSpace.FindEntity(GlobalConfig.Ins.spawnPointEntityName, out var foundEntity);
         Assert.IsNotNull(foundEntity);
         var spawnPos = foundEntity.Target.position.To2();
@@ -136,6 +140,10 @@ public class MapLoader : MonoBehaviour
         LevelInstantiationEvent?.Invoke();
         
         GameSystems.Ins.PlayerManager.SpawnPlayer();
+        
+        foreach (var background in parallaxBackgrounds)
+            background.SetTarget(Camera.main.transform);
+        
         yield return GameSystems.Ins.TransitionVeil.TransiteOut();
         controller.AllowMove = true;
 

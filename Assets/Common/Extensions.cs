@@ -82,10 +82,17 @@ public static class Extensions
     //floats
     public static bool IsApproximately(this float a, float b) => Mathf.Approximately(a, b);
     public static float Abs(this float value) => Mathf.Abs(value);
+    public static float Mod(this float a, float b) => (a % b + b) % b;
     public static float Sign(this float value) => Mathf.Sign(value);
     public static float Lerp(this float t, float value1, float value2) => Mathf.Lerp(value1, value2, t);
     public static float ClampBottom(this float value, float bound) => Mathf.Max(value, bound);
     public static float ClampTop(this float value, float bound) => Mathf.Min(value, bound);
+    public static float Round(this float value) => Mathf.Round(value);
+    public static int RoundToInt(this float value) => Mathf.RoundToInt(value);
+    public static float Ceil(this float value) => Mathf.Ceil(value);
+    public static int CeilToInt(this float value) => Mathf.CeilToInt(value);
+    public static float Floor(this float value) => Mathf.Floor(value);
+    public static int FloorToInt(this float value) => Mathf.FloorToInt(value);
     public static void MoveToRef(this ref float value, float target, float maxDelta) =>
         value = Mathf.MoveTowards(value, target, maxDelta);
     public static float MoveTo(this float value, float target, float maxDelta) =>
