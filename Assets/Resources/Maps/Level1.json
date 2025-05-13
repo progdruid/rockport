@@ -60,6 +60,12 @@
             "anchor" : {
                 "mapPos" : [36,60]
             }
+        },
+        {
+            "title" : "Ground Marker",
+            "anchor" : {
+                "mapPos" : [57,43]
+            }
         }
     ]
 }

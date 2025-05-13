@@ -17,3 +17,4 @@ MonoBehaviour:
   worldTextureMaskMaterial: {fileID: 2100000, guid: 8c22239b3ef1af34ca3f3dd510dbe019, type: 2}
   entityFactory: {fileID: 11400000, guid: 1f7925561afaf844e94127d55ca23bea, type: 2}
   spawnPointEntityName: Spawn Point
+  groundMarkerEntityName: Ground Marker

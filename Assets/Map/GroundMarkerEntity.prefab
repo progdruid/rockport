@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: -5510793618786780126}
   - component: {fileID: 898127630896070873}
   m_Layer: 0
-  m_Name: SpawnPointEntity
+  m_Name: GroundMarkerEntity
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bbb58be19878514a98f8d14ddc5b0d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  title: Spawn Point
+  title: Ground Marker
   target: {fileID: 5502832980553224485}
   components:
   - {fileID: 898127630896070873}

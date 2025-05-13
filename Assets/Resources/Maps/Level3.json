@@ -2,13 +2,19 @@
     "spaceSize" : [200,100],
     "signalData" : {
         "emitterData" : [
-            "15:signal-output"
+            "16:signal-output"
         ],
         "listenerData" : [
-            "16:signal-input-0"
+            "17:signal-input-0"
         ]
     },
     "layers" : [
+        {
+            "title" : "Ground Marker",
+            "anchor" : {
+                "mapPos" : [106,16]
+            }
+        },
         {
             "title" : "Dirt",
             "dirtLayer" : {

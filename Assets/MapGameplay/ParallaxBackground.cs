@@ -7,14 +7,13 @@ using UnityEngine.Serialization;
 public class ParallaxBackground : MonoBehaviour
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    [FormerlySerializedAs("parallaxCoeficient")] [SerializeField] [Range(0f, 1f)] float depth;
+    [SerializeField] [Range(0f, 1f)] float depth;
     [SerializeField] Sprite undergroundSprite;
     [SerializeField] Sprite groundSprite;
     [SerializeField] Sprite upperSprite;
 
-    private float _halfWidth;
     private Vector2 _halfSize;
-    private Vector2? _groundLevel;
+    private float? _groundLevel;
     private Transform _target;
 
     private SpriteRenderer[,] _tiles;
@@ -22,7 +21,6 @@ public class ParallaxBackground : MonoBehaviour
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
     {
-        _halfWidth = undergroundSprite.bounds.extents.x;
         _halfSize = undergroundSprite.bounds.extents.To2();
         
         _tiles = new SpriteRenderer[3, 3];
@@ -39,7 +37,7 @@ public class ParallaxBackground : MonoBehaviour
     
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public void SetTarget(Transform target) => _target = target;
-    public void SetGroundLevel(Vector2 groundLevel) => _groundLevel = groundLevel;
+    public void SetGroundLevel(float groundLevel) => _groundLevel = groundLevel;
     public void Clear()
     {
         _target = null;
@@ -47,24 +45,24 @@ public class ParallaxBackground : MonoBehaviour
     }
     
     //game loop/////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private void Update() => RunUpdate();
+    private void LateUpdate() => RunUpdate();
 
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     private void RunUpdate()
     {
         if (!_target) return;
-        var usedGroundLevel = _groundLevel ?? Vector2.zero;
+        var usedGroundLevel = _groundLevel ?? 0f;
 
-        var newPos = _target.position.To2() * depth;
+        var newPos = _target.position.To2() * depth + usedGroundLevel * (1f - depth) * Vector2.up;
         var yOffsetOfTarget = _target.position.y - newPos.y;
-        var yIndexCenter = ((yOffsetOfTarget + _halfSize.y) / (_halfSize.y * 2f)).FloorToInt();
+        var yIndexCenter = ((yOffsetOfTarget + _halfSize.y) / (_halfSize.y * 2f)).FloorToInt();//- usedGroundLevel * (1f - depth)
         for (var y = -1; y <= 1; y++)
         {
             var yIndexRow = yIndexCenter + y;
             var usedSprite = yIndexRow switch
             {
                 < 0 => undergroundSprite,
-                0 => groundSprite,
+                0   => groundSprite,
                 > 0 => upperSprite
             };
             for (var x = -1; x <= 1; x++) 

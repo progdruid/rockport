@@ -104,9 +104,9 @@ public class MapLoader : MonoBehaviour
             background.Clear();
         GameSystems.Ins.FruitManager.ClearFruits();
 
+        
         var mapSpace = new MapSpace(mapData["spaceSize"].ReadVector2Int());
         var signalCircuit = new SignalCircuit();
-        
         var layers = mapData["layers"].AsArray;
         for (var i = 0; i < layers.Count; i++)
         {
@@ -118,35 +118,39 @@ public class MapLoader : MonoBehaviour
             signalCircuit.ExtractAndAdd(entity);
         }
         
-        mapSpace.FindEntity(GlobalConfig.Ins.spawnPointEntityName, out var foundEntity);
-        Assert.IsNotNull(foundEntity);
-        var spawnPos = foundEntity.Target.position.To2();
-        var spawnZ = foundEntity.GetReferenceZ();
+        
+        mapSpace.FindEntity(GlobalConfig.Ins.spawnPointEntityName, out var foundSpawnPoint);
+        Assert.IsNotNull(foundSpawnPoint);
+        var spawnPos = foundSpawnPoint.Target.position.To2();
+        var spawnZ = foundSpawnPoint.GetReferenceZ();
         
         GameSystems.Ins.PlayerManager.SetSpawnPoint(spawnPos);
         GameSystems.Ins.PlayerManager.SetSpawnZ(spawnZ);
-
         GameSystems.Ins.GameplayCamera.ObservationHeight = mapSpace.GetMapTop();
 
+        
         for (var i = 0; mapSpace.HasLayer(i); i++)
         {
             var entity = mapSpace.GetEntity(i);
             entity.Activate();
         }
-        
         signalCircuit.Replicate(mapData["signalData"].AsObject);;
-
         _currentMapSpace = mapSpace;
         LevelInstantiationEvent?.Invoke();
+        
+
         
         GameSystems.Ins.PlayerManager.SpawnPlayer();
         
         foreach (var background in parallaxBackgrounds)
             background.SetTarget(Camera.main.transform);
-        
+        mapSpace.FindEntity(GlobalConfig.Ins.groundMarkerEntityName, out var foundGroundMarker);
+        if (foundGroundMarker)
+            foreach (var background in parallaxBackgrounds)
+                background.SetGroundLevel(foundGroundMarker.Target.position.y);
+
         yield return GameSystems.Ins.TransitionVeil.TransiteOut();
         controller.AllowMove = true;
-
         _isLoading = false;
     }
 }

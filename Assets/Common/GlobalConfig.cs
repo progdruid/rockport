@@ -43,6 +43,7 @@ public class GlobalConfig : ScriptableObject
     [Header("Entities")]
     [SerializeField] public EntityFactory entityFactory;
     [SerializeField] public string spawnPointEntityName;
+    [SerializeField] public string groundMarkerEntityName;
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public Material StandardMaterial { get; private set; }

@@ -178,6 +178,12 @@
             "anchor" : {
                 "mapPos" : [44,135]
             }
+        },
+        {
+            "title" : "Ground Marker",
+            "anchor" : {
+                "mapPos" : [64,134]
+            }
         }
     ]
 }
