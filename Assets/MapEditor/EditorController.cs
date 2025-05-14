@@ -149,8 +149,8 @@ public class EditorController : MonoBehaviour, IReplicable
         var worldOffset = prevMouseWorldPos - newMouseWorldPos;
         cam.transform.position += worldOffset;
 
-        var halfHeight = cam.orthographicSize;
 
+        var halfHeight = cam.orthographicSize;
         var worldStart = _map.WorldStart;
         var worldEnd = worldStart + worldSize;
 
