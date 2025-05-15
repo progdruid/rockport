@@ -13,10 +13,10 @@ GameObject:
   - component: {fileID: 3030891258839662191}
   - component: {fileID: 591317684036510993}
   - component: {fileID: -7940741003566833468}
-  - component: {fileID: 3440302949936247621}
+  - component: {fileID: 1992170914968271777}
   - component: {fileID: 6145726488857826564}
   m_Layer: 0
-  m_Name: BranchesEntity
+  m_Name: SignEntity
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -49,13 +49,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bbb58be19878514a98f8d14ddc5b0d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  title: Branches
+  title: Sign
   target: {fileID: 3980792787334037036}
   components:
   - {fileID: 3030891258839662191}
   - {fileID: 591317684036510993}
   - {fileID: -7940741003566833468}
-  - {fileID: 3440302949936247621}
+  - {fileID: 1992170914968271777}
 --- !u!114 &3030891258839662191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94,18 +94,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 6145726488857826564}
   sprites:
-  - {fileID: 2076414517, guid: 9e488eccfeff6e24f8401fb61eb27e3f, type: 3}
-  - {fileID: 1496833311, guid: 9e488eccfeff6e24f8401fb61eb27e3f, type: 3}
-  - {fileID: 1728791388, guid: 9e488eccfeff6e24f8401fb61eb27e3f, type: 3}
-  - {fileID: 237028524, guid: 9e488eccfeff6e24f8401fb61eb27e3f, type: 3}
-  - {fileID: 510225942, guid: 9e488eccfeff6e24f8401fb61eb27e3f, type: 3}
-  - {fileID: 578971229, guid: 9e488eccfeff6e24f8401fb61eb27e3f, type: 3}
-  - {fileID: -1212456891, guid: 9e488eccfeff6e24f8401fb61eb27e3f, type: 3}
-  - {fileID: 542373374, guid: 9e488eccfeff6e24f8401fb61eb27e3f, type: 3}
-  - {fileID: -427867107, guid: 9e488eccfeff6e24f8401fb61eb27e3f, type: 3}
-  - {fileID: 484443845, guid: 9e488eccfeff6e24f8401fb61eb27e3f, type: 3}
-  - {fileID: 1625644704, guid: 9e488eccfeff6e24f8401fb61eb27e3f, type: 3}
---- !u!114 &3440302949936247621
+  - {fileID: -544172332, guid: f3ea3f51112546345b9086bc1026c005, type: 3}
+  - {fileID: 9393615, guid: f3ea3f51112546345b9086bc1026c005, type: 3}
+  - {fileID: 760263408, guid: f3ea3f51112546345b9086bc1026c005, type: 3}
+  - {fileID: -715966508, guid: f3ea3f51112546345b9086bc1026c005, type: 3}
+  - {fileID: -635417427, guid: f3ea3f51112546345b9086bc1026c005, type: 3}
+  - {fileID: -2009609929, guid: f3ea3f51112546345b9086bc1026c005, type: 3}
+  - {fileID: 749293032, guid: f3ea3f51112546345b9086bc1026c005, type: 3}
+  - {fileID: 1384336128, guid: f3ea3f51112546345b9086bc1026c005, type: 3}
+  - {fileID: 1979517948, guid: f3ea3f51112546345b9086bc1026c005, type: 3}
+--- !u!114 &1992170914968271777
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
