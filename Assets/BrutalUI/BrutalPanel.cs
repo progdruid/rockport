@@ -81,7 +81,7 @@ public class BrutalPanel : MonoBehaviour
     {
         if (!sprite)
         {
-            Debug.LogWarning("BrutalButton: No sprite assigned. Please assign a sprite to the RoundedPanel component.");
+            Debug.LogWarning("BrutalPanel: No sprite assigned. Please assign a sprite to the RoundedPanel component.");
             return;
         }
         
@@ -90,7 +90,11 @@ public class BrutalPanel : MonoBehaviour
         _delayedLoading = true;
         UnityEditor.EditorApplication.delayCall += () =>
         {
-            if (!this) return;
+            if (!this)
+            {
+                _delayedLoading = false;
+                return;
+            }
             
             var rect = GetComponent<RectTransform>();
             

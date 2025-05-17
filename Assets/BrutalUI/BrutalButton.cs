@@ -190,7 +190,11 @@ public class BrutalButton : MonoBehaviour, IPointerDownHandler
         _delayedLoading = true;
         UnityEditor.EditorApplication.delayCall += () =>
         {
-            if (!this) return;
+            if (!this)
+            {
+                _delayedLoading = false;
+                return;
+            }
             
             var rect = GetComponent<RectTransform>();
             
