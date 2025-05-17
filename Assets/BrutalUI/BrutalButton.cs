@@ -51,7 +51,7 @@ public class BrutalButton : MonoBehaviour, IPointerDownHandler
         _rect = GetComponent<RectTransform>();
         Assert.IsNotNull(sprite);
 
-        ReloadLayers();
+        ReloadLayers(_rect);
     }
     
     public void OnPointerDown(PointerEventData eventData) => StartCoroutine(Press());
@@ -97,8 +97,8 @@ public class BrutalButton : MonoBehaviour, IPointerDownHandler
         mainRect.anchoredPosition = Vector2.zero;
         mainImage.color = mainColor;
     }
-    
-    private void ReloadLayers()
+
+    private void ReloadLayers(RectTransform rect)
     {
         if (container)
             container.SetParent(_rect);
@@ -106,28 +106,23 @@ public class BrutalButton : MonoBehaviour, IPointerDownHandler
         if (shadowRect)
         {
             shadowRect.SetParent(null);
-            Destroy(shadowRect.gameObject);
+            DestroyImmediate(shadowRect.gameObject);
             shadowRect = null;
         }
         if (borderRect)
         {
             borderRect.SetParent(null);
-            Destroy(borderRect.gameObject);
+            DestroyImmediate(borderRect.gameObject);
             borderRect = null;
         }
         if (mainRect)
         {
             mainRect.SetParent(null);
-            Destroy(mainRect.gameObject);
+            DestroyImmediate(mainRect.gameObject);
             mainRect = null;
         }
         mainImage = null;
-
-        LoadLayers(_rect);
-    }
-
-    private void LoadLayers(RectTransform rect)
-    {
+        
         shadowRect = CreateLayer("Shadow", rect, 0f, shadowOffset, shadowColor, 0, cornerShadow);
         borderRect = CreateLayer("Border", rect, 0f, Vector2.zero, borderColor, 1, cornerBorder);
         mainRect = CreateLayer("Main", rect, -borderThickness, Vector2.zero, mainColor, 2, cornerMain);
@@ -197,31 +192,7 @@ public class BrutalButton : MonoBehaviour, IPointerDownHandler
             }
             
             var rect = GetComponent<RectTransform>();
-            
-            if (container)
-                container.SetParent(rect);
-            
-            if (shadowRect)
-            {
-                shadowRect.SetParent(null);
-                DestroyImmediate(shadowRect.gameObject);
-                shadowRect = null;
-            }
-            if (borderRect)
-            {
-                borderRect.SetParent(null);
-                DestroyImmediate(borderRect.gameObject);
-                borderRect = null;
-            }
-            if (mainRect)
-            {
-                mainRect.SetParent(null);
-                DestroyImmediate(mainRect.gameObject);
-                mainRect = null;
-            }
-            mainImage = null;
-
-            LoadLayers(rect);
+            ReloadLayers(rect);
             
             _delayedLoading = false;
         };

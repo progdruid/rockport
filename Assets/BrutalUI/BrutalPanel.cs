@@ -10,7 +10,8 @@ namespace BrutalUI
 public class BrutalPanel : MonoBehaviour
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    [Header("Styling")] [SerializeField] private Color mainColor = Color.white;
+    [Header("Styling")] 
+    [SerializeField] private Color mainColor = Color.white;
     [SerializeField] private Color borderColor = Color.black;
     [SerializeField] private Color shadowColor = Color.black;
     [SerializeField] private float borderThickness = 8f;
@@ -22,10 +23,17 @@ public class BrutalPanel : MonoBehaviour
     [SerializeField] private float cornerBorder = 1f;
     [SerializeField] private float cornerShadow = 1f;
 
-    [Space] [SerializeField] private Sprite sprite;
+    [Space] 
+    [SerializeField] private Sprite sprite;
 
+    [HideInInspector] [SerializeField] private RectTransform mainRect;
+    [HideInInspector] [SerializeField] private RectTransform borderRect;
+    [HideInInspector] [SerializeField] private RectTransform shadowRect;
+    [HideInInspector] [SerializeField] private RectTransform container;
+    
     private RectTransform _rect;
-
+    
+    
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
     {
@@ -35,23 +43,55 @@ public class BrutalPanel : MonoBehaviour
         for (var i = _rect.childCount - 1; i >= 0; i--)
             Destroy(_rect.GetChild(i).gameObject);
 
-        LoadLayers(_rect);
+        ReloadLayers(_rect);
     }
 
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
-    private void LoadLayers(RectTransform rect)
+    private void ReloadLayers(RectTransform rect)
     {
-        CreateLayer("Shadow", rect, 0f, shadowOffset, shadowColor, 0, cornerShadow);
-        CreateLayer("Border", rect, 0f, Vector2.zero, borderColor, 1, cornerBorder);
-        CreateLayer("Main", rect, -borderThickness, Vector2.zero, mainColor, 2, cornerMain);
+        if (container)
+            container.SetParent(_rect);
+        
+        if (shadowRect)
+        {
+            shadowRect.SetParent(null);
+            DestroyImmediate(shadowRect.gameObject);
+            shadowRect = null;
+        }
+        if (borderRect)
+        {
+            borderRect.SetParent(null);
+            DestroyImmediate(borderRect.gameObject);
+            borderRect = null;
+        }
+        if (mainRect)
+        {
+            mainRect.SetParent(null);
+            DestroyImmediate(mainRect.gameObject);
+            mainRect = null;
+        }
+        
+        shadowRect = CreateLayer("Shadow", rect, 0f, shadowOffset, shadowColor, 0, cornerShadow);
+        borderRect = CreateLayer("Border", rect, 0f, Vector2.zero, borderColor, 1, cornerBorder);
+        mainRect = CreateLayer("Main", rect, -borderThickness, Vector2.zero, mainColor, 2, cornerMain);
+        
+        if (!container)
+            container = new GameObject("Container", typeof(RectTransform)).GetComponent<RectTransform>();
+        container.SetParent(mainRect);
+        container.anchorMin = Vector2.zero;
+        container.anchorMax = Vector2.one;
+        container.offsetMin = Vector2.zero;
+        container.offsetMax = Vector2.zero;
+        container.anchoredPosition = Vector2.zero;
     }
 
-    private void CreateLayer(string name, Transform parent, float borderSize, Vector2 offset, Color color, int order,
+    private RectTransform CreateLayer(string name, Transform parent, float borderSize, Vector2 offset, Color color, int order,
         float cornerMultiplier)
     {
         var obj = new GameObject(name, typeof(Image));
         obj.transform.SetParent(parent, false);
         obj.hideFlags = HideFlags.NotEditable;
+        obj.transform.SetSiblingIndex(order);
 
         var rect = obj.GetComponent<RectTransform>();
         rect.anchorMin = Vector2.zero;
@@ -63,14 +103,12 @@ public class BrutalPanel : MonoBehaviour
 
 
         var img = obj.GetComponent<Image>();
-
         img.sprite = sprite;
         img.type = Image.Type.Sliced;
-
         img.color = color;
         img.pixelsPerUnitMultiplier = cornerMultiplier;
 
-        obj.transform.SetSiblingIndex(order);
+        return rect;
     }
     
 #if UNITY_EDITOR
@@ -98,10 +136,7 @@ public class BrutalPanel : MonoBehaviour
             
             var rect = GetComponent<RectTransform>();
             
-            for (var i = rect.childCount - 1; i >= 0; i--)
-                DestroyImmediate(rect.GetChild(i).gameObject);
-            
-            LoadLayers(rect);
+            ReloadLayers(rect);
             
             _delayedLoading = false;
         };
