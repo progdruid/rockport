@@ -60,6 +60,9 @@ public class BrutalToggle : MonoBehaviour, IPointerDownHandler
     {
         if (_toggleCoroutine != null)
             StopCoroutine(_toggleCoroutine);
+        if (!gameObject.activeInHierarchy || !rect.gameObject.activeInHierarchy)
+            return;
+            
         _toggleCoroutine = StartCoroutine(UpdateStateRoutine(rect));
     }
     
