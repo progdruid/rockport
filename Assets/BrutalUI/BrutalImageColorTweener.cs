@@ -40,7 +40,10 @@ public class BrutalImageColorTweener  : MonoBehaviour
     public void SnapToStart() => Snap(0f);
     [ContextMenu("Snap To Target")]
     public void SnapToTarget() => Snap(1f);
-    
+
+    public bool IsAtStart() => _t.IsApproximately(0f);
+    public bool IsAtTarget() => _t.IsApproximately(1f);
+    public bool IsFinished() => _t.IsApproximately(_targetT);
     
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Snap(float target)

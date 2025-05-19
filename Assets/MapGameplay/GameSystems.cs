@@ -13,5 +13,5 @@ public class GameSystems
     public PlayerManager PlayerManager;
 
     public TransitionVeil TransitionVeil;
-        
+    public PauseUIManager PauseUIManager;  
 }

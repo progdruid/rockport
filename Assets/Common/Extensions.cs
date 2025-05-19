@@ -1,4 +1,5 @@
-﻿using SimpleJSON;
+﻿using System.Collections;
+using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -10,7 +11,12 @@ public static class Extensions
  
     public static T At<T>(this T[,] array, (int x, int y) pos) => array[pos.x, pos.y];
     public static void Set<T>(this T[,] array, (int x, int y) pos, T value) => array[pos.x, pos.y] = value;
-
+    
+    //coroutines
+    public static Coroutine Start(this IEnumerator routine, MonoBehaviour behaviour) =>
+        behaviour.StartCoroutine(routine);
+    public static void Stop(this Coroutine routine, MonoBehaviour behaviour) =>
+        behaviour.StopCoroutine(routine);
     
     //transforms
     public static void SetWorldX(this Transform transform, float x) => 
