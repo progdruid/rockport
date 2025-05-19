@@ -12,7 +12,6 @@ public class MapManager : MonoBehaviour
     [SerializeField] private string loadedChapterName;
     [SerializeField] private SequentialSoundPlayer soundPlayer;
     [SerializeField] private EntityFactory entityFactory;
-    [SerializeField] private GameplayController controller;
     [SerializeField] private ParallaxBackground[] parallaxBackgrounds;
     
     private JSONNode _currentMapData;
@@ -25,7 +24,6 @@ public class MapManager : MonoBehaviour
     {
         Assert.IsNotNull(soundPlayer);
         Assert.IsNotNull(entityFactory);
-        Assert.IsNotNull(controller);
         
         GameSystems.Ins.MapManager = this;
         
@@ -91,7 +89,7 @@ public class MapManager : MonoBehaviour
 
         if (_currentMapSpace != null)
         {
-            controller.AllowMove = false;
+            GameSystems.Ins.Controller.SetAllowMove(false);
             yield return GameSystems.Ins.TransitionVeil.TransiteIn();
 
             GameSystems.Ins.CorpseManager.ClearCorpses();
@@ -150,7 +148,7 @@ public class MapManager : MonoBehaviour
                 background.SetGroundLevel(foundGroundMarker.Target.position.y);
 
         yield return GameSystems.Ins.TransitionVeil.TransiteOut();
-        controller.AllowMove = true;
+        GameSystems.Ins.Controller.SetAllowMove(true);
         _isLoading = false;
     }
 }

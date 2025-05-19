@@ -1,11 +1,11 @@
+using MapGameplay;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Serialization;
 
-public class GameplayController : MonoBehaviour
+public class KeyboardController : MonoBehaviour, IController
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    [FormerlySerializedAs("loader")]
     [Header("Dependencies")]
     [SerializeField] private MapManager manager;
     [SerializeField] private PlayerManager playerManager;
@@ -19,19 +19,17 @@ public class GameplayController : MonoBehaviour
     {
         Assert.IsNotNull(manager);
         Assert.IsNotNull(playerManager);
+        
+        GameSystems.Ins.Controller = this;
     }
 
-    //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public bool AllowMove
+    //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
+    public void SetAllowMove(bool value)
     {
-        private get => _allowMove;
-        set
-        {
-            _allowMove = value;
-            if (!_allowMove)
-                playerManager.Player.HorizontalOrderDirection = 0;
-        }
+        _allowMove = value;
+        if (!_allowMove)
+            playerManager.Player.HorizontalOrderDirection = 0;
     }
     
     
@@ -44,15 +42,15 @@ public class GameplayController : MonoBehaviour
             manager.ReloadLevel();
         else if (allowKillKey && Input.GetKeyDown(KeyCode.K))
             playerManager.KillPlayer();
-        else if (AllowMove && Input.GetKeyDown(KeyCode.Space))
+        else if (_allowMove && Input.GetKeyDown(KeyCode.Space))
             playerManager.Player.MakeRegularJump();
-        else if (AllowMove && Input.GetKeyUp(KeyCode.Space))
+        else if (_allowMove && Input.GetKeyUp(KeyCode.Space))
             playerManager.Player.SuppressJump();
 
         
-        if (!AllowMove) return;
+        if (!_allowMove) return;
         playerManager.Player.HorizontalOrderDirection = 
             (Input.GetKey(KeyCode.A) ? -1 : 0) + (Input.GetKey(KeyCode.D) ? 1 : 0);
-        playerManager.Player.OrderedToCling = Input.GetKey(KeyCode.LeftShift);
+        playerManager.Player.OrderedToHitch = Input.GetKey(KeyCode.LeftShift);
     }
 }

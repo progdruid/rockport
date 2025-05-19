@@ -104,7 +104,7 @@ public class Player : MonoBehaviour
     public bool Flip => spriteRenderer.flipX;
     
     public float HorizontalOrderDirection { get; set; }
-    public bool OrderedToCling { get; set; }
+    public bool OrderedToHitch { get; set; }
     
     public void PrepareForDeath()
     {
@@ -172,7 +172,7 @@ public class Player : MonoBehaviour
         var facingRight = moveOrdered ? hor > 0 : spriteRenderer.flipX;
 
         
-        if (OrderedToCling && !_clungCorpse
+        if (OrderedToHitch && !_clungCorpse
             && CastBodyTo(facingRight ? Vector2.right : Vector2.left, collisionCheckDistance, clingMask, out var clingHit))
         {
             var corpse = clingHit.collider.GetComponentInParent<Corpse>();
@@ -188,7 +188,7 @@ public class Player : MonoBehaviour
                 _clingOffset = offset;
             }
         }
-        else if (!OrderedToCling && _clungCorpse)
+        else if (!OrderedToHitch && _clungCorpse)
         {
             _clungCorpse.IsClung = false;
             _clungCorpse.IgnoredObject = null;

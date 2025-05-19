@@ -11,6 +11,7 @@ public class GameSystems
     public CorpseManager CorpseManager;
     public FruitManager FruitManager;
     public PlayerManager PlayerManager;
+    public IController Controller;
 
     public TransitionVeil TransitionVeil;
     public PauseUIManager PauseUIManager;  

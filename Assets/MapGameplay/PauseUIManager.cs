@@ -9,8 +9,6 @@ public class PauseUIManager : MonoBehaviour
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private BrutalImageColorTweener dimImageTweener;
     [SerializeField] private BrutalABTweener[] tweeners;
-
-    [SerializeField] private GameplayController controller;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
@@ -33,7 +31,7 @@ public class PauseUIManager : MonoBehaviour
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public void HandleOpenButton()
     {
-        controller.AllowMove = false;
+        GameSystems.Ins.Controller.SetAllowMove(false);
         Show();
     }
     
@@ -71,7 +69,7 @@ public class PauseUIManager : MonoBehaviour
         IEnumerator routine() {
             Hide();
             yield return WaitUntilHidden();
-            controller.AllowMove = true;
+            GameSystems.Ins.Controller.SetAllowMove(true);
         }
     }
     

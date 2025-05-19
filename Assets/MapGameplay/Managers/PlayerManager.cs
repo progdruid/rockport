@@ -9,7 +9,6 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject smokeEffectPrefab;
     [SerializeField] private float smokeTimeOffset;
-    [SerializeField] private GameplayController controller;
     
     private Vector2 _spawnPoint = Vector2.zero;
     private float _spawnZ = -1;
@@ -20,7 +19,6 @@ public class PlayerManager : MonoBehaviour
     private void Awake()
     {
         GameSystems.Ins.PlayerManager = this;
-        
     }
     
     
@@ -72,7 +70,7 @@ public class PlayerManager : MonoBehaviour
             Quaternion.identity);
 
         rb.constraints |= RigidbodyConstraints2D.FreezePosition;
-        controller.AllowMove = false;
+        GameSystems.Ins.Controller.SetAllowMove(false);
 
         yield return new WaitForSeconds(smokeTimeOffset);
 
@@ -96,6 +94,6 @@ public class PlayerManager : MonoBehaviour
         
         SpawnPlayer();
         yield return GameSystems.Ins.TransitionVeil.TransiteOut();
-        controller.AllowMove = true;    
+        GameSystems.Ins.Controller.SetAllowMove(true);    
     }
 }
