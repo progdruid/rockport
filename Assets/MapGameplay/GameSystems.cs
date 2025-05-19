@@ -6,13 +6,12 @@ public class GameSystems
 {
     public static GameSystems Ins { get; private set; } = new GameSystems();
 
-    public MapLoader Loader;
+    public MapManager MapManager;
     public GameplayCamera GameplayCamera;
     public CorpseManager CorpseManager;
     public FruitManager FruitManager;
     public PlayerManager PlayerManager;
 
-    public DeathsBarManager DeathsBar;
     public TransitionVeil TransitionVeil;
-    
+        
 }

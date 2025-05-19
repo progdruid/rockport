@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Serialization;
 
 public class GameplayController : MonoBehaviour
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    [FormerlySerializedAs("loader")]
     [Header("Dependencies")]
-    [SerializeField] private MapLoader loader;
+    [SerializeField] private MapManager manager;
     [SerializeField] private PlayerManager playerManager;
     [Header("Settings")] 
     [SerializeField] private bool allowKillKey;
@@ -15,7 +17,7 @@ public class GameplayController : MonoBehaviour
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
     {
-        Assert.IsNotNull(loader);
+        Assert.IsNotNull(manager);
         Assert.IsNotNull(playerManager);
     }
 
@@ -37,9 +39,9 @@ public class GameplayController : MonoBehaviour
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Q))
-            loader.QuitToMenu();
+            manager.QuitToMenu();
         else if (Input.GetKeyDown(KeyCode.R))
-            loader.ReloadLevel();
+            manager.ReloadLevel();
         else if (allowKillKey && Input.GetKeyDown(KeyCode.K))
             playerManager.KillPlayer();
         else if (AllowMove && Input.GetKeyDown(KeyCode.Space))

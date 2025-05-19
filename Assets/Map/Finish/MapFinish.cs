@@ -56,7 +56,7 @@ public class MapFinish : EntityComponent
         if (type != TriggeredType.Player)
             return;
 
-        GameSystems.Ins.Loader.ProceedFurther(_mapName);
+        GameSystems.Ins.MapManager.ProceedFurther(_mapName);
     }
 
 }

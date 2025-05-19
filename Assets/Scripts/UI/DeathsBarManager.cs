@@ -12,7 +12,10 @@ public class DeathsBarManager : MonoBehaviour
     private List<Animator> fruitIcons;
     private int lastFruitCount;
 
-    private void Awake() => GameSystems.Ins.DeathsBar = this;
+    private void Awake()
+    {
+        //GameSystems.Ins.DeathsBar = this;
+    }
 
     private void Start()
     {

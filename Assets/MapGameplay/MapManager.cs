@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 
-public class MapLoader : MonoBehaviour
+public class MapManager : MonoBehaviour
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private string loadedChapterName;
@@ -27,7 +27,7 @@ public class MapLoader : MonoBehaviour
         Assert.IsNotNull(entityFactory);
         Assert.IsNotNull(controller);
         
-        GameSystems.Ins.Loader = this;
+        GameSystems.Ins.MapManager = this;
         
         Application.targetFrameRate = 60;
     }
