@@ -80,7 +80,7 @@ public class MapManager : MonoBehaviour
         StartCoroutine(GameSystems.Ins.TransitionVeil.TransiteIn());
         yield return soundPlayer.StopPlaying();
         yield return new WaitWhile(() => GameSystems.Ins.TransitionVeil.inTransition);
-        SceneManager.LoadScene("Menu");
+        SceneManager.LoadScene("MainMenu");
     }
 
     private IEnumerator LoadLevelRoutine (JSONNode mapData)
