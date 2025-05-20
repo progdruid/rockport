@@ -60,6 +60,8 @@ public class MenuBehaviour : MonoBehaviour
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public void GoToGameplay()
     {
+        if (_currentLevel == _maxLevel + 1) return;
+        
         routine().Start(this);
         return;
         IEnumerator routine()
@@ -91,9 +93,12 @@ public class MenuBehaviour : MonoBehaviour
     public void ChangeSelectedMap(int direction)
     {
         var newLevel = _currentLevel + direction;
-        if (newLevel < 1 || newLevel > _maxLevel) return;
+        if (newLevel < 1 || newLevel > _maxLevel + 1) return;
         _currentLevel = newLevel;
-        currentLevelText.text = "lvl " + _currentLevel;
+        currentLevelText.text = 
+            _currentLevel == _maxLevel + 1 
+                ? "soon" 
+                : "lvl " + _currentLevel;
     }
     
     
