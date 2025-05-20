@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameSystems 
 {
-    public static GameSystems Ins { get; private set; } = new GameSystems();
+    public static GameSystems Ins { get; private set; } = new();
 
     public MapManager MapManager;
     public GameplayCamera GameplayCamera;

@@ -1,32 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public class FruitManager : MonoBehaviour
 {
-    public event System.Action FruitUpdateEvent = delegate { };
+    //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    [SerializeField] private TMP_Text fruitNumberText;
+    
+    private int _availableFruits;
 
-    private int availableFruits;
-
-    private void Awake() => GameSystems.Ins.FruitManager = this;
-
+    
+    //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
+    private void Awake()
+    {
+        Assert.IsNotNull(fruitNumberText);
+        GameSystems.Ins.FruitManager = this;
+        UpdateText();
+    }
+    
+    //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
+    public int GetFruitsAmount() => _availableFruits;
     public void ClearFruits ()
     {
-        availableFruits = 0;
-        FruitUpdateEvent();
+        _availableFruits = 0;
+        UpdateText();
     }
 
     public void AddFruit ()
     {
-        availableFruits++;
-        FruitUpdateEvent();
+        _availableFruits++;
+        UpdateText();
     }
 
     public void DestroyFruit ()
     {
-        availableFruits--;
-        FruitUpdateEvent();
+        _availableFruits--;
+        UpdateText();
     }
 
-    public int GetFruitsAmount() => availableFruits;
+
+    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
+    private void UpdateText() => fruitNumberText.text = $"x{_availableFruits}";
 }
