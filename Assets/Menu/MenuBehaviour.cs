@@ -58,22 +58,37 @@ public class MenuBehaviour : MonoBehaviour
     }
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    public void HandlePlayButton()
+    public void GoToGameplay()
     {
-        HandlePlayButtonRoutine().Start(this);
-    }
-
-    private IEnumerator HandlePlayButtonRoutine()
-    {
-        transitionVeil.TransiteIn().Start(this);
-        yield return soundPlayer.StopPlaying();
-        yield return new WaitWhile(() => transitionVeil.inTransition);
+        routine().Start(this);
+        return;
+        IEnumerator routine()
+        {
+            transitionVeil.TransiteIn().Start(this);
+            yield return soundPlayer.StopPlaying();
+            yield return new WaitWhile(() => transitionVeil.inTransition);
         
-        PlayerPrefs.SetString("LoadedMap", "Level" + _currentLevel);
-        SceneManager.LoadScene("MapGameplay");
+            PlayerPrefs.SetString("LoadedMap", "Level" + _currentLevel);
+            SceneManager.LoadScene("MapGameplay");
+        }
     }
 
-    public void HandleLevelChangeButton(int direction)
+    public void GoToEditor()
+    {
+        routine().Start(this);
+        return;
+        IEnumerator routine()
+        {
+            transitionVeil.TransiteIn().Start(this);
+            yield return soundPlayer.StopPlaying();
+            yield return new WaitWhile(() => transitionVeil.inTransition);
+        
+            PlayerPrefs.SetString("LoadedMap", "Level" + _currentLevel);
+            SceneManager.LoadScene("MapEditor");
+        }
+    }
+
+    public void ChangeSelectedMap(int direction)
     {
         var newLevel = _currentLevel + direction;
         if (newLevel < 1 || newLevel > _maxLevel) return;
@@ -87,6 +102,9 @@ public class MenuBehaviour : MonoBehaviour
     private void Update()
     {
         menuCamera.transform.position += Time.deltaTime * cameraGlideSpeed * Vector3.right;
+        
+        if (Input.GetKeyDown(KeyCode.E))
+            GoToEditor();
     }
 }
 
