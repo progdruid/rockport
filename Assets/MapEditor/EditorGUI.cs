@@ -47,10 +47,10 @@ public class EditorGUI : MonoBehaviour
         
         Assert.IsNotNull(editorController);
 
-        if (PlayerPrefs.HasKey("TestMap"))
+        if (PlayerPrefs.HasKey("LoadedMap"))
         {
-            pathInputField.text = PlayerPrefs.GetString("TestMap");
-            PlayerPrefs.DeleteKey("TestMap");
+            pathInputField.text = PlayerPrefs.GetString("LoadedMap");
+            PlayerPrefs.DeleteKey("LoadedMap");
             HandleLoadButtonClick();
         }
         
@@ -142,7 +142,7 @@ public class EditorGUI : MonoBehaviour
 
     private void HandleTestButtonClick()
     {
-        PlayerPrefs.SetString("TestMap", pathInputField.text);
+        PlayerPrefs.SetString("LoadedMap", pathInputField.text);
         PlayerPrefs.SetString("GameplayReturnScene", SceneManager.GetActiveScene().name);
         PlayerPrefs.Save();
         SceneManager.LoadScene($"MapGameplay");

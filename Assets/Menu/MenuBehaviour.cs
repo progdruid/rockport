@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
@@ -17,6 +18,10 @@ public class MenuBehaviour : MonoBehaviour
     [SerializeField] private Camera menuCamera;
     [SerializeField] private float cameraGlideSpeed = 1f;
     [SerializeField] private float groundHeight = -5f;
+    [SerializeField] private TMP_Text currentLevelText;
+    
+    private int _currentLevel = 1;
+    private int _maxLevel = 6;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
@@ -26,6 +31,7 @@ public class MenuBehaviour : MonoBehaviour
         foreach (var layer in parallaxLayers) 
             Assert.IsNotNull(layer);
         Assert.IsNotNull(menuCamera);
+        Assert.IsNotNull(currentLevelText);
     }
     
     private void Start()
@@ -36,6 +42,18 @@ public class MenuBehaviour : MonoBehaviour
         {
             layer.SetTarget(menuCamera.transform);
             layer.SetGroundLevel(groundHeight);
+        }
+        
+        if (PlayerPrefs.HasKey("LoadedMap"))
+        {
+            var numberSubstring = PlayerPrefs.GetString("LoadedMap").Substring(5);
+            if (int.TryParse(numberSubstring, out var level) && level > 0 && level <= _maxLevel)
+            {
+                _currentLevel = level;
+                currentLevelText.text = "lvl " + _currentLevel;
+            }
+            else
+                PlayerPrefs.DeleteKey("LoadedMap");
         }
     }
 
@@ -50,15 +68,19 @@ public class MenuBehaviour : MonoBehaviour
         transitionVeil.TransiteIn().Start(this);
         yield return soundPlayer.StopPlaying();
         yield return new WaitWhile(() => transitionVeil.inTransition);
-
-        //PlayerPrefs.SetInt("Level_ID_Selected_in_Menu", levelListMover.GetSelectedLevel());
+        
+        PlayerPrefs.SetString("LoadedMap", "Level" + _currentLevel);
         SceneManager.LoadScene("MapGameplay");
     }
 
-    public void HandleQuitButton()
+    public void HandleLevelChangeButton(int direction)
     {
-        Application.Quit();
+        var newLevel = _currentLevel + direction;
+        if (newLevel < 1 || newLevel > _maxLevel) return;
+        _currentLevel = newLevel;
+        currentLevelText.text = "lvl " + _currentLevel;
     }
+    
     
     
     //game loop/////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -56,7 +56,10 @@ public class MapFinish : EntityComponent
         if (type != TriggeredType.Player)
             return;
 
-        GameSystems.Ins.MapManager.ProceedFurther(_mapName);
+        if (_mapName != "#Menu")
+            GameSystems.Ins.MapManager.ProceedFurther(_mapName);
+        else
+            GameSystems.Ins.MapManager.QuitToMenu();
     }
 
 }

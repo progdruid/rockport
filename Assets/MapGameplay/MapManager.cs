@@ -33,8 +33,8 @@ public class MapManager : MonoBehaviour
     private void Start()
     {
         soundPlayer.StartPlaying();
-        if (PlayerPrefs.HasKey("TestMap")) 
-            loadedChapterName = PlayerPrefs.GetString("TestMap");
+        if (PlayerPrefs.HasKey("LoadedMap")) 
+            loadedChapterName = PlayerPrefs.GetString("LoadedMap");
         MakeDecision();
     }
     

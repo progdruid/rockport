@@ -172,7 +172,7 @@
                 "generatePhysics" : true
             },
             "finish" : {
-                "mapName" : "Test"
+                "mapName" : "#Menu"
             }
         },
         {
