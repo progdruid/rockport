@@ -132,7 +132,6 @@ GameObject:
   - component: {fileID: 6388440925167425488}
   - component: {fileID: 456645942844967705}
   - component: {fileID: 3938242994105235464}
-  - component: {fileID: -4062892864499950858}
   m_Layer: 3
   m_Name: Corpse
   m_TagString: Corpse
@@ -323,20 +322,6 @@ MonoBehaviour:
   landingDustSpawnPoint: {fileID: 2287312012242563915}
   rb: {fileID: 6388440925167425488}
   polyCollider: {fileID: 456645942844967705}
---- !u!114 &-4062892864499950858
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6388440925167425491}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e83ede2297a58654fa808a539428fe3a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  landingCooldown: 0.1
-  soundEmitter: {fileID: 1596116633695954149}
 --- !u!1 &8751538986862691676
 GameObject:
   m_ObjectHideFlags: 0
