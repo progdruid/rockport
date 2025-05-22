@@ -1,9 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class SequentialSoundPlayer : MonoBehaviour
 {
+    //TODO: this is a temporary solution, should be replaced with a more generic system
+    public static event System.Action GlobalVolumeUpdate;
+    public static void UpdateGlobalVolume() => GlobalVolumeUpdate?.Invoke();
+
     [System.Serializable]
     public struct SequenceSound
     {
@@ -23,12 +28,17 @@ public class SequentialSoundPlayer : MonoBehaviour
     public bool stopped { get; private set; } = false;
     private bool playRoutineRunning = false;
     private bool initialized = false;
+    private float playerVolume = 1f;
 
     void Start()
     {
+        GlobalVolumeUpdate += UpdateVolume;
+        
         if (!initialized)
             Init();
     }
+
+    private void OnDestroy() => GlobalVolumeUpdate -= UpdateVolume;
 
     private void Init()
     {
@@ -41,8 +51,20 @@ public class SequentialSoundPlayer : MonoBehaviour
 
         initialized = true;
 
+        UpdateVolume();
+        
         if (playOnStart)
             StartPlaying();
+    }
+
+    private void UpdateVolume()
+    { 
+        var volume = 1f; 
+        if (PlayerPrefs.HasKey("MusicVolume"))
+            volume = PlayerPrefs.GetFloat("MusicVolume");
+        currentSource.volume = volume;
+        nextSource.volume = volume;
+        playerVolume = volume;
     }
 
     public void StartPlaying()
@@ -94,7 +116,7 @@ public class SequentialSoundPlayer : MonoBehaviour
     private void PlaySoundFromSequence (AudioSource source, int index)
     {
         source.clip = soundSequence[index].clip;
-        source.volume = soundSequence[index].volume;
+        source.volume = soundSequence[index].volume * playerVolume;
         source.time = 0;
         source.loop = false;
 

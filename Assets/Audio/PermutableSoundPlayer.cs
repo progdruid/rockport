@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class PermutableSoundPlayer : MonoBehaviour
 {
+    //TODO: this is a temporary solution, should be replaced with a more generic system
+    public static event System.Action GlobalVolumeUpdate;
+    public static void UpdateGlobalVolume() => GlobalVolumeUpdate?.Invoke();
+    
     [SerializeField] CustomSound[] sounds;
 
     private Dictionary<string, AudioSource> sourceMap = new ();
@@ -29,6 +33,19 @@ public class PermutableSoundPlayer : MonoBehaviour
                 sourceMap.TryAdd(sound.name, source);
             }
         
+        UpdateVolume();
+        GlobalVolumeUpdate += UpdateVolume;
+    }
+    
+    void OnDestroy() => GlobalVolumeUpdate -= UpdateVolume;
+
+    private void UpdateVolume ()
+    {
+        var volume = 1f;
+        if (PlayerPrefs.HasKey("SFXVolume"))
+            volume = PlayerPrefs.GetFloat("SFXVolume");
+        foreach (var source in sourceMap.Values)
+            source.volume = volume;
     }
 
     public void SelectClip (string name)

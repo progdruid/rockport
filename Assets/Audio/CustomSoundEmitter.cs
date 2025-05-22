@@ -12,6 +12,11 @@ public struct CustomSound
 
 public class CustomSoundEmitter : MonoBehaviour
 {
+    //TODO: this is a temporary solution, should be replaced with a more generic system
+    public static event System.Action GlobalVolumeUpdate;
+    public static void UpdateGlobalVolume() => GlobalVolumeUpdate?.Invoke();
+
+    
     [SerializeField] string[] startSounds;
     [SerializeField] CustomSound[] sounds;
     [SerializeField] bool mute;
@@ -23,20 +28,35 @@ public class CustomSoundEmitter : MonoBehaviour
     private int numSources = 0;
     private int numCalls = 0;
 
+    private float _emitterVolume = 1f;
+    
     void Awake()
     {
         foreach (var sound in sounds)
             soundMap.TryAdd(sound.name, sound);
-        if (emitPeriodInCalls == 0)
+
+        if (emitPeriodInCalls < 1)
             emitPeriodInCalls = 1;
+        
+        GlobalVolumeUpdate += UpdateVolume;
     }
 
     void Start()
     {
-        foreach (string sound in startSounds)
+        UpdateVolume();
+        foreach (var sound in startSounds)
             EmitSound(sound);
     }
+    
+    void OnDestroy() => GlobalVolumeUpdate -= UpdateVolume;
 
+    private void UpdateVolume ()
+    {
+        _emitterVolume = 1f;
+        if (PlayerPrefs.HasKey("SFXVolume"))
+            _emitterVolume = PlayerPrefs.GetFloat("SFXVolume");
+    }
+    
     public void EmitSound (string clipName)
     {
         numCalls++;
@@ -56,7 +76,7 @@ public class CustomSoundEmitter : MonoBehaviour
         go.transform.localPosition = Vector3.zero;
         var source = go.AddComponent<AudioSource>();
         source.clip = sound.clip;
-        source.volume = sound.volume;
+        source.volume = sound.volume * _emitterVolume;
         source.Play();
         if (source != null && gameObject.activeSelf)
             StartCoroutine(WaitForEndAndDestroy(source));

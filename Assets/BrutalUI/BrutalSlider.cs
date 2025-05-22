@@ -37,6 +37,9 @@ public class BrutalSlider : MonoBehaviour, IDragHandler, IPointerDownHandler
     [HideInInspector] [SerializeField] private RectTransform mainRect;
     [HideInInspector] [SerializeField] private RectTransform borderRect;
     
+    [Space]
+    [SerializeField] private UnityEvent<float> sliderEvent;
+    
     private RectTransform _rect;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,11 +52,23 @@ public class BrutalSlider : MonoBehaviour, IDragHandler, IPointerDownHandler
         UpdateWidth(_rect);
     }
     
+    
+    //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
+    public void Subscribe(UnityAction<float> action) => sliderEvent.AddListener(action);
+    public void Unsubscribe(UnityAction<float> action) => sliderEvent.RemoveListener(action);
+    public void SetValue(float value)
+    {
+        currentValue = Mathf.Clamp01(value);
+        UpdateWidth(_rect);
+    }
+    
+    
+    //game loop/////////////////////////////////////////////////////////////////////////////////////////////////////////
     public void OnDrag(PointerEventData eventData) => UpdateValueFromPointer(eventData);
     public void OnPointerDown(PointerEventData eventData) => UpdateValueFromPointer(eventData);
     
+    
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
-
     private void UpdateValueFromPointer(PointerEventData eventData)
     {
         RectTransformUtility.ScreenPointToLocalPointInRectangle(_rect, eventData.position,
@@ -66,7 +81,7 @@ public class BrutalSlider : MonoBehaviour, IDragHandler, IPointerDownHandler
         var normalClip = Mathf.Clamp01(clip + 0.5f);
         currentValue = (normalClip - minFill) / (1f - minFill);
         UpdateWidth(_rect);
-        //?.Invoke(currentValue);
+        sliderEvent?.Invoke(currentValue);
     }
     
     private void UpdateWidth(RectTransform rect)
