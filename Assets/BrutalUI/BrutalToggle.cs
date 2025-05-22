@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -29,11 +30,15 @@ public class BrutalToggle : MonoBehaviour, IPointerDownHandler
     [SerializeField] private float cornerBorder = 1f;
     [SerializeField] private float cornerShadow = 1f;
 
-    [Space] 
+    [Space]
     [SerializeField] private Sprite sprite;
 
     [HideInInspector] [SerializeField] private RectTransform mainRect;
     [HideInInspector] [SerializeField] private RectTransform borderRect;
+    
+    [Space]
+    [SerializeField] private UnityEvent<bool> toggleEvent;
+
     
     private RectTransform _rect;
     private Coroutine _toggleCoroutine = null;
@@ -52,8 +57,20 @@ public class BrutalToggle : MonoBehaviour, IPointerDownHandler
     public void OnPointerDown(PointerEventData eventData)
     {
         currentValue = !currentValue;
+        toggleEvent?.Invoke(currentValue);
         UpdateState(_rect);
     }
+
+    //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
+    public void SetValue(bool value)
+    {
+        if (currentValue == value) return;
+        currentValue = value;
+        UpdateState(_rect);
+    }
+    
+    public void Subscribe(UnityAction<bool> action) => toggleEvent.AddListener(action);
+    public void Unsubscribe(UnityAction<bool> action) => toggleEvent.RemoveListener(action);
 
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     private void UpdateState(RectTransform rect)

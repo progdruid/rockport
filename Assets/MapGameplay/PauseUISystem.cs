@@ -4,7 +4,7 @@ using BrutalUI;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-public class PauseUIManager : MonoBehaviour
+public class PauseUISystem : MonoBehaviour
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private BrutalImageColorTweener dimImageTweener;
@@ -17,7 +17,7 @@ public class PauseUIManager : MonoBehaviour
         foreach (var tweener in tweeners)
             Assert.IsNotNull(tweener);
         
-        GameSystems.Ins.PauseUIManager = this;
+        GameSystems.Ins.PauseUISystem = this;
     }
 
     private void Start()
@@ -42,7 +42,7 @@ public class PauseUIManager : MonoBehaviour
 
         IEnumerator routine()
         {
-            GameSystems.Ins.PauseUIManager.Hide();
+            GameSystems.Ins.PauseUISystem.Hide();
             yield return WaitUntilHidden();
             GameSystems.Ins.MapManager.QuitToMenu();
         }
@@ -55,7 +55,7 @@ public class PauseUIManager : MonoBehaviour
 
         IEnumerator routine()
         {
-            GameSystems.Ins.PauseUIManager.Hide();
+            GameSystems.Ins.PauseUISystem.Hide();
             yield return WaitUntilHidden();
             GameSystems.Ins.MapManager.ReloadLevel();
         }
