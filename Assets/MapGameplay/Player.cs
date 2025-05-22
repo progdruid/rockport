@@ -169,7 +169,7 @@ public class Player : MonoBehaviour
         
         var hor = HorizontalOrderDirection;
         var moveOrdered = !Mathf.Approximately(hor, 0);
-        var facingRight = moveOrdered ? hor > 0 : spriteRenderer.flipX;
+        var facingRight = moveOrdered ? hor > 0 : !spriteRenderer.flipX;
 
         
         if (OrderedToHitch && !_clungCorpse
