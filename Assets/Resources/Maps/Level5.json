@@ -10,7 +10,8 @@
         {
             "title" : "Ground Marker",
             "anchor" : {
-                "mapPos" : [122,128]
+                "mapPos" : [122,128],
+                "freeMode" : false
             }
         },
         {
@@ -26,7 +27,8 @@
         {
             "title" : "Jump Pad",
             "anchor" : {
-                "mapPos" : [64,2]
+                "mapPos" : [64,2],
+                "freeMode" : false
             },
             "jumpPad" : {
                 "impulse" : 16
@@ -38,7 +40,8 @@
         {
             "title" : "Sign",
             "anchor" : {
-                "mapPos" : [113,182]
+                "mapPos" : [113,182],
+                "freeMode" : false
             },
             "rotator" : {
                 "angle" : 0
@@ -51,7 +54,22 @@
         {
             "title" : "Sign",
             "anchor" : {
-                "mapPos" : [113,181]
+                "mapPos" : [132,121],
+                "freeMode" : false
+            },
+            "rotator" : {
+                "angle" : 0
+            },
+            "decor" : {
+                "spriteIndex" : 9,
+                "flip" : false
+            }
+        },
+        {
+            "title" : "Sign",
+            "anchor" : {
+                "mapPos" : [113,181],
+                "freeMode" : false
             },
             "rotator" : {
                 "angle" : 0
@@ -100,7 +118,8 @@
         {
             "title" : "Fruit",
             "anchor" : {
-                "mapPos" : [131,140]
+                "mapPos" : [131,140],
+                "freeMode" : false
             }
         },
         {
@@ -109,7 +128,8 @@
                 "width" : 6
             },
             "anchor" : {
-                "mapPos" : [144,127]
+                "mapPos" : [144,127],
+                "freeMode" : false
             }
         },
         {
@@ -118,7 +138,8 @@
                 "width" : 2
             },
             "anchor" : {
-                "mapPos" : [151,132]
+                "mapPos" : [151,132],
+                "freeMode" : false
             }
         },
         {
@@ -127,7 +148,8 @@
                 "width" : 2
             },
             "anchor" : {
-                "mapPos" : [110,129]
+                "mapPos" : [110,129],
+                "freeMode" : false
             }
         },
         {
@@ -136,7 +158,8 @@
                 "width" : 4
             },
             "anchor" : {
-                "mapPos" : [116,132]
+                "mapPos" : [116,132],
+                "freeMode" : false
             }
         },
         {
@@ -145,7 +168,8 @@
                 "width" : 3
             },
             "anchor" : {
-                "mapPos" : [123,134]
+                "mapPos" : [123,134],
+                "freeMode" : false
             }
         },
         {
@@ -154,13 +178,15 @@
                 "width" : 3
             },
             "anchor" : {
-                "mapPos" : [129,134]
+                "mapPos" : [129,134],
+                "freeMode" : false
             }
         },
         {
             "title" : "Finish",
             "anchor" : {
-                "mapPos" : [177,149]
+                "mapPos" : [177,149],
+                "freeMode" : false
             },
             "physicsGenerator" : {
                 "generatePhysics" : true
@@ -172,7 +198,8 @@
         {
             "title" : "Spawn Point",
             "anchor" : {
-                "mapPos" : [93,139]
+                "mapPos" : [93,139],
+                "freeMode" : false
             }
         }
     ]

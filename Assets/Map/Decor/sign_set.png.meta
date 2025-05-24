@@ -346,6 +346,28 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: sign_set_9
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 0
+        width: 40
+        height: 48
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 44e1f4fd830f1ff4d82b8b559cd0dd0c
+      internalID: -27303340
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -369,6 +391,7 @@ TextureImporter:
       sign_set_6: 749293032
       sign_set_7: 1384336128
       sign_set_8: -544172332
+      sign_set_9: -27303340
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

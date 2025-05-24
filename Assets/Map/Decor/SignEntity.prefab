@@ -68,6 +68,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10664e4e60194cea9287c5d5cca0efa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  freeMode: 0
 --- !u!114 &591317684036510993
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -103,6 +104,8 @@ MonoBehaviour:
   - {fileID: 749293032, guid: f3ea3f51112546345b9086bc1026c005, type: 3}
   - {fileID: 1384336128, guid: f3ea3f51112546345b9086bc1026c005, type: 3}
   - {fileID: 1979517948, guid: f3ea3f51112546345b9086bc1026c005, type: 3}
+  - {fileID: -27303340, guid: f3ea3f51112546345b9086bc1026c005, type: 3}
+  pickRandom: 0
 --- !u!114 &1992170914968271777
 MonoBehaviour:
   m_ObjectHideFlags: 0
