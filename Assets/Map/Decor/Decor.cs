@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using Map;
 using SimpleJSON;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -13,9 +11,10 @@ public class Decor : EntityComponent
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Sprite[] sprites;
+    [SerializeField] private bool pickRandom = false;
     
-    private bool _flip = false;
     private int _spriteIndex = 0;
+    private bool _flip = false;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     protected override void Wake()
@@ -25,6 +24,7 @@ public class Decor : EntityComponent
         Assert.IsTrue(sprites.Length > 0);
         Assert.IsTrue(sprites[0]);
         
+        if (pickRandom) _spriteIndex = Random.Range(0, sprites.Length);
         spriteRenderer.sprite = sprites[_spriteIndex];
     }
     public override void Initialise() {}
