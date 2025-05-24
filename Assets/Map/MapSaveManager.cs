@@ -33,16 +33,29 @@ public static class MapSaveManager
 
     public static bool Load(string name, out JSONNode data)
     {
+#if UNITY_EDITOR
         var filePath = Path.Combine(Application.dataPath, "Resources", "Maps", name + ".json");
-        
         if (!File.Exists(filePath))
         {
             Debug.LogError($"File not found: {filePath}");
             data = null;
             return false;
         }
-
         var text = File.ReadAllText(filePath);
+        
+#else
+        var filePath = $"Resources/Maps/{name}.json";
+        var textAsset = Resources.Load<TextAsset>($"Maps/{name}");
+        if (!textAsset)
+        {
+            Debug.LogError($"Map not found in {filePath}");
+            data = null;
+            return false;
+        }        
+        var text = textAsset.text;
+#endif
+        
+        
         try
         {
             data = JSON.Parse(text).AsObject;
