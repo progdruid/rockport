@@ -88,7 +88,7 @@ public class PauseUISystem : MonoBehaviour
         {
             GameSystems.Ins.PauseUISystem.Hide();
             yield return WaitUntilHidden();
-            GameSystems.Ins.MapManager.QuitToMenu();
+            GameSystems.Ins.MapManager.QuitToScene("MainMenu");
         }
     }
     
@@ -101,7 +101,7 @@ public class PauseUISystem : MonoBehaviour
         {
             GameSystems.Ins.PauseUISystem.Hide();
             yield return WaitUntilHidden();
-            GameSystems.Ins.MapManager.ReloadLevel();
+            GameSystems.Ins.MapManager.ReloadMap();
         }
     }
     

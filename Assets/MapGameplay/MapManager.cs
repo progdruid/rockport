@@ -28,6 +28,8 @@ public class MapManager : MonoBehaviour
         GameSystems.Ins.MapManager = this;
         
         Application.targetFrameRate = 60;
+        
+        Assert.IsTrue(PlayerPrefs.HasKey("LoadedMap"));
     }
 
     private void Start()
@@ -35,55 +37,51 @@ public class MapManager : MonoBehaviour
         soundPlayer.StartPlaying();
         if (PlayerPrefs.HasKey("LoadedMap")) 
             loadedChapterName = PlayerPrefs.GetString("LoadedMap");
-        MakeDecision();
+        LoadMap(loadedChapterName);
     }
     
     
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    public event System.Action LevelInstantiationEvent;
+    public void ReloadMap()
+    {
+        if (!_isLoading)
+            StartCoroutine(LoadMapRoutine(_currentMapData));
+    }
+
+    public void QuitToScene(string sceneName)
+    {
+        if (!_isLoading)
+            routine().Start(this);
+        return;
+        
+        IEnumerator routine()
+        {
+            Application.targetFrameRate = -1;
+
+            StartCoroutine(GameSystems.Ins.TransitionVeil.TransiteIn());
+            yield return soundPlayer.StopPlaying();
+            yield return new WaitWhile(() => GameSystems.Ins.TransitionVeil.inTransition);
+            PlayerPrefs.SetString("LoadedMap", loadedChapterName);
+            SceneManager.LoadScene(sceneName);
+        }
+    }
     
-    public void ProceedFurther (string mapName)
+    public void LoadMap(string mapName)
     {
-        if (_isLoading) return;
-        loadedChapterName = mapName;
-        MakeDecision();
-    }
-
-    public void ReloadLevel()
-    {
-        if (!_isLoading)
-            StartCoroutine(LoadLevelRoutine(_currentMapData));
-    }
-
-    public void QuitToMenu()
-    {
-        if (!_isLoading)
-            StartCoroutine(GoToMenuRoutine());
-    }
-
-
-    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
-    private void MakeDecision()
-    {
-        var loaded = MapSaveManager.Load(loadedChapterName, out var contents);
+        if (_isLoading)
+            return;
+        
+        var loaded = MapSaveManager.Load(mapName, out var contents);
         Assert.IsTrue(loaded);
         Assert.IsNotNull(contents);
 
+        loadedChapterName = mapName;
         _currentMapData = contents;
-        StartCoroutine(LoadLevelRoutine(_currentMapData));
+        StartCoroutine(LoadMapRoutine(_currentMapData));
     }
 
-    private IEnumerator GoToMenuRoutine ()
-    {
-        Application.targetFrameRate = -1;
-
-        StartCoroutine(GameSystems.Ins.TransitionVeil.TransiteIn());
-        yield return soundPlayer.StopPlaying();
-        yield return new WaitWhile(() => GameSystems.Ins.TransitionVeil.inTransition);
-        SceneManager.LoadScene("MainMenu");
-    }
-
-    private IEnumerator LoadLevelRoutine (JSONNode mapData)
+    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
+    private IEnumerator LoadMapRoutine (JSONNode mapData)
     {
         _isLoading = true;
 
@@ -134,7 +132,6 @@ public class MapManager : MonoBehaviour
         }
         signalCircuit.Replicate(mapData["signalData"].AsObject);;
         _currentMapSpace = mapSpace;
-        LevelInstantiationEvent?.Invoke();
         
 
         

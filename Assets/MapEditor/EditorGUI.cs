@@ -50,8 +50,11 @@ public class EditorGUI : MonoBehaviour
         if (PlayerPrefs.HasKey("LoadedMap"))
         {
             pathInputField.text = PlayerPrefs.GetString("LoadedMap");
-            PlayerPrefs.DeleteKey("LoadedMap");
             HandleLoadButtonClick();
+        }
+        else 
+        {
+            pathInputField.text = "Test";
         }
         
         testButton.onClick.AddListener(HandleTestButtonClick);

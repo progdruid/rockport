@@ -37,9 +37,11 @@ public class KeyboardController : MonoBehaviour, IController
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Q))
-            manager.QuitToMenu();
+            manager.QuitToScene("MainMenu");
+        else if (Input.GetKeyDown(KeyCode.E))
+            manager.QuitToScene("MapEditor");
         else if (Input.GetKeyDown(KeyCode.R))
-            manager.ReloadLevel();
+            manager.ReloadMap();
         else if (allowKillKey && Input.GetKeyDown(KeyCode.K))
             playerManager.KillPlayer();
         else if (_allowMove && Input.GetKeyDown(KeyCode.Space))

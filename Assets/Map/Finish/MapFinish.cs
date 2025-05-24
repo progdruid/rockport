@@ -57,9 +57,9 @@ public class MapFinish : EntityComponent
             return;
 
         if (_mapName != "#Menu")
-            GameSystems.Ins.MapManager.ProceedFurther(_mapName);
+            GameSystems.Ins.MapManager.LoadMap(_mapName);
         else
-            GameSystems.Ins.MapManager.QuitToMenu();
+            GameSystems.Ins.MapManager.QuitToScene("MainMenu");
     }
 
 }

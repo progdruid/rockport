@@ -52,8 +52,6 @@ public class MenuBehaviour : MonoBehaviour
                 _currentLevel = level;
                 currentLevelText.text = "lvl " + _currentLevel;
             }
-            else
-                PlayerPrefs.DeleteKey("LoadedMap");
         }
     }
 
