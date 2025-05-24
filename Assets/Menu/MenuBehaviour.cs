@@ -95,7 +95,7 @@ public class MenuBehaviour : MonoBehaviour
         _currentLevel = newLevel;
         currentLevelText.text = 
             _currentLevel == _maxLevel + 1 
-                ? "soon" 
+                ? "soon on Jun 7" 
                 : "lvl " + _currentLevel;
     }
     
