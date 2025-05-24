@@ -151,7 +151,7 @@ public class EntityEditor : MonoBehaviour, IMapEditorMode
         {
             Assert.IsTrue(anchorRawAccessor is IAnchorAccessor);
             var anchorAccessor = (IAnchorAccessor)anchorRawAccessor;
-            _selectedEntityAction = (worldPos, constructive) => anchorAccessor.SetPositionSnapped(worldPos);
+            _selectedEntityAction = (worldPos, constructive) => anchorAccessor.SetPosition(worldPos);
         }
         else if (_selectedEntity.Accessors.TryGetValue("tile-layer", out var tileRawAccessor))
         {

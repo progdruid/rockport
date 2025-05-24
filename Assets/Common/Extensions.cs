@@ -77,10 +77,22 @@ public static class Extensions
         array.WriteVector2Int(v);
         return array;
     }
+    public static JSONNode ToJson(this Vector2 v)
+    {
+        var array = new JSONArray();
+        array.WriteVector2(v);
+        return array;
+    }
     public static JSONNode ToJson(this Vector3Int v)
     {
         var array = new JSONArray();
         array.WriteVector3Int(v);
+        return array;
+    }
+    public static JSONNode ToJson(this Vector3 v)
+    {
+        var array = new JSONArray();
+        array.WriteVector3(v);
         return array;
     }
     

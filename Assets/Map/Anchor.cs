@@ -10,6 +10,8 @@ namespace Map
 public class Anchor : EntityComponent, IAnchorAccessor
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    [SerializeField] private bool freeMode = false;
+    
     MapEntity IEntityAccessor.Entity { get; set; }
     string IEntityAccessor.AccessorName { get; set; }
 
@@ -20,36 +22,53 @@ public class Anchor : EntityComponent, IAnchorAccessor
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public override string JsonName => "anchor";
-    public override IEnumerator<PropertyHandle> GetProperties() { yield break; }
+
+    public override IEnumerator<PropertyHandle> GetProperties()
+    {
+        yield return new PropertyHandle()
+        {
+            PropertyName = "Free Mode",
+            PropertyType = PropertyType.Text,
+            Getter = () => freeMode ? "true" : "false",
+            Setter = (object input) =>
+            {
+                freeMode = (string)input == "true";
+                InvokePropertiesChangeEvent();
+            }
+        };
+    }
 
     public override void Replicate(JSONNode data)
     {
-        var pos = data["mapPos"].ReadVector2Int();
+        if (data["freeMode"] != null)
+            freeMode = data["freeMode"].AsBool;
+        var pos = data["mapPos"].ReadVector2();
         var world = Space.ConvertMapToWorld(pos);
         Target.SetWorldXY(world);
     }
 
     public override JSONNode ExtractData()
     {
-        Space.SnapWorldToMap(Target.position.To2(), out var mapPos);
+        Space.ConvertWorldToMapAbsolute(Target.position.To2(), out var mapPos);
         var json = new JSONObject()
         {
-            ["mapPos"] = mapPos.ToJson()
+            ["mapPos"] = mapPos.ToJson(),
+            ["freeMode"] = freeMode
         };
         return json;
     }
 
-    public bool SetPositionSnapped(Vector2 worldPos)
+    public bool SetPosition(Vector2 worldPos)
     {
-        if (!Space.SnapWorldToMap(worldPos, out var mapPos)) return false;
-        var snappedWorldPos = Space.ConvertMapToWorld(mapPos);
-        Target.SetWorldXY(snappedWorldPos);
-        return true;
-    }
-
-    public bool SetPositionAbsolute(Vector2 worldPos)
-    {
-        if (!Space.IsInBounds(worldPos.RoundToInt())) return false;
+        if (!freeMode)
+        {
+            if (!Space.SnapWorldToMap(worldPos, out var snapped))
+                return false;
+            worldPos = Space.ConvertMapToWorld(snapped);
+        }
+        else if (!Space.ConvertWorldToMapAbsolute(worldPos, out _))
+            return false;
+        
         Target.SetWorldXY(worldPos);
         return true;
     }
@@ -59,8 +78,7 @@ public class Anchor : EntityComponent, IAnchorAccessor
 
 public interface IAnchorAccessor : IEntityAccessor
 {
-    public bool SetPositionSnapped(Vector2 worldPos);
-    public bool SetPositionAbsolute(Vector2 worldPos);
+    public bool SetPosition(Vector2 worldPos);
     public Vector2 GetPosition();
 }
 

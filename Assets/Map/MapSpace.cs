@@ -36,14 +36,21 @@ public class MapSpace
     public int EntitiesCount => _entities.Count;
     
     //grid operations
+    public bool IsInBounds(Vector2 mapPos) 
+        => mapPos.x >= 0 && mapPos.x < MapSize.x && mapPos.y >= 0 && mapPos.y < MapSize.y;
     public bool SnapWorldToMap(Vector2 worldPos, out Vector2Int mapPos)
     {
         mapPos = Vector2Int.FloorToInt((worldPos - (Vector2)_visualGrid.transform.position) / _visualGrid.cellSize);
-        return new Rect(0, 0, _mapSize.x - 0.1f, _mapSize.y - 0.1f).Contains(mapPos);
+        return IsInBounds(mapPos);
     }
-    public Vector2 ConvertMapToWorld(Vector2Int mapPos) 
+    public bool ConvertWorldToMapAbsolute(Vector2 worldPos, out Vector2 mapPos)
+    {
+        mapPos = (worldPos - (Vector2)_visualGrid.transform.position) / _visualGrid.cellSize;
+        return IsInBounds(mapPos);
+    }
+    public Vector2 ConvertMapToWorld(Vector2 mapPos) 
         => (Vector2)_visualGrid.transform.position + mapPos * (Vector2)_visualGrid.cellSize;
-    public bool IsInBounds(Vector2Int pos) => pos.x >= 0 && pos.x < MapSize.x && pos.y >= 0 && pos.y < MapSize.y;
+    
     public IEnumerable<Vector2Int> RetrievePositions(Vector2Int pos, IEnumerable<Vector2Int> offsets)
     {
         foreach (var direction in offsets)
