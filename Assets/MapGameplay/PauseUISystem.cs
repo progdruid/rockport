@@ -56,12 +56,6 @@ public class PauseUISystem : MonoBehaviour
         helpToggle.SetValue(_isShowing);
         helpToggle.Subscribe(UpdateHUD);
         
-        musicSlider.SetValue(_musicVolume);
-        musicSlider.Subscribe(UpdateMusic);
-        
-        sfxSlider.SetValue(_sfxVolume);
-        sfxSlider.Subscribe(UpdateSFX);
-        
         UpdateMusic(PlayerPrefs.HasKey("MusicVolume") 
             ? PlayerPrefs.GetFloat("MusicVolume") 
             : 1f);
@@ -69,6 +63,14 @@ public class PauseUISystem : MonoBehaviour
         UpdateSFX(PlayerPrefs.HasKey("SFXVolume") 
             ? PlayerPrefs.GetFloat("SFXVolume") 
             : 1f);
+        
+        
+        musicSlider.SetValue(_musicVolume);
+        musicSlider.Subscribe(UpdateMusic);
+        
+        sfxSlider.SetValue(_sfxVolume);
+        sfxSlider.Subscribe(UpdateSFX);
+
     }
     private void OnDestroy() => helpToggle.Unsubscribe(UpdateHUD);
     

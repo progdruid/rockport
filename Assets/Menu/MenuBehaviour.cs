@@ -19,6 +19,7 @@ public class MenuBehaviour : MonoBehaviour
     [SerializeField] private float cameraGlideSpeed = 1f;
     [SerializeField] private float groundHeight = -5f;
     [SerializeField] private TMP_Text currentLevelText;
+    [SerializeField] private string upcomingLevelPhrase = "soon";
     
     private int _currentLevel = 1;
     private int _maxLevel = 6;
@@ -95,7 +96,7 @@ public class MenuBehaviour : MonoBehaviour
         _currentLevel = newLevel;
         currentLevelText.text = 
             _currentLevel == _maxLevel + 1 
-                ? "soon on Jun 7" 
+                ? upcomingLevelPhrase 
                 : "lvl " + _currentLevel;
     }
     
