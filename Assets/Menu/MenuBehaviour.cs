@@ -27,7 +27,6 @@ public class MenuBehaviour : MonoBehaviour
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
     {
-        Assert.IsNotNull(soundPlayer);
         Assert.IsNotNull(transitionVeil);
         foreach (var layer in parallaxLayers) 
             Assert.IsNotNull(layer);
@@ -37,7 +36,7 @@ public class MenuBehaviour : MonoBehaviour
     
     private void Start()
     {
-        soundPlayer.StartPlaying();
+        soundPlayer?.StartPlaying();
         transitionVeil.TransiteOut().Start(this);
         foreach (var layer in parallaxLayers)
         {
@@ -66,7 +65,8 @@ public class MenuBehaviour : MonoBehaviour
         IEnumerator routine()
         {
             transitionVeil.TransiteIn().Start(this);
-            yield return soundPlayer.StopPlaying();
+            if (soundPlayer)
+                yield return soundPlayer.StopPlaying();
             yield return new WaitWhile(() => transitionVeil.inTransition);
         
             PlayerPrefs.SetString("LoadedMap", "Level" + _currentLevel);
@@ -81,7 +81,8 @@ public class MenuBehaviour : MonoBehaviour
         IEnumerator routine()
         {
             transitionVeil.TransiteIn().Start(this);
-            yield return soundPlayer.StopPlaying();
+            if (soundPlayer)
+                yield return soundPlayer.StopPlaying();
             yield return new WaitWhile(() => transitionVeil.inTransition);
         
             PlayerPrefs.SetString("LoadedMap", "Level" + _currentLevel);
