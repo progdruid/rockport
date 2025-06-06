@@ -14,5 +14,5 @@ public class GameSystems
     public IController Controller;
 
     public TransitionVeil TransitionVeil;
-    public PauseUISystem PauseUISystem;  
+    public GameplayUISystem GameplayUISystem;  
 }

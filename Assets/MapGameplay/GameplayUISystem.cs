@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
 
-public class PauseUISystem : MonoBehaviour
+public class GameplayUISystem : MonoBehaviour
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [Header("Tweeners")]
@@ -17,9 +17,12 @@ public class PauseUISystem : MonoBehaviour
     [Header("Audio Control")]
     [SerializeField] private BrutalSlider musicSlider;
     [SerializeField] private BrutalSlider sfxSlider;
-    
+    [Header("HUD Bar")] 
+    [SerializeField] private GameObject fruitBar;
+    [SerializeField] private GameObject pausePanel;
     
     private bool _isShowing;
+    private bool _hudBarVisible = true;
     
     private float _musicVolume;
     private float _sfxVolume;
@@ -38,12 +41,15 @@ public class PauseUISystem : MonoBehaviour
         Assert.IsNotNull(musicSlider);
         Assert.IsNotNull(sfxSlider);
         
+        Assert.IsNotNull(fruitBar);
+        Assert.IsNotNull(pausePanel);
+        
         //controls
         UpdateHUD(!PlayerPrefs.HasKey("ShowControls") 
                   || PlayerPrefs.GetInt("ShowControls") == 1);
         
         //audio
-        GameSystems.Ins.PauseUISystem = this;
+        GameSystems.Ins.GameplayUISystem = this;
     }
 
     private void Start()
@@ -88,7 +94,7 @@ public class PauseUISystem : MonoBehaviour
 
         IEnumerator routine()
         {
-            GameSystems.Ins.PauseUISystem.Hide();
+            GameSystems.Ins.GameplayUISystem.Hide();
             yield return WaitUntilHidden();
             GameSystems.Ins.MapManager.QuitToScene("MainMenu");
         }
@@ -101,7 +107,7 @@ public class PauseUISystem : MonoBehaviour
 
         IEnumerator routine()
         {
-            GameSystems.Ins.PauseUISystem.Hide();
+            GameSystems.Ins.GameplayUISystem.Hide();
             yield return WaitUntilHidden();
             GameSystems.Ins.MapManager.ReloadMap();
         }
@@ -118,8 +124,15 @@ public class PauseUISystem : MonoBehaviour
             GameSystems.Ins.Controller.SetAllowMove(true);
         }
     }
-    
-    
+
+    public void ToggleHUDBar()
+    {
+        _hudBarVisible = !_hudBarVisible;
+        fruitBar.SetActive(_hudBarVisible);
+        pausePanel.SetActive(_hudBarVisible);
+    }
+
+
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Show()
     {
