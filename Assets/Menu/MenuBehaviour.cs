@@ -18,11 +18,11 @@ public class MenuBehaviour : MonoBehaviour
     [SerializeField] private Camera menuCamera;
     [SerializeField] private float cameraGlideSpeed = 1f;
     [SerializeField] private float groundHeight = -5f;
+    [SerializeField] private int maxLevel = 6;
     [SerializeField] private TMP_Text currentLevelText;
     [SerializeField] private string upcomingLevelPhrase = "soon";
     
     private int _currentLevel = 1;
-    private int _maxLevel = 6;
     
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
@@ -47,7 +47,7 @@ public class MenuBehaviour : MonoBehaviour
         if (PlayerPrefs.HasKey("LoadedMap"))
         {
             var numberSubstring = PlayerPrefs.GetString("LoadedMap").Substring(5);
-            if (int.TryParse(numberSubstring, out var level) && level > 0 && level <= _maxLevel)
+            if (int.TryParse(numberSubstring, out var level) && level > 0 && level <= maxLevel)
             {
                 _currentLevel = level;
                 currentLevelText.text = "lvl " + _currentLevel;
@@ -58,7 +58,7 @@ public class MenuBehaviour : MonoBehaviour
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public void GoToGameplay()
     {
-        if (_currentLevel == _maxLevel + 1) return;
+        if (_currentLevel == maxLevel + 1) return;
         
         routine().Start(this);
         return;
@@ -93,10 +93,10 @@ public class MenuBehaviour : MonoBehaviour
     public void ChangeSelectedMap(int direction)
     {
         var newLevel = _currentLevel + direction;
-        if (newLevel < 1 || newLevel > _maxLevel + 1) return;
+        if (newLevel < 1 || newLevel > maxLevel + 1) return;
         _currentLevel = newLevel;
         currentLevelText.text = 
-            _currentLevel == _maxLevel + 1 
+            _currentLevel == maxLevel + 1 
                 ? upcomingLevelPhrase 
                 : "lvl " + _currentLevel;
     }
