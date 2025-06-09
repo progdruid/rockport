@@ -97,6 +97,18 @@ public class Player : MonoBehaviour
         rb.mass = 0;
     }
 
+    private void OnDestroy()
+    {
+        if (_clungCorpse)
+        {
+            _clungCorpse.IsClung = false;
+            _clungCorpse.IgnoredObject = null;
+            _clungCorpse = null;
+        }
+        
+        soundPlayer.UnselectClip();
+        soundPlayer.Stop();
+    }
 
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
 

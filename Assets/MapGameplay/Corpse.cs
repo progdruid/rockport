@@ -128,7 +128,8 @@ public class Corpse : MonoBehaviour
         //TODO: do something with layers
         var ignoreLayer = LayerMask.NameToLayer("Ignore Raycast");
         var originalLayer = polyCollider.gameObject.layer;
-        var originalClungLayer = IgnoredObject?.gameObject.layer ?? ignoreLayer;
+        var originalClungLayer = ignoreLayer;
+        if (IgnoredObject) originalClungLayer = IgnoredObject.layer;
         var originalQueriesStartInColliders = Physics2D.queriesStartInColliders;
         
         polyCollider.gameObject.layer = ignoreLayer;
@@ -138,7 +139,7 @@ public class Corpse : MonoBehaviour
         hit = Physics2D.CapsuleCast(polyCollider.bounds.center, polyCollider.bounds.size, CapsuleDirection2D.Vertical, 0, direction, distance, layer);
         
         polyCollider.gameObject.layer = originalLayer;
-        if (IgnoredObject) IgnoredObject.gameObject.layer = originalClungLayer;
+        if (IgnoredObject) IgnoredObject.layer = originalClungLayer;
         Physics2D.queriesStartInColliders = originalQueriesStartInColliders;
         
         return hit;
