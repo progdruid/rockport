@@ -784,7 +784,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5e9f2b6cf3ca2046a1e90e5e2f2d264, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initMapSize: {x: 300, y: 300}
+  initMapSize: {x: 400, y: 400}
   entityEditor: {fileID: 251374648}
   wiringEditor: {fileID: 251374649}
   cam: {fileID: 202641129}
