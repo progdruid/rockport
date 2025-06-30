@@ -79,6 +79,7 @@ public class Corpse : MonoBehaviour
         var isGroundHit = CastBodyTo(Vector2.down, collisionCheckDistance, collisionMask | platformMask, out var groundHitData, false);
         if (isGroundHit && !_grounded)
         {
+            Debug.Log("Grounded!");
             _grounded = true;
             
             if (_maxYDuringFall - rb.transform.position.y > landingEffectHeightThreshold) 
@@ -105,11 +106,16 @@ public class Corpse : MonoBehaviour
         
         var predictedDeltaY = rb.linearVelocityY * Time.fixedDeltaTime;
         var vertDir = predictedDeltaY > 0 ? Vector2.up : Vector2.down;
-        if (!predictedDeltaY.IsApproximately(0) 
-            && CastBodyTo(vertDir, predictedDeltaY.Abs(), collisionMask, out var vertCCDHit))
+        if (!predictedDeltaY.IsApproximately(0))
         {
-            rb.position += vertDir * (vertCCDHit.distance - collisionGap);
-            rb.linearVelocityY = 0;
+            var mask = collisionMask;
+            if (predictedDeltaY < 0)
+                mask |= platformMask;
+            if (CastBodyTo(vertDir, predictedDeltaY.Abs(), mask, out var vertCCDHit))
+            {
+                rb.position += vertDir * (vertCCDHit.distance - collisionGap);
+                rb.linearVelocityY = 0;
+            }
         }
         var predictedDeltaX = rb.linearVelocityX * Time.fixedDeltaTime;
         var horDir = predictedDeltaX > 0 ? Vector2.right : Vector2.left;
