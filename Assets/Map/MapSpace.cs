@@ -79,11 +79,8 @@ public class MapSpace
         _entities.Insert(layerTo, movedObject);
         
         var step = layerTo > layerFrom ? 1 : -1;
-        for (var i = layerFrom; i != layerTo + step; i += step)
-        {
-            _entityToLayerHandleMap[_entities[i]].Value = i;
-            UpdateZ(i);
-        }
+        for (var i = layerFrom; i != layerTo + step; i += step) 
+            UpdateLayer(i);
 
         return true;
     }
@@ -110,13 +107,12 @@ public class MapSpace
             return false;
 
         _entities.Add(entity);
+        entity.Target.SetParent(_visualGrid.transform);
+        
         layer = _entities.Count - 1;
         var layerHandle = entity.InjectMap(this);
-        layerHandle.Value = layer;
         _entityToLayerHandleMap[entity] = layerHandle;
-        
-        entity.Target.SetParent(_visualGrid.transform);
-        UpdateZ(layer);
+        UpdateLayer(layer);
 
         return true;
     }
@@ -143,7 +139,7 @@ public class MapSpace
         _entities.RemoveAt(layer);
         _entityToLayerHandleMap.Remove(entity);
         for (var i = layer; i < _entities.Count - 1; i++)
-            UpdateZ(i);
+            UpdateLayer(i);
         return true;
     }
 
@@ -154,9 +150,10 @@ public class MapSpace
     }
 
     //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
-    private void UpdateZ(int layer)
+    private void UpdateLayer(int layer)
     {
         var entity = _entities[layer];
+        _entityToLayerHandleMap[entity].Value = layer;
         var local = entity.Target.localPosition;
         entity.Target.localPosition = new Vector3(local.x, local.y, -1 * layer);
     }
