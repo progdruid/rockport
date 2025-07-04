@@ -82,7 +82,7 @@ public class PlayerManager : MonoBehaviour
             GameSystems.Ins.FruitManager.DestroyFruit();
             DestroyPlayer();
             var corpse = GameSystems.Ins.CorpseManager.SpawnCorpse(pos, vel, flipX).transform;
-            GameSystems.Ins.GameplayCamera.SetTarget(corpse);
+            //GameSystems.Ins.GameplayCamera.SetTarget(corpse);
             yield return new WaitForSeconds(0.5f);
         }
         
