@@ -1,16 +1,18 @@
-using MapGameplay;
+using BrutalUI;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Serialization;
 
-public class KeyboardController : MonoBehaviour, IController
+public class GameplayController : MonoBehaviour
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [Header("Dependencies")]
     [SerializeField] private MapManager manager;
     [SerializeField] private PlayerManager playerManager;
-    [Header("Settings")] 
-    [SerializeField] private bool allowKillKey;
+    [Header("Sensors")]
+    [SerializeField] private SensorPanel leftSensor;
+    [SerializeField] private SensorPanel rightSensor;
+    [SerializeField] private SensorPanel jumpSensor;
+    [SerializeField] private SensorPanel hitchSensor;
 
     private bool _allowMove;
 
@@ -19,6 +21,10 @@ public class KeyboardController : MonoBehaviour, IController
     {
         Assert.IsNotNull(manager);
         Assert.IsNotNull(playerManager);
+        Assert.IsNotNull(leftSensor);
+        Assert.IsNotNull(rightSensor);
+        Assert.IsNotNull(jumpSensor);
+        Assert.IsNotNull(hitchSensor);
         
         GameSystems.Ins.Controller = this;
     }
@@ -72,17 +78,19 @@ public class KeyboardController : MonoBehaviour, IController
             manager.QuitToScene("MapEditor");
         else if (Input.GetKeyDown(KeyCode.R))
             manager.ReloadMap();
-        else if (allowKillKey && Input.GetKeyDown(KeyCode.K))
+        else if (Input.GetKeyDown(KeyCode.K))
             playerManager.KillPlayer();
-        else if (_allowMove && Input.GetKeyDown(KeyCode.Space))
+        
+        if (!_allowMove) return;
+        
+        if (jumpSensor.Pressed || (!jumpSensor.Holding && Input.GetKeyDown(KeyCode.Space)))
             playerManager.Player.MakeRegularJump();
-        else if (_allowMove && Input.GetKeyUp(KeyCode.Space))
+        else if (jumpSensor.Released || (!jumpSensor.Holding && Input.GetKeyUp(KeyCode.Space)))
             playerManager.Player.SuppressJump();
 
         
-        if (!_allowMove) return;
         playerManager.Player.HorizontalOrderDirection = 
-            (Input.GetKey(KeyCode.A) ? -1 : 0) + (Input.GetKey(KeyCode.D) ? 1 : 0);
-        playerManager.Player.OrderedToHitch = Input.GetKey(KeyCode.LeftShift);
+            (leftSensor.Holding || Input.GetKey(KeyCode.A) ? -1 : 0) + (rightSensor.Holding || Input.GetKey(KeyCode.D) ? 1 : 0);
+        playerManager.Player.OrderedToHitch = hitchSensor.Holding || Input.GetKey(KeyCode.LeftShift);
     }
 }

@@ -12,24 +12,27 @@ public class SensorPanel : MonoBehaviour
     [SerializeField] private UnityEvent senseStartEvent;
     [SerializeField] private UnityEvent senseEndEvent;
 
-    public bool Pressed
+    public bool Holding
     {
-        get => _pressed;
+        get => _holding;
         private set
         {
-            PreviousPressed = _pressed;
-            _pressed = value;
-            
-            if (_pressed && !PreviousPressed)
+            PreviousHolding = _holding;
+            _holding = value;
+
+            if (_holding && !PreviousHolding)
                 senseStartEvent?.Invoke();
-            else if (!_pressed && PreviousPressed)
+            else if (!_holding && PreviousHolding)
                 senseEndEvent?.Invoke();
         }
     }
 
-    public bool PreviousPressed { get; private set; } = false;
+    public bool PreviousHolding { get; private set; } = false;
+    public bool Pressed => Holding && !PreviousHolding;
+    public bool Released => !Holding && PreviousHolding;
     
-    private bool _pressed = false;
+    
+    private bool _holding = false;
     private RectTransform _rect;
 
     private void Awake() => _rect = GetComponent<RectTransform>();
@@ -38,18 +41,18 @@ public class SensorPanel : MonoBehaviour
     {
         if ((Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2)) && Check(Input.mousePosition))
         {
-            Pressed = true;
+            Holding = true;
             return;
         }
         if (Input.touchCount > 0)
             for (var i = 0; i < Input.touchCount; i++)
             {
                 if (!Check(Input.GetTouch(i).position)) continue;
-                Pressed = true;
+                Holding = true;
                 return;
             }
         
-        Pressed = false;
+        Holding = false;
     }
     
     private bool Check (Vector2 position) => RectTransformUtility.RectangleContainsScreenPoint(_rect, position);
