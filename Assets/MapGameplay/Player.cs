@@ -127,7 +127,7 @@ public class Player : MonoBehaviour
     public void MakeRegularJump()
     {
         _timeTriedJumping = Time.time;
-        if ((_grounded || _timeUngrounded + coyoteTime > Time.time) && !_clungCorpse)
+        if ((_grounded || (_timeUngrounded + coyoteTime > Time.time && _savedVelocity.y <= 0)) && !_clungCorpse)
             Jump(jumpKick);
     }
 
