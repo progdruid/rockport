@@ -29,6 +29,7 @@ public abstract class EntityComponent : MonoBehaviour, IReplicable, IPropertyHol
     public abstract string JsonName { get; }
     public event Action PropertiesChangeEvent;
     public abstract IEnumerator<PropertyHandle> GetProperties();
+    //todo: rename to more meaningful name
     protected void InvokePropertiesChangeEvent() => PropertiesChangeEvent?.Invoke();
     
     public abstract void Replicate(JSONNode data);
