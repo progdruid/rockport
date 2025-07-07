@@ -1865,6 +1865,90 @@
             }
         },
         {
+            "title" : "Bush",
+            "anchor" : {
+                "mapPos" : [80,32],
+                "freeMode" : false
+            },
+            "rotator" : {
+                "angle" : 0
+            },
+            "decor" : {
+                "spriteIndex" : 1,
+                "flip" : false
+            }
+        },
+        {
+            "title" : "Bush",
+            "anchor" : {
+                "mapPos" : [87,32],
+                "freeMode" : false
+            },
+            "rotator" : {
+                "angle" : 0
+            },
+            "decor" : {
+                "spriteIndex" : 2,
+                "flip" : true
+            }
+        },
+        {
+            "title" : "Grass",
+            "anchor" : {
+                "mapPos" : [87,31],
+                "freeMode" : false
+            },
+            "rotator" : {
+                "angle" : 0
+            },
+            "decor" : {
+                "spriteIndex" : 3,
+                "flip" : false
+            }
+        },
+        {
+            "title" : "Grass",
+            "anchor" : {
+                "mapPos" : [88,31],
+                "freeMode" : false
+            },
+            "rotator" : {
+                "angle" : 0
+            },
+            "decor" : {
+                "spriteIndex" : 1,
+                "flip" : false
+            }
+        },
+        {
+            "title" : "Grass",
+            "anchor" : {
+                "mapPos" : [92,30],
+                "freeMode" : false
+            },
+            "rotator" : {
+                "angle" : 0
+            },
+            "decor" : {
+                "spriteIndex" : 1,
+                "flip" : false
+            }
+        },
+        {
+            "title" : "Grass",
+            "anchor" : {
+                "mapPos" : [97,31],
+                "freeMode" : false
+            },
+            "rotator" : {
+                "angle" : 0
+            },
+            "decor" : {
+                "spriteIndex" : 0,
+                "flip" : false
+            }
+        },
+        {
             "title" : "Platform",
             "platform" : {
                 "width" : 6
