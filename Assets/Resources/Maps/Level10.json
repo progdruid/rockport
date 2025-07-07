@@ -880,7 +880,7 @@
                 "generatePhysics" : true
             },
             "finish" : {
-                "mapName" : "#Menu"
+                "mapName" : "Level11"
             }
         },
         {
