@@ -7,11 +7,12 @@ using UnityEngine.Serialization;
 public class ParallaxBackground : MonoBehaviour
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    [SerializeField] [Range(0f, 1f)] float depth;
+    [SerializeField] [Range(-1f, 1f)] float depth;
     [SerializeField] Sprite undergroundSprite;
     [SerializeField] Sprite groundSprite;
     [SerializeField] Sprite upperSprite;
-
+    [SerializeField] Material spriteMaterial;
+    
     private Vector2 _halfSize;
     private float? _groundLevel;
     private Transform _target;
@@ -21,6 +22,7 @@ public class ParallaxBackground : MonoBehaviour
     //initialisation////////////////////////////////////////////////////////////////////////////////////////////////////
     private void Awake()
     {
+        
         _halfSize = undergroundSprite.bounds.extents.To2();
         
         _tiles = new SpriteRenderer[3, 3];
@@ -30,6 +32,7 @@ public class ParallaxBackground : MonoBehaviour
             var tile = new GameObject("tile").AddComponent<SpriteRenderer>();
             tile.transform.SetParent(transform);
             tile.transform.localPosition = new Vector3(x * 2f * _halfSize.x, y * 2f * _halfSize.y, 0f);
+            tile.material = spriteMaterial;
             _tiles[x + 1, y + 1] = tile;
         }
     }

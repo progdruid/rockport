@@ -122,7 +122,6 @@ public class MapManager : MonoBehaviour
         
         GameSystems.Ins.PlayerManager.SetSpawnPoint(spawnPos);
         GameSystems.Ins.PlayerManager.SetSpawnZ(spawnZ);
-        GameSystems.Ins.GameplayCamera.ObservationHeight = mapSpace.GetMapTop();
 
         
         for (var i = 0; mapSpace.HasLayer(i); i++)
