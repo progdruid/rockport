@@ -990,7 +990,7 @@
         {
             "title" : "Chain",
             "anchor" : {
-                "mapPos" : [46,152],
+                "mapPos" : [47,152],
                 "freeMode" : false
             },
             "chain" : {
