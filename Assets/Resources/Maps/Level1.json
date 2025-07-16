@@ -1884,7 +1884,7 @@
         {
             "title" : "Bush",
             "anchor" : {
-                "mapPos" : [87,32],
+                "mapPos" : [84,32],
                 "freeMode" : false
             },
             "rotator" : {

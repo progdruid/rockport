@@ -8,6 +8,9 @@ namespace Map
 
 public class Decor : EntityComponent
 {
+    private static readonly int UVRect = Shader.PropertyToID("_UVRect");
+    private static readonly int FlipX = Shader.PropertyToID("_FlipX");
+
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Sprite[] sprites;
@@ -25,7 +28,7 @@ public class Decor : EntityComponent
         Assert.IsTrue(sprites[0]);
         
         if (pickRandom) _spriteIndex = Random.Range(0, sprites.Length);
-        spriteRenderer.sprite = sprites[_spriteIndex];
+        UpdateSpriteToIndex();
     }
     public override void Initialise() {}
     public override void Activate() {}
@@ -45,7 +48,7 @@ public class Decor : EntityComponent
             {
                 var index = ((int)value).ClampBottom(0).ClampTop(sprites.Length - 1);
                 _spriteIndex = index;
-                spriteRenderer.sprite = sprites[_spriteIndex];
+                UpdateSpriteToIndex();
             }
         };
         yield return new PropertyHandle()
@@ -56,7 +59,7 @@ public class Decor : EntityComponent
             Setter = (object input) =>
             {
                 _flip = (string)input == "true";
-                spriteRenderer.flipX = _flip;
+                UpdateFlipX();
             }
         };
     }
@@ -67,8 +70,8 @@ public class Decor : EntityComponent
         _spriteIndex = index.ClampBottom(0).ClampTop(sprites.Length - 1);
         
         _flip = data["flip"].AsBool;
-        spriteRenderer.sprite = sprites[_spriteIndex];
-        spriteRenderer.flipX = _flip;
+        UpdateSpriteToIndex();
+        UpdateFlipX();
         InvokePropertiesChangeEvent();
     }
 
@@ -82,6 +85,34 @@ public class Decor : EntityComponent
         return json;
     }
     
+    //private logic/////////////////////////////////////////////////////////////////////////////////////////////////////
+    private void UpdateSpriteToIndex()
+    {
+        spriteRenderer.sprite = sprites[_spriteIndex];
+
+        if (!spriteRenderer.material.HasProperty(UVRect)) return;
+        
+        var pixelRect = spriteRenderer.sprite.textureRect;
+        var textureSize = new Vector2(
+            spriteRenderer.sprite.texture.width,
+            spriteRenderer.sprite.texture.height
+        );
+        var uvValues = new Vector4(
+            pixelRect.x / textureSize.x,
+            pixelRect.y / textureSize.y,
+            pixelRect.width / textureSize.x,
+            pixelRect.height / textureSize.y
+        );
+        spriteRenderer.material.SetVector(UVRect, uvValues);
+    }
+
+    private void UpdateFlipX()
+    {
+        if (spriteRenderer.material.HasProperty(FlipX))
+            spriteRenderer.material.SetFloat(FlipX, _flip ? 1f : 0f);
+        else 
+            spriteRenderer.flipX = _flip;
+    }
 }
 
 }
