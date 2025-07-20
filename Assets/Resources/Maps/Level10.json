@@ -893,7 +893,7 @@
         {
             "title" : "Ground Marker",
             "anchor" : {
-                "mapPos" : [145,27],
+                "mapPos" : [154,14],
                 "freeMode" : false
             }
         }
