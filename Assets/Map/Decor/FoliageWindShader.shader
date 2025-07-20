@@ -80,6 +80,11 @@ Shader "Unlit/FoliageWindShader"
                 return value;
             }
 
+            float wind(float x)
+            {
+                float val = sin(sin(x) - 2.3f * cos(x));
+                return val * 0.5f + 0.5f;
+            }
             
             fixed4 frag (FragmentData i) : SV_Target
             {
@@ -88,9 +93,9 @@ Shader "Unlit/FoliageWindShader"
                 _WindStrength = 0.004f;
                 
                 float lookupX = (i.worldPos.x + _Time.y * _WindSpeed) * _WindFrequency;
-                float windFactor = sin(lookupX) * 0.5f + 0.5f;
-                float noiseFactor = noise(float2(lookupX, i.worldPos.y / 15.f));
-                float wind = (0.8f * windFactor + 0.2f * noiseFactor);
+                float windFactor = wind(lookupX);
+                float noiseFactor = noise(float2(lookupX/2, i.worldPos.y / 10.f));
+                float wind = (0.0f * windFactor + 1.0f * noiseFactor);
                 
                 float2 localUV = (i.uv - _UVRect.xy) / _UVRect.zw;
 
