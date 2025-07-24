@@ -49,7 +49,7 @@ public class MenuBehaviour : MonoBehaviour
         foreach (var layer in parallaxLayers)
         {
             layer.SetTarget(menuCamera.transform);
-            layer.SetGroundLevel(groundHeight);
+            layer.SetGroundAnchor(new Vector2(0f, groundHeight));
         }
         
         if (PlayerPrefs.HasKey("LoadedMap"))

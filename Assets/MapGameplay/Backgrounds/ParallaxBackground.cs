@@ -7,14 +7,14 @@ using UnityEngine.Serialization;
 public class ParallaxBackground : MonoBehaviour
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    [SerializeField] [Range(-1f, 1f)] float depth;
-    [SerializeField] Sprite undergroundSprite;
-    [SerializeField] Sprite groundSprite;
-    [SerializeField] Sprite upperSprite;
-    [SerializeField] Material spriteMaterial;
+    [SerializeField] [Range(-1f, 1f)] private float depth;
+    [SerializeField] private Sprite undergroundSprite;
+    [SerializeField] private Sprite groundSprite;
+    [SerializeField] private Sprite upperSprite;
+    [SerializeField] private Material spriteMaterial;
     
     private Vector2 _halfSize;
-    private float? _groundLevel;
+    private Vector2? _groundAnchor;
     private Transform _target;
 
     private SpriteRenderer[,] _tiles;
@@ -40,11 +40,11 @@ public class ParallaxBackground : MonoBehaviour
     
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
     public void SetTarget(Transform target) => _target = target;
-    public void SetGroundLevel(float groundLevel) => _groundLevel = groundLevel;
+    public void SetGroundAnchor(Vector2 groundAnchor) => _groundAnchor = groundAnchor;
     public void Clear()
     {
         _target = null;
-        _groundLevel = null;
+        _groundAnchor = null;
     }
     
     //game loop/////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,11 +54,11 @@ public class ParallaxBackground : MonoBehaviour
     private void RunUpdate()
     {
         if (!_target) return;
-        var usedGroundLevel = _groundLevel ?? 0f;
+        var usedGroundAnchor = _groundAnchor ?? Vector2.zero;
 
-        var newPos = _target.position.To2() * depth + usedGroundLevel * (1f - depth) * Vector2.up;
+        var newPos = _target.position.To2() * depth + usedGroundAnchor * (1f - depth);
         var yOffsetOfTarget = _target.position.y - newPos.y;
-        var yIndexCenter = ((yOffsetOfTarget + _halfSize.y) / (_halfSize.y * 2f)).FloorToInt();//- usedGroundLevel * (1f - depth)
+        var yIndexCenter = ((yOffsetOfTarget + _halfSize.y) / (_halfSize.y * 2f)).FloorToInt();
         for (var y = -1; y <= 1; y++)
         {
             var yIndexRow = yIndexCenter + y;

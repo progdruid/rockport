@@ -141,7 +141,7 @@ public class MapManager : MonoBehaviour
         mapSpace.FindEntity(GlobalConfig.Ins.groundMarkerEntityName, out var foundGroundMarker);
         if (foundGroundMarker)
             foreach (var background in parallaxBackgrounds)
-                background.SetGroundLevel(foundGroundMarker.Target.position.y);
+                background.SetGroundAnchor(foundGroundMarker.Target.position.To2());
 
         yield return GameSystems.Ins.TransitionVeil.TransiteOut();
         GameSystems.Ins.Controller.SetAllowMove(true);
