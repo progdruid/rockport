@@ -9,6 +9,8 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject smokeEffectPrefab;
     [SerializeField] private float smokeTimeOffset;
+    [SerializeField] private float afterDeathTime = 0.5f;
+    [SerializeField] private float corpseSpawnTimeBonus = 1f;
     
     private Vector2 _spawnPoint = Vector2.zero;
     private float _spawnZ = -1;
@@ -65,13 +67,10 @@ public class PlayerManager : MonoBehaviour
     {
         var rb = Player.Body;
         var pos = Player.transform.position;
-
-        Instantiate(smokeEffectPrefab, new Vector3(pos.x, pos.y, smokeEffectPrefab.transform.position.z),
-            Quaternion.identity);
-
-        rb.constraints |= RigidbodyConstraints2D.FreezePosition;
+        //rb.constraints |= RigidbodyConstraints2D.FreezePosition; this doesn't work with custom physics system
         GameSystems.Ins.Controller.SetAllowMove(false);
 
+        Instantiate(smokeEffectPrefab, new Vector3(pos.x, pos.y, pos.z - 0.1f), Quaternion.identity);
         yield return new WaitForSeconds(smokeTimeOffset);
 
         if (shouldSpawnCorpse)
@@ -82,18 +81,18 @@ public class PlayerManager : MonoBehaviour
             GameSystems.Ins.FruitManager.DestroyFruit();
             DestroyPlayer();
             var corpse = GameSystems.Ins.CorpseManager.SpawnCorpse(pos, vel, flipX).transform;
-            //GameSystems.Ins.GameplayCamera.SetTarget(corpse);
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(1f);
         }
-        
-        yield return GameSystems.Ins.TransitionVeil.TransiteIn();
         
         if (Player)
             DestroyPlayer();
         _killingPlayer = false;
+
+        yield return new WaitForSeconds(0.5f);
+        
+        
         
         SpawnPlayer();
-        yield return GameSystems.Ins.TransitionVeil.TransiteOut();
         GameSystems.Ins.Controller.SetAllowMove(true);    
     }
 }

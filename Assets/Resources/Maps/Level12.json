@@ -39,10 +39,10 @@
         {
             "title" : "Platform",
             "platform" : {
-                "width" : 7
+                "width" : 9
             },
             "anchor" : {
-                "mapPos" : [192,84],
+                "mapPos" : [191,84],
                 "freeMode" : false
             }
         },

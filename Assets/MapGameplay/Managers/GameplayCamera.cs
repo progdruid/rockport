@@ -4,12 +4,7 @@ using UnityEngine;
 public class GameplayCamera : MonoBehaviour
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    [SerializeField] private float boxSize;
-    [Space]
-    [SerializeField] private float boxTopHalfSize;
-    [SerializeField] private float boxBottomHalfSize;
-    [SerializeField] private float boxRightHalfSize;
-    [SerializeField] private float boxLeftHalfSize;
+    [SerializeField] private float followSpeed = 5f;
     [Space]
     [SerializeField] private float staticSpeed;
     
@@ -31,13 +26,9 @@ public class GameplayCamera : MonoBehaviour
 
     
     //public interface//////////////////////////////////////////////////////////////////////////////////////////////////
-    public void SetTarget (Transform target)
-    {
-        this._target = target;
-        if (_isFollowing)
-            transform.position = new Vector3(target.position.x, target.position.y, transform.position.z);
-    }
-    
+    public void SetTarget (Transform target) => this._target = target;
+    public void SetAbsolutePosition (Vector2 position) => transform.SetWorldXY(position);
+
     public void SetModeStatic () { _isFollowing = false; _staticDirection = Vector2.zero; }
     public void SetModeMove(Vector2 direction) { _isFollowing = false; _staticDirection = direction; }
     public void SetModeFollow () { _isFollowing = true; }
@@ -45,9 +36,8 @@ public class GameplayCamera : MonoBehaviour
     public void SetZoom (float zoom) => _nextFrameZoom = zoom;
     
     
-    
     //game events///////////////////////////////////////////////////////////////////////////////////////////////////////
-    private void Update()
+    private void LateUpdate()
     {
         if (GameSystems.Ins.TransitionVeil.closed || !_target)
             return;
@@ -57,13 +47,11 @@ public class GameplayCamera : MonoBehaviour
             _camera.orthographicSize += _nextFrameZoom * Time.deltaTime;
             _nextFrameZoom = 0f;
         }
-            
+
         if (_isFollowing)
         {
-            var newPosX = Mathf.Clamp(transform.position.x, _target.position.x - boxLeftHalfSize, _target.position.x + boxRightHalfSize);
-            var newPosY = Mathf.Clamp(transform.position.y, _target.position.y - boxBottomHalfSize, _target.position.y + boxTopHalfSize);
-
-            transform.SetWorldXY(newPosX, newPosY);
+            var pos = Vector2.Lerp(transform.position.To2(), _target.position.To2(), followSpeed * Time.deltaTime);
+            transform.SetWorldXY(pos);
         }
         else
         {

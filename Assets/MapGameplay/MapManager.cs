@@ -133,7 +133,7 @@ public class MapManager : MonoBehaviour
         _currentMapSpace = mapSpace;
         
 
-        
+        GameSystems.Ins.GameplayCamera.SetAbsolutePosition(spawnPos);
         GameSystems.Ins.PlayerManager.SpawnPlayer();
         
         foreach (var background in parallaxBackgrounds)
