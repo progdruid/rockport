@@ -114,9 +114,10 @@ public class Player : MonoBehaviour
 
     public Rigidbody2D Body => rb;
     public bool Flip => spriteRenderer.flipX;
-    
-    public float HorizontalOrderDirection { get; set; }
-    public bool OrderedToHitch { get; set; }
+
+    public float HorizontalOrderDirection { get; set; } = 0f;
+    public bool OrderedToHitch { get; set; } = false;
+    public bool Frozen { get; set; } = false;
     
     public void PrepareForDeath()
     {
@@ -140,6 +141,8 @@ public class Player : MonoBehaviour
     //game events///////////////////////////////////////////////////////////////////////////////////////////////////////
     private void FixedUpdate()
     {
+        if (Frozen) return;
+        
         rb.linearVelocity = _savedVelocity;
         
         //update max y since ungrounded

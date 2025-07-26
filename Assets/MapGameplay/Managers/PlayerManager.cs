@@ -67,7 +67,7 @@ public class PlayerManager : MonoBehaviour
     {
         var rb = Player.Body;
         var pos = Player.transform.position;
-        //rb.constraints |= RigidbodyConstraints2D.FreezePosition; this doesn't work with custom physics system
+        Player.Frozen = true;
         GameSystems.Ins.Controller.SetAllowMove(false);
 
         Instantiate(smokeEffectPrefab, new Vector3(pos.x, pos.y, pos.z - 0.1f), Quaternion.identity);
