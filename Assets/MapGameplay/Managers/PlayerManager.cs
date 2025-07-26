@@ -8,9 +8,9 @@ public class PlayerManager : MonoBehaviour
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject smokeEffectPrefab;
-    [SerializeField] private float smokeTimeOffset;
-    [SerializeField] private float afterDeathTime = 0.5f;
-    [SerializeField] private float corpseSpawnTimeBonus = 1f;
+    [SerializeField] private float smokeTime = 0.3f;
+    [SerializeField] private float corpseTime = 0.25f;
+    [SerializeField] private float showTime = 0.5f;
     
     private Vector2 _spawnPoint = Vector2.zero;
     private float _spawnZ = -1;
@@ -71,7 +71,7 @@ public class PlayerManager : MonoBehaviour
         GameSystems.Ins.Controller.SetAllowMove(false);
 
         Instantiate(smokeEffectPrefab, new Vector3(pos.x, pos.y, pos.z - 0.1f), Quaternion.identity);
-        yield return new WaitForSeconds(smokeTimeOffset);
+        yield return new WaitForSeconds(smokeTime);
 
         if (shouldSpawnCorpse)
         {
@@ -81,14 +81,14 @@ public class PlayerManager : MonoBehaviour
             GameSystems.Ins.FruitManager.DestroyFruit();
             DestroyPlayer();
             var corpse = GameSystems.Ins.CorpseManager.SpawnCorpse(pos, vel, flipX).transform;
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(corpseTime);
         }
         
         if (Player)
             DestroyPlayer();
         _killingPlayer = false;
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(showTime);
         
         
         
