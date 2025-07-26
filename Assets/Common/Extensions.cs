@@ -70,6 +70,8 @@ public static class Extensions
     public static Vector3Int RoundToInt(this Vector3 v) => Vector3Int.RoundToInt(v);
     public static Vector2Int CeilToInt(this Vector2 v) => Vector2Int.CeilToInt(v);
     public static Vector3Int CeilToInt(this Vector3 v) => Vector3Int.CeilToInt(v);
+    public static Vector2 Shift(this Vector2 v, float x, float y) => new(v.x + x, v.y + y);
+    public static Vector3 Shift(this Vector3 v, float x, float y, float z) => new(v.x + x, v.y + y , v.z + z);
     
     public static JSONNode ToJson(this Vector2Int v)
     {

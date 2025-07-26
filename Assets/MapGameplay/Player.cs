@@ -83,7 +83,7 @@ public class Player : MonoBehaviour
         rb.simulated = true;
         rb.bodyType = RigidbodyType2D.Kinematic;
         rb.useFullKinematicContacts = true;
-        rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+        rb.interpolation = RigidbodyInterpolation2D.None;
         rb.sleepMode = RigidbodySleepMode2D.NeverSleep;
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;

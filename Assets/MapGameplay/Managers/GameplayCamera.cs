@@ -5,6 +5,8 @@ public class GameplayCamera : MonoBehaviour
 {
     //fields////////////////////////////////////////////////////////////////////////////////////////////////////////////
     [SerializeField] private float followSpeed = 5f;
+    [SerializeField] private float followRadius = 0f;
+    [SerializeField] private float followHeight = 5f;
     [Space]
     [SerializeField] private float staticSpeed;
     
@@ -50,7 +52,11 @@ public class GameplayCamera : MonoBehaviour
 
         if (_isFollowing)
         {
-            var pos = Vector2.Lerp(transform.position.To2(), _target.position.To2(), followSpeed * Time.deltaTime);
+            var diff = _target.position.To2().Shift(0f, followHeight) - transform.position.To2();
+            var normal = diff.normalized;
+            var dist = diff.x / normal.x;
+            var moveDist = dist.ClampBottom(followRadius) - followRadius;
+            var pos = transform.position.To2() + moveDist * followSpeed * Time.deltaTime * normal;
             transform.SetWorldXY(pos);
         }
         else
